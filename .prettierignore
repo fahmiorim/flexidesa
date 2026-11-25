@@ -1,0 +1,15 @@
+node_modules
+.next
+# Skill pihak ketiga yang dipasang apa adanya (data + skrip); jangan diformat ulang.
+.agents/skills
+out
+build
+coverage
+dist
+docs
+.vitest
+package-lock.json
+*.md
+src/db/migrations
+# Dataset wilayah hasil generator (minified, lihat scripts/wilayah).
+src/features/wilayah/data/*.json

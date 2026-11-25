@@ -1,0 +1,100 @@
+.buttonGroups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-bottom: 16px;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.buttonGroupLabel {
+  width: 100%;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-text);
+}
+
+.actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.printPage {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+.printActions {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.printCard {
+  background: #fff;
+  color: #111;
+  padding: 32px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 12%);
+}
+
+.printHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 3px double #111;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.printHead strong {
+  display: block;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.printHead span {
+  display: block;
+  font-size: 13px;
+}
+
+.printHead > div:last-child {
+  text-align: right;
+}
+
+.printMembers {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.printMembers th,
+.printMembers td {
+  border: 1px solid #333;
+  padding: 6px 8px;
+  text-align: left;
+}
+
+.printFoot {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 24px;
+  font-size: 12px;
+}
+
+@media print {
+  .printActions {
+    display: none;
+  }
+  .printCard {
+    box-shadow: none;
+  }
+}

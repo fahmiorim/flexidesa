@@ -1,0 +1,61 @@
+/* Tabel rekapitulasi kehadiran: banyak kolom, angka rata tengah. */
+.wrap {
+  overflow-x: auto;
+}
+
+.tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tabel th,
+.tabel td {
+  padding: 10px 12px;
+  border-bottom: 1px solid #e8e5f5;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.tabel thead th {
+  background: #f4f1ff;
+  color: #4b3a86;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tabel tbody tr:hover {
+  background: #faf8ff;
+}
+
+.nomor {
+  width: 52px;
+  color: #7b7595;
+}
+
+.jam {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.lencana {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.hadir {
+  background: #e6f7ef;
+  color: #16784f;
+}
+
+.lain {
+  background: #fdf1e3;
+  color: #97601a;
+}

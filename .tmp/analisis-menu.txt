@@ -1,0 +1,378 @@
+BASE 22 baris, TAMBAHAN 137 baris
+
+=== GRUP OPENSSID (BASE) ===
+
+[200] Info [Desa] (info-desa) urut=20 hidden=1 anak=0
+
+[2] Kependudukan (kependudukan) urut=30 hidden=0 anak=0
+
+[3] Statistik (statistik) urut=40 hidden=0 anak=0
+
+[206] Kesehatan (kesehatan) urut=41 hidden=0 anak=0
+
+[337] Kehadiran (kehadiran) urut=41 hidden=0 anak=0
+
+[4] Layanan Surat (layanan-surat) urut=50 hidden=0 anak=0
+
+[15] Sekretariat (sekretariat) urut=60 hidden=0 anak=1
+  - Informasi Publik | informasi-publik | dokumen/clear | urut=4 hidden=0
+
+[301] Buku Administrasi [Desa] (buku-administrasi-desa) urut=70 hidden=0 anak=0
+
+[201] Keuangan (keuangan) urut=80 hidden=0 anak=0
+
+[5] Analisis (analisis) urut=90 hidden=0 anak=0
+
+[6] Bantuan (bantuan) urut=100 hidden=0 anak=0
+
+[7] Pertanahan (pertanahan) urut=110 hidden=0 anak=0
+
+[343] OpenDK (opendk) urut=124 hidden=0 anak=0
+
+[9] Pemetaan (pemetaan) urut=130 hidden=0 anak=0
+
+[10] Hubung Warga (hubung-warga) urut=140 hidden=0 anak=0
+
+[11] Pengaturan (pengaturan) urut=150 hidden=1 anak=0
+
+[13] Admin Web (admin-web) urut=160 hidden=0 anak=0
+
+[14] Layanan Mandiri (layanan-mandiri) urut=170 hidden=0 anak=0
+
+[312] Anjungan (anjungan) urut=180 hidden=0 anak=0
+
+[352] Satu Data (satu-data) urut=180 hidden=0 anak=0
+
+[354] Buku Tamu (buku-tamu) urut=180 hidden=0 anak=0
+
+Anak dengan parent tidak ada di base: 0
+
+=== GRUP TAMBAHAN (SETTINGMODUL) ===
+[?] Home (home) urut=10
+[?] Pembangunan (pembangunan) urut=120
+[?] Lapak (lapak) urut=122
+[?] Pengaduan (pengaduan) urut=124
+total parent=0 di tambahan: 4; total parent!=0: 133
+
+=== MENU TENANT KITA ===
+
+Dashboard (beranda) anak=0
+
+Info Desa (info-desa) anak=7
+  - Identitas Desa | pengaturan-desa
+  - Wilayah Administratif | wilayah
+  - Pemerintah Desa | perangkat-desa
+  - Lembaga Desa | lembaga-desa
+  - Status Desa | status-desa
+  - Layanan Pelanggan | pelanggan
+  - Pendaftaran Kerjasama | pendaftaran-kerjasama
+
+Kependudukan (kependudukan) anak=8
+  - Dashboard Kependudukan | dashboard-kependudukan
+  - Penduduk | penduduk
+  - Keluarga | keluarga
+  - Rumah Tangga | rumah-tangga
+  - Kelompok | kelompok
+  - Data Suplemen | suplemen
+  - Calon Pemilih | calon-pemilih
+  - Mutasi Penduduk | mutasi-penduduk
+
+Statistik (statistik) anak=8
+  - Dashboard Laporan | laporan-statistik
+  - Laporan Penduduk | laporan-penduduk
+  - Laporan Desa | laporan-desa
+  - Statistik Desa | statistik-desa
+  - Rekap Analisis | rekap-analisis
+  - Statistik Kependudukan | statistik-kependudukan
+  - Laporan Bulanan | laporan-bulanan
+  - Laporan Kelompok Rentan | laporan-kelompok-rentan
+
+Kesehatan (kesehatan) anak=4
+  - Kesehatan Ibu dan Anak | kia
+  - Pemantauan Anak | pemantauan-anak
+  - Vaksin | vaksin
+  - Stunting | stunting
+
+Kehadiran (kehadiran) anak=9
+  - Dashboard Kehadiran | kehadiran-dashboard
+  - Absensi Pegawai | absensi-pegawai
+  - Data Pegawai | kepegawaian
+  - Cuti dan Izin | cuti-izin
+  - Hari Libur | hari-libur
+  - Jam Kerja | jam-kerja
+  - Pengaduan Kehadiran | pengaduan-kehadiran
+  - Rekapitulasi Kehadiran | rekapitulasi-kehadiran
+  - Alasan Keluar | alasan-keluar
+
+Layanan Surat (layanan-surat) anak=15
+  - Administrasi Surat | surat
+  - Permohonan Surat | permohonan-surat
+  - Daftar Surat | surat-daftar
+  - Surat Masuk | surat-masuk
+  - Surat Keluar | surat-keluar
+  - Surat Dinas | surat-dinas
+  - Jenis Surat | jenis-surat
+  - Daftar Persyaratan | syarat-surat
+  - Klasifikasi Surat | klasifikasi-surat
+  - Arsip Surat | arsip-surat
+  - Master Surat | master-surat
+  - Pengaturan Surat | pengaturan-surat
+  - Cetak Surat | cetak-surat
+  - Arsip Layanan | arsip-layanan
+  - Tanda Tangan Elektronik | tte
+
+Sekretariat (sekretariat) anak=8
+  - Inventaris | inventaris
+  - Dashboard Inventaris | inventaris-dashboard
+  - Pengelolaan Inventaris | inventaris-pengelolaan
+  - Mutasi Inventaris | mutasi-inventaris
+  - Laporan Inventaris | inventaris-laporan
+  - Arsip Desa | arsip
+  - Produk Hukum | produk-hukum
+  - Informasi Publik | informasi-publik
+
+Buku Administrasi Desa (buku-administrasi-desa) anak=4
+  - Administrasi Umum | buku-administrasi
+  - Administrasi Penduduk | administrasi-penduduk
+  - Administrasi Pembangunan | administrasi-pembangunan
+  - Buku Tanah Kas Desa | buku-tanah-kas
+
+Keuangan (keuangan) anak=10
+  - Dashboard Keuangan | keuangan-dashboard
+  - APBDes | apbdes
+  - Realisasi | realisasi-keuangan
+  - Kegiatan | kegiatan-keuangan
+  - Dokumen Keuangan | dokumen-keuangan
+  - Laporan Keuangan | laporan-keuangan
+  - Pembangunan | pembangunan
+  - Impor Data | impor-data
+  - Laporan Manual | laporan-manual
+  - Laporan APBDes | laporan-apbdes
+
+Analisis (analisis) anak=3
+  - Master Analisis | master-analisis
+  - Survei Analisis | analisis-survei
+  - Pengaturan Analisis | pengaturan-analisis
+
+Pertanahan (pertanahan) anak=2
+  - C-Desa | c-desa
+  - Daftar Persil | daftar-persil
+
+OpenDK (opendk) anak=2
+  - Pesan | pesan-dk
+  - Sinkronisasi | sinkronisasi-dk
+
+Pengaduan (pengaduan) anak=0
+
+Pemetaan (pemetaan) anak=3
+  - Peta | peta
+  - Simbol Peta | simbol-peta
+  - Pengaturan Peta | pengaturan-peta
+
+Hubung Warga (hubung-warga) anak=4
+  - Kirim Pesan | pesan-warga
+  - Daftar Kontak | daftar-kontak
+  - Grup Kontak | grup-kontak
+  - Umpan Balik | umpan-balik
+
+Pengaturan (pengaturan) anak=10
+  - Pengaturan Desa | pengaturan-desa-lanjutan
+  - Pengguna | pengguna
+  - Grup Akses | grup-akses
+  - Aktivitas Pengguna | audit-log
+  - Aplikasi | pengaturan-aplikasi
+  - Modul | modul
+  - Database | database
+  - Info Sistem | info-sistem
+  - QR Code | qr-code
+  - Optimasi Gambar | optimasi-gambar
+
+Admin Web (admin-web) anak=15
+  - Dashboard Website | website-dashboard
+  - Pengaturan Website | website-pengaturan
+  - Halaman | website-halaman
+  - Konten | website-konten
+  - Dokumen Publik | website-dokumen
+  - Berita | berita
+  - Galeri | galeri
+  - Potensi Desa | potensi-desa
+  - Slider | slider
+  - Menu Website | menu-publik
+  - Widget | widget
+  - Komentar | komentar
+  - Media Sosial | media-sosial
+  - Teks Berjalan | teks-berjalan
+  - Pengunjung | pengunjung
+
+Layanan Mandiri (layanan-mandiri) anak=9
+  - Dashboard Layanan | layanan-publik
+  - Katalog Layanan | katalog-layanan
+  - Pengajuan Layanan | pengajuan-layanan
+  - Survei Layanan | survei-layanan
+  - Kotak Pesan | kotak-pesan
+  - Pendaftar Layanan Mandiri | pendaftar-layanan-mandiri
+  - Gawai Layanan | gawai-layanan
+  - Pendapat | pendapat
+  - Pengaturan Layanan Mandiri | pengaturan-layanan-mandiri
+
+Anjungan (anjungan) anak=3
+  - Daftar Anjungan | daftar-anjungan
+  - Menu Anjungan | anjungan-menu
+  - Pengaturan Anjungan | pengaturan-anjungan
+
+Satu Data (satu-data) anak=1
+  - DTKS | dtks
+
+Buku Tamu (buku-tamu) anak=4
+  - Data Tamu | data-tamu
+  - Data Kepuasan | data-kepuasan
+  - Data Pertanyaan | data-pertanyaan
+  - Data Keperluan | data-keperluan
+
+IDM (idm) anak=0
+
+Bantuan Sosial (bantuan) anak=0
+
+SDGs Desa (idm-sdgs) anak=0
+
+Profil Desa (profil-desa) anak=0
+
+=== LABEL BASE YANG TIDAK PUNYA PADANAN PERSIS DI TENANT ===
+
+=== LABEL TENANT YANG TIDAK ADA DI BASE ===
+- > Dashboard (beranda)
+- > Info Desa (info-desa)
+- > Buku Administrasi Desa (buku-administrasi-desa)
+- > Pengaduan (pengaduan)
+- > IDM (idm)
+info-desa > Identitas Desa (pengaturan-desa)
+info-desa > Wilayah Administratif (wilayah)
+info-desa > Pemerintah Desa (perangkat-desa)
+info-desa > Lembaga Desa (lembaga-desa)
+info-desa > Status Desa (status-desa)
+info-desa > Layanan Pelanggan (pelanggan)
+info-desa > Pendaftaran Kerjasama (pendaftaran-kerjasama)
+kependudukan > Dashboard Kependudukan (dashboard-kependudukan)
+kependudukan > Penduduk (penduduk)
+kependudukan > Keluarga (keluarga)
+kependudukan > Rumah Tangga (rumah-tangga)
+kependudukan > Kelompok (kelompok)
+kependudukan > Data Suplemen (suplemen)
+kependudukan > Calon Pemilih (calon-pemilih)
+kependudukan > Mutasi Penduduk (mutasi-penduduk)
+statistik > Dashboard Laporan (laporan-statistik)
+statistik > Laporan Penduduk (laporan-penduduk)
+statistik > Laporan Desa (laporan-desa)
+statistik > Statistik Desa (statistik-desa)
+statistik > Rekap Analisis (rekap-analisis)
+statistik > Statistik Kependudukan (statistik-kependudukan)
+statistik > Laporan Bulanan (laporan-bulanan)
+statistik > Laporan Kelompok Rentan (laporan-kelompok-rentan)
+kesehatan > Kesehatan Ibu dan Anak (kia)
+kesehatan > Pemantauan Anak (pemantauan-anak)
+kesehatan > Vaksin (vaksin)
+kesehatan > Stunting (stunting)
+kehadiran > Dashboard Kehadiran (kehadiran-dashboard)
+kehadiran > Absensi Pegawai (absensi-pegawai)
+kehadiran > Data Pegawai (kepegawaian)
+kehadiran > Cuti dan Izin (cuti-izin)
+kehadiran > Hari Libur (hari-libur)
+kehadiran > Jam Kerja (jam-kerja)
+kehadiran > Pengaduan Kehadiran (pengaduan-kehadiran)
+kehadiran > Rekapitulasi Kehadiran (rekapitulasi-kehadiran)
+kehadiran > Alasan Keluar (alasan-keluar)
+layanan-surat > Administrasi Surat (surat)
+layanan-surat > Permohonan Surat (permohonan-surat)
+layanan-surat > Daftar Surat (surat-daftar)
+layanan-surat > Surat Masuk (surat-masuk)
+layanan-surat > Surat Keluar (surat-keluar)
+layanan-surat > Surat Dinas (surat-dinas)
+layanan-surat > Jenis Surat (jenis-surat)
+layanan-surat > Daftar Persyaratan (syarat-surat)
+layanan-surat > Klasifikasi Surat (klasifikasi-surat)
+layanan-surat > Arsip Surat (arsip-surat)
+layanan-surat > Master Surat (master-surat)
+layanan-surat > Pengaturan Surat (pengaturan-surat)
+layanan-surat > Cetak Surat (cetak-surat)
+layanan-surat > Arsip Layanan (arsip-layanan)
+layanan-surat > Tanda Tangan Elektronik (tte)
+sekretariat > Inventaris (inventaris)
+sekretariat > Dashboard Inventaris (inventaris-dashboard)
+sekretariat > Pengelolaan Inventaris (inventaris-pengelolaan)
+sekretariat > Mutasi Inventaris (mutasi-inventaris)
+sekretariat > Laporan Inventaris (inventaris-laporan)
+sekretariat > Arsip Desa (arsip)
+sekretariat > Produk Hukum (produk-hukum)
+buku-administrasi-desa > Administrasi Umum (buku-administrasi)
+buku-administrasi-desa > Administrasi Penduduk (administrasi-penduduk)
+buku-administrasi-desa > Administrasi Pembangunan (administrasi-pembangunan)
+buku-administrasi-desa > Buku Tanah Kas Desa (buku-tanah-kas)
+keuangan > Dashboard Keuangan (keuangan-dashboard)
+keuangan > APBDes (apbdes)
+keuangan > Realisasi (realisasi-keuangan)
+keuangan > Kegiatan (kegiatan-keuangan)
+keuangan > Dokumen Keuangan (dokumen-keuangan)
+keuangan > Laporan Keuangan (laporan-keuangan)
+keuangan > Pembangunan (pembangunan)
+keuangan > Impor Data (impor-data)
+keuangan > Laporan Manual (laporan-manual)
+keuangan > Laporan APBDes (laporan-apbdes)
+analisis > Master Analisis (master-analisis)
+analisis > Survei Analisis (analisis-survei)
+analisis > Pengaturan Analisis (pengaturan-analisis)
+pertanahan > C-Desa (c-desa)
+pertanahan > Daftar Persil (daftar-persil)
+opendk > Pesan (pesan-dk)
+opendk > Sinkronisasi (sinkronisasi-dk)
+pemetaan > Peta (peta)
+pemetaan > Simbol Peta (simbol-peta)
+pemetaan > Pengaturan Peta (pengaturan-peta)
+hubung-warga > Kirim Pesan (pesan-warga)
+hubung-warga > Daftar Kontak (daftar-kontak)
+hubung-warga > Grup Kontak (grup-kontak)
+hubung-warga > Umpan Balik (umpan-balik)
+pengaturan > Pengaturan Desa (pengaturan-desa-lanjutan)
+pengaturan > Pengguna (pengguna)
+pengaturan > Grup Akses (grup-akses)
+pengaturan > Aktivitas Pengguna (audit-log)
+pengaturan > Aplikasi (pengaturan-aplikasi)
+pengaturan > Modul (modul)
+pengaturan > Database (database)
+pengaturan > Info Sistem (info-sistem)
+pengaturan > QR Code (qr-code)
+pengaturan > Optimasi Gambar (optimasi-gambar)
+admin-web > Dashboard Website (website-dashboard)
+admin-web > Pengaturan Website (website-pengaturan)
+admin-web > Halaman (website-halaman)
+admin-web > Konten (website-konten)
+admin-web > Dokumen Publik (website-dokumen)
+admin-web > Berita (berita)
+admin-web > Galeri (galeri)
+admin-web > Potensi Desa (potensi-desa)
+admin-web > Slider (slider)
+admin-web > Menu Website (menu-publik)
+admin-web > Widget (widget)
+admin-web > Komentar (komentar)
+admin-web > Media Sosial (media-sosial)
+admin-web > Teks Berjalan (teks-berjalan)
+admin-web > Pengunjung (pengunjung)
+layanan-mandiri > Dashboard Layanan (layanan-publik)
+layanan-mandiri > Katalog Layanan (katalog-layanan)
+layanan-mandiri > Pengajuan Layanan (pengajuan-layanan)
+layanan-mandiri > Survei Layanan (survei-layanan)
+layanan-mandiri > Kotak Pesan (kotak-pesan)
+layanan-mandiri > Pendaftar Layanan Mandiri (pendaftar-layanan-mandiri)
+layanan-mandiri > Gawai Layanan (gawai-layanan)
+layanan-mandiri > Pendapat (pendapat)
+layanan-mandiri > Pengaturan Layanan Mandiri (pengaturan-layanan-mandiri)
+anjungan > Daftar Anjungan (daftar-anjungan)
+anjungan > Menu Anjungan (anjungan-menu)
+anjungan > Pengaturan Anjungan (pengaturan-anjungan)
+satu-data > DTKS (dtks)
+buku-tamu > Data Tamu (data-tamu)
+buku-tamu > Data Kepuasan (data-kepuasan)
+buku-tamu > Data Pertanyaan (data-pertanyaan)
+buku-tamu > Data Keperluan (data-keperluan)
+- > Bantuan Sosial (bantuan)
+- > SDGs Desa (idm-sdgs)
+- > Profil Desa (profil-desa)

@@ -1,0 +1,188 @@
+{
+  "version": "7",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1795595680783,
+      "tag": "0000_baseline",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1795597709349,
+      "tag": "0001_paket_langganan",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1795600000000,
+      "tag": "0002_paket_seed_terbit",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1795601325034,
+      "tag": "0003_kehadiran_jam_libur_alasan",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1795602600000,
+      "tag": "0004_hari_libur_rute",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1795603900000,
+      "tag": "0005_jam_kerja_rute",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1795606200000,
+      "tag": "0006_pengajuan_izin_modul",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1795607800000,
+      "tag": "0007_kehadiran_fitur_paket",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "5",
+      "when": 1795609400000,
+      "tag": "0008_alasan_keluar_rute",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "5",
+      "when": 1795611000000,
+      "tag": "0009_cetak_surat_rute",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1795612600000,
+      "tag": "0010_pengaturan_surat_rute",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1795614600000,
+      "tag": "0011_permohonan_di_bawah_cetak",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1795614750000,
+      "tag": "0012_pengaturan_surat_fitur",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "5",
+      "when": 1795618200000,
+      "tag": "0013_permohonan_surat_akses_operator",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "5",
+      "when": 1795621800000,
+      "tag": "0014_modul_surat",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "5",
+      "when": 1795625400000,
+      "tag": "0016_modul_surat_tersembunyi",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "5",
+      "when": 1795625550000,
+      "tag": "0017_letter_types_lampiran_mandiri",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1795629000000,
+      "tag": "0018_modul_surat_master",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1795629450000,
+      "tag": "0019_syarat_surat_rute",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1795629900000,
+      "tag": "0020_klasifikasi_surat_paritas",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "5",
+      "when": 1795630350000,
+      "tag": "0021_penataan_menu",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "5",
+      "when": 1795631700000,
+      "tag": "0022_hapus_modul_covid",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "5",
+      "when": 1795632300000,
+      "tag": "0023_hapus_modul_vaksin",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "5",
+      "when": 1795632900000,
+      "tag": "0024_hapus_pengguna_shortcut",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1795639964626,
+      "tag": "0025_kepala_dusun_wilayah",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "5",
+      "when": 1795641112473,
+      "tag": "0026_menu_dua_belas_grup",
+      "breakpoints": true
+    }
+  ]
+}

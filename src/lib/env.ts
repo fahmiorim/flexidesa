@@ -1,0 +1,193 @@
+import { isIP } from "node:net";
+import { z } from "zod";
+
+import { normalisasiDaftarHost } from "@/features/desa/domain/host";
+
+/**
+ * Skema variabel lingkungan (environment variables).
+ *
+ * Semua akses `process.env` di aplikasi WAJIB melewati modul ini supaya:
+ * - nilai yang salah/absen ketahuan lebih awal (fail fast);
+ * - tipe yang dipakai di kode sudah terjamin (`env.DATABASE_URL` bertipe string);
+ * - tidak ada `process.env.X!` yang bertebaran.
+ *
+ * Catatan: modul ini TIDAK memakai `server-only` agar dapat dipakai juga oleh
+ * skrip Node (drizzle-kit dan CLI). Jangan pernah mengimpornya dari komponen
+ * client — variabel non-`NEXT_PUBLIC_*` hanya untuk server.
+ */
+const envSchema = z
+  .object({
+    NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
+
+    /** URL publik aplikasi (untuk tautan absolut, callback OAuth, dsb.). */
+    APP_URL: z.url().default("http://localhost:3000"),
+
+    /**
+     * Domain induk untuk wildcard subdomain desa (mis. `desa.id` sehingga
+     * `<slug>.desa.id` menunjuk desa). Kosong = wildcard nonaktif.
+     */
+    DESA_BASE_DOMAIN: z
+      .string()
+      .trim()
+      .optional()
+      .transform((value) => value || undefined),
+
+    /**
+     * Host platform (landing page produk), dipisah koma. Terpisah dari
+     * `DESA_BASE_DOMAIN` karena domain desa dapat memakai induk lain, mis.
+     * produksi: platform `flexidesa.id`, desa `kwalagunung.desa.id`.
+     * Kosong = host platform diturunkan dari host `APP_URL`.
+     */
+    PLATFORM_HOSTS: z
+      .string()
+      .trim()
+      .optional()
+      .transform((value) => value || undefined),
+
+    /**
+     * Alamat IP publik server platform, dipisah koma. Menjadi acuan pemeriksaan
+     * DNS tenant: domain dianggap normal hanya bila salah satu alamat hasil
+     * resolusi cocok dengan daftar ini. Kosong = acuan diturunkan dari resolusi
+     * `DESA_BASE_DOMAIN` / `PLATFORM_HOSTS` / host `APP_URL`.
+     */
+    PLATFORM_SERVER_IPS: z
+      .string()
+      .trim()
+      .optional()
+      .transform((value) =>
+        (value ?? "")
+          .split(",")
+          .map((item) => item.trim())
+          .filter((item) => item !== ""),
+      )
+      .refine((daftar) => daftar.every((item) => isIP(item) !== 0), {
+        message: "PLATFORM_SERVER_IPS harus daftar alamat IPv4/IPv6 dipisah koma.",
+      }),
+
+    /** DSN MySQL/MariaDB: mysql://user:pass@host:port/database */
+    DATABASE_URL: z.string().min(1, "DATABASE_URL wajib diisi."),
+
+    /** Secret better-auth, minimal 32 karakter. */
+    BETTER_AUTH_SECRET: z.string().min(32, "BETTER_AUTH_SECRET minimal 32 karakter."),
+
+    /** Base URL better-auth (biasanya sama dengan APP_URL). */
+    BETTER_AUTH_URL: z.url().default("http://localhost:3000"),
+
+    /** Percaya header IP dari reverse proxy/platform tepercaya. */
+    TRUST_PROXY: z
+      .enum(["true", "false"])
+      .default("false")
+      .transform((value) => value === "true"),
+
+    /**
+     * Fallback legacy mode satu-desa: host tak dikenal dipetakan ke
+     * satu-satunya desa. Default mati (fail closed) agar host asing tidak
+     * pernah menampilkan data desa. Hanya untuk development atau instalasi
+     * mandiri yang disetujui; jangan aktifkan pada platform produksi.
+     */
+    TENANT_LEGACY_SINGLE_HOST_FALLBACK: z
+      .enum(["true", "false"])
+      .default("false")
+      .transform((value) => value === "true"),
+    /** Kredensial pengiriman email Resend; opsional bila email belum diaktifkan. */
+    RESEND_API_KEY: z
+      .string()
+      .trim()
+      .optional()
+      .transform((value) => value || undefined),
+    /** Alamat pengirim yang sudah diverifikasi pada domain Resend. */
+    RESEND_FROM: z
+      .string()
+      .trim()
+      .optional()
+      .transform((value) => value || undefined),
+
+    // --- TTE / BSrE (opsional) -----------------------------------------
+    // Semua nilai TTE dibaca dari environment; konfigurasi non-rahasia per
+    // desa disimpan di tabel `tte_config` (halaman admin belum tersedia).
+    TTE_MODE: z.string().trim().optional(),
+    TTE_API: z.string().trim().optional(),
+    TTE_USERNAME: z.string().trim().optional(),
+    TTE_NIK: z.string().trim().optional(),
+    /** Passphrase BSrE — JANGAN disimpan di basis data atau log. */
+    TTE_PASSWORD: z.string().optional(),
+    /**
+     * Allowlist host provider TTE yang dikelola platform, dipisah koma:
+     * `host` (port 443) atau `host:port`. Exact match, tanpa wildcard/suffix.
+     * Kosong atau tidak sah berarti semua provider TTE ditolak (fail-closed).
+     */
+    TTE_ALLOWED_HOSTS: z.string().trim().optional(),
+    // TTE_SSL sengaja tidak ada: verifikasi sertifikat TLS tidak dapat
+    // dimatikan lewat environment maupun konfigurasi desa.
+    /**
+     * Folder sesi Baileys (WhatsApp Web). Default `storage/whatsapp-auth`.
+     * Kosongkan untuk memakai default; isi bila sesi disimpan di volume lain.
+     */
+    WHATSAPP_AUTH_DIR: z
+      .string()
+      .trim()
+      .optional()
+      .transform((value) => value || undefined),
+    /** Token webhook masuk; webhook menolak semua permintaan bila kosong. */
+    EMAIL_WEBHOOK_TOKEN: z
+      .string()
+      .trim()
+      .optional()
+      .transform((value) => value || undefined)
+      .refine((value) => value === undefined || value.length >= 32, {
+        message: "EMAIL_WEBHOOK_TOKEN minimal 32 karakter.",
+      }),
+  })
+  .superRefine(
+    (
+      {
+        NODE_ENV,
+        APP_URL,
+        PLATFORM_HOSTS,
+        TENANT_LEGACY_SINGLE_HOST_FALLBACK,
+        RESEND_API_KEY,
+        RESEND_FROM,
+      },
+      context,
+    ) => {
+      if (RESEND_API_KEY && !RESEND_FROM) {
+        context.addIssue({
+          code: "custom",
+          path: ["RESEND_FROM"],
+          message: "RESEND_FROM wajib diisi saat RESEND_API_KEY dikonfigurasi.",
+        });
+      }
+
+      const hostPlatform = normalisasiDaftarHost(PLATFORM_HOSTS ?? APP_URL);
+      const flexiDesaProduction =
+        NODE_ENV === "production" &&
+        hostPlatform.some((host) => host === "flexidesa.id" || host === "www.flexidesa.id");
+
+      if (flexiDesaProduction && TENANT_LEGACY_SINGLE_HOST_FALLBACK) {
+        context.addIssue({
+          code: "custom",
+          path: ["TENANT_LEGACY_SINGLE_HOST_FALLBACK"],
+          message:
+            "TENANT_LEGACY_SINGLE_HOST_FALLBACK tidak boleh aktif pada production FlexiDesa.",
+        });
+      }
+    },
+  );
+
+export type Env = z.infer<typeof envSchema>;
+
+/** Validasi objek environment dan kembalikan nilai bertipe. */
+export function parseEnv(source: Record<string, string | undefined> = process.env): Env {
+  const result = envSchema.safeParse(source);
+
+  if (!result.success) {
+    throw new Error(
+      `Konfigurasi environment tidak valid:\n${z.prettifyError(result.error)}\n\n` +
+        `Pastikan file .env sudah dibuat (lihat .env.example).`,
+    );
+  }
+
+  return result.data;
+}
+
+export const env = parseEnv();

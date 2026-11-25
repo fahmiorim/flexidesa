@@ -1,0 +1,207 @@
+.page {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* Bilah aksi di atas lembar surat (judul berada di bilah atas admin). */
+.page :global(.page-actions) {
+  justify-content: flex-end;
+  margin: 0 0 4px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.actions :global(.button) {
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition:
+    transform 150ms ease,
+    box-shadow 150ms ease,
+    background 150ms ease,
+    border-color 150ms ease;
+}
+
+.actions :global(.button svg) {
+  width: 15px;
+  height: 15px;
+}
+
+.actions :global(.button-secondary) {
+  border-color: #dfe3ee;
+  background: #fff;
+  color: #2c3550;
+  box-shadow: 0 1px 2px rgb(23 32 64 / 6%);
+}
+
+.actions :global(.button-secondary:hover) {
+  border-color: #c6ccdd;
+  background: #f8f9fd;
+  box-shadow: 0 6px 14px -10px rgb(23 32 64 / 45%);
+  transform: translateY(-1px);
+}
+
+.actions :global(.button-primary) {
+  box-shadow: 0 8px 18px -12px rgb(59 32 154 / 75%);
+}
+
+.actions :global(.button-primary:hover) {
+  transform: translateY(-1px);
+}
+
+/* Lembar surat: tipografi naskah dinas, bukan gaya dasbor. */
+.sheet {
+  width: 100%;
+  padding: 16mm 18mm 18mm;
+  border: 1px solid #e3e6f0;
+  border-radius: 8px;
+  background: #fff;
+  color: #111827;
+  font-family: "Times New Roman", Times, Georgia, serif;
+  font-size: 12.5px;
+  line-height: 1.65;
+  box-shadow: 0 12px 32px -28px rgb(23 32 64 / 55%);
+  overflow: visible;
+}
+
+.meta {
+  margin: 0 0 12px;
+  color: #1f2937;
+  font-size: 11.5px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: inherit;
+  font-size: 11.5px;
+}
+
+.table th {
+  padding: 7px 9px;
+  border: 1px solid #4b5563;
+  background: #f3f4f6;
+  color: #111827;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-align: left;
+  white-space: normal;
+}
+
+.table td {
+  padding: 7px 9px;
+  border: 1px solid #4b5563;
+  color: #111827;
+  vertical-align: top;
+}
+
+.table tbody tr:hover {
+  background: transparent;
+}
+
+.table .nomor {
+  width: 38px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.table .masaBakti {
+  white-space: nowrap;
+}
+
+.table .kosong {
+  padding: 24px 16px;
+  text-align: center;
+  color: #4b5563;
+  font-size: 11.5px;
+}
+
+.sheet :global(.pemerintahan-cetak-ttd) {
+  margin-top: 12mm;
+  gap: 12mm;
+}
+
+.sheet :global(.pemerintahan-cetak-ttd) > div {
+  flex: 1 1 0;
+}
+
+.sheet :global(.pemerintahan-cetak-ttd) > div:last-child {
+  text-align: right;
+}
+
+@media (max-width: 900px) {
+  .sheet {
+    padding: 24px 20px 28px;
+  }
+  .sheet :global(.pemerintahan-cetak-ttd) {
+    flex-direction: column;
+    gap: 26px;
+    margin-top: 32px;
+  }
+  .sheet :global(.pemerintahan-cetak-ttd) > div:last-child {
+    text-align: left;
+  }
+  .table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+@page {
+  size: A4 portrait;
+  margin: 18mm 18mm 16mm;
+}
+
+@media print {
+  .page {
+    display: block;
+    max-width: none;
+  }
+  .page :global(.page-actions) {
+    display: none !important;
+  }
+  .sheet {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .table {
+    display: table;
+    overflow: visible;
+    white-space: normal;
+    font-size: 10px;
+  }
+  .table th,
+  .table td {
+    padding: 4px 6px;
+  }
+  .table th {
+    background: #f3f4f6 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .sheet :global(.pemerintahan-cetak-ttd) {
+    flex-direction: row;
+    margin-top: 12mm;
+  }
+  :global(.admin-sidebar),
+  :global(.admin-topbar),
+  :global(.mobile-menu-button),
+  :global(.admin-drawer-backdrop) {
+    display: none !important;
+  }
+}

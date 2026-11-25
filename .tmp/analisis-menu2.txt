@@ -1,0 +1,442 @@
+=== STRUKTUR MENU OPENSID (BASE + SETTINGMODUL) ===
+
+[null] Home (home) hidden=1 anak=0
+
+[200] Info [Desa] (info-desa) hidden=1 anak=8
+  - Identitas [Desa] | identitas-desa | identitas_desa
+  - Wilayah Administratif | wilayah-administratif | wilayah/clear
+  - [Pemerintah Desa] | pemerintah-desa | pengurus/clear
+  - Status [Desa] | status-desa | status_desa
+  - Lembaga [Desa] | lembaga-desa | lembaga/clear
+  - Layanan Pelanggan | layanan-pelanggan | pelanggan
+  - Kategori Lembaga | kategori-lembaga | lembaga_master
+  - Pendaftaran Kerjasama | pendaftaran-kerjasama | pendaftaran_kerjasama
+
+[2] Kependudukan (kependudukan) hidden=0 anak=8
+  - Penduduk | penduduk | penduduk/clear
+  - Keluarga | keluarga | keluarga/clear
+  - Rumah Tangga | rumah-tangga | rtm/clear
+  - Kelompok | kelompok | kelompok/clear
+  - Data Suplemen | data-suplemen | suplemen/clear
+  - Calon Pemilih | calon-pemilih | dpt/clear
+  - Kategori Kelompok | kategori-kelompok | kelompok_master
+  - Log Penduduk | log-penduduk | penduduk_log
+
+[3] Statistik (statistik) hidden=0 anak=4
+  - Statistik Kependudukan | statistik-kependudukan | statistik/clear
+  - Laporan Bulanan | laporan-bulanan | laporan/clear
+  - Laporan Kelompok Rentan | laporan-kelompok-rentan | laporan_rentan/clear
+  - Laporan Penduduk | laporan-penduduk | laporan_penduduk
+
+[206] Kesehatan (kesehatan) hidden=0 anak=4
+  - Pendataan | pendataan | covid19
+  - Pemantauan | pemantauan | covid19/pantau
+  - Vaksin | vaksin | vaksin_covid/clear
+  - Stunting | stunting | stunting
+
+[337] Kehadiran (kehadiran) hidden=0 anak=5
+  - Jam Kerja | jam-kerja | kehadiran_jam_kerja
+  - Hari Libur | hari-libur | kehadiran_hari_libur
+  - Rekapitulasi | rekapitulasi | kehadiran_rekapitulasi
+  - Pengaduan | kehadiran-pengaduan | kehadiran_pengaduan
+  - Alasan Keluar | alasan-keluar | kehadiran_keluar
+
+[4] Layanan Surat (layanan-surat) hidden=0 anak=5
+  - Pengaturan Surat | pengaturan-surat | surat_master
+  - Cetak Surat | cetak-surat | surat
+  - Permohonan Surat | permohonan-surat | permohonan_surat_admin
+  - Arsip Layanan | arsip-layanan | keluar/clear/masuk
+  - Daftar Persyaratan | daftar-persyaratan | surat_mohon
+
+[15] Sekretariat (sekretariat) hidden=0 anak=19
+  - Surat Masuk | surat-masuk | surat_masuk/clear
+  - Surat Keluar | surat-keluar | surat_keluar/clear
+  - Produk Hukum | produk-hukum | dokumen_sekretariat/peraturan_desa
+  - Informasi Publik | informasi-publik | dokumen/clear
+  - Inventaris | inventaris | inventaris_tanah
+  - Klasifikasi Surat | klasifikasi-surat | klasifikasi/clear
+  - inventaris_asset | inventaris-asset | inventaris_asset
+  - inventaris_gedung | inventaris-gedung | inventaris_gedung
+  - inventaris_jalan | inventaris-jalan | inventaris_jalan
+  - inventaris_kontruksi | inventaris-kontruksi | inventaris_kontruksi
+  - inventaris_peralatan | inventaris-peralatan | inventaris_peralatan
+  - api_inventaris_asset | api-inventaris-asset | api_inventaris_asset
+  - api_inventaris_gedung | api-inventaris-gedung | api_inventaris_gedung
+  - api_inventaris_gedung | api-inventaris-gedung-1 | api_inventaris_gedung
+  - api_inventaris_jalan | api-inventaris-jalan | api_inventaris_jalan
+  - api_inventaris_konstruksi | api-inventaris-kontruksi | api_inventaris_kontruksi
+  - api_inventaris_peralatan | api-inventaris-peralatan | api_inventaris_peralatan
+  - api_inventaris_tanah | api-inventaris-tanah | api_inventaris_tanah
+  - laporan_inventaris | laporan-inventaris | laporan_inventaris
+
+[301] Buku Administrasi [Desa] (buku-administrasi-desa) hidden=0 anak=17
+  - Administrasi Umum | administrasi-umum | bumindes_umum
+  - Administrasi Penduduk | administrasi-penduduk | bumindes_penduduk_induk/clear
+  - Administrasi Pembangunan | administrasi-pembangunan | bumindes_rencana_pembangunan
+  - Arsip [Desa] | arsip-desa | bumindes_arsip
+  - Buku Eskpedisi | buku-eskpedisi | ekspedisi/clear
+  - Buku Lembaran Dan Berita [Desa] | buku-lembaran-dan-berita-desa | lembaran_desa/clear
+  - Buku Tanah Kas [Desa] | buku-tanah-kas-desa | bumindes_tanah_kas_desa/clear
+  - Buku Tanah di [Desa] | buku-tanah-di-desa | bumindes_tanah_desa/clear
+  - Buku Inventaris dan Kekayaan [Desa] | buku-inventaris-dan-kekayaan-desa | bumindes_inventaris_kekayaan
+  - Buku Mutasi Penduduk | buku-mutasi-penduduk | bumindes_penduduk_mutasi/clear
+  - Buku Rekapitulasi Jumlah Penduduk | buku-rekapitulasi-jumlah-penduduk | bumindes_penduduk_rekapitulasi/clear
+  - Buku Penduduk Sementara | buku-penduduk-sementara | bumindes_penduduk_sementara/clear
+  - Buku KTP dan KK | buku-ktp-dan-kk | bumindes_penduduk_ktpkk/clear
+  - Buku Rencana Kerja Pembangunan | buku-rencana-kerja-pembangunan | bumindes_rencana_pembangunan
+  - Bumindes Kegiatan Pembangunan | bumindes-kegiatan-pembangunan | bumindes_kegiatan_pembangunan
+  - Kader Pemberdayaan Masyarakat | bumindes-kader | bumindes_kader
+  - Buku Inventaris Hasil - Hasil Pembangunan | bumindes-hasil-pembangunan | bumindes_hasil_pembangunan
+
+[201] Keuangan (keuangan) hidden=0 anak=5
+  - Impor Data | impor-data | keuangan/impor_data
+  - Laporan | laporan | keuangan/laporan
+  - Input Data | input-data | keuangan_manual/manual_apbdes
+  - Laporan Manual | laporan-manual | keuangan_manual/laporan_manual
+  - Laporan APBDes | laporan-apbdes | laporan_apbdes
+
+[5] Analisis (analisis) hidden=0 anak=9
+  - analisis_kategori | analisis-kategori | analisis_kategori
+  - analisis_indikator | analisis-indikator | analisis_indikator
+  - analisis_klasifikasi | analisis-klasifikasi | analisis_klasifikasi
+  - analisis_periode | analisis-periode | analisis_periode
+  - analisis_respon | analisis-respon | analisis_respon
+  - analisis_laporan | analisis-laporan | analisis_laporan
+  - analisis_statistik_jawaban | analisis-statistik-jawaban | analisis_statistik_jawaban
+  - Master Analisis | master-analisis | analisis_master/clear
+  - Pengaturan | pengaturan-analisis | setting/analisis
+
+[6] Bantuan (bantuan) hidden=0 anak=2
+  - Program Bantuan | program-bantuan | program_bantuan/clear
+  - Peserta Bantuan | peserta-bantuan | peserta_bantuan
+
+[7] Pertanahan (pertanahan) hidden=0 anak=2
+  - Daftar Persil | daftar-persil | data_persil
+  - C-Desa | c-desa | cdesa
+
+[null] Pembangunan (pembangunan) hidden=0 anak=0
+
+[null] Lapak (lapak) hidden=0 anak=0
+
+[343] OpenDK (opendk) hidden=0 anak=2
+  - Pesan | pesan | opendk_pesan/clear
+  - Sinkronisasi | sinkronisasi | sinkronisasi
+
+[null] Pengaduan (pengaduan) hidden=0 anak=0
+
+[9] Pemetaan (pemetaan) hidden=0 anak=8
+  - Peta | peta | gis/clear
+  - Pengaturan Peta | pengaturan-peta | plan
+  - plan | plan | plan
+  - point | point | point
+  - garis | garis | garis
+  - line | line | line
+  - area | area | area
+  - polygon | polygon | polygon
+
+[10] Hubung Warga (hubung-warga) hidden=0 anak=3
+  - Kirim Pesan | kirim-pesan | sms
+  - Daftar Kontak | daftar-kontak | daftar_kontak
+  - Grup Kontak | grup-kontak | grup_kontak
+
+[11] Pengaturan (pengaturan) hidden=1 anak=8
+  - Modul | modul | modul/clear
+  - Aplikasi | aplikasi | setting
+  - Pengguna | pengguna | man_user/clear
+  - Database | database | database
+  - Info Sistem | info-sistem | info_sistem
+  - QR Code | qr-code | setting/qrcode/clear
+  - Pengaturan Grup | pengaturan-grup | grup/clear
+  - Optimasi Gambar | optimasi-gambar | optimasi_gambar
+
+[13] Admin Web (admin-web) hidden=0 anak=11
+  - Artikel | artikel | web/clear
+  - Widget | widget | web_widget/clear
+  - Menu | menu | menu/clear
+  - Komentar | komentar | komentar/clear
+  - Galeri | galeri | gallery/clear
+  - Media Sosial | media-sosial | sosmed
+  - Slider | slider | web/slider
+  - Teks Berjalan | teks-berjalan | teks_berjalan
+  - Pengunjung | pengunjung | pengunjung/clear
+  - Pengaturan | pengaturan-web | setting/web
+  - Kategori | kategori | kategori
+
+[14] Layanan Mandiri (layanan-mandiri) hidden=0 anak=5
+  - Kotak Pesan | kotak-pesan | mailbox/clear
+  - Pendaftar Layanan Mandiri | pendaftar-layanan-mandiri | mandiri/clear
+  - Gawai Layanan | gawai-layanan | gawai_layanan
+  - Pendapat | pendapat | pendapat
+  - Pengaturan | pengaturan-layanan-mandiri | setting/mandiri
+
+[312] Anjungan (anjungan) hidden=0 anak=3
+  - Daftar Anjungan | daftar-anjungan | anjungan
+  - Menu | anjungan-menu | anjungan_menu
+  - Pengaturan | pengaturan-anjungan | anjungan_pengaturan
+
+[352] Satu Data (satu-data) hidden=0 anak=1
+  - DTKS | dtks | dtks
+
+[354] Buku Tamu (buku-tamu) hidden=0 anak=4
+  - Data Tamu | data-tamu | buku_tamu
+  - Data Kepuasan | data-kepuasan | buku_kepuasan
+  - Data Pertanyaan | data-pertanyaan | buku_pertanyaan
+  - Data Keperluan | data-keperluan | buku_keperluan
+
+
+=== PEMETAAN KE MENU TENANT ===
+
+## Home (0)
+
+## Info [Desa] (8)
+  OK  Identitas [Desa] -> Identitas Desa (pengaturan-desa) via mirip
+  OK  Wilayah Administratif -> Wilayah Administratif (wilayah) via nama
+  --  [Pemerintah Desa] (pemerintah-desa) BELUM ADA
+  OK  Status [Desa] -> Status Desa (status-desa) via slug
+  OK  Lembaga [Desa] -> Lembaga Desa (lembaga-desa) via slug
+  OK  Layanan Pelanggan -> Layanan Pelanggan (pelanggan) via nama
+  --  Kategori Lembaga (kategori-lembaga) BELUM ADA
+  OK  Pendaftaran Kerjasama -> Pendaftaran Kerjasama (pendaftaran-kerjasama) via slug
+
+## Kependudukan (8)
+  OK  Penduduk -> Penduduk (penduduk) via slug
+  OK  Keluarga -> Keluarga (keluarga) via slug
+  OK  Rumah Tangga -> Rumah Tangga (rumah-tangga) via slug
+  OK  Kelompok -> Kelompok (kelompok) via slug
+  OK  Data Suplemen -> Data Suplemen (suplemen) via nama
+  OK  Calon Pemilih -> Calon Pemilih (calon-pemilih) via slug
+  --  Kategori Kelompok (kategori-kelompok) BELUM ADA
+  --  Log Penduduk (log-penduduk) BELUM ADA
+
+## Statistik (4)
+  OK  Statistik Kependudukan -> Statistik Kependudukan (statistik-kependudukan) via slug
+  OK  Laporan Bulanan -> Laporan Bulanan (laporan-bulanan) via slug
+  OK  Laporan Kelompok Rentan -> Laporan Kelompok Rentan (laporan-kelompok-rentan) via slug
+  OK  Laporan Penduduk -> Laporan Penduduk (laporan-penduduk) via slug
+
+## Kesehatan (4)
+  --  Pendataan (pendataan) BELUM ADA
+  OK  Pemantauan -> Pemantauan Anak (pemantauan-anak) via mirip
+  OK  Vaksin -> Vaksin (vaksin) via slug
+  OK  Stunting -> Stunting (stunting) via slug
+
+## Kehadiran (5)
+  OK  Jam Kerja -> Jam Kerja (jam-kerja) via slug
+  OK  Hari Libur -> Hari Libur (hari-libur) via slug
+  OK  Rekapitulasi -> Rekapitulasi Kehadiran (rekapitulasi-kehadiran) via mirip
+  OK  Pengaduan -> Pengaduan (pengaduan) via nama [grup tenant: -]
+  OK  Alasan Keluar -> Alasan Keluar (alasan-keluar) via slug
+
+## Layanan Surat (5)
+  OK  Pengaturan Surat -> Pengaturan Surat (pengaturan-surat) via slug
+  OK  Cetak Surat -> Cetak Surat (cetak-surat) via slug
+  OK  Permohonan Surat -> Permohonan Surat (permohonan-surat) via slug
+  OK  Arsip Layanan -> Arsip Layanan (arsip-layanan) via slug
+  OK  Daftar Persyaratan -> Daftar Persyaratan (syarat-surat) via nama
+
+## Sekretariat (19)
+  OK  Surat Masuk -> Surat Masuk (surat-masuk) via slug [grup tenant: layanan-surat]
+  OK  Surat Keluar -> Surat Keluar (surat-keluar) via slug [grup tenant: layanan-surat]
+  OK  Produk Hukum -> Produk Hukum (produk-hukum) via slug
+  OK  Informasi Publik -> Informasi Publik (informasi-publik) via slug
+  OK  Inventaris -> Inventaris (inventaris) via slug
+  OK  Klasifikasi Surat -> Klasifikasi Surat (klasifikasi-surat) via slug [grup tenant: layanan-surat]
+  --  inventaris_asset (inventaris-asset) BELUM ADA
+  --  inventaris_gedung (inventaris-gedung) BELUM ADA
+  --  inventaris_jalan (inventaris-jalan) BELUM ADA
+  --  inventaris_kontruksi (inventaris-kontruksi) BELUM ADA
+  --  inventaris_peralatan (inventaris-peralatan) BELUM ADA
+  --  api_inventaris_asset (api-inventaris-asset) BELUM ADA
+  --  api_inventaris_gedung (api-inventaris-gedung) BELUM ADA
+  --  api_inventaris_gedung (api-inventaris-gedung-1) BELUM ADA
+  --  api_inventaris_jalan (api-inventaris-jalan) BELUM ADA
+  --  api_inventaris_konstruksi (api-inventaris-kontruksi) BELUM ADA
+  --  api_inventaris_peralatan (api-inventaris-peralatan) BELUM ADA
+  --  api_inventaris_tanah (api-inventaris-tanah) BELUM ADA
+  OK  laporan_inventaris -> Laporan Inventaris (inventaris-laporan) via nama
+
+## Buku Administrasi [Desa] (17)
+  OK  Administrasi Umum -> Administrasi Umum (buku-administrasi) via nama
+  OK  Administrasi Penduduk -> Administrasi Penduduk (administrasi-penduduk) via slug
+  OK  Administrasi Pembangunan -> Administrasi Pembangunan (administrasi-pembangunan) via slug
+  OK  Arsip [Desa] -> Arsip Surat (arsip-surat) via mirip [grup tenant: layanan-surat]
+  --  Buku Eskpedisi (buku-eskpedisi) BELUM ADA
+  --  Buku Lembaran Dan Berita [Desa] (buku-lembaran-dan-berita-desa) BELUM ADA
+  OK  Buku Tanah Kas [Desa] -> Buku Tanah Kas Desa (buku-tanah-kas) via mirip
+  OK  Buku Tanah di [Desa] -> Buku Tanah Kas Desa (buku-tanah-kas) via mirip
+  --  Buku Inventaris dan Kekayaan [Desa] (buku-inventaris-dan-kekayaan-desa) BELUM ADA
+  OK  Buku Mutasi Penduduk -> Mutasi Penduduk (mutasi-penduduk) via mirip [grup tenant: kependudukan]
+  --  Buku Rekapitulasi Jumlah Penduduk (buku-rekapitulasi-jumlah-penduduk) BELUM ADA
+  --  Buku Penduduk Sementara (buku-penduduk-sementara) BELUM ADA
+  --  Buku KTP dan KK (buku-ktp-dan-kk) BELUM ADA
+  --  Buku Rencana Kerja Pembangunan (buku-rencana-kerja-pembangunan) BELUM ADA
+  --  Bumindes Kegiatan Pembangunan (bumindes-kegiatan-pembangunan) BELUM ADA
+  --  Kader Pemberdayaan Masyarakat (bumindes-kader) BELUM ADA
+  --  Buku Inventaris Hasil - Hasil Pembangunan (bumindes-hasil-pembangunan) BELUM ADA
+
+## Keuangan (5)
+  OK  Impor Data -> Impor Data (impor-data) via slug
+  OK  Laporan -> Dashboard Laporan (laporan-statistik) via mirip [grup tenant: statistik]
+  --  Input Data (input-data) BELUM ADA
+  OK  Laporan Manual -> Laporan Manual (laporan-manual) via slug
+  OK  Laporan APBDes -> Laporan APBDes (laporan-apbdes) via slug
+
+## Analisis (9)
+  --  analisis_kategori (analisis-kategori) BELUM ADA
+  --  analisis_indikator (analisis-indikator) BELUM ADA
+  --  analisis_klasifikasi (analisis-klasifikasi) BELUM ADA
+  --  analisis_periode (analisis-periode) BELUM ADA
+  --  analisis_respon (analisis-respon) BELUM ADA
+  --  analisis_laporan (analisis-laporan) BELUM ADA
+  --  analisis_statistik_jawaban (analisis-statistik-jawaban) BELUM ADA
+  OK  Master Analisis -> Master Analisis (master-analisis) via slug
+  OK  Pengaturan -> Pengaturan Analisis (pengaturan-analisis) via slug
+
+## Bantuan (2)
+  --  Program Bantuan (program-bantuan) BELUM ADA
+  --  Peserta Bantuan (peserta-bantuan) BELUM ADA
+
+## Pertanahan (2)
+  OK  Daftar Persil -> Daftar Persil (daftar-persil) via slug
+  OK  C-Desa -> C-Desa (c-desa) via slug
+
+## Pembangunan (0)
+
+## Lapak (0)
+
+## OpenDK (2)
+  OK  Pesan -> Pesan (pesan-dk) via nama
+  OK  Sinkronisasi -> Sinkronisasi (sinkronisasi-dk) via nama
+
+## Pengaduan (0)
+
+## Pemetaan (8)
+  OK  Peta -> Peta (peta) via slug
+  OK  Pengaturan Peta -> Pengaturan Peta (pengaturan-peta) via slug
+  --  plan (plan) BELUM ADA
+  --  point (point) BELUM ADA
+  --  garis (garis) BELUM ADA
+  --  line (line) BELUM ADA
+  --  area (area) BELUM ADA
+  --  polygon (polygon) BELUM ADA
+
+## Hubung Warga (3)
+  OK  Kirim Pesan -> Kirim Pesan (pesan-warga) via nama
+  OK  Daftar Kontak -> Daftar Kontak (daftar-kontak) via slug
+  OK  Grup Kontak -> Grup Kontak (grup-kontak) via slug
+
+## Pengaturan (8)
+  OK  Modul -> Modul (modul) via slug
+  OK  Aplikasi -> Aplikasi (pengaturan-aplikasi) via nama
+  OK  Pengguna -> Pengguna (pengguna) via slug
+  OK  Database -> Database (database) via slug
+  OK  Info Sistem -> Info Sistem (info-sistem) via slug
+  OK  QR Code -> QR Code (qr-code) via slug
+  --  Pengaturan Grup (pengaturan-grup) BELUM ADA
+  OK  Optimasi Gambar -> Optimasi Gambar (optimasi-gambar) via slug
+
+## Admin Web (11)
+  --  Artikel (artikel) BELUM ADA
+  OK  Widget -> Widget (widget) via slug
+  OK  Menu -> Menu Website (menu-publik) via mirip
+  OK  Komentar -> Komentar (komentar) via slug
+  OK  Galeri -> Galeri (galeri) via slug
+  OK  Media Sosial -> Media Sosial (media-sosial) via slug
+  OK  Slider -> Slider (slider) via slug
+  OK  Teks Berjalan -> Teks Berjalan (teks-berjalan) via slug
+  OK  Pengunjung -> Pengunjung (pengunjung) via slug
+  OK  Pengaturan -> Pengaturan (pengaturan) via nama [grup tenant: -]
+  --  Kategori (kategori) BELUM ADA
+
+## Layanan Mandiri (5)
+  OK  Kotak Pesan -> Kotak Pesan (kotak-pesan) via slug
+  OK  Pendaftar Layanan Mandiri -> Pendaftar Layanan Mandiri (pendaftar-layanan-mandiri) via slug
+  OK  Gawai Layanan -> Gawai Layanan (gawai-layanan) via slug
+  OK  Pendapat -> Pendapat (pendapat) via slug
+  OK  Pengaturan -> Pengaturan Layanan Mandiri (pengaturan-layanan-mandiri) via slug
+
+## Anjungan (3)
+  OK  Daftar Anjungan -> Daftar Anjungan (daftar-anjungan) via slug
+  OK  Menu -> Menu Anjungan (anjungan-menu) via slug
+  OK  Pengaturan -> Pengaturan Anjungan (pengaturan-anjungan) via slug
+
+## Satu Data (1)
+  OK  DTKS -> DTKS (dtks) via slug
+
+## Buku Tamu (4)
+  OK  Data Tamu -> Data Tamu (data-tamu) via slug
+  OK  Data Kepuasan -> Data Kepuasan (data-kepuasan) via slug
+  OK  Data Pertanyaan -> Data Pertanyaan (data-pertanyaan) via slug
+  OK  Data Keperluan -> Data Keperluan (data-keperluan) via slug
+
+
+=== MENU TENANT YANG TIDAK DIPAKAI PEMETAAN ===
+- > Dashboard (beranda)
+- > Info Desa (info-desa)
+- > Kependudukan (kependudukan)
+- > Statistik (statistik)
+- > Kesehatan (kesehatan)
+- > Kehadiran (kehadiran)
+- > Layanan Surat (layanan-surat)
+- > Sekretariat (sekretariat)
+- > Buku Administrasi Desa (buku-administrasi-desa)
+- > Keuangan (keuangan)
+- > Analisis (analisis)
+- > Pertanahan (pertanahan)
+- > OpenDK (opendk)
+- > Pemetaan (pemetaan)
+- > Hubung Warga (hubung-warga)
+- > Admin Web (admin-web)
+- > Layanan Mandiri (layanan-mandiri)
+- > Anjungan (anjungan)
+- > Satu Data (satu-data)
+- > Buku Tamu (buku-tamu)
+- > IDM (idm)
+info-desa > Pemerintah Desa (perangkat-desa)
+kependudukan > Dashboard Kependudukan (dashboard-kependudukan)
+statistik > Laporan Desa (laporan-desa)
+statistik > Statistik Desa (statistik-desa)
+statistik > Rekap Analisis (rekap-analisis)
+kesehatan > Kesehatan Ibu dan Anak (kia)
+kehadiran > Dashboard Kehadiran (kehadiran-dashboard)
+kehadiran > Absensi Pegawai (absensi-pegawai)
+kehadiran > Data Pegawai (kepegawaian)
+kehadiran > Cuti dan Izin (cuti-izin)
+kehadiran > Pengaduan Kehadiran (pengaduan-kehadiran)
+layanan-surat > Administrasi Surat (surat)
+layanan-surat > Daftar Surat (surat-daftar)
+layanan-surat > Surat Dinas (surat-dinas)
+layanan-surat > Jenis Surat (jenis-surat)
+layanan-surat > Master Surat (master-surat)
+layanan-surat > Tanda Tangan Elektronik (tte)
+sekretariat > Dashboard Inventaris (inventaris-dashboard)
+sekretariat > Pengelolaan Inventaris (inventaris-pengelolaan)
+sekretariat > Mutasi Inventaris (mutasi-inventaris)
+sekretariat > Arsip Desa (arsip)
+keuangan > Dashboard Keuangan (keuangan-dashboard)
+keuangan > APBDes (apbdes)
+keuangan > Realisasi (realisasi-keuangan)
+keuangan > Kegiatan (kegiatan-keuangan)
+keuangan > Dokumen Keuangan (dokumen-keuangan)
+keuangan > Laporan Keuangan (laporan-keuangan)
+keuangan > Pembangunan (pembangunan)
+analisis > Survei Analisis (analisis-survei)
+pemetaan > Simbol Peta (simbol-peta)
+hubung-warga > Umpan Balik (umpan-balik)
+pengaturan > Pengaturan Desa (pengaturan-desa-lanjutan)
+pengaturan > Grup Akses (grup-akses)
+pengaturan > Aktivitas Pengguna (audit-log)
+admin-web > Dashboard Website (website-dashboard)
+admin-web > Pengaturan Website (website-pengaturan)
+admin-web > Halaman (website-halaman)
+admin-web > Konten (website-konten)
+admin-web > Dokumen Publik (website-dokumen)
+admin-web > Berita (berita)
+admin-web > Potensi Desa (potensi-desa)
+layanan-mandiri > Dashboard Layanan (layanan-publik)
+layanan-mandiri > Katalog Layanan (katalog-layanan)
+layanan-mandiri > Pengajuan Layanan (pengajuan-layanan)
+layanan-mandiri > Survei Layanan (survei-layanan)
+- > Bantuan Sosial (bantuan)
+- > SDGs Desa (idm-sdgs)
+- > Profil Desa (profil-desa)

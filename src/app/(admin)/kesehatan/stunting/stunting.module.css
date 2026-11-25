@@ -1,0 +1,336 @@
+/* Gaya workspace Stunting: satu modul, enam tampilan tab. */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 1.25rem 0 1.5rem;
+  padding: 0.35rem;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 0.9rem;
+  background: var(--surface-muted, #f8fafc);
+}
+
+.tab {
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.6rem;
+  color: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.tab:hover {
+  background: rgb(15 23 42 / 6%);
+}
+
+.tabActive,
+.tabActive:hover {
+  background: var(--surface, #fff);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 12%);
+  color: var(--primary, #1d4ed8);
+}
+
+.panelHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.panelHead p {
+  margin: 0;
+  color: var(--muted, #475569);
+  font-size: 0.875rem;
+}
+
+.formToggle {
+  margin-bottom: 1rem;
+  border: 1px dashed var(--border, #cbd5e1);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+}
+
+.formToggle > summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.formToggle[open] > summary {
+  margin-bottom: 0.9rem;
+}
+
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1rem 0;
+  align-items: end;
+}
+
+.filterBar label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.filterBar select,
+.filterBar input {
+  min-width: 10rem;
+}
+
+.rowActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.rowActions form {
+  display: inline;
+}
+
+.checkGrid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+}
+
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 0.55rem;
+  font-size: 0.875rem;
+}
+
+.rekapGrid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+}
+
+.rekapCard {
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.rekapCard h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+
+.rekapCard small {
+  color: var(--muted, #475569);
+}
+
+.rekapList {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.rekapList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.875rem;
+  border-bottom: 1px dashed var(--border, #e2e8f0);
+  padding-bottom: 0.35rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badgeHijau {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.badgeKuning {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.badgeMerah {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.badgeNetral {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+/* Matriks rekapitulasi: 17-19 kolom, digeser di dalam .table-scroll. */
+.matrix {
+  font-size: 0.8rem;
+  min-width: 90rem;
+}
+
+.matrix th,
+.matrix td {
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.matrix thead th {
+  font-size: 0.75rem;
+}
+
+.matrixCaption {
+  caption-side: top;
+  padding: 0.75rem 0;
+  color: var(--muted, #475569);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: left;
+}
+
+.batang {
+  display: block;
+  min-width: 4.5rem;
+  height: 0.85rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.batang > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  border-radius: 999px;
+  color: #0f172a;
+  font-size: 0.6rem;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.batangHijau {
+  background: #16a34a;
+  color: #fff;
+}
+
+.batangKuning {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.batangMerah {
+  background: #dc2626;
+  color: #fff;
+}
+
+.distribusi {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  margin: 1rem 0 1.5rem;
+}
+
+.distribusiKartu {
+  display: grid;
+  gap: 0.15rem;
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.9rem;
+}
+
+.distribusiKartu span {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.distribusiKartu strong {
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.distribusiKartu small {
+  color: var(--muted, #475569);
+  font-size: 0.7rem;
+}
+
+.distribusiBiru {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.distribusiHijau {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+}
+
+.distribusiKuning {
+  background: #fffbeb;
+  border-color: #fde68a;
+}
+
+.distribusiMerah {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.panduanAksi {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
+/* Dialog panduan: konten panjang, jadi isi dialog yang menggulir. */
+.panduanDialog {
+  max-width: 60rem;
+  width: min(95vw, 60rem);
+}
+
+.panduanBody {
+  max-height: 65vh;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.panduanSeksi {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.panduanSeksi h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95rem;
+}
+
+.panduanSeksi p,
+.panduanSeksi ul,
+.panduanSeksi ol {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+
+.panduanSeksi ul,
+.panduanSeksi ol {
+  padding-left: 1.1rem;
+}
+
+@media (max-width: 640px) {
+  .tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+}

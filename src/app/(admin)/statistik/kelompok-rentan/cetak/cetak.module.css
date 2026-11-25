@@ -1,0 +1,110 @@
+.page {
+  display: grid;
+  gap: 16px;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.card {
+  padding: 28px;
+  border: 1px solid #dcd7ea;
+  border-radius: 12px;
+  background: #fff;
+  color: #1b1f36;
+  box-shadow: 0 10px 30px #2e1d5b12;
+}
+
+.kop {
+  padding-bottom: 14px;
+  border-bottom: 3px double #2b2350;
+  text-align: center;
+}
+
+.kop h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.kop h4 {
+  margin: 0 0 14px;
+  font-size: 12px;
+}
+
+.info {
+  margin: 0 auto;
+  border-collapse: collapse;
+  font-size: 11px;
+  text-align: left;
+}
+
+.info td {
+  padding: 2px 6px;
+  vertical-align: top;
+}
+
+.info td:first-child {
+  color: #5e6378;
+  white-space: nowrap;
+}
+
+.info td:nth-child(2) {
+  width: 10px;
+}
+
+.subjudul {
+  margin: 18px 0 10px;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.tanggal {
+  margin: 22px 0 0;
+  color: #3d4359;
+  font-size: 10.5px;
+}
+
+@page {
+  size: A4 landscape;
+  margin: 10mm;
+}
+
+@media print {
+  .page {
+    max-width: none;
+  }
+
+  .actions {
+    display: none;
+  }
+
+  .card {
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .tableWrap {
+    overflow: visible;
+  }
+
+  .card table {
+    font-size: 8px;
+  }
+
+  :global(.admin-sidebar),
+  :global(.admin-topbar),
+  :global(.mobile-menu-button),
+  :global(.admin-drawer-backdrop) {
+    display: none !important;
+  }
+}

@@ -1,0 +1,66 @@
+import {
+  date,
+  foreignKey,
+  index,
+  int,
+  mysqlTable,
+  timestamp,
+  uniqueIndex,
+  varchar,
+} from "drizzle-orm/mysql-core";
+
+import { regions } from "./region";
+import { villages } from "./village";
+
+/**
+ * `families` — Kartu Keluarga (KK).
+ *
+ * Kepala keluarga sengaja **tidak** disimpan sebagai kolom tersendiri agar tidak
+ * ada dua sumber kebenaran: keanggotaan dinyatakan oleh `residents.family_id`,
+ * dan kepala keluarga adalah anggota yang berhubungan keluarga "KEPALA
+ * KELUARGA".
+ *
+ * `address`/`region_id` di sini adalah domisili KK (alamat pada kartu), yang
+ * boleh berbeda dari domisili terkini tiap penduduk.
+ */
+export const families = mysqlTable(
+  "families",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    villageId: int("village_id")
+      .notNull()
+      .references(() => villages.id, { onDelete: "cascade" }),
+
+    /** Nomor Kartu Keluarga (16 angka), unik per desa. */
+    number: varchar("number", { length: 16 }).notNull(),
+
+    address: varchar("address", { length: 255 }),
+    regionId: int("region_id"),
+
+    /**
+     * Kode kelas sosial (1–5), sama dengan `tweb_keluarga.kelas_sosial` OpenSID.
+     * Nol/kosong berarti belum ditetapkan.
+     */
+    welfareClass: int("welfare_class"),
+
+    /** Tanggal KK terakhir dicetak; diisi manual seperti pada OpenSID. */
+    cardPrintedAt: date("card_printed_at", { mode: "string" }),
+
+    /** Tanggal keluarga terdaftar; menjadi padanan `tgl_daftar` OpenSID. */
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  (t) => [
+    uniqueIndex("families_village_number_uq").on(t.villageId, t.number),
+    uniqueIndex("families_village_id_uq").on(t.villageId, t.id),
+    foreignKey({
+      name: "families_region_tenant_fk",
+      columns: [t.villageId, t.regionId],
+      foreignColumns: [regions.villageId, regions.id],
+    }).onDelete("restrict"),
+    index("families_region_idx").on(t.regionId),
+  ],
+);

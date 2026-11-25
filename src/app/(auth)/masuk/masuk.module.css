@@ -1,0 +1,434 @@
+/* Halaman masuk warga — layout dua kolom dengan panel visual hijau.
+ * Sengaja dicerminkan dari /masuk-admin (visual di kiri, form di kanan) agar
+ * kedua portal terasa satu keluarga tanpa tampil identik. */
+
+.page {
+  display: grid;
+  min-height: 100svh;
+  grid-template-columns: minmax(460px, 0.96fr) minmax(0, 1.04fr);
+  background: #f5f7f1;
+  color: #14261c;
+}
+
+/* --- Kolom formulir ------------------------------------------------------ */
+
+.formPanel {
+  display: flex;
+  flex-direction: column;
+  padding: 30px clamp(24px, 4.5vw, 62px) 22px;
+  background:
+    radial-gradient(90% 58% at 10% 0%, #ffffff 0%, transparent 62%),
+    linear-gradient(180deg, #fbfcf8, #f1f5eb);
+}
+
+.formInner {
+  display: flex;
+  width: 100%;
+  max-width: 432px;
+  flex: 1;
+  flex-direction: column;
+  gap: clamp(22px, 4vh, 38px);
+  margin-inline: auto;
+}
+
+.brand {
+  display: flex;
+  width: max-content;
+  align-items: center;
+  gap: 11px;
+  color: inherit;
+}
+
+.brandLogo {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  object-fit: contain;
+}
+
+.brandMark {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(150deg, #12a267, #0b6b45);
+  color: #f2fbf5;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.brandCopy {
+  display: grid;
+  gap: 1px;
+}
+
+.brandCopy strong {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+}
+
+.brandCopy small {
+  color: #6b7d70;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.card {
+  padding: clamp(22px, 2.6vw, 32px);
+  border: 1px solid #e3e9d9;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 24px 48px -34px rgb(20 38 28 / 55%);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #0b7a4b;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.eyebrow i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #17a467;
+  box-shadow: 0 0 0 4px rgb(23 164 103 / 14%);
+}
+
+.title {
+  margin: 12px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(27px, 2.4vw, 33px);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.12;
+}
+
+.intro {
+  margin: 9px 0 22px;
+  color: #5c6f63;
+  font-size: 12.5px;
+  line-height: 1.62;
+}
+
+.help {
+  margin: 16px 0 0;
+  color: #7a8a7f;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.switchList {
+  display: grid;
+  gap: 7px;
+  margin: 16px 0 0;
+  padding-top: 16px;
+  border-top: 1px solid #eef1e8;
+}
+
+.switchRow {
+  margin: 0;
+  color: #5c6f63;
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.switchRow a {
+  color: #0b7a4b;
+  font-weight: 800;
+}
+
+.switchRow a:hover {
+  color: #0a6139;
+}
+
+.backRow {
+  margin: 14px 0 0;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.backRow a {
+  color: #46635a;
+}
+
+.backRow a:hover {
+  color: #0b7a4b;
+}
+
+.foot {
+  margin: auto 0 0;
+  padding-top: 22px;
+  color: #8a9a8e;
+  font-size: 10px;
+  text-align: center;
+}
+
+/* --- Panel visual -------------------------------------------------------- */
+
+.visual {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 36px clamp(30px, 5vw, 74px) 28px;
+  background:
+    radial-gradient(circle at 84% 10%, rgb(140 235 176 / 22%), transparent 42%),
+    radial-gradient(circle at 8% 88%, rgb(23 164 103 / 30%), transparent 46%),
+    linear-gradient(150deg, #05271a 0%, #0a4a30 54%, #0f6b45 100%);
+  color: #f2fbf5;
+  isolation: isolate;
+}
+
+.visual::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background-image: radial-gradient(rgb(255 255 255 / 12%) 1px, transparent 1px);
+  background-size: 22px 22px;
+  content: "";
+  mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.photo {
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 48%;
+  background-image: url("/images/login-village-office.jpg");
+  background-position: center 58%;
+  background-size: cover;
+  filter: blur(6px) saturate(0.7);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 46%);
+  opacity: 0.26;
+  transform: scale(1.06);
+  pointer-events: none;
+}
+
+.visual::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 46%,
+    rgb(4 34 22 / 40%) 74%,
+    rgb(4 28 19 / 82%) 100%
+  );
+  content: "";
+  pointer-events: none;
+}
+
+.visualContent {
+  position: relative;
+  z-index: 2;
+  width: min(100%, 540px);
+  margin-top: clamp(36px, 7vh, 92px);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid rgb(255 255 255 / 22%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 8%);
+  color: #c8f3d9;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+}
+
+.visualTitle {
+  margin: 18px 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(29px, 3vw, 41px);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+}
+
+.visualTitle em {
+  color: #8ff0b6;
+  font-style: normal;
+}
+
+.visualLead {
+  max-width: 420px;
+  margin: 14px 0 0;
+  color: #cfe6d8;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.features {
+  display: grid;
+  gap: 13px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+}
+
+.featureIcon {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  flex: none;
+  place-items: center;
+  border-radius: 9px;
+  background: rgb(255 255 255 / 12%);
+  color: #8ff0b6;
+}
+
+.featureIcon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.featureText {
+  display: grid;
+  gap: 1px;
+}
+
+.featureText b {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.featureText small {
+  color: #a9c9b6;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.visualFoot {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  gap: 30px;
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgb(255 255 255 / 16%);
+}
+
+.stat {
+  display: grid;
+  gap: 2px;
+}
+
+.stat b {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.stat small {
+  color: #a9c9b6;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* --- Responsif ----------------------------------------------------------- */
+
+@media (max-width: 1080px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+
+  .formPanel {
+    min-height: 100svh;
+  }
+
+  .visual {
+    min-height: auto;
+    padding: 30px clamp(22px, 6vw, 46px) 26px;
+  }
+
+  .visualContent {
+    margin-top: 26px;
+  }
+
+  .visualTitle {
+    font-size: clamp(26px, 5.4vw, 34px);
+  }
+
+  .features {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 20px;
+  }
+
+  .visualFoot {
+    margin-top: 24px;
+  }
+}
+
+/* --- Penyesuaian form bersama (globals.css) ke palet hijau halaman ini --- */
+
+.card :global(.login-form-stack .form-input) {
+  border-color: #d7e1cc;
+}
+
+.card :global(.login-form-stack .form-input:focus) {
+  border-color: #17a467;
+  box-shadow: 0 0 0 3px rgb(23 164 103 / 14%);
+}
+
+.card :global(.login-form-stack .login-submit) {
+  background: linear-gradient(105deg, #12a267, #0b7a4b);
+  box-shadow: 0 10px 20px -10px rgb(11 122 75 / 55%);
+}
+
+.card :global(.login-password-toggle) {
+  color: #0b7a4b;
+}
+
+.card :global(.login-password-toggle:hover) {
+  background: #eef7f0;
+}
+
+@media (max-width: 640px) {
+  .formPanel {
+    padding: 22px 18px 18px;
+  }
+
+  .card {
+    padding: 22px 20px;
+    border-radius: 18px;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+
+  .visual {
+    padding: 24px 20px 22px;
+  }
+
+  .visualFoot {
+    gap: 20px;
+  }
+}

@@ -1,0 +1,163 @@
+.page {
+  display: grid;
+  gap: 14px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card {
+  padding: 28px;
+  border: 1px solid #e3e5f5;
+  border-radius: 14px;
+  background: #fff;
+  color: #111936;
+  box-shadow: 0 4px 14px #20105c0b;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 2px solid #111936;
+}
+
+.head strong {
+  display: block;
+  font-size: 15px;
+  text-transform: uppercase;
+}
+
+.head span {
+  display: block;
+  color: #4b5570;
+  font-size: 12px;
+}
+
+.judul {
+  text-align: right;
+}
+
+.judul h1 {
+  margin: 0;
+  font-size: 17px;
+  text-transform: uppercase;
+}
+
+.judul p {
+  margin: 3px 0 0;
+  color: #4b5570;
+  font-size: 12px;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 14px 0;
+  color: #4b5570;
+  font-size: 12px;
+}
+
+.tableWrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.table th,
+.table td {
+  padding: 7px 8px;
+  border: 1px solid #d9dced;
+  text-align: right;
+}
+
+.table th:nth-child(1),
+.table th:nth-child(2),
+.table td:nth-child(1),
+.table td:nth-child(2) {
+  text-align: left;
+}
+
+.table thead th {
+  background: #f1eeff;
+  color: #24145c;
+  font-weight: 750;
+}
+
+.table tfoot th {
+  background: #f6f3ff;
+  font-weight: 800;
+}
+
+.signature {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: min(280px, 100%);
+  margin-top: 26px;
+  margin-left: auto;
+  text-align: center;
+  font-size: 12px;
+}
+
+.signature p {
+  margin: 0;
+}
+
+.signature .ruang {
+  height: 62px;
+}
+
+.signature strong {
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: underline;
+}
+
+.empty {
+  padding: 24px 0;
+  color: #68738d;
+  text-align: center;
+}
+
+@media print {
+  .page {
+    max-width: none;
+    margin: 0;
+  }
+
+  .actions {
+    display: none;
+  }
+
+  .card {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .tableWrap {
+    overflow: visible;
+  }
+
+  .table {
+    font-size: 8px;
+  }
+}

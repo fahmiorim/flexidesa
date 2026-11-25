@@ -1,0 +1,328 @@
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+
+import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
+import { pengaturanKontakPublik } from "@/features/publik/application/konten-publik";
+
+import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
+import { KontakFaq } from "./kontak-faq";
+import styles from "./kontak.module.css";
+
+export const metadata: Metadata = {
+  title: "Kontak & Pengaduan",
+  description: "Alamat, kontak, dan saluran pengaduan pemerintah desa.",
+};
+export const dynamic = "force-dynamic";
+function locationLabel(desa: {
+  namaKecamatan: string | null;
+  namaKabupaten: string | null;
+  namaPropinsi: string | null;
+}) {
+  return [desa.namaKecamatan, desa.namaKabupaten, desa.namaPropinsi].filter(Boolean).join(", ");
+}
+function mediaUrl(value: string | null, villageId: number): string | null {
+  if (!value) return null;
+  const parts = value.split(/[\\/]/).filter(Boolean);
+  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
+    return null;
+  const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
+  return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
+}
+
+function socialUrl(value: string, base: string): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  try {
+    const parsed = new URL(trimmed);
+    return ["http:", "https:"].includes(parsed.protocol) ? parsed.toString() : null;
+  } catch {
+    return base + encodeURIComponent(trimmed.replace(/^@/, ""));
+  }
+}
+
+export default async function KontakPage() {
+  const desa = await getIdentitasFromRequest();
+  const settings = await pengaturanKontakPublik(desa.id);
+  const location = locationLabel(desa);
+  const logoUrl = mediaUrl(desa.logo, desa.id);
+  const officePhotoUrl = mediaUrl(desa.fotoKantor, desa.id);
+  const phone = settings.telepon || desa.telepon?.trim() || "";
+  const phoneDigits = phone.replace(/\D/g, "");
+  const whatsapp = settings.whatsapp || phone;
+  const whatsappDigits = whatsapp.replace(/\D/g, "");
+  const whatsappNumber = whatsappDigits.startsWith("0")
+    ? "62" + whatsappDigits.slice(1)
+    : whatsappDigits;
+  const email = settings.email || desa.emailDesa?.trim() || "";
+  const address = settings.alamat || desa.alamatKantor?.trim() || "";
+  const mapQuery = [address, desa.namaDesa, location, settings.koordinat]
+    .filter(Boolean)
+    .join(", ");
+  const socialLinks = [
+    { label: "Instagram", href: socialUrl(settings.instagram ?? "", "https://instagram.com/") },
+    { label: "Facebook", href: socialUrl(settings.facebook ?? "", "https://facebook.com/") },
+    { label: "YouTube", href: socialUrl(settings.youtube ?? "", "https://youtube.com/") },
+  ].filter((item): item is { label: string; href: string } => Boolean(item.href));
+  return (
+    <main className={styles.site}>
+      <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/kontak" />
+      <section className={styles.hero}>
+        <div className={styles.container}>
+          <nav className={styles.breadcrumb}>
+            <Link href="/">Beranda</Link>
+            <span>›</span>
+            <span>Kontak & Pengaduan</span>
+          </nav>
+          <div className={styles.heroContent}>
+            <div>
+              <span className={styles.eyebrow}>ASPIRASI DAN PELAYANAN PUBLIK</span>
+              <h1>Kontak & Pengaduan</h1>
+              <p>Hubungi Pemerintah {desa.namaDesa ?? "Desa"} melalui saluran resmi.</p>
+              <div className={styles.heroActions}>
+                <a className={styles.primaryAction} href="#saluran-kontak">
+                  ▤　Hubungi Kami
+                </a>
+                <a className={styles.secondaryAction} href="/pengaduan">
+                  ◷　Lihat Pengaduan Publik　→
+                </a>
+              </div>
+            </div>
+            <div className={styles.heroArt} aria-hidden="true">
+              <div className={styles.chat}>•••</div>
+              <div className={styles.agent}>
+                <span>☺</span>
+                <i />
+                <i />
+                <i />
+              </div>
+              <div className={styles.mail}>✉</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div className={styles.container + " " + styles.content}>
+        <nav className={styles.sectionNav}>
+          <a className={styles.active} href="#saluran-kontak">
+            ▤　Hubungi Kami
+          </a>
+          <a href="#lokasi-kantor">⌖　Lokasi Kantor</a>
+          <a href="#faq">ⓘ　Pertanyaan Umum (FAQ)</a>
+          <a href="/pengaduan">◷　Pengaduan Publik</a>
+        </nav>
+        <section className={styles.intro}>
+          <div className={styles.introArt}>📣</div>
+          <div>
+            <h2>Layanan Aspirasi Masyarakat</h2>
+            <p>
+              Sampaikan masukan atau laporan terkait pelayanan dan lingkungan desa melalui saluran
+              resmi. Informasi pengaduan yang telah disetujui untuk publikasi dapat dilihat
+              masyarakat.
+            </p>
+          </div>
+          <ul>
+            <li>Mudah diakses</li>
+            <li>Disampaikan melalui saluran resmi</li>
+            <li>Informasi publik menjaga privasi</li>
+          </ul>
+        </section>
+        <div className={styles.mainGrid}>
+          <section className={styles.contacts} id="saluran-kontak">
+            <div className={styles.sectionTitle}>
+              <span>♧</span>
+              <div>
+                <h2>Informasi Kontak Desa</h2>
+                <p>Hubungi pemerintah desa melalui informasi resmi berikut.</p>
+              </div>
+            </div>
+            <div className={styles.contactList}>
+              <article>
+                <span className={styles.whatsapp}>◉</span>
+                <div>
+                  <b>Telepon / WhatsApp</b>
+                  <p>{whatsapp || "Nomor WhatsApp belum tersedia"}</p>
+                </div>
+                {whatsappDigits ? (
+                  <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">
+                    ↗
+                  </a>
+                ) : null}
+              </article>
+              <article>
+                <span className={styles.phone}>☎</span>
+                <div>
+                  <b>Telepon Kantor Desa</b>
+                  <p>{phone || "Nomor telepon belum tersedia"}</p>
+                </div>
+                {phoneDigits ? <a href={`tel:${phone.replace(/[^\d+]/g, "")}`}>↗</a> : null}
+              </article>
+              <article>
+                <span className={styles.email}>✉</span>
+                <div>
+                  <b>Email Resmi</b>
+                  <p>{email || "Email resmi belum tersedia"}</p>
+                </div>
+                {email ? <a href={`mailto:${email}`}>↗</a> : null}
+              </article>
+              {settings.website ? (
+                <article>
+                  <span className={styles.addressIcon}>↗</span>
+                  <div>
+                    <b>Website Resmi</b>
+                    <p>{settings.website}</p>
+                  </div>
+                  <a href={settings.website} target="_blank" rel="noreferrer">
+                    ↗
+                  </a>
+                </article>
+              ) : null}
+              <article>
+                <span className={styles.addressIcon}>⌖</span>
+                <div>
+                  <b>Alamat Kantor</b>
+                  <p>
+                    {address || "Alamat kantor belum tersedia"}
+                    {location ? ", " + location : ""}
+                  </p>
+                </div>
+              </article>
+            </div>
+            <div className={styles.contactNote}>
+              <b>Ingin menyampaikan pengaduan?</b>
+              <p>
+                Gunakan saluran telepon atau WhatsApp resmi di atas. Anda juga dapat melihat
+                pengaduan yang telah disetujui untuk ditampilkan kepada publik.
+              </p>
+              <div>
+                {whatsappDigits ? (
+                  <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer">
+                    Hubungi via WhatsApp　→
+                  </a>
+                ) : null}
+                <a href="/pengaduan">Lihat Pengaduan Publik　→</a>
+              </div>
+            </div>
+          </section>
+          <aside className={styles.sidebar}>
+            <section id="lokasi-kantor">
+              <div className={styles.sectionTitle}>
+                <span>⌖</span>
+                <div>
+                  <h2>Lokasi Kantor Desa</h2>
+                  <p>Kantor Pemerintah {desa.namaDesa ?? "Desa"}</p>
+                </div>
+              </div>
+              <div className={styles.mapPlaceholder}>
+                {officePhotoUrl ? (
+                  <Image
+                    className={styles.officePhoto}
+                    src={officePhotoUrl}
+                    alt={"Kantor " + (desa.namaDesa ?? "desa")}
+                    width={320}
+                    height={180}
+                    unoptimized
+                  />
+                ) : (
+                  <span>⌖</span>
+                )}
+                <b>{desa.namaDesa ?? "Kantor Desa"}</b>
+                <small>{address || location || "Lokasi kantor belum dilengkapi"}</small>
+              </div>
+              <p className={styles.addressText}>
+                {address || "Alamat kantor belum tersedia"}
+                {location ? ", " + location : ""}
+              </p>
+              {mapQuery ? (
+                <a
+                  className={styles.mapLink}
+                  href={
+                    settings.tautanPeta ||
+                    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Lihat di Google Maps　↗
+                </a>
+              ) : null}
+            </section>
+            <section>
+              <div className={styles.sectionTitle}>
+                <span>◷</span>
+                <div>
+                  <h2>Jam Pelayanan</h2>
+                  <p>Silakan konfirmasi jadwal melalui kontak kantor.</p>
+                </div>
+              </div>
+              <p className={styles.hoursNote}>
+                {settings.jamLayanan || "Jadwal operasional belum dicantumkan pada profil desa."}
+              </p>
+            </section>
+            {socialLinks.length ? (
+              <section>
+                <div className={styles.sectionTitle}>
+                  <span>◎</span>
+                  <div>
+                    <h2>Media Sosial Resmi</h2>
+                    <p>Ikuti informasi dari kanal desa.</p>
+                  </div>
+                </div>
+                <div className={styles.contactNote}>
+                  {socialLinks.map((item) => (
+                    <p key={item.label}>
+                      <a href={item.href} target="_blank" rel="noreferrer">
+                        {item.label} ↗
+                      </a>
+                    </p>
+                  ))}
+                </div>
+              </section>
+            ) : null}
+            <section className={styles.tracking}>
+              <span>▣</span>
+              <div>
+                <h2>Pengaduan Masyarakat</h2>
+                <p>Lihat informasi pengaduan yang telah dipublikasikan.</p>
+                <a href="/pengaduan">Lihat Pengaduan　→</a>
+              </div>
+            </section>
+          </aside>
+        </div>
+        <section className={styles.faq} id="faq">
+          <div className={styles.sectionTitle}>
+            <span>ⓘ</span>
+            <div>
+              <h2>Pertanyaan Umum (FAQ)</h2>
+              <p>Informasi umum mengenai komunikasi dan pengaduan kepada pemerintah desa.</p>
+            </div>
+          </div>
+          <KontakFaq />
+        </section>
+        <section className={styles.bottomCta}>
+          <div className={styles.ctaArt}>✉　✓</div>
+          <div>
+            <h2>Saran & Masukan Anda Sangat Berarti</h2>
+            <p>
+              Bantu meningkatkan kualitas pelayanan dan pembangunan desa dengan menyampaikan saran
+              melalui saluran resmi.
+            </p>
+          </div>
+          <a
+            href={
+              whatsappDigits
+                ? `https://wa.me/${whatsappNumber}`
+                : email
+                  ? `mailto:${email}`
+                  : "#saluran-kontak"
+            }
+            target={whatsappDigits || email ? "_blank" : undefined}
+            rel={whatsappDigits || email ? "noreferrer" : undefined}
+          >
+            Sampaikan Saran　→
+          </a>
+        </section>
+      </div>
+      <PublicSiteFooter desa={desa} location={location} logoUrl={logoUrl} />
+    </main>
+  );
+}
