@@ -4,8 +4,11 @@ import {
   namaBerkasKesehatan,
   responsCsvKesehatan,
   responsGalatKesehatan,
-} from "@/features/kesehatan/application/ekspor-kesehatan";
-import { STATUS_GIZI_ANAK, STATUS_TIKAR_ANAK } from "@/features/kesehatan/domain/kesehatan";
+} from "@/features/kependudukan/kesehatan/application/ekspor-kesehatan";
+import {
+  STATUS_GIZI_ANAK,
+  STATUS_TIKAR_ANAK,
+} from "@/features/kependudukan/kesehatan/domain/kesehatan";
 
 function statusGiziLabel(value: number): string {
   return STATUS_GIZI_ANAK.find((status) => status.value === value)?.label ?? "-";

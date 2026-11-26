@@ -1,0 +1,107 @@
+import Link from "next/link";
+
+import { PageHeading } from "@/components/shell/page-heading";
+import { getSuratDinasData } from "@/features/pelayanan-persuratan/surat/application/surat-dinas-use-cases";
+
+import { hapusSuratDinasAction } from "./actions";
+
+export const metadata = { title: "Surat Dinas" };
+
+export default async function SuratDinasPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; berhasil?: string }>;
+}) {
+  const params = await searchParams;
+  const q = (params.q ?? "").slice(0, 100);
+  const { rows, canCreate, canUpdate, canDelete } = await getSuratDinasData(q);
+  return (
+    <div className="modul-page">
+      <PageHeading
+        judul={<>Surat Dinas</>}
+        deskripsi={<>Kelola surat dinas perangkat desa.</>}
+        aksi={
+          <>
+            {canCreate ? (
+              <Link
+                className="button button-primary"
+                href="/layanan-surat/persuratan/surat-dinas/baru"
+              >
+                ＋ Buat Surat Dinas
+              </Link>
+            ) : null}
+          </>
+        }
+      />
+      {params.berhasil ? (
+        <div className="alert alert-info">Perubahan data surat dinas berhasil.</div>
+      ) : null}
+      <section className="modul-card">
+        <form method="get" className="modul-filter-row">
+          <input name="q" defaultValue={q} placeholder="Cari nomor, perihal, penerima…" />
+          <button className="button button-secondary">Cari</button>
+        </form>
+        <div className="modul-scroll">
+          <table className="modul-table">
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Nomor Surat</th>
+                <th>Perihal</th>
+                <th>Penerima</th>
+                <th>Klasifikasi</th>
+                <th>Arsip</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id}>
+                  <td>{row.letterDate}</td>
+                  <td className="modul-mono">{row.letterNumber}</td>
+                  <td>{row.subject}</td>
+                  <td>{row.recipient ?? "—"}</td>
+                  <td>{row.classificationName ?? "—"}</td>
+                  <td>
+                    {row.archiveFile ? (
+                      <Link
+                        className="table-action-link"
+                        href={`/api/admin/persuratan/surat-dinas/${row.id}/lampiran`}
+                        target="_blank"
+                      >
+                        Lihat PDF →
+                      </Link>
+                    ) : (
+                      (row.archiveLocation ?? "—")
+                    )}
+                  </td>
+                  <td>
+                    <div style={{ display: "flex", gap: 8 }}>
+                      {canUpdate ? (
+                        <Link
+                          className="button button-secondary"
+                          href={`/layanan-surat/persuratan/surat-dinas/${row.id}/edit`}
+                        >
+                          Ubah
+                        </Link>
+                      ) : null}
+                      {canDelete ? (
+                        <form action={hapusSuratDinasAction}>
+                          <input type="hidden" name="id" value={row.id} />
+                          <button className="button button-danger-ghost" type="submit">
+                            Hapus
+                          </button>
+                        </form>
+                      ) : null}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {rows.length === 0 ? <p className="modul-empty">Belum ada surat dinas.</p> : null}
+      </section>
+    </div>
+  );
+}

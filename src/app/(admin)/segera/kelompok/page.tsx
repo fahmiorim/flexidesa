@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** Alias lama modul kelompok; rute kanonisnya `/kelompok`. */
+/** Alias lama modul kelompok; rute kanonisnya `/kependudukan/kelompok`. */
 export default function SegeraKelompokPage() {
-  redirect("/kelompok");
+  redirect("/kependudukan/kelompok");
 }

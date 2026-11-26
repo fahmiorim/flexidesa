@@ -1,0 +1,1 @@
+ALTER TABLE `regions` ADD `luas_ha` decimal(12,2);

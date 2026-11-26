@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { kirimJawabanSurveiWargaData } from "@/features/pelayanan/application/survei-use-cases";
+import { kirimJawabanSurveiWargaData } from "@/features/layanan-warga/pelayanan/application/survei-use-cases";
 
 export async function kirimJawabanSurveiAction(formData: FormData) {
   const id = Number(formData.get("surveyId"));

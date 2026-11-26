@@ -2,8 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { daftarFotoAlbum, detailAlbumGaleri } from "@/features/publik/application/konten-publik";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import {
+  daftarFotoAlbum,
+  detailAlbumGaleri,
+} from "@/features/info-desa/publik/application/konten-publik";
 
 import styles from "../galeri.module.css";
 import { GalleryShell } from "../gallery-shell";

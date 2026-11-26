@@ -300,7 +300,8 @@
   gap: 8px;
   margin-top: 12px;
 }
-.statTiles > div {
+.statTiles > div,
+.statTiles > a {
   display: grid;
   grid-template-columns: 38px 1fr;
   grid-template-rows: auto auto;
@@ -311,7 +312,8 @@
   border-radius: 11px;
   background: #f5f8ff;
 }
-.statTiles > div > span {
+.statTiles > div > span,
+.statTiles > a > span {
   grid-row: 1/3;
   display: grid;
   place-items: center;

@@ -14,7 +14,6 @@ import {
   users,
   villages,
 } from "@/db/schema";
-import { listAuditLogsLintasDesa } from "@/features/audit/infrastructure/audit-repository";
 import {
   buatPenggunaPlatform,
   cabutSesiPenggunaPlatform,
@@ -25,6 +24,7 @@ import {
   setStatusPenggunaPlatform,
 } from "@/features/multi-desa/infrastructure/pengguna-platform-repository";
 import { provisionDesa } from "@/features/multi-desa/infrastructure/provisioning-repository";
+import { listAuditLogsLintasDesa } from "@/features/pengaturan/audit/infrastructure/audit-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**

@@ -3,8 +3,6 @@ import "server-only";
 import { hashPassword } from "better-auth/crypto";
 import { z } from "zod";
 
-import { recordAuditEvent } from "@/features/audit/application/audit-use-cases";
-import { AUDIT_EVENTS } from "@/features/audit/domain/audit";
 import { requireSuperAdmin } from "@/features/multi-desa/application/provisioning-use-cases";
 import {
   domainDesaSchema,
@@ -27,6 +25,8 @@ import {
   type DesaKelolaRow,
   type DomainDesaRow,
 } from "@/features/multi-desa/infrastructure/kelola-desa-repository";
+import { recordAuditEvent } from "@/features/pengaturan/audit/application/audit-use-cases";
+import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
 import { notFound } from "@/lib/errors";
 
 /**

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { AUDIT_EVENT_LABELS, type AuditEvent } from "@/features/audit/domain/audit";
 import { ambilAuditPlatform } from "@/features/multi-desa/application/audit-platform-use-cases";
 import { daftarDesaSuperAdmin } from "@/features/multi-desa/application/provisioning-use-cases";
 import {
@@ -9,6 +8,7 @@ import {
   PlatformEmpty,
   PlatformPageHeader,
 } from "@/features/multi-desa/presentation/platform-ui";
+import { AUDIT_EVENT_LABELS, type AuditEvent } from "@/features/pengaturan/audit/domain/audit";
 
 import { pastikanSuperAdmin } from "../guard";
 

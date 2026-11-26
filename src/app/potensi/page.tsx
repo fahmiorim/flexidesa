@@ -2,12 +2,12 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import {
   daftarAlbumGaleri,
   daftarFotoAlbum,
   daftarPotensiDesa,
-} from "@/features/publik/application/konten-publik";
+} from "@/features/info-desa/publik/application/konten-publik";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./potensi.module.css";

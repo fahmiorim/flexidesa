@@ -29,7 +29,7 @@ export const kelompokMaster = mysqlTable(
 
     name: varchar("name", { length: 100 }).notNull(),
 
-    /** Tipe kategori; lihat `KELOMPOK_TIPE` ("kelompok" | "lembaga"). */
+    /** Tipe kategori; lihat `KELOMPOK_TIPE` ("kelompok"). Lembaga desa dikelola di `lembaga_master`. */
     type: varchar("type", { length: 20 }).notNull(),
 
     /** Deskripsi kategori (paritas `deskripsi` OpenSID). */
@@ -48,13 +48,13 @@ export const kelompokMaster = mysqlTable(
 );
 
 /**
- * `kelompok` — kelompok masyarakat & lembaga desa.
+ * `kelompok` — kelompok masyarakat.
  *
- * Memakai **single-table inheritance**: lembaga adalah kelompok bertipe
- * `lembaga` (kolom `type`), bukan tabel terpisah. Berbeda dari sistem rujukan
- * yang menyimpan `id_ketua` di tabel kelompok (berisiko tidak sinkron dengan
- * jabatan anggota), di sini **ketua diturunkan** dari anggota yang berjabatan
- * KETUA — satu sumber kebenaran, tanpa penanda sentinel `-9999`.
+ * Lembaga desa dikelola terpisah di `lembaga_desa` (modul pemerintahan).
+ * Berbeda dari sistem rujukan yang menyimpan `id_ketua` di tabel kelompok
+ * (berisiko tidak sinkron dengan jabatan anggota), di sini **ketua diturunkan**
+ * dari anggota yang berjabatan KETUA — satu sumber kebenaran, tanpa penanda
+ * sentinel `-9999`.
  */
 export const kelompok = mysqlTable(
   "kelompok",
@@ -67,7 +67,7 @@ export const kelompok = mysqlTable(
     name: varchar("name", { length: 150 }).notNull(),
     slug: varchar("slug", { length: 160 }).notNull(),
 
-    /** Tipe: "kelompok" (kelompok masyarakat) atau "lembaga" (lembaga desa). */
+    /** Tipe: "kelompok" (kelompok masyarakat). Baris bertipe lama "lembaga" dipindah ke `lembaga_desa` oleh migrasi 0001. */
     type: varchar("type", { length: 20 }).notNull(),
 
     categoryId: int("category_id"),

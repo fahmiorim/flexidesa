@@ -1,10 +1,10 @@
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { getInventarisPublik } from "@/features/inventaris/application/inventaris-publik-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import {
   buildInventarisCsv,
   inventarisCsvFilename,
   parseFilterInventaris,
-} from "@/features/publik/domain/inventaris-publik";
+} from "@/features/info-desa/publik/domain/inventaris-publik";
+import { getInventarisPublik } from "@/features/pembangunan-aset/inventaris/application/inventaris-publik-use-cases";
 
 export const dynamic = "force-dynamic";
 

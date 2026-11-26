@@ -2,10 +2,10 @@ import "server-only";
 
 import { z } from "zod";
 
-import { recordAuditEvent } from "@/features/audit/application/audit-use-cases";
-import { AUDIT_EVENTS } from "@/features/audit/domain/audit";
-import { resolveVillageId } from "@/features/desa/application/resolve-village";
-import { RESOURCES } from "@/features/rbac/domain/resources";
+import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
+import { recordAuditEvent } from "@/features/pengaturan/audit/application/audit-use-cases";
+import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
+import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { requirePermission } from "@/lib/dal";
 import { notFound, validationError } from "@/lib/errors";
 

@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import * as audit from "@/features/audit/application/audit-use-cases";
 import * as gate from "@/features/multi-desa/application/provisioning-use-cases";
 import * as repo from "@/features/multi-desa/infrastructure/kelola-desa-repository";
+import * as audit from "@/features/pengaturan/audit/application/audit-use-cases";
 import { forbidden } from "@/lib/errors";
 
 import {
@@ -28,7 +28,9 @@ vi.mock("@/features/multi-desa/infrastructure/kelola-desa-repository", () => ({
   setStatusDesa: vi.fn(),
   tambahDomainDesa: vi.fn(),
 }));
-vi.mock("@/features/audit/application/audit-use-cases", () => ({ recordAuditEvent: vi.fn() }));
+vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
+  recordAuditEvent: vi.fn(),
+}));
 
 describe("gerbang pengelola platform pada kelola desa", () => {
   beforeEach(() => {

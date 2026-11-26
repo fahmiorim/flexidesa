@@ -1,14 +1,14 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { authenticateApiKey } from "@/features/api-eksternal/domain/auth";
+import { authenticateApiKey } from "@/features/api-eksternal/application/authenticate";
 import { jsonGalat } from "@/features/api-eksternal/presentation/respons";
-import { recordAuditEvent } from "@/features/audit/application/audit-use-cases";
-import { AUDIT_EVENTS } from "@/features/audit/domain/audit";
+import type { BerkasUnggahan } from "@/features/media/domain/media";
 import {
   ajukanSuratEksternalData,
   suratEksternalSchema,
-} from "@/features/layanan-mandiri/application/eksternal-use-cases";
-import type { BerkasUnggahan } from "@/features/publik/domain/media";
+} from "@/features/pelayanan-persuratan/layanan-mandiri/application/eksternal-use-cases";
+import { recordAuditEvent } from "@/features/pengaturan/audit/application/audit-use-cases";
+import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
 import { batasiPermintaan } from "@/features/rate-limit/application/rate-limit";
 import { isAppError } from "@/lib/errors";
 import { bacaBytesTerbatas, bacaJsonTerbatas, BodyLimitError } from "@/lib/request-body";

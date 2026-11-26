@@ -12,13 +12,13 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("server-only", () => ({}));
 vi.mock("@/lib/dal", () => ({ requirePermission: mocks.requirePermission }));
-vi.mock("@/features/desa/application/resolve-village", () => ({
+vi.mock("@/features/info-desa/desa/application/resolve-village", () => ({
   resolveVillageId: mocks.resolveVillageId,
 }));
-vi.mock("@/features/publik/application/simpan-berkas-media", () => ({
+vi.mock("@/features/info-desa/publik/application/simpan-berkas-media", () => ({
   simpanBerkasMedia: mocks.simpanBerkasMedia,
 }));
-vi.mock("@/features/identitas-desa/application/identitas-desa-use-cases", () => ({
+vi.mock("@/features/info-desa/identitas-desa/application/identitas-desa-use-cases", () => ({
   simpanMediaIdentitas: mocks.simpanMediaIdentitas,
   hapusMediaIdentitas: vi.fn(),
 }));

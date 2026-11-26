@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getFormSurveiWargaData } from "@/features/pelayanan/application/survei-use-cases";
+import { getFormSurveiWargaData } from "@/features/layanan-warga/pelayanan/application/survei-use-cases";
 
 import { kirimJawabanSurveiAction } from "../actions";
 

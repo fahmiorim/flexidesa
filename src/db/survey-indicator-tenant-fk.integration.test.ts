@@ -4,7 +4,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { db } from "@/db";
 import { analisisIndikator, survey, surveySoal, villages } from "@/db/schema";
-import { deleteAnalisisIndikator } from "@/features/analisis/infrastructure/analisis-repository";
+import { deleteAnalisisIndikator } from "@/features/layanan-warga/analisis/infrastructure/analisis-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**

@@ -1,5 +1,5 @@
-import { bacaBerkasDokumenWarga } from "@/features/layanan-mandiri/application/warga-use-cases";
-import { CSP_MEDIA_SANDBOX } from "@/features/publik/domain/media";
+import { CSP_MEDIA_SANDBOX } from "@/features/media/domain/media";
+import { bacaBerkasDokumenWarga } from "@/features/pelayanan-persuratan/layanan-mandiri/application/warga-use-cases";
 import { getCurrentUser } from "@/lib/dal";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 

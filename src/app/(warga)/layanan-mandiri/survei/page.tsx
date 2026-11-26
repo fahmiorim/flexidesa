@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { getSurveiWargaPageData } from "@/features/pelayanan/application/survei-use-cases";
+import { getSurveiWargaPageData } from "@/features/layanan-warga/pelayanan/application/survei-use-cases";
 
 export const metadata = { title: "Survei Masyarakat" };
 export default async function Page() {

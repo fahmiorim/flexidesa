@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useId, useRef, useState } from "react";
 
-import type { Wilayah } from "@/features/wilayah/domain/data-wilayah";
-import { PickerWilayah } from "@/features/wilayah/presentation/picker-wilayah";
+import type { Wilayah } from "@/features/info-desa/wilayah/domain/data-wilayah";
+import { PickerWilayah } from "@/features/info-desa/wilayah/presentation/picker-wilayah";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
 import { GalatField, PesanDialog } from "./dialog-bagian";

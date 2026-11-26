@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { bacaBuktiAbsensiData } from "@/features/kepegawaian/application/use-cases";
+import { bacaBuktiAbsensiData } from "@/features/kehadiran/kepegawaian/application/absensi";
 
 const MIME: Record<string, string> = {
   jpg: "image/jpeg",

@@ -2,8 +2,8 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { NextResponse } from "next/server";
 
-import { getFaviconPublik } from "@/features/identitas-desa/application/identitas-desa-use-cases";
-import { bacaBerkasMediaPublik } from "@/features/publik/application/media-publik";
+import { getFaviconPublik } from "@/features/info-desa/identitas-desa/application/identitas-desa-use-cases";
+import { bacaBerkasMediaPublik } from "@/features/info-desa/publik/application/media-publik";
 import { isAppError } from "@/lib/errors";
 
 export const dynamic = "force-dynamic";

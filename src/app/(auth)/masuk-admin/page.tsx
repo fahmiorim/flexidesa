@@ -5,11 +5,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { LoginForm } from "@/app/(auth)/masuk/login-form";
-import { hostPlatformEksplisit } from "@/features/desa/application/platform-host";
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { adalahHostPlatform } from "@/features/desa/domain/host";
+import { hostPlatformEksplisit } from "@/features/info-desa/desa/application/platform-host";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { adalahHostPlatform } from "@/features/info-desa/desa/domain/host";
+import { urlMediaDesa } from "@/features/info-desa/publik/application/media-url";
 import { isSuperAdminUser } from "@/features/multi-desa/application/provisioning-use-cases";
-import { urlMediaDesa } from "@/features/publik/application/media-url";
 import { getCurrentUser } from "@/lib/dal";
 import { safeNextPath } from "@/lib/safe-next-path";
 

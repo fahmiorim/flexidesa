@@ -1,4 +1,4 @@
-import { normalisasiDaftarHost, normalizeBaseDomain } from "@/features/desa/domain/host";
+import { normalisasiDaftarHost, normalizeBaseDomain } from "@/features/info-desa/desa/domain/host";
 
 /**
  * Daftar origin yang dipercaya better-auth saat memeriksa asal permintaan.

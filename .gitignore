@@ -49,6 +49,7 @@ next-env.d.ts
 # local agent/tool artifacts
 .claude/
 .playwright-mcp/
+.tmp/
 /uploads
 # hasil capture visual QA lokal (1440/390)
 /artifacts

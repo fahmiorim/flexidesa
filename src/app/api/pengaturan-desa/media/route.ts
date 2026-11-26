@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { resolveVillageId } from "@/features/desa/application/resolve-village";
+import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
 import {
   hapusMediaIdentitas,
   simpanMediaIdentitas,
-} from "@/features/identitas-desa/application/identitas-desa-use-cases";
-import { simpanBerkasMedia } from "@/features/publik/application/simpan-berkas-media";
+} from "@/features/info-desa/identitas-desa/application/identitas-desa-use-cases";
+import { simpanBerkasMedia } from "@/features/info-desa/publik/application/simpan-berkas-media";
 import { requirePermission } from "@/lib/dal";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 

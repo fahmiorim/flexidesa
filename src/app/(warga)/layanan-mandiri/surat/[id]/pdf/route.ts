@@ -1,4 +1,4 @@
-import { getSuratPdfBytesWarga } from "@/features/surat/application/surat-use-cases";
+import { getSuratPdfBytesWarga } from "@/features/pelayanan-persuratan/surat/application/cetak";
 import { getCurrentUser } from "@/lib/dal";
 import { isAppError } from "@/lib/errors";
 

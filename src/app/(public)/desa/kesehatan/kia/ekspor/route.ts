@@ -4,7 +4,7 @@ import {
   namaBerkasKesehatan,
   responsCsvKesehatan,
   responsGalatKesehatan,
-} from "@/features/kesehatan/application/ekspor-kesehatan";
+} from "@/features/kependudukan/kesehatan/application/ekspor-kesehatan";
 
 export async function GET() {
   try {

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { detailWilayahAdministratif } from "@/features/wilayah/application/data-wilayah";
+import { detailWilayahAdministratif } from "@/features/info-desa/wilayah/application/data-wilayah";
 
 /**
  * Detail wilayah desa untuk melengkapi formulir identitas.

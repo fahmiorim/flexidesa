@@ -2,14 +2,14 @@ import "server-only";
 
 import type { db } from "@/db";
 import { menuPublik, rolePermissions, roles, modules as tabelModul, theme } from "@/db/schema";
-import { TENANT_TEMPLATE } from "@/db/templates/tenant-template";
 import {
   parseTemplateTenant,
   ROLE_ADMINISTRATOR,
   urutkanModulIndukDulu,
   type TemplateTenant,
 } from "@/features/multi-desa/domain/template-tenant";
-import { toCrudPermissions } from "@/features/rbac/domain/permission";
+import { TENANT_TEMPLATE } from "@/features/multi-desa/domain/tenant-template-data";
+import { toCrudPermissions } from "@/features/pengaturan/rbac/domain/permission";
 import { conflict } from "@/lib/errors";
 
 /**

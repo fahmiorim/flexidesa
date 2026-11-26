@@ -18,7 +18,7 @@ import {
   villagePlanSubscriptions,
   villages,
 } from "@/db/schema";
-import { TENANT_TEMPLATE } from "@/db/templates/tenant-template";
+import { TENANT_TEMPLATE } from "@/features/multi-desa/domain/tenant-template-data";
 import { provisionDesa } from "@/features/multi-desa/infrastructure/provisioning-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 

@@ -1,6 +1,6 @@
 import { Readable } from "node:stream";
 
-import { unduhBackupSql } from "@/features/database/application/database-use-cases";
+import { unduhBackupSql } from "@/features/pengaturan/database/application/database-use-cases";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 
 export async function GET(request: Request) {

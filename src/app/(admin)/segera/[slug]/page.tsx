@@ -30,14 +30,7 @@ export default async function SegeraPage({ params }: Params) {
 
   return (
     <div className="modul-page">
-      <PageHeading>
-        <div className="page-heading">
-          <div>
-            <h1>{info.judul}</h1>
-            <p>Halaman ini sedang dibangun.</p>
-          </div>
-        </div>
-      </PageHeading>
+      <PageHeading judul={<>{info.judul}</>} deskripsi={<>Halaman ini sedang dibangun.</>} />
       <section className="modul-card">
         <div className="beranda-card-head">
           <div>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { ModuleRecord } from "@/features/rbac/infrastructure/rbac-repository";
+import type { ModuleRecord } from "@/features/pengaturan/rbac/infrastructure/rbac-repository";
 
 import { buildMenu } from "./build-menu";
 
@@ -52,7 +52,7 @@ describe("buildMenu", () => {
         id: 3,
         slug: "keluarga",
         name: "Keluarga",
-        url: "/keluarga",
+        url: "/kependudukan/keluarga",
         parentId: 1,
         sortOrder: 2,
       }),
@@ -60,7 +60,7 @@ describe("buildMenu", () => {
         id: 2,
         slug: "penduduk",
         name: "Data Penduduk",
-        url: "/penduduk",
+        url: "/kependudukan/penduduk",
         parentId: 1,
         sortOrder: 1,
       }),
@@ -92,7 +92,13 @@ describe("buildMenu", () => {
   it("menjaga anak meski induk memiliki akses melalui pewarisan izin", () => {
     const modules = [
       modul({ id: 1, slug: "kependudukan", name: "Kependudukan", url: null, isGroup: true }),
-      modul({ id: 2, slug: "penduduk", name: "Data Penduduk", url: "/penduduk", parentId: 1 }),
+      modul({
+        id: 2,
+        slug: "penduduk",
+        name: "Data Penduduk",
+        url: "/kependudukan/penduduk",
+        parentId: 1,
+      }),
     ];
     const menu = buildMenu(modules, new Set(["kependudukan", "penduduk"]));
     expect(menu.length).toBe(1);

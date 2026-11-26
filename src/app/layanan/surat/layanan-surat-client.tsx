@@ -15,31 +15,9 @@ type Service = {
   satuanMasaBerlaku: string | null;
   lampiran: string[];
 };
-type Props = { desa: string; jenisSurat: Service[] };
+type Props = { desa: string; jenisSurat: Service[]; faq: { q: string; a: string }[] };
 
 const categories = ["Semua Surat", "Kependudukan", "Keterangan", "Usaha", "Sosial", "Lainnya"];
-const faqs = [
-  {
-    q: "Bagaimana cara mengajukan surat secara online?",
-    a: "Masuk atau buat akun Area Warga, pilih layanan surat yang dibutuhkan, lalu ikuti formulir dan instruksi yang tersedia.",
-  },
-  {
-    q: "Apakah saya harus memiliki akun warga?",
-    a: "Ya. Pengajuan surat dilakukan melalui Area Warga agar data pemohon dan status permohonan dapat dikelola dengan aman.",
-  },
-  {
-    q: "Bagaimana mengetahui status pengajuan?",
-    a: "Masuk ke akun Area Warga dan periksa bagian permohonan atau layanan surat untuk melihat informasi status yang tersedia.",
-  },
-  {
-    q: "Apa yang harus dilakukan jika permohonan perlu diperbaiki?",
-    a: "Periksa catatan dari petugas pada akun Anda. Lengkapi atau perbaiki data sesuai arahan, kemudian ikuti kembali proses pengajuan.",
-  },
-  {
-    q: "Bagaimana jika saya membutuhkan bantuan?",
-    a: "Hubungi pemerintah desa melalui halaman Kontak untuk memperoleh bantuan mengenai layanan surat.",
-  },
-];
 
 function categoryFor(item: Service) {
   const text = (item.klasifikasi ?? "") + " " + item.nama;
@@ -68,7 +46,7 @@ function iconFor(item: Service) {
   return "▤";
 }
 
-export function LayananSuratOnline({ desa, jenisSurat }: Props) {
+export function LayananSuratOnline({ desa, jenisSurat, faq: faqs }: Props) {
   const [category, setCategory] = useState("Semua Surat");
   const [query, setQuery] = useState("");
   const [openFaq, setOpenFaq] = useState(0);

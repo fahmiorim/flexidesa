@@ -2,9 +2,9 @@ import "server-only";
 
 import { NextResponse } from "next/server";
 
-import { AUDIT_EVENTS } from "@/features/audit/domain/audit";
-import type { IdentitasDesa } from "@/features/desa/infrastructure/desa-repository";
-import { getTenantFromRequest } from "@/features/publik/api/middleware";
+import type { IdentitasDesa } from "@/features/info-desa/desa/application/kontrak";
+import { getTenantFromRequest } from "@/features/info-desa/publik/api/middleware";
+import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
 import { batasiPermintaan } from "@/features/rate-limit/application/rate-limit";
 import { alamatIp } from "@/lib/client-ip";
 
@@ -68,7 +68,8 @@ export async function jalankanApiPublik<T>(
 
 async function catatAkses(request: Request, villageId: number, nama: string, ip: string) {
   // Impor dinamis menjaga modul ini tetap ringan dan mudah di-mock pada test.
-  const { recordAuditEvent } = await import("@/features/audit/application/audit-use-cases");
+  const { recordAuditEvent } =
+    await import("@/features/pengaturan/audit/application/audit-use-cases");
   await recordAuditEvent({
     villageId,
     event: AUDIT_EVENTS.apiPublikAkses,

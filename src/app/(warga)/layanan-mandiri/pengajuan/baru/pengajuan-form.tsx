@@ -31,11 +31,7 @@ export function PengajuanForm({
     .map((item) => item.trim())
     .filter(Boolean);
   return (
-    <form
-      action={ajukanLayananWargaAction}
-      className="modul-form-grid"
-      encType="multipart/form-data"
-    >
+    <form action={ajukanLayananWargaAction} className="modul-form-grid">
       <label className="modul-field">
         <span>Pilih layanan *</span>
         <select

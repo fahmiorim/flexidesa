@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
-import { eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { db } from "@/db";
@@ -17,7 +17,7 @@ import {
   suplemenTerdata,
   villages,
 } from "@/db/schema";
-import { deleteKeluarga } from "@/features/keluarga/infrastructure/keluarga-repository";
+import { deleteKeluarga } from "@/features/kependudukan/keluarga/infrastructure/keluarga-repository";
 import {
   deleteDtks,
   deleteLampiranDtks,
@@ -25,10 +25,10 @@ import {
   lepasLampiran,
   listLampiranTerpasang,
   tautkanLampiran,
-} from "@/features/penduduk/infrastructure/dtks-repository";
-import { deletePenduduk } from "@/features/penduduk/infrastructure/penduduk-repository";
-import { deleteSuplemen } from "@/features/penduduk/infrastructure/suplemen-repository";
-import { deleteRumahTangga } from "@/features/rumah-tangga/infrastructure/rumah-tangga-repository";
+} from "@/features/kependudukan/penduduk/infrastructure/dtks-repository";
+import { deletePenduduk } from "@/features/kependudukan/penduduk/infrastructure/penduduk-repository";
+import { deleteSuplemen } from "@/features/kependudukan/penduduk/infrastructure/suplemen-repository";
+import { deleteRumahTangga } from "@/features/kependudukan/rumah-tangga/infrastructure/rumah-tangga-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
@@ -772,21 +772,37 @@ describe("B2 composite tenant foreign keys DTKS dan Suplemen", () => {
       keluargaId: familyC,
     });
 
+    const bacaReferensi = async () => {
+      const [dtksTersimpan] = await db
+        .select({ villageId: dtks.villageId, keluargaId: dtks.keluargaId })
+        .from(dtks)
+        .where(eq(dtks.id, dtksC))
+        .limit(1);
+      const [terdataTersimpan] = await db
+        .select({ villageId: suplemenTerdata.villageId, keluargaId: suplemenTerdata.keluargaId })
+        .from(suplemenTerdata)
+        .where(eq(suplemenTerdata.id, terdataC))
+        .limit(1);
+      return { dtksTersimpan, terdataTersimpan };
+    };
+
+    // KK yang masih memiliki anggota sengaja dilewati agar riwayat kependudukan
+    // tidak hilang; DTKS dan Suplemen tetap menunjuk KK tersebut.
+    await deleteKeluarga(desaA, familyC);
+    const sebelumDilepas = await bacaReferensi();
+    expect(sebelumDilepas.dtksTersimpan).toEqual({ villageId: desaA, keluargaId: familyC });
+    expect(sebelumDilepas.terdataTersimpan).toEqual({ villageId: desaA, keluargaId: familyC });
+
+    // Setelah anggota dilepas, KK kosong dapat dihapus dan referensinya dibersihkan.
+    await db
+      .update(residents)
+      .set({ familyId: null })
+      .where(and(eq(residents.villageId, desaA), eq(residents.familyId, familyC)));
     await deleteKeluarga(desaA, familyC);
 
-    const [dtksTersimpan] = await db
-      .select({ villageId: dtks.villageId, keluargaId: dtks.keluargaId })
-      .from(dtks)
-      .where(eq(dtks.id, dtksC))
-      .limit(1);
-    const [terdataTersimpan] = await db
-      .select({ villageId: suplemenTerdata.villageId, keluargaId: suplemenTerdata.keluargaId })
-      .from(suplemenTerdata)
-      .where(eq(suplemenTerdata.id, terdataC))
-      .limit(1);
-
-    expect(dtksTersimpan).toEqual({ villageId: desaA, keluargaId: null });
-    expect(terdataTersimpan).toEqual({ villageId: desaA, keluargaId: null });
+    const sesudahDilepas = await bacaReferensi();
+    expect(sesudahDilepas.dtksTersimpan).toEqual({ villageId: desaA, keluargaId: null });
+    expect(sesudahDilepas.terdataTersimpan).toEqual({ villageId: desaA, keluargaId: null });
   });
 
   it("melepas referensi Suplemen saat penduduk dihapus lewat repository", async () => {

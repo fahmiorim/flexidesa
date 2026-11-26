@@ -1,22 +1,29 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { authenticateApiKey } from "@/features/api-eksternal/domain/auth";
-import { recordAuditEvent } from "@/features/audit/application/audit-use-cases";
-import { ajukanSuratEksternalData } from "@/features/layanan-mandiri/application/eksternal-use-cases";
+import { authenticateApiKey } from "@/features/api-eksternal/application/authenticate";
+import { ajukanSuratEksternalData } from "@/features/pelayanan-persuratan/layanan-mandiri/application/eksternal-use-cases";
+import { recordAuditEvent } from "@/features/pengaturan/audit/application/audit-use-cases";
 import { notFound } from "@/lib/errors";
 
 import { POST } from "./route";
 
-vi.mock("@/features/api-eksternal/domain/auth", () => ({ authenticateApiKey: vi.fn() }));
-vi.mock("@/features/audit/application/audit-use-cases", () => ({ recordAuditEvent: vi.fn() }));
+vi.mock("@/features/api-eksternal/application/authenticate", () => ({
+  authenticateApiKey: vi.fn(),
+}));
+vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
+  recordAuditEvent: vi.fn(),
+}));
 vi.mock("@/features/rate-limit/application/rate-limit", () => ({
   batasiPermintaan: vi.fn(async () => ({ dibatasi: false, sisa: 99, resetMs: 60_000 })),
 }));
-vi.mock("@/features/layanan-mandiri/application/eksternal-use-cases", async (importOriginal) => {
-  const asli = await importOriginal<Record<string, unknown>>();
-  return { ...asli, ajukanSuratEksternalData: vi.fn() };
-});
+vi.mock(
+  "@/features/pelayanan-persuratan/layanan-mandiri/application/eksternal-use-cases",
+  async (importOriginal) => {
+    const asli = await importOriginal<Record<string, unknown>>();
+    return { ...asli, ajukanSuratEksternalData: vi.fn() };
+  },
+);
 
 function permintaan(apiKey: string | null, body: unknown): NextRequest {
   return new NextRequest("http://localhost/api/eksternal/surat", {

@@ -17,6 +17,7 @@ import {
   villageDomains,
   villages,
 } from "@/db/schema";
+import { akarPenyimpananMedia } from "@/features/media/infrastructure/media-storage";
 import { setStatusDesa } from "@/features/multi-desa/infrastructure/kelola-desa-repository";
 import {
   eksporDataTenant,
@@ -24,7 +25,6 @@ import {
   purgeTenant,
 } from "@/features/multi-desa/infrastructure/lifecycle-tenant-repository";
 import { provisionDesa } from "@/features/multi-desa/infrastructure/provisioning-repository";
-import { akarPenyimpananMedia } from "@/features/publik/infrastructure/media-storage";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**

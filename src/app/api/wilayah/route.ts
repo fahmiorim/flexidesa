@@ -4,7 +4,7 @@ import {
   PESAN_INDUK_TIDAK_VALID,
   PESAN_TINGKAT_TIDAK_VALID,
   wilayahAdministratif,
-} from "@/features/wilayah/application/data-wilayah";
+} from "@/features/info-desa/wilayah/application/data-wilayah";
 
 /**
  * Referensi wilayah administratif Kepmendagri untuk picker desa.

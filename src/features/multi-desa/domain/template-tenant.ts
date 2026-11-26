@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { ACCESS_LEVELS } from "@/features/rbac/domain/permission";
+import { ACCESS_LEVELS } from "@/features/pengaturan/rbac/domain/permission";
 
 /**
  * Template fondasi tenant (Fase 2).

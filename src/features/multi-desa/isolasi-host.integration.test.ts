@@ -5,8 +5,8 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { db } from "@/db";
 import { villageDomains, villages } from "@/db/schema";
-import { susunPetaDesa, villageIdDariHost } from "@/features/desa/domain/tenant";
-import { listVillageDomains } from "@/features/desa/infrastructure/desa-repository";
+import { susunPetaDesa, villageIdDariHost } from "@/features/info-desa/desa/domain/tenant";
+import { listVillageDomains } from "@/features/info-desa/desa/infrastructure/desa-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import * as audit from "@/features/audit/application/audit-use-cases";
+import * as audit from "@/features/pengaturan/audit/application/audit-use-cases";
 import * as dal from "@/lib/dal";
 
 import * as repo from "../infrastructure/notifikasi-repository";
@@ -8,10 +8,12 @@ import * as kirim from "./kirim-notifikasi";
 import { daftarNotifikasiAdmin, kirimNotifikasiManual } from "./notifikasi-use-cases";
 
 vi.mock("@/lib/dal", () => ({ requirePermission: vi.fn() }));
-vi.mock("@/features/desa/application/resolve-village", () => ({
+vi.mock("@/features/info-desa/desa/application/resolve-village", () => ({
   resolveVillageId: vi.fn(async () => 4),
 }));
-vi.mock("@/features/audit/application/audit-use-cases", () => ({ recordAuditEvent: vi.fn() }));
+vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
+  recordAuditEvent: vi.fn(),
+}));
 vi.mock("../infrastructure/notifikasi-repository", () => ({
   listNotifikasi: vi.fn(async () => []),
   ringkasanNotifikasi: vi.fn(async () => ({ total: 3, sukses: 1, gagal: 1, dilewati: 1 })),

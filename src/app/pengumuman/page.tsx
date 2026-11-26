@@ -1,12 +1,12 @@
 import Link from "next/link";
 
-import { agendaMendatang } from "@/features/agenda/application/agenda-use-cases";
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
+import { agendaMendatang } from "@/features/info-desa/agenda/application/agenda-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import {
   daftarBerita,
   daftarKategoriBerita,
   hitungBeritaPublik,
-} from "@/features/publik/application/konten-publik";
+} from "@/features/info-desa/publik/application/konten-publik";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./pengumuman.module.css";

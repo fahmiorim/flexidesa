@@ -1,18 +1,17 @@
 /**
- * Unit tests untuk pengaturan-berkas domain.
+ * Unit tests untuk pengaturan-berkas domain (murni, tanpa DB).
  *
  * Menguji:
- * - Fallback ke default domain saat settings DB kosong
- * - Override dari DB
- * - Validasi MIME, ukuran, jumlah file
+ * - Fallback ke default domain saat baris DB kosong
+ * - Override dari baris DB
+ * - Validasi MIME, ukuran, jumlah file, dan input simpan
  */
 
-import { beforeEach, describe, expect, it, vi } from "vitest";
-
-import { db } from "@/db";
+import { describe, expect, it } from "vitest";
 
 import {
-  getMediaSettings,
+  pengaturanEfektifDariBaris,
+  validasiInputPengaturan,
   validasiJumlahFile,
   validasiMediaDenganPengaturan,
   type MediaSettingsEfektif,
@@ -20,157 +19,132 @@ import {
 
 const MB = 1024 * 1024;
 
-// Mock drizzle dengan chain builder yang sederhana
-function createMockDb(returnValue: unknown = []) {
-  const chain = {
-    from: vi.fn().mockReturnThis(),
-    where: vi.fn().mockResolvedValue(returnValue),
-    insert: vi.fn().mockReturnThis(),
-    values: vi.fn().mockReturnThis(),
-    onDuplicateKeyUpdate: vi.fn().mockReturnThis(),
-    set: vi.fn().mockReturnThis(),
-    delete: vi.fn().mockReturnThis(),
-  };
-  return {
-    db: {
-      select: vi.fn().mockReturnValue(chain),
-      insert: vi.fn().mockReturnValue(chain),
-      delete: vi.fn().mockReturnValue(chain),
-    },
-  };
-}
+describe("pengaturanEfektifDariBaris - fallback ke default", () => {
+  it("harus mengembalikan default untuk kategori 'surat' saat baris kosong", () => {
+    const result = pengaturanEfektifDariBaris("surat", null);
+    expect(result.kategori).toBe("surat");
+    expect(result.maxSizeBytes).toBe(10 * MB);
+    expect(result.overridden).toBe(false);
+  });
 
-// Mock module sebelum import
-vi.mock("@/db", async () => {
-  const mod = await vi.importActual("@/db");
-  const { db } = createMockDb([]);
-  return { ...mod, db, mediaSettings: {} };
+  it("harus mengembalikan default untuk kategori 'dokumen'", () => {
+    const result = pengaturanEfektifDariBaris("dokumen", null);
+    expect(result.kategori).toBe("dokumen");
+    expect(result.maxSizeBytes).toBe(20 * MB);
+  });
 });
 
-describe("pengaturan-berkas domain", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
+describe("pengaturanEfektifDariBaris - override dari DB", () => {
+  it("harus mengembalikan pengaturan dari baris DB jika ada", () => {
+    const result = pengaturanEfektifDariBaris("surat", {
+      villageId: 1,
+      kategori: "surat",
+      maxFiles: 5,
+      maxSizeBytes: 20 * MB,
+      mimeAllowlist: ["application/pdf"],
+    } as never);
+    expect(result.maxFiles).toBe(5);
+    expect(result.maxSizeBytes).toBe(20 * MB);
+    expect(result.overridden).toBe(true);
+  });
+});
+
+describe("validasiInputPengaturan", () => {
+  it("menerima input sah", () => {
+    expect(() =>
+      validasiInputPengaturan({
+        kategori: "surat",
+        mimeAllowlist: ["application/pdf"],
+        maxFiles: 5,
+        maxSizeMb: 10,
+      }),
+    ).not.toThrow();
   });
 
-  describe("getMediaSettings - fallback ke default", () => {
-    it("harus mengembalikan default untuk kategori 'surat' saat DB kosong", async () => {
-      const mockSelect = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          where: vi.fn().mockResolvedValue([]),
-        }),
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (db.select as any).mockImplementation(mockSelect);
-
-      const result = await getMediaSettings(1, "surat");
-      expect(result.kategori).toBe("surat");
-      expect(result.maxSizeBytes).toBe(10 * MB);
-    });
-
-    it("harus mengembalikan default untuk kategori 'dokumen'", async () => {
-      const mockSelect = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          where: vi.fn().mockResolvedValue([]),
-        }),
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (db.select as any).mockImplementation(mockSelect);
-
-      const result = await getMediaSettings(1, "dokumen");
-      expect(result.kategori).toBe("dokumen");
-      expect(result.maxSizeBytes).toBe(20 * MB);
-    });
+  it("menolak kategori tidak dikenal", () => {
+    expect(() =>
+      validasiInputPengaturan({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        kategori: "tidak-ada" as any,
+        mimeAllowlist: null,
+        maxFiles: null,
+        maxSizeMb: null,
+      }),
+    ).toThrow("Kategori tidak dikenali.");
   });
 
-  describe("getMediaSettings - override dari DB", () => {
-    it("harus mengembalikan pengaturan dari DB jika ada", async () => {
-      const mockSelect = vi.fn().mockReturnValue({
-        from: vi.fn().mockReturnValue({
-          where: vi.fn().mockResolvedValue([
-            {
-              villageId: 1,
-              kategori: "surat",
-              maxFiles: 5,
-              maxSizeBytes: 20 * MB,
-              mimeAllowlist: JSON.stringify(["application/pdf"]),
-            },
-          ]),
-        }),
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (db.select as any).mockImplementation(mockSelect);
+  it("menolak MIME tanpa garis miring", () => {
+    expect(() =>
+      validasiInputPengaturan({
+        kategori: "surat",
+        mimeAllowlist: ["pdf"],
+        maxFiles: null,
+        maxSizeMb: null,
+      }),
+    ).toThrow(/MIME tidak valid/);
+  });
+});
 
-      const result = await getMediaSettings(1, "surat");
-      expect(result.maxFiles).toBe(5);
-      expect(result.maxSizeBytes).toBe(20 * MB);
-      expect(result.overridden).toBe(true);
-    });
+describe("validasiMediaDenganPengaturan", () => {
+  it("menerima file yang valid", () => {
+    const settings: MediaSettingsEfektif = {
+      kategori: "surat",
+      maxFiles: 5,
+      maxSizeBytes: 10 * MB,
+      mimeAllowlist: ["application/pdf"],
+      overridden: false,
+    };
+    const result = validasiMediaDenganPengaturan(settings, "application/pdf", MB * 5);
+    expect(result).toBeUndefined();
   });
 
-  describe("validasiMediaDenganPengaturan", () => {
-    it("menerima file yang valid", () => {
-      const settings: MediaSettingsEfektif = {
-        kategori: "surat",
-        maxFiles: 5,
-        maxSizeBytes: 10 * MB,
-        mimeAllowlist: ["application/pdf"],
-        overridden: false,
-      };
-      const result = validasiMediaDenganPengaturan(settings, "application/pdf", MB * 5);
-      expect(result).toBeUndefined();
-    });
-
-    it("menolak file dengan ukuran melebihi batas", () => {
-      const settings: MediaSettingsEfektif = {
-        kategori: "surat",
-        maxFiles: 5,
-        maxSizeBytes: 10 * MB,
-        mimeAllowlist: ["application/pdf"],
-        overridden: false,
-      };
-      const result = validasiMediaDenganPengaturan(settings, "application/pdf", MB * 15);
-      expect(result).toBeDefined();
-    });
-
-    it("menolak MIME yang tidak didukung", () => {
-      const settings: MediaSettingsEfektif = {
-        kategori: "surat",
-        maxFiles: 5,
-        maxSizeBytes: 10 * MB,
-        mimeAllowlist: ["application/pdf"],
-        overridden: false,
-      };
-      const result = validasiMediaDenganPengaturan(settings, "image/jpeg", MB * 5);
-      expect(result).toBeDefined();
-    });
+  it("menolak file dengan ukuran melebihi batas", () => {
+    const settings: MediaSettingsEfektif = {
+      kategori: "surat",
+      maxFiles: 5,
+      maxSizeBytes: 10 * MB,
+      mimeAllowlist: ["application/pdf"],
+      overridden: false,
+    };
+    const result = validasiMediaDenganPengaturan(settings, "application/pdf", MB * 15);
+    expect(result).toBeDefined();
   });
 
-  describe("validasiJumlahFile", () => {
-    it("menerima jumlah file dalam batas", () => {
-      const settings: MediaSettingsEfektif = {
-        kategori: "surat",
-        maxFiles: 5,
-        maxSizeBytes: 10 * MB,
-        mimeAllowlist: ["application/pdf"],
-        overridden: false,
-      };
-      const result = validasiJumlahFile(settings, 3);
-      expect(result).toBeUndefined();
-    });
+  it("menolak MIME yang tidak didukung", () => {
+    const settings: MediaSettingsEfektif = {
+      kategori: "surat",
+      maxFiles: 5,
+      maxSizeBytes: 10 * MB,
+      mimeAllowlist: ["application/pdf"],
+      overridden: false,
+    };
+    const result = validasiMediaDenganPengaturan(settings, "image/jpeg", MB * 5);
+    expect(result).toBeDefined();
+  });
+});
 
-    it("menolak jumlah file melebihi batas", () => {
-      const settings: MediaSettingsEfektif = {
-        kategori: "surat",
-        maxFiles: 5,
-        maxSizeBytes: 10 * MB,
-        mimeAllowlist: ["application/pdf"],
-        overridden: false,
-      };
-      const result = validasiJumlahFile(settings, 6);
-      expect(result).toBeDefined();
-    });
+describe("validasiJumlahFile", () => {
+  it("menerima jumlah file dalam batas", () => {
+    const settings: MediaSettingsEfektif = {
+      kategori: "surat",
+      maxFiles: 5,
+      maxSizeBytes: 10 * MB,
+      mimeAllowlist: ["application/pdf"],
+      overridden: false,
+    };
+    const result = validasiJumlahFile(settings, 3);
+    expect(result).toBeUndefined();
   });
 
-  // Catatan: upsertMediaSettings tidak diuji secara langsung karena kompleksitas mock drizzle.
-  // Test validasi dan fallback sudah mencakup logika domain utama.
+  it("menolak jumlah file melebihi batas", () => {
+    const settings: MediaSettingsEfektif = {
+      kategori: "surat",
+      maxFiles: 5,
+      maxSizeBytes: 10 * MB,
+      mimeAllowlist: ["application/pdf"],
+      overridden: false,
+    };
+    const result = validasiJumlahFile(settings, 6);
+    expect(result).toBeDefined();
+  });
 });

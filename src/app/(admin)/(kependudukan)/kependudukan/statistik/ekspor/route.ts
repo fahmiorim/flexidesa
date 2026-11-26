@@ -1,0 +1,54 @@
+import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
+import { getNamaDesaUseCase } from "@/features/info-desa/desa/application/use-cases";
+import {
+  getStatistikKependudukanData,
+  labelFilterWilayah,
+  nilaiFilter,
+} from "@/features/kependudukan/statistik/application/statistik-kependudukan-use-cases";
+import {
+  buildStatistikKependudukanCsv,
+  statistikKependudukanFilename,
+} from "@/features/kependudukan/statistik/domain/statistik-kependudukan";
+import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
+import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
+import { getCurrentUser } from "@/lib/dal";
+
+export async function GET(
+  request: Request,
+  _context: RouteContext<"/kependudukan/statistik/ekspor">,
+) {
+  const user = await getCurrentUser();
+  if (!user) return new Response("Sesi Anda telah berakhir.", { status: 401 });
+  if (!hasPermission(user.permissions, RESOURCES.penduduk, "read")) {
+    return new Response("Anda tidak memiliki hak akses.", { status: 403 });
+  }
+
+  const url = new URL(request.url);
+  const dusun = nilaiFilter(url.searchParams.get("dusun") ?? undefined);
+  const rw = nilaiFilter(url.searchParams.get("rw") ?? undefined);
+  const rt = nilaiFilter(url.searchParams.get("rt") ?? undefined);
+  const villageId = await resolveVillageId(user);
+  const [namaDesa, { kategori, hasil }] = await Promise.all([
+    getNamaDesaUseCase(villageId),
+    getStatistikKependudukanData(villageId, {
+      kategoriSlug: nilaiFilter(url.searchParams.get("kategori") ?? undefined) ?? "",
+      dusun,
+      rw,
+      rt,
+    }),
+  ]);
+
+  const csv = buildStatistikKependudukanCsv({
+    namaDesa,
+    hasil,
+    filter: labelFilterWilayah({ dusun, rw, rt }),
+  });
+
+  return new Response(csv, {
+    headers: {
+      "Content-Type": "text/csv; charset=utf-8",
+      "Content-Disposition": `attachment; filename="${statistikKependudukanFilename(kategori.slug)}"`,
+      "Cache-Control": "private, no-store",
+    },
+  });
+}

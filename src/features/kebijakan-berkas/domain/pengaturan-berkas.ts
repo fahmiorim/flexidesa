@@ -4,14 +4,17 @@
  * Mengganti konstanta hardcoded (`MIME_LAMPIRAN_SURAT`, `MAKS_LAMPIRAN`,
  * `MAKS_UKURAN_LAMPIRAN`) dengan konfigurasi yang dapat diubah operator.
  * Nilai NULL di DB berarti kembali ke default domain (fallback).
+ *
+ * Berkas ini murni: tanpa akses database. Pemuatan/parzysimpanan baris DB
+ * dilakukan `kebijakan-berkas/infrastructure/pengaturan-berkas-repository.ts`,
+ * dan penggabungan baris dengan default memakai `pengaturanEfektifDariBaris`.
  */
 
-import { and, eq } from "drizzle-orm";
-
-import { db } from "@/db";
-import { mediaSettings } from "@/db/schema/media-settings";
+import type { mediaSettings } from "@/db/schema/media-settings";
 
 const MB = 1024 * 1024;
+
+export type BarisPengaturanBerkas = typeof mediaSettings.$inferSelect;
 
 /**
  * Kategori yang dikenali untuk pengaturan lampiran.
@@ -160,63 +163,14 @@ export function validasiJumlahFile(
   }
   return undefined;
 }
-// Public API
-// ---------------------------------------------------------------------------
 
 /**
- * Ambil pengaturan efektif untuk satu desa & kategori.
- *
- * Nilai dari DB meng-override default domain. Kolom NULL = ambil dari default.
+ * Gabungkan satu baris DB dengan default domain menjadi pengaturan efektif.
+ * Baris `null` berarti belum ada override — kembalikan default kategori.
  */
-export async function getMediaSettings(
-  villageId: number,
+export function pengaturanEfektifDariBaris(
   kategori: KategoriLampiran,
-): Promise<MediaSettingsEfektif> {
-  const [row] = await db
-    .select()
-    .from(mediaSettings)
-    .where(and(eq(mediaSettings.villageId, villageId), eq(mediaSettings.kategori, kategori)));
-
-  const overridden = !!row;
-  const mimeAllowlist =
-    row?.mimeAllowlist && Array.isArray(row.mimeAllowlist) && row.mimeAllowlist.length > 0
-      ? (row.mimeAllowlist as string[])
-      : defaultMimeUntuk(kategori);
-  const maxFiles =
-    row?.maxFiles && row.maxFiles > 0 ? row.maxFiles : defaultMaxFilesUntuk(kategori);
-  const maxSizeBytes =
-    row?.maxSizeBytes && row.maxSizeBytes > 0 ? row.maxSizeBytes : defaultMaxSizeUntuk(kategori);
-
-  return {
-    kategori,
-    mimeAllowlist,
-    maxFiles,
-    maxSizeBytes,
-    overridden,
-  };
-}
-
-/**
- * Ambil seluruh pengaturan untuk satu desa (semua kategori).
- *
- * Kategori tanpa override tetap mengembalikan default domain.
- */
-export async function getAllMediaSettings(villageId: number): Promise<MediaSettingsEfektif[]> {
-  const rows = await db.select().from(mediaSettings).where(eq(mediaSettings.villageId, villageId));
-
-  const map = new Map<string, (typeof rows)[number]>();
-  for (const r of rows) map.set(r.kategori, r);
-
-  return KATEGORI_LAMPIRAN.map((kat) => {
-    const row = map.get(kat) ?? null;
-    return getMediaSettingsFromRow(villageId, kat, row);
-  });
-}
-
-function getMediaSettingsFromRow(
-  _villageId: number,
-  kategori: KategoriLampiran,
-  row: typeof mediaSettings.$inferSelect | null,
+  row: BarisPengaturanBerkas | null,
 ): MediaSettingsEfektif {
   const overridden = !!row;
   const mimeAllowlist =
@@ -231,19 +185,12 @@ function getMediaSettingsFromRow(
   return { kategori, mimeAllowlist, maxFiles, maxSizeBytes, overridden };
 }
 
-/**
- * Simpan atau perbarui pengaturan untuk satu desa & kategori.
- */
-export async function upsertMediaSettings(
-  villageId: number,
-  input: MediaSettingsInput,
-): Promise<void> {
-  // Validasi kategori
+/** Validasi input sebelum disimpan; melempar `Error` bila tidak sah. */
+export function validasiInputPengaturan(input: MediaSettingsInput): void {
   if (!KATEGORI_LAMPIRAN.includes(input.kategori as KategoriLampiran)) {
     throw new Error("Kategori tidak dikenali.");
   }
 
-  // Validasi MIME: setiap entry harus string dengan format yang valid
   if (input.mimeAllowlist) {
     for (const m of input.mimeAllowlist) {
       if (typeof m !== "string" || !m.includes("/")) {
@@ -252,44 +199,16 @@ export async function upsertMediaSettings(
     }
   }
 
-  // Validasi maxFiles
   if (input.maxFiles !== null && (input.maxFiles < 0 || input.maxFiles > 100)) {
     throw new Error("Jumlah file maksimal harus antara 1-100.");
   }
 
-  // Validasi maxSizeMb
   if (input.maxSizeMb !== null && (input.maxSizeMb < 0.1 || input.maxSizeMb > 500)) {
     throw new Error("Ukuran file maksimal harus antara 0.1-500 MB.");
   }
-
-  const maxSizeBytes = input.maxSizeMb !== null ? Math.round(input.maxSizeMb * MB) : null;
-
-  await db
-    .insert(mediaSettings)
-    .values({
-      villageId,
-      kategori: input.kategori,
-      mimeAllowlist: input.mimeAllowlist,
-      maxFiles: input.maxFiles,
-      maxSizeBytes,
-    })
-    .onDuplicateKeyUpdate({
-      set: {
-        mimeAllowlist: input.mimeAllowlist,
-        maxFiles: input.maxFiles,
-        maxSizeBytes,
-      },
-    });
 }
 
-/**
- * Hapus pengaturan (kembali ke default domain).
- */
-export async function resetMediaSettings(
-  villageId: number,
-  kategori: KategoriLampiran,
-): Promise<void> {
-  await db
-    .delete(mediaSettings)
-    .where(and(eq(mediaSettings.villageId, villageId), eq(mediaSettings.kategori, kategori)));
+/** Konversi `maxSizeMb` input menjadi byte untuk disimpan; `null` tetap `null`. */
+export function maxSizeBytesDariInput(maxSizeMb: number | null): number | null {
+  return maxSizeMb !== null ? Math.round(maxSizeMb * MB) : null;
 }

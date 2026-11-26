@@ -12,8 +12,8 @@ import {
   computeEffectivePermissions,
   hasPermission,
   type EffectivePermissions,
-} from "@/features/rbac/application/authorization";
-import type { Action } from "@/features/rbac/domain/permission";
+} from "@/features/pengaturan/rbac/application/authorization";
+import type { Action } from "@/features/pengaturan/rbac/domain/permission";
 import { auth } from "@/lib/auth";
 import { forbidden, unauthenticated } from "@/lib/errors";
 
@@ -235,6 +235,28 @@ export async function requireWargaAktif(): Promise<WargaUser> {
 
   if (user.mustChangePin) {
     throw forbidden("Ganti PIN sementara terlebih dahulu sebelum memakai layanan.");
+  }
+
+  return user;
+}
+
+/**
+ * Wajib punya izin `action` atas **salah satu** `resources`; jika tidak, lempar
+ * kesalahan.
+ *
+ * Dipakai halaman yang menggabungkan beberapa menu pemilik, misalnya Website →
+ * Konten yang menampung berita, galeri, agenda, dan slider. Server Action tetap
+ * harus memakai `requirePermission` untuk resource spesifik aksinya.
+ */
+export async function requireAnyPermission(
+  resources: readonly string[],
+  action: Action,
+): Promise<CurrentUser> {
+  const user = await requireUser();
+  if (user.passwordExpired) throw forbidden();
+
+  if (!resources.some((resource) => hasPermission(user.permissions, resource, action))) {
+    throw forbidden();
   }
 
   return user;

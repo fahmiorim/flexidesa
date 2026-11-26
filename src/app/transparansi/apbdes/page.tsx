@@ -1,24 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { listLaporanDokumenApbdesPublik } from "@/features/keuangan/application/laporan-dokumen-publik-use-cases";
-import { getLaporanApbdesPublik } from "@/features/keuangan/application/laporan-publik-use-cases";
-import { formatMoney, formatRupiah, toMinor } from "@/features/keuangan/domain/keuangan";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { listLaporanDokumenApbdesPublik } from "@/features/keuangan-desa/keuangan/application/laporan-dokumen-publik-use-cases";
+import { getLaporanApbdesPublik } from "@/features/keuangan-desa/keuangan/application/laporan-publik-use-cases";
+import { formatMoney, toMinor } from "@/features/keuangan-desa/keuangan/domain/keuangan";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
 import styles from "./apbdes.module.css";
+import { palette } from "./bagian-apbdes";
+import { RealisasiAnggaran } from "./bagian-realisasi";
+import { RincianBelanja, RincianPendapatan } from "./bagian-rincian";
+import { KomposisiBelanja, RingkasanApbdes } from "./bagian-ringkasan";
+import { DokumenApbdesTerkait, GrafikRealisasi, InformasiApbdes } from "./bagian-samping";
 import { PrintApbdesButton } from "./print-apbdes-button";
 
 export const metadata: Metadata = { title: "APBDes & Transparansi Anggaran" };
 export const dynamic = "force-dynamic";
 
 type Props = { searchParams: Promise<{ tahun?: string }> };
-const palette = ["#1684f5", "#b64bf0", "#16b84b", "#f5a400", "#ed39a8"];
 
-function persen(value: number) {
-  return value.toLocaleString("id-ID", { maximumFractionDigits: 2 }) + "%";
-}
 function locationLabel(desa: {
   namaKecamatan: string | null;
   namaKabupaten: string | null;
@@ -33,12 +34,6 @@ function mediaUrl(value: string | null, villageId: number): string | null {
     return null;
   const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
   return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
-}
-function tanggal(value: string) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? "Tanggal tidak tersedia"
-    : new Intl.DateTimeFormat("id-ID", { dateStyle: "long" }).format(date);
 }
 
 export default async function ApbdesPublikPage({ searchParams }: Props) {
@@ -74,7 +69,7 @@ export default async function ApbdesPublikPage({ searchParams }: Props) {
     const start = bobotBidang.slice(0, index).reduce((sum, value) => sum + value, 0);
     return {
       ...row,
-      color: palette[index % palette.length],
+      color: palette[index % palette.length] ?? "#1684f5",
       start,
       end: start + (bobotBidang[index] ?? 0),
     };
@@ -158,353 +153,37 @@ export default async function ApbdesPublikPage({ searchParams }: Props) {
         {hasData ? (
           <div className={styles.dashboard}>
             <div className={styles.mainColumn}>
-              <section id="apbdes" className={styles.panel}>
-                <div className={styles.sectionTitle}>
-                  <span className={styles.titleIcon}>▥</span>
-                  <div>
-                    <h2>Ringkasan APBDes Tahun {laporan.tahun}</h2>
-                    <p>Rencana pendapatan, belanja, dan pembiayaan {desa.namaDesa ?? "desa"}.</p>
-                  </div>
-                </div>
-                <div className={styles.summaryCards}>
-                  <article className={styles.incomeCard}>
-                    <span>↓</span>
-                    <div>
-                      <small>Pendapatan Desa</small>
-                      <strong>{formatRupiah(totalPendapatan)}</strong>
-                    </div>
-                  </article>
-                  <article className={styles.expenseCard}>
-                    <span>↑</span>
-                    <div>
-                      <small>Belanja Desa</small>
-                      <strong>{formatRupiah(totalBelanja)}</strong>
-                    </div>
-                  </article>
-                  <article className={styles.financeCard}>
-                    <span>=</span>
-                    <div>
-                      <small>Pembiayaan (Netto)</small>
-                      <strong>{formatRupiah(totalPembiayaan)}</strong>
-                    </div>
-                  </article>
-                </div>
-              </section>
-              <section className={styles.panel}>
-                <div className={styles.sectionTitle}>
-                  <span className={styles.titleIcon}>▱</span>
-                  <div>
-                    <h2>Komposisi Belanja Desa</h2>
-                    <p>Alokasi anggaran berdasarkan bidang belanja.</p>
-                  </div>
-                </div>
-                {donut.length ? (
-                  <div className={styles.composition}>
-                    <div className={styles.donutWrap}>
-                      <div className={styles.donut} style={donutStyle}>
-                        <div>
-                          <small>Total Belanja</small>
-                          <strong>{formatRupiah(totalBelanja)}</strong>
-                        </div>
-                      </div>
-                    </div>
-                    <div className={styles.legend}>
-                      {donut.map((row) => (
-                        <div key={row.kode}>
-                          <i style={{ background: row.color }} />
-                          <span>{row.uraian}</span>
-                          <strong>{formatRupiah(row.anggaran)}</strong>
-                          <small>
-                            {persen(
-                              komposisiTotal ? (Number(row.anggaran) / komposisiTotal) * 100 : 0,
-                            )}
-                          </small>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  <p className={styles.empty}>
-                    Rincian bidang belanja belum tersedia untuk tahun anggaran ini.
-                  </p>
-                )}
-              </section>
+              <RingkasanApbdes
+                laporan={laporan}
+                namaDesa={desa.namaDesa}
+                totalPendapatan={totalPendapatan}
+                totalBelanja={totalBelanja}
+                totalPembiayaan={totalPembiayaan}
+              />
+              <KomposisiBelanja
+                donut={donut}
+                donutStyle={donutStyle}
+                totalBelanja={totalBelanja}
+                komposisiTotal={komposisiTotal}
+              />
               <div className={styles.tablesGrid}>
-                <section id="laporan" className={styles.panel}>
-                  <div className={styles.sectionTitle}>
-                    <span className={styles.titleIcon}>♧</span>
-                    <div>
-                      <h2>Rincian Pendapatan Desa</h2>
-                      <p>Rencana per sumber pendapatan.</p>
-                    </div>
-                  </div>
-                  {laporan.pendapatan.length ? (
-                    <div className={styles.tableWrap}>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Sumber Pendapatan</th>
-                            <th>Rencana (Rp)</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {laporan.pendapatan.map((row, index) => (
-                            <tr key={row.kode}>
-                              <td>{index + 1}</td>
-                              <td>{row.uraian}</td>
-                              <td>{formatRupiah(row.anggaran)}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                        <tfoot>
-                          <tr>
-                            <th colSpan={2}>Total Pendapatan Desa</th>
-                            <th>{formatRupiah(totalPendapatan)}</th>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
-                  ) : (
-                    <p className={styles.empty}>
-                      Rincian sumber pendapatan belum diisi pada APBDes.
-                    </p>
-                  )}
-                </section>
-                <section className={styles.panel}>
-                  <div className={styles.sectionTitle}>
-                    <span className={styles.titleIcon}>🛒</span>
-                    <div>
-                      <h2>Rincian Belanja Desa</h2>
-                      <p>Rencana anggaran per bidang.</p>
-                    </div>
-                  </div>
-                  {laporan.bidang.length ? (
-                    <div className={styles.tableWrap}>
-                      <table>
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Bidang Belanja</th>
-                            <th>Rencana (Rp)</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {laporan.bidang.map((row, index) => (
-                            <tr key={row.kode}>
-                              <td>{index + 1}</td>
-                              <td>{row.uraian}</td>
-                              <td>{formatRupiah(row.anggaran)}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                        <tfoot>
-                          <tr>
-                            <th colSpan={2}>Total Belanja Desa</th>
-                            <th>{formatRupiah(totalBelanja)}</th>
-                          </tr>
-                        </tfoot>
-                      </table>
-                    </div>
-                  ) : (
-                    <p className={styles.empty}>Rincian bidang belanja belum diisi pada APBDes.</p>
-                  )}
-                </section>
+                <RincianPendapatan
+                  pendapatan={laporan.pendapatan}
+                  totalPendapatan={totalPendapatan}
+                />
+                <RincianBelanja bidang={laporan.bidang} totalBelanja={totalBelanja} />
               </div>
-              <section id="realisasi" className={styles.panel}>
-                <div className={styles.sectionTitle}>
-                  <span className={styles.titleIcon}>▥</span>
-                  <div>
-                    <h2>Realisasi Anggaran {laporan.tahun}</h2>
-                    <p>
-                      Perbandingan rencana dan realisasi yang telah dicatat pada tahun anggaran ini.
-                    </p>
-                  </div>
-                  <span className={styles.periodTag}>Tahunan</span>
-                </div>
-                <div className={styles.realizationCards}>
-                  <article>
-                    <span>▤</span>
-                    <div>
-                      <small>Realisasi Belanja</small>
-                      <strong>{formatRupiah(realisasiBelanja)}</strong>
-                    </div>
-                  </article>
-                  <article>
-                    <span>%</span>
-                    <div>
-                      <small>Persentase</small>
-                      <strong>{persen(persenRealisasi)}</strong>
-                    </div>
-                  </article>
-                  <article>
-                    <span>◷</span>
-                    <div>
-                      <small>Sisa Anggaran</small>
-                      <strong>{formatRupiah(sisaBelanjaTampil)}</strong>
-                    </div>
-                  </article>
-                </div>
-                {laporan.bidang.length ? (
-                  <div className={styles.realizationList}>
-                    {laporan.bidang.map((row, index) => (
-                      <div className={styles.realizationRow} key={row.kode}>
-                        <span
-                          className={styles.rowIcon}
-                          style={{ color: palette[index % palette.length] }}
-                        >
-                          ✥
-                        </span>
-                        <strong>{row.uraian}</strong>
-                        <div className={styles.progressTrack}>
-                          <i
-                            style={{
-                              width: Math.min(100, Math.max(0, row.persen)) + "%",
-                              background: palette[index % palette.length],
-                            }}
-                          />
-                        </div>
-                        <span>
-                          {formatRupiah(row.realisasi)} / {formatRupiah(row.anggaran)}
-                        </span>
-                        <b>{persen(row.persen)}</b>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className={styles.empty}>Belum ada rincian realisasi per bidang.</p>
-                )}
-              </section>
+              <RealisasiAnggaran
+                laporan={laporan}
+                realisasiBelanja={realisasiBelanja}
+                persenRealisasi={persenRealisasi}
+                sisaBelanjaTampil={sisaBelanjaTampil}
+              />
             </div>
             <aside className={styles.sideColumn}>
-              <section className={styles.panel + " " + styles.infoPanel}>
-                <div className={styles.sectionTitle}>
-                  <span className={styles.titleIcon}>ⓘ</span>
-                  <h2>Informasi APBDes</h2>
-                </div>
-                <p>
-                  APBDes merupakan rencana keuangan tahunan pemerintah desa yang ditetapkan melalui
-                  peraturan desa dan menjadi dasar pelaksanaan pembangunan serta pelayanan
-                  masyarakat.
-                </p>
-                <div className={styles.infoItem}>
-                  <span>⚖</span>
-                  <div>
-                    <strong>Dasar Pengelolaan</strong>
-                    <small>
-                      Pengelolaan keuangan desa mengikuti ketentuan peraturan perundang-undangan
-                      yang berlaku.
-                    </small>
-                  </div>
-                </div>
-                <div className={styles.infoItem}>
-                  <span>▤</span>
-                  <div>
-                    <strong>Dokumen Penetapan</strong>
-                    <small>
-                      {dokumen.length
-                        ? dokumen.length +
-                          " dokumen laporan diserahkan untuk tahun " +
-                          laporan.tahun
-                        : "Dokumen penetapan belum diunggah atau belum diserahkan."}
-                    </small>
-                  </div>
-                </div>
-                <div className={styles.infoItem}>
-                  <span>▦</span>
-                  <div>
-                    <strong>Tahun Anggaran</strong>
-                    <small>{laporan.tahun}</small>
-                  </div>
-                </div>
-                <div className={styles.infoItem}>
-                  <span className={dokumen.length ? styles.ok : styles.pending}>
-                    {dokumen.length ? "✓" : "!"}
-                  </span>
-                  <div>
-                    <strong>Status Dokumen</strong>
-                    <small>
-                      {dokumen.length
-                        ? "Terdapat dokumen yang telah diserahkan"
-                        : "Belum ada dokumen APBDes yang diserahkan"}
-                    </small>
-                  </div>
-                </div>
-              </section>
-              <section id="dokumen" className={styles.panel + " " + styles.docsPanel}>
-                <div className={styles.sectionTitle}>
-                  <span className={styles.titleIcon}>▱</span>
-                  <h2>Dokumen Terkait</h2>
-                </div>
-                {dokumen.length ? (
-                  <div className={styles.documentList}>
-                    {dokumen.map((doc) => (
-                      <article key={doc.id}>
-                        <span className={styles.pdfIcon}>PDF</span>
-                        <div>
-                          <strong>{doc.judul}</strong>
-                          <small>
-                            {doc.tahun} · {doc.semesterLabel} · Diserahkan{" "}
-                            {tanggal(doc.diserahkanPada)}
-                          </small>
-                        </div>
-                        <Link
-                          href={"/desa/apbdes/dokumen/" + doc.id + "/berkas"}
-                          aria-label={"Unduh " + doc.judul}
-                        >
-                          ↓
-                        </Link>
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <p className={styles.empty}>
-                    Belum ada dokumen APBDes yang dipublikasikan untuk tahun ini. Dokumen akan
-                    muncul setelah Admin Desa mengunggah dan mencatat penyerahannya.
-                  </p>
-                )}
-                <Link className={styles.allDocs} href="/dokumen">
-                  Lihat Semua Dokumen　→
-                </Link>
-              </section>
-              <section className={styles.panel + " " + styles.chartPanel}>
-                <div className={styles.sectionTitle}>
-                  <span className={styles.titleIcon}>◔</span>
-                  <h2>Grafik Realisasi Belanja</h2>
-                </div>
-                <div className={styles.chartLegend}>
-                  <span>
-                    <i />
-                    Rencana
-                  </span>
-                  <span>
-                    <i />
-                    Realisasi
-                  </span>
-                </div>
-                {laporan.bidang.length ? (
-                  <div className={styles.barChart}>
-                    {laporan.bidang.map((row, index) => (
-                      <div className={styles.barGroup} key={row.kode}>
-                        <div className={styles.bars}>
-                          <i style={{ height: (Number(row.anggaran) / maxBar) * 100 + "%" }} />
-                          <b
-                            style={{
-                              height: (Number(row.realisasi) / maxBar) * 100 + "%",
-                              background: palette[index % palette.length],
-                            }}
-                          />
-                        </div>
-                        <small>{row.uraian}</small>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className={styles.empty}>
-                    Grafik muncul setelah data bidang belanja tersedia.
-                  </p>
-                )}
-              </section>
+              <InformasiApbdes tahun={laporan.tahun} jumlahDokumen={dokumen.length} />
+              <DokumenApbdesTerkait dokumen={dokumen} />
+              <GrafikRealisasi bidang={laporan.bidang} maxBar={maxBar} />
             </aside>
           </div>
         ) : (

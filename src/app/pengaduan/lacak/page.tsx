@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { getNavPublik } from "@/features/publik/application/nav-publik";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getNavPublik } from "@/features/info-desa/publik/application/nav-publik";
 
 import styles from "../../informasi-publik.module.css";
 import { PublicShell } from "../../public-shell";

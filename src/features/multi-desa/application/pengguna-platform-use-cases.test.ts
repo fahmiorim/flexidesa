@@ -9,7 +9,9 @@ import {
 } from "./pengguna-platform-use-cases";
 
 vi.mock("./provisioning-use-cases", () => ({ requireSuperAdmin: vi.fn() }));
-vi.mock("@/features/audit/application/audit-use-cases", () => ({ recordAuditEvent: vi.fn() }));
+vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
+  recordAuditEvent: vi.fn(),
+}));
 vi.mock("better-auth/crypto", () => ({
   hashPassword: vi.fn(async (sandi: string) => `hash:${sandi}`),
 }));
@@ -30,7 +32,7 @@ const platformUser = { id: "platform-1", villageId: null } as never;
 const penggunaRepository = () =>
   import("@/features/multi-desa/infrastructure/pengguna-platform-repository");
 const guard = () => import("./provisioning-use-cases");
-const audit = () => import("@/features/audit/application/audit-use-cases");
+const audit = () => import("@/features/pengaturan/audit/application/audit-use-cases");
 
 const inputBaru = {
   name: "Pengelola Baru",

@@ -6,12 +6,12 @@ import { desc, eq, inArray, sql, type SQL } from "drizzle-orm";
 
 import { db } from "@/db";
 import { tenantExports, tenantPurgeArchive, villages } from "@/db/schema";
+import { akarPenyimpananMedia } from "@/features/media/infrastructure/media-storage";
 import {
   hapusBerkasEkspor,
   pilihKedaluwarsa,
 } from "@/features/multi-desa/domain/ekspor-kedaluwarsa.mjs";
 import { kedaluwarsaEkspor, type RetensiDesa } from "@/features/multi-desa/domain/lifecycle-tenant";
-import { akarPenyimpananMedia } from "@/features/publik/infrastructure/media-storage";
 import { conflict, notFound } from "@/lib/errors";
 
 /**

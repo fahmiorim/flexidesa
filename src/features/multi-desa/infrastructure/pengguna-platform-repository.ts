@@ -5,7 +5,7 @@ import { and, asc, eq, isNull, sql } from "drizzle-orm";
 
 import { db } from "@/db";
 import { accounts, roles, sessions, users } from "@/db/schema";
-import { PLATFORM_ROLE_SLUG } from "@/features/rbac/domain/role";
+import { PLATFORM_ROLE_SLUG } from "@/features/pengaturan/rbac/domain/role";
 import { conflict, notFound } from "@/lib/errors";
 
 /**

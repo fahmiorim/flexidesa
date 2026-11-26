@@ -1,6 +1,9 @@
 import { jalankanApiPublik } from "@/features/api-publik/application/public-api";
-import { cariHalamanDokumenPublik } from "@/features/publik/application/dokumen-publik";
-import { parseDokumenKategoriFilter, parsePaginasiDokumen } from "@/features/publik/domain/dokumen";
+import { cariHalamanDokumenPublik } from "@/features/info-desa/publik/application/dokumen-publik";
+import {
+  parseDokumenKategoriFilter,
+  parsePaginasiDokumen,
+} from "@/features/info-desa/publik/domain/dokumen";
 
 /**
  * GET /api/publik/dokumen

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useActionState, useId, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 import type { StatusRetensi } from "@/features/multi-desa/domain/lifecycle-tenant";
 import {
@@ -9,87 +9,21 @@ import {
   STATUS_TENANT_FILTER,
   type StatusTenantFilter,
 } from "@/features/multi-desa/domain/status-tenant-filter";
-import type { HasilEkspor } from "@/features/multi-desa/infrastructure/lifecycle-tenant-repository";
-import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
-import { DialogFormTenant } from "./dialog-form-tenant";
+import type { AksiKonsol, DesaKonsolRow, DomainKonsolRow } from "./kontrak-konsol-tenant";
+import { PanelKelola } from "./panel-kelola-tenant";
 
-/**
- * Konsol pengelolaan tenant Super Admin.
- *
- * Server Action diterima lewat prop dari halaman (bukan diimpor dari folder
- * route) agar lapisan presentation tidak bergantung pada `app/`. Setiap form
- * memakai `useActionState` sendiri sehingga kegagalan satu aksi tidak
- * mengosongkan form lain, dan pesan galat berasal dari use case di server.
- */
-
-export interface DesaKonsolRow {
-  id: number;
-  name: string | null;
-  slug: string | null;
-  code: string | null;
-  domain: string | null;
-  district: string | null;
-  active: boolean;
-  kuotaMediaMb: number | null;
-  tema: string | null;
-  temaNama: string | null;
-  temaVersi: string | null;
-  pengguna: number;
-  penduduk: number;
-  jenisSurat: number;
-  createdAt: Date;
-  nonaktifSejak: Date | null;
-  purgedAt: Date | null;
-  adaEksporBerlaku: boolean;
-  statusRetensi: StatusRetensi;
-  hariMenujuPurge: number | null;
-}
-
-export interface DomainKonsolRow {
-  id: number;
-  villageId: number;
-  domain: string;
-  isPrimary: boolean;
-}
-
-interface AksiKonsol {
-  status: (
-    state: ActionState<{ active: boolean }>,
-    formData: FormData,
-  ) => Promise<ActionState<{ active: boolean }>>;
-  kuota: (
-    state: ActionState<{ kuotaMediaMb: number | null }>,
-    formData: FormData,
-  ) => Promise<ActionState<{ kuotaMediaMb: number | null }>>;
-  reset: (
-    state: ActionState<{ username: string | null; email: string; sandiSementara: string }>,
-    formData: FormData,
-  ) => Promise<ActionState<{ username: string | null; email: string; sandiSementara: string }>>;
-  ekspor: (
-    state: ActionState<HasilEkspor>,
-    formData: FormData,
-  ) => Promise<ActionState<HasilEkspor>>;
-  purge: (
-    state: ActionState<{
-      jumlahBarisDihapus: number;
-      tabelDiproses: number;
-      mediaDihapus: boolean;
-    }>,
-    formData: FormData,
-  ) => Promise<
-    ActionState<{ jumlahBarisDihapus: number; tabelDiproses: number; mediaDihapus: boolean }>
-  >;
-  tambahDomain: (
-    state: ActionState<{ id: number }>,
-    formData: FormData,
-  ) => Promise<ActionState<{ id: number }>>;
-  hapusDomain: (state: ActionState<null>, formData: FormData) => Promise<ActionState<null>>;
-  jadikanUtama: (state: ActionState<null>, formData: FormData) => Promise<ActionState<null>>;
-}
+export type { AksiKonsol, DesaKonsolRow, DomainKonsolRow } from "./kontrak-konsol-tenant";
 
 const tanggal = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" });
 const angka = new Intl.NumberFormat("id-ID");
+
+const TAB_STATUS: readonly { nilai: StatusTenantFilter; label: string }[] = [
+  { nilai: "semua", label: "Semua tenant" },
+  { nilai: "aktif", label: "Aktif" },
+  { nilai: "nonaktif", label: "Nonaktif" },
+  { nilai: "siap-purge", label: "Siap purge" },
+];
 
 const LABEL_RETENSI: Record<StatusRetensi, string> = {
   aktif: "—",
@@ -98,7 +32,6 @@ const LABEL_RETENSI: Record<StatusRetensi, string> = {
   "sudah-purge": "Sudah di-purge",
 };
 
-/** Nomor halaman ringkas: selalu tampilkan ujung dan sekitar halaman aktif. */
 function nomorHalaman(aktif: number, total: number): (number | "elipsis")[] {
   if (total <= 7) return Array.from({ length: total }, (_, index) => index + 1);
 
@@ -114,20 +47,6 @@ function nomorHalaman(aktif: number, total: number): (number | "elipsis")[] {
   }
 
   return hasil;
-}
-
-function Pesan({ state }: { state: ActionState<unknown> }) {
-  if (state.status === "idle") return null;
-
-  const error = state.status === "error";
-  return (
-    <p
-      className={error ? "alert alert-error" : "alert alert-info"}
-      role={error ? "alert" : "status"}
-    >
-      {state.message}
-    </p>
-  );
 }
 
 function RetensiBadge({ desa }: { desa: DesaKonsolRow }) {
@@ -152,344 +71,6 @@ function RetensiBadge({ desa }: { desa: DesaKonsolRow }) {
     </span>
   );
 }
-
-function KelolaDomain({
-  desa,
-  domain,
-  aksi,
-}: {
-  desa: DesaKonsolRow;
-  domain: DomainKonsolRow[];
-  aksi: AksiKonsol;
-}) {
-  const [hapusState, hapusAction, hapusPending] = useActionState(
-    aksi.hapusDomain,
-    createIdleActionState<null>(),
-  );
-  const [utamaState, utamaAction, utamaPending] = useActionState(
-    aksi.jadikanUtama,
-    createIdleActionState<null>(),
-  );
-
-  const daftar = domain
-    .filter((item) => item.villageId === desa.id)
-    .sort((a, b) => Number(b.isPrimary) - Number(a.isPrimary) || a.id - b.id);
-  const sudahPurge = desa.statusRetensi === "sudah-purge";
-
-  return (
-    <section className="tenant-panel-wide">
-      <h4>Domain dan alias</h4>
-      <p className="form-help">
-        Domain utama dipakai untuk mengenali tenant dari host dan tidak dapat dihapus langsung.
-        Untuk menggantinya: tambahkan domain baru, klik <strong>Ganti domain utama</strong> pada
-        domain tersebut, lalu hapus domain lama yang sudah menjadi alias. Alias lain hanya mengarah
-        ke desa yang sama.
-      </p>
-
-      {daftar.length === 0 ? (
-        <p className="form-help">Belum ada domain terdaftar untuk desa ini.</p>
-      ) : (
-        <ul className="tenant-domain-list">
-          {daftar.map((item) => (
-            <li key={item.id} className="tenant-domain-item">
-              <span className="tenant-domain-name">{item.domain}</span>
-              {item.isPrimary ? (
-                <span className="tenant-domain-actions">
-                  <span className="tenant-status is-active">
-                    <span aria-hidden="true" />
-                    Utama
-                  </span>
-                  <span className="form-help">Host aktif desa ini</span>
-                </span>
-              ) : (
-                <span className="tenant-domain-actions">
-                  <form action={utamaAction}>
-                    <input type="hidden" name="villageId" value={desa.id} />
-                    <input type="hidden" name="domainId" value={item.id} />
-                    <button
-                      aria-label={`Ganti domain utama ke ${item.domain}`}
-                      className="button button-secondary tenant-expand"
-                      type="submit"
-                      disabled={utamaPending || sudahPurge}
-                    >
-                      Ganti domain utama
-                    </button>
-                  </form>
-                  <form action={hapusAction}>
-                    <input type="hidden" name="villageId" value={desa.id} />
-                    <input type="hidden" name="domainId" value={item.id} />
-                    <button
-                      className="button button-secondary tenant-expand"
-                      type="submit"
-                      disabled={hapusPending || sudahPurge}
-                    >
-                      Hapus
-                    </button>
-                  </form>
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {daftar.length === 1 && !sudahPurge ? (
-        <p className="form-help">
-          Desa ini baru memiliki satu domain. Tambahkan domain pengganti lebih dulu untuk bisa
-          memindahkan status utama tanpa menghapus domain yang sekarang.
-        </p>
-      ) : null}
-
-      <div className="tenant-panel-actions">
-        <DialogFormTenant
-          aksi={aksi.tambahDomain}
-          deskripsi="Domain baru langsung mengarah ke desa ini. Domain pertama otomatis menjadi utama."
-          judul="Tambah domain atau alias"
-          labelPending="Menambah..."
-          labelPemicu="Tambah domain"
-          labelSubmit="Tambah domain"
-          nonaktif={sudahPurge}
-          stateAwal={createIdleActionState<{ id: number }>()}
-        >
-          <input type="hidden" name="villageId" value={desa.id} />
-          <label className="form-field">
-            <span className="form-label">Domain atau alias</span>
-            <input
-              className="form-input"
-              name="domain"
-              required
-              maxLength={255}
-              autoComplete="off"
-              placeholder="desa-sukamaju.id"
-            />
-          </label>
-        </DialogFormTenant>
-        <span className="form-help">
-          {sudahPurge
-            ? "Data desa sudah di-purge; domain hanya dapat dibaca."
-            : "Gunakan host tanpa protokol, misalnya desa-sukamaju.id."}
-        </span>
-      </div>
-      <Pesan state={hapusState} />
-      <Pesan state={utamaState} />
-    </section>
-  );
-}
-
-function PanelKelola({
-  desa,
-  domain,
-  aksi,
-}: {
-  desa: DesaKonsolRow;
-  domain: DomainKonsolRow[];
-  aksi: AksiKonsol;
-}) {
-  const id = useId();
-  const [statusState, statusAction, statusPending] = useActionState(
-    aksi.status,
-    createIdleActionState<{ active: boolean }>(),
-  );
-  const [resetState, resetAction, resetPending] = useActionState(
-    aksi.reset,
-    createIdleActionState<{ username: string | null; email: string; sandiSementara: string }>(),
-  );
-  const [eksporState, eksporAction, eksporPending] = useActionState(
-    aksi.ekspor,
-    createIdleActionState<HasilEkspor>(),
-  );
-
-  const sudahPurge = desa.statusRetensi === "sudah-purge";
-  const bolehPurge = desa.statusRetensi === "siap-purge" && desa.adaEksporBerlaku;
-
-  return (
-    <div className="tenant-panel">
-      <div className="tenant-panel-grid">
-        <section>
-          <h4>Status dan akses</h4>
-          <form action={statusAction} className="tenant-inline-form">
-            <input type="hidden" name="villageId" value={desa.id} />
-            <input type="hidden" name="active" value={desa.active ? "false" : "true"} />
-            <button
-              className="button button-secondary"
-              type="submit"
-              disabled={statusPending || sudahPurge}
-            >
-              {desa.active ? "Nonaktifkan desa" : "Aktifkan desa"}
-            </button>
-            <span className="form-help">
-              {desa.active
-                ? "Menonaktifkan memulai masa tenggang retensi 90 hari."
-                : desa.nonaktifSejak
-                  ? `Nonaktif sejak ${tanggal.format(new Date(desa.nonaktifSejak))}.`
-                  : "Desa sedang nonaktif."}
-            </span>
-          </form>
-          <Pesan state={statusState} />
-
-          <form action={resetAction} className="tenant-inline-form">
-            <input type="hidden" name="villageId" value={desa.id} />
-            <button
-              className="button button-secondary"
-              type="submit"
-              disabled={resetPending || sudahPurge}
-            >
-              {resetPending ? "Mereset..." : "Reset akses admin"}
-            </button>
-            <span className="form-help">Sandi sementara ditampilkan sekali setelah reset.</span>
-          </form>
-          <Pesan state={resetState} />
-          {resetState.status === "success" ? (
-            <p className="tenant-secret" aria-live="polite">
-              Sandi sementara untuk{" "}
-              <strong>{resetState.data.username ?? resetState.data.email}</strong>:{" "}
-              <code>{resetState.data.sandiSementara}</code>
-            </p>
-          ) : null}
-        </section>
-
-        <KelolaDomain desa={desa} domain={domain} aksi={aksi} />
-
-        <section>
-          <h4>Kuota media</h4>
-          <div className="tenant-panel-actions">
-            <DialogFormTenant
-              aksi={aksi.kuota}
-              deskripsi="Batas penyimpanan media desa. Kosongkan untuk tanpa batas."
-              judul="Kuota media"
-              labelPending="Menyimpan..."
-              labelPemicu="Ubah kuota"
-              labelSubmit="Simpan kuota"
-              nonaktif={sudahPurge}
-              stateAwal={createIdleActionState<{ kuotaMediaMb: number | null }>()}
-            >
-              <input type="hidden" name="villageId" value={desa.id} />
-              <label className="form-field" htmlFor={`${id}-kuota`}>
-                <span className="form-label">Kuota (MB)</span>
-                <input
-                  id={`${id}-kuota`}
-                  className="form-input"
-                  name="kuotaMediaMb"
-                  type="number"
-                  min={1}
-                  step={1}
-                  defaultValue={desa.kuotaMediaMb ?? ""}
-                  placeholder="Tanpa batas"
-                />
-              </label>
-            </DialogFormTenant>
-            <span className="form-help">
-              {desa.kuotaMediaMb === null
-                ? "Saat ini tanpa batas."
-                : `Saat ini ${angka.format(desa.kuotaMediaMb)} MB.`}
-            </span>
-          </div>
-        </section>
-
-        <section>
-          <h4>Ekspor data</h4>
-          <p className="form-help">
-            Ekspor wajib dibuat sebelum purge. Berkas berlaku 30 hari dan disimpan di luar database.
-          </p>
-          <form action={eksporAction} className="tenant-inline-form">
-            <input type="hidden" name="villageId" value={desa.id} />
-            <button
-              className="button button-secondary"
-              type="submit"
-              disabled={eksporPending || sudahPurge}
-            >
-              {eksporPending ? "Mengekspor..." : "Buat ekspor data"}
-            </button>
-          </form>
-          <Pesan state={eksporState} />
-          {eksporState.status === "success" ? (
-            <p className="form-help">
-              Berkas: <code>{eksporState.data.berkas}</code> ·{" "}
-              {angka.format(eksporState.data.ukuranByte)} byte · berlaku sampai{" "}
-              {tanggal.format(new Date(eksporState.data.kedaluwarsaPada))}
-            </p>
-          ) : null}
-        </section>
-
-        <section>
-          <h4>Purge permanen</h4>
-          <p className="form-help">
-            Menghapus seluruh data desa dan media. Yang tersisa hanya tombstone desa/domain,
-            statistik agregat, catatan ekspor, dan audit log. Tindakan ini tidak dapat dibatalkan.
-          </p>
-          {sudahPurge ? (
-            <p className="alert alert-info" role="status">
-              Data desa ini sudah di-purge
-              {desa.purgedAt ? ` pada ${tanggal.format(new Date(desa.purgedAt))}` : ""}.
-            </p>
-          ) : bolehPurge ? (
-            <DialogFormTenant
-              aksi={aksi.purge}
-              deskripsi={
-                <>
-                  Data desa, pengguna, penduduk, dan media akan dihapus permanen. Tindakan ini tidak
-                  dapat dibatalkan.
-                </>
-              }
-              judul="Purge data desa"
-              kelasPemicu="button tenant-danger"
-              kelasSubmit="button tenant-danger"
-              labelPending="Mem-purge..."
-              labelPemicu="Purge data desa"
-              labelSubmit="Purge permanen"
-              pesanSukses={(data) => (
-                <p className="form-help">
-                  {angka.format(data.jumlahBarisDihapus)} baris pada{" "}
-                  {angka.format(data.tabelDiproses)} tabel dihapus.
-                  {data.mediaDihapus
-                    ? " Media desa juga dihapus."
-                    : " Tidak ada media yang perlu dihapus."}
-                </p>
-              )}
-              tutupSetelahSukses={false}
-              stateAwal={createIdleActionState<{
-                jumlahBarisDihapus: number;
-                tabelDiproses: number;
-                mediaDihapus: boolean;
-              }>()}
-            >
-              <input type="hidden" name="villageId" value={desa.id} />
-              <label className="form-field">
-                <span className="form-label">Ketik slug desa: {desa.slug ?? "—"}</span>
-                <input
-                  className="form-input"
-                  name="konfirmasi"
-                  required
-                  autoComplete="off"
-                  placeholder={desa.slug ?? ""}
-                />
-              </label>
-            </DialogFormTenant>
-          ) : (
-            <p className="form-help">
-              {!desa.active && !desa.adaEksporBerlaku
-                ? "Buat ekspor data yang berlaku lebih dulu."
-                : desa.active
-                  ? "Nonaktifkan desa dan tunggu masa tenggang 90 hari."
-                  : `Purge dapat dijalankan setelah masa tenggang selesai${
-                      desa.hariMenujuPurge !== null
-                        ? ` (${angka.format(desa.hariMenujuPurge)} hari lagi)`
-                        : ""
-                    }.`}
-            </p>
-          )}
-        </section>
-      </div>
-    </div>
-  );
-}
-
-const TAB_STATUS: readonly { nilai: StatusTenantFilter; label: string }[] = [
-  { nilai: "semua", label: "Semua tenant" },
-  { nilai: "aktif", label: "Aktif" },
-  { nilai: "nonaktif", label: "Nonaktif" },
-  { nilai: "siap-purge", label: "Siap purge" },
-];
 
 export function TenantConsole({
   desa,

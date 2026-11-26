@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import {
   daftarAlbumGaleri,
   daftarFotoAlbum,
   daftarSliderBeranda,
   profilDesaPublik,
-} from "@/features/publik/application/konten-publik";
+} from "@/features/info-desa/publik/application/konten-publik";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./visi-misi.module.css";
@@ -62,6 +62,9 @@ export default async function VisiMisiPage() {
   const logoUrl = mediaUrl(desa.logo, desa.id);
   const visi = plainText(profil?.visi);
   const misi = splitMisi(profil?.misi);
+  const tujuan = splitMisi(profil?.tujuanPembangunan);
+  const nilai = splitMisi(profil?.nilaiDasar);
+  const arah = splitMisi(profil?.arahKebijakan);
   const panorama = mediaUrl(slides[0]?.gambar, desa.id);
   const photoAlbums = await Promise.all(
     albums
@@ -188,10 +191,21 @@ export default async function VisiMisiPage() {
               <p className={styles.sideIntro}>
                 Tujuan pembangunan yang ditetapkan pemerintah desa.
               </p>
-              <div className={styles.emptySide}>
-                Tujuan pembangunan khusus belum ditampilkan. Lihat butir misi di sebelah kiri
-                sebagai langkah strategis yang telah dipublikasikan desa.
-              </div>
+              {tujuan.length ? (
+                <ul className={styles.missionList}>
+                  {tujuan.map((item, index) => (
+                    <li key={index}>
+                      <span>✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className={styles.emptySide}>
+                  Tujuan pembangunan khusus belum ditampilkan. Lihat butir misi di sebelah kiri
+                  sebagai langkah strategis yang telah dipublikasikan desa.
+                </div>
+              )}
             </section>
             <section className={styles.sideCard}>
               <h2>
@@ -200,10 +214,21 @@ export default async function VisiMisiPage() {
               <p className={styles.sideIntro}>
                 Prinsip dasar penyelenggaraan pemerintahan dan pembangunan desa.
               </p>
-              <div className={styles.valueEmpty}>
-                <span aria-hidden="true">◇</span>
-                <p>Nilai-nilai dasar resmi belum dipublikasikan oleh pemerintah desa.</p>
-              </div>
+              {nilai.length ? (
+                <ul className={styles.missionList}>
+                  {nilai.map((item, index) => (
+                    <li key={index}>
+                      <span>✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div className={styles.valueEmpty}>
+                  <span aria-hidden="true">◇</span>
+                  <p>Nilai-nilai dasar resmi belum dipublikasikan oleh pemerintah desa.</p>
+                </div>
+              )}
             </section>
           </aside>
         </div>
@@ -218,13 +243,24 @@ export default async function VisiMisiPage() {
               <span>▱</span> Arah Kebijakan Pembangunan
             </h2>
             <p>Fokus kebijakan pembangunan jangka menengah yang ditetapkan pemerintah desa.</p>
-            <div className={styles.policyEmpty}>
-              <span aria-hidden="true">▱</span>
-              <p>
-                Arah kebijakan pembangunan jangka menengah belum dipublikasikan oleh pemerintah
-                desa.
-              </p>
-            </div>
+            {arah.length ? (
+              <ul className={styles.missionList}>
+                {arah.map((item, index) => (
+                  <li key={index}>
+                    <span>✓</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className={styles.policyEmpty}>
+                <span aria-hidden="true">▱</span>
+                <p>
+                  Arah kebijakan pembangunan jangka menengah belum dipublikasikan oleh pemerintah
+                  desa.
+                </p>
+              </div>
+            )}
           </div>
         </section>
 

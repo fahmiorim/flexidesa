@@ -1,6 +1,6 @@
-import { bacaLampiranPengaduan } from "@/features/pengaduan/application/use-cases";
-import { hasPermission } from "@/features/rbac/application/authorization";
-import { RESOURCES } from "@/features/rbac/domain/resources";
+import { bacaLampiranPengaduan } from "@/features/layanan-warga/pengaduan/application/use-cases";
+import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
+import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { requireUser } from "@/lib/dal";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 

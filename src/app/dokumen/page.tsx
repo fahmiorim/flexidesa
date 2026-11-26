@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { daftarDokumenPublik } from "@/features/publik/application/dokumen-publik";
-import { getNavPublik } from "@/features/publik/application/nav-publik";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { daftarDokumenPublik } from "@/features/info-desa/publik/application/dokumen-publik";
+import { getNavPublik } from "@/features/info-desa/publik/application/nav-publik";
 import {
   DOKUMEN_KATEGORI_FILTERS,
   isSafeDocumentLink,
   parseDokumenKategoriFilter,
-} from "@/features/publik/domain/dokumen";
+} from "@/features/info-desa/publik/domain/dokumen";
 
 import styles from "../informasi-publik.module.css";
 import { PublicShell } from "../public-shell";

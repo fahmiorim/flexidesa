@@ -33,6 +33,23 @@ export async function simpanMailboxPesan(data: typeof mailboxPesan.$inferInsert)
   return row.id;
 }
 
+/**
+ * Apakah error adalah pelanggaran unique key MySQL.
+ *
+ * Drizzle membungkus error driver dengan `DrizzleQueryError`, sedangkan kode
+ * MySQL berada pada `cause`. Rantai `cause` diperiksa agar idempotensi webhook
+ * tidak bergantung pada bentuk pembungkusan versi driver.
+ */
+function galatDuplikat(error: unknown): boolean {
+  let current: unknown = error;
+  for (let depth = 0; depth < 5 && current && typeof current === "object"; depth += 1) {
+    const item = current as { code?: unknown; errno?: unknown; cause?: unknown };
+    if (item.code === "ER_DUP_ENTRY" || item.errno === 1062) return true;
+    current = item.cause;
+  }
+  return false;
+}
+
 export async function simpanMailboxPesanWebhook(
   data: typeof mailboxPesan.$inferInsert & { webhookEventId: string },
 ): Promise<{ id: number; created: boolean }> {
@@ -41,12 +58,7 @@ export async function simpanMailboxPesanWebhook(
     if (!row) throw new Error("Gagal menyimpan pesan email.");
     return { id: row.id, created: true };
   } catch (error) {
-    const duplicate =
-      error !== null &&
-      typeof error === "object" &&
-      (("code" in error && error.code === "ER_DUP_ENTRY") ||
-        ("errno" in error && error.errno === 1062));
-    if (!duplicate) throw error;
+    if (!galatDuplikat(error)) throw error;
 
     const [existing] = await db
       .select({ id: mailboxPesan.id })

@@ -4,9 +4,9 @@ import { notFound } from "next/navigation";
 import {
   agendaMendatang,
   detailAgendaPublik,
-} from "@/features/agenda/application/agenda-use-cases";
-import { agendaJamLabel, agendaTanggalPanjang } from "@/features/agenda/domain/agenda";
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
+} from "@/features/info-desa/agenda/application/agenda-use-cases";
+import { agendaJamLabel, agendaTanggalPanjang } from "@/features/info-desa/agenda/domain/agenda";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
 import styles from "./detail-agenda.module.css";

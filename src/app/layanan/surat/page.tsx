@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { listJenisSuratPublik } from "@/features/surat/application/surat-publik-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { daftarFaqSurat } from "@/features/info-desa/publik/application/konten-publik";
+import { listJenisSuratPublik } from "@/features/pelayanan-persuratan/surat/application/surat-publik-use-cases";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
 import { LayananSuratOnline } from "./layanan-surat-client";
@@ -30,7 +31,10 @@ function mediaUrl(value: string | null, villageId: number): string | null {
 
 export default async function LayananSuratPage() {
   const desa = await getIdentitasFromRequest();
-  const jenisSurat = await listJenisSuratPublik(desa.id);
+  const [jenisSurat, faq] = await Promise.all([
+    listJenisSuratPublik(desa.id),
+    daftarFaqSurat(desa.id),
+  ]);
   const location = locationLabel(desa);
   const logoUrl = mediaUrl(desa.logo, desa.id);
 
@@ -107,6 +111,7 @@ export default async function LayananSuratPage() {
         </section>
         <LayananSuratOnline
           desa={desa.namaDesa ?? "desa"}
+          faq={faq}
           jenisSurat={jenisSurat.map((item) => ({
             id: item.id,
             nama: item.nama,

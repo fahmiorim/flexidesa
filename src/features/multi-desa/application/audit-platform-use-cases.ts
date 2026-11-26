@@ -1,11 +1,11 @@
 import "server-only";
 
+import { requireSuperAdmin } from "@/features/multi-desa/application/provisioning-use-cases";
 import {
   listAuditLogsLintasDesa,
   type AuditLogPlatformPage,
   type AuditLogPlatformRow,
-} from "@/features/audit/infrastructure/audit-repository";
-import { requireSuperAdmin } from "@/features/multi-desa/application/provisioning-use-cases";
+} from "@/features/pengaturan/audit/application/kontrak";
 
 /** Batas panjang kata kunci pencarian audit agar query tetap ringan. */
 const PANJANG_MAKS_PENCARIAN = 120;

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import { PublicSiteFooter, PublicSiteHeader } from "./public-site-layout";
 
 // Header membaca menu tenant; unit test tidak membuka koneksi database.
-vi.mock("@/features/publik/application/website-admin", () => ({
+vi.mock("@/features/info-desa/publik/application/website-admin", () => ({
   muatMenuPublik: vi.fn(async () => []),
   muatTemaPublik: vi.fn(async () => null),
 }));

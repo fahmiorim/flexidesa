@@ -1,3 +1,4 @@
+-- ===== 0000_baseline.sql =====
 -- Fresh-install baseline. Databases with the previous migration history must be reset before use.
 -- Tenant roles, modules, permissions, and village admin accounts come from provisioning.
 CREATE TABLE `agenda_kegiatan` (
@@ -3465,3 +3466,1101 @@ INSERT INTO `website_template_versions` (`template_id`, `version`, `changelog`, 
 	'Versi awal bawaan platform.',
 	'{"primary":"#2563eb","secondary":"#1e40af","accent":"#f59e0b","background":"#f8fafc","surface":"#ffffff","text":"#0f172a","fontHeading":"serif","radius":"sedang","style":"terang"}'
 );
+--> statement-breakpoint
+-- ===== 0001_paket_langganan.sql =====
+CREATE TABLE `subscription_plan_features` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`plan_version_id` int NOT NULL,
+	`module_slug` varchar(100) NOT NULL,
+	CONSTRAINT `subscription_plan_features_id` PRIMARY KEY(`id`),
+	CONSTRAINT `subscription_plan_features_version_module_uq` UNIQUE(`plan_version_id`,`module_slug`)
+);
+--> statement-breakpoint
+CREATE TABLE `subscription_plan_versions` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`plan_id` int NOT NULL,
+	`version` int NOT NULL,
+	`status` enum('draft','published','archived') NOT NULL DEFAULT 'draft',
+	`changelog` text,
+	`created_by` varchar(36),
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	`published_at` timestamp,
+	CONSTRAINT `subscription_plan_versions_id` PRIMARY KEY(`id`),
+	CONSTRAINT `subscription_plan_versions_plan_version_uq` UNIQUE(`plan_id`,`version`)
+);
+--> statement-breakpoint
+CREATE TABLE `subscription_plans` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`slug` varchar(50) NOT NULL,
+	`name` varchar(100) NOT NULL,
+	`description` text,
+	`status` enum('active','archived') NOT NULL DEFAULT 'active',
+	`created_by` varchar(36),
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	`updated_at` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `subscription_plans_id` PRIMARY KEY(`id`),
+	CONSTRAINT `subscription_plans_slug_uq` UNIQUE(`slug`)
+);
+--> statement-breakpoint
+CREATE TABLE `village_plan_subscriptions` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`village_id` int NOT NULL,
+	`plan_version_id` int NOT NULL,
+	`assigned_by` varchar(36),
+	`assigned_at` timestamp NOT NULL DEFAULT (now()),
+	`updated_at` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `village_plan_subscriptions_id` PRIMARY KEY(`id`),
+	CONSTRAINT `village_plan_subscriptions_village_uq` UNIQUE(`village_id`)
+);
+--> statement-breakpoint
+ALTER TABLE `subscription_plan_features` ADD CONSTRAINT `subscription_plan_features_version_fk` FOREIGN KEY (`plan_version_id`) REFERENCES `subscription_plan_versions`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `subscription_plan_versions` ADD CONSTRAINT `subscription_plan_versions_plan_fk` FOREIGN KEY (`plan_id`) REFERENCES `subscription_plans`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `village_plan_subscriptions` ADD CONSTRAINT `village_plan_subscriptions_village_fk` FOREIGN KEY (`village_id`) REFERENCES `villages`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `village_plan_subscriptions` ADD CONSTRAINT `village_plan_subscriptions_version_fk` FOREIGN KEY (`plan_version_id`) REFERENCES `subscription_plan_versions`(`id`) ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX `subscription_plan_features_module_idx` ON `subscription_plan_features` (`module_slug`);--> statement-breakpoint
+CREATE INDEX `subscription_plan_versions_plan_status_idx` ON `subscription_plan_versions` (`plan_id`,`status`);--> statement-breakpoint
+CREATE INDEX `subscription_plans_status_idx` ON `subscription_plans` (`status`);--> statement-breakpoint
+CREATE INDEX `village_plan_subscriptions_version_idx` ON `village_plan_subscriptions` (`plan_version_id`);
+--> statement-breakpoint
+INSERT INTO `subscription_plans` (`slug`, `name`, `status`) VALUES
+  ('minimum', 'Minimum', 'active'),
+  ('standar', 'Standar', 'active'),
+  ('premium', 'Premium', 'active');
+--> statement-breakpoint
+INSERT INTO `subscription_plan_versions` (`plan_id`, `version`, `status`)
+SELECT `id`, 1, 'draft'
+FROM `subscription_plans`
+WHERE `slug` IN ('minimum', 'standar', 'premium');
+--> statement-breakpoint
+-- ===== 0002_paket_seed_terbit.sql =====
+UPDATE `subscription_plan_versions` SET `status` = 'published', `published_at` = NOW() WHERE `status` = 'draft' AND `plan_id` IN (SELECT `id` FROM `subscription_plans` WHERE `slug` IN ('minimum', 'standar', 'premium'));
+--> statement-breakpoint
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`) SELECT v.`id`, x.`module_slug` FROM `subscription_plan_versions` v JOIN `subscription_plans` p ON p.`id` = v.`plan_id` JOIN (SELECT 'pengaturan-desa' AS module_slug UNION ALL SELECT 'wilayah' UNION ALL SELECT 'perangkat-desa' UNION ALL SELECT 'lembaga-desa' UNION ALL SELECT 'status-desa' UNION ALL SELECT 'penduduk' UNION ALL SELECT 'keluarga' UNION ALL SELECT 'statistik-kependudukan' UNION ALL SELECT 'permohonan-surat' UNION ALL SELECT 'pengguna') x WHERE p.`slug` = 'minimum' AND v.`version` = 1;
+--> statement-breakpoint
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`) SELECT v.`id`, x.`module_slug` FROM `subscription_plan_versions` v JOIN `subscription_plans` p ON p.`id` = v.`plan_id` JOIN (SELECT 'pengaturan-desa' AS module_slug UNION ALL SELECT 'wilayah' UNION ALL SELECT 'perangkat-desa' UNION ALL SELECT 'lembaga-desa' UNION ALL SELECT 'status-desa' UNION ALL SELECT 'penduduk' UNION ALL SELECT 'keluarga' UNION ALL SELECT 'statistik-kependudukan' UNION ALL SELECT 'permohonan-surat' UNION ALL SELECT 'pengguna' UNION ALL SELECT 'rumah-tangga' UNION ALL SELECT 'kelompok' UNION ALL SELECT 'suplemen' UNION ALL SELECT 'calon-pemilih' UNION ALL SELECT 'laporan-bulanan' UNION ALL SELECT 'laporan-kelompok-rentan' UNION ALL SELECT 'laporan-penduduk' UNION ALL SELECT 'stunting' UNION ALL SELECT 'pengaduan-kehadiran' UNION ALL SELECT 'rekapitulasi-kehadiran' UNION ALL SELECT 'inventaris' UNION ALL SELECT 'bumindes' UNION ALL SELECT 'laporan-keuangan' UNION ALL SELECT 'peta') x WHERE p.`slug` = 'standar' AND v.`version` = 1;
+--> statement-breakpoint
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`) SELECT v.`id`, x.`module_slug` FROM `subscription_plan_versions` v JOIN `subscription_plans` p ON p.`id` = v.`plan_id` JOIN (SELECT 'pengaturan-desa' AS module_slug UNION ALL SELECT 'wilayah' UNION ALL SELECT 'perangkat-desa' UNION ALL SELECT 'lembaga-desa' UNION ALL SELECT 'status-desa' UNION ALL SELECT 'penduduk' UNION ALL SELECT 'keluarga' UNION ALL SELECT 'statistik-kependudukan' UNION ALL SELECT 'permohonan-surat' UNION ALL SELECT 'pengguna' UNION ALL SELECT 'rumah-tangga' UNION ALL SELECT 'kelompok' UNION ALL SELECT 'suplemen' UNION ALL SELECT 'calon-pemilih' UNION ALL SELECT 'laporan-bulanan' UNION ALL SELECT 'laporan-kelompok-rentan' UNION ALL SELECT 'laporan-penduduk' UNION ALL SELECT 'stunting' UNION ALL SELECT 'pengaduan-kehadiran' UNION ALL SELECT 'rekapitulasi-kehadiran' UNION ALL SELECT 'inventaris' UNION ALL SELECT 'bumindes' UNION ALL SELECT 'laporan-keuangan' UNION ALL SELECT 'peta' UNION ALL SELECT 'pengaduan' UNION ALL SELECT 'website-pengaturan' UNION ALL SELECT 'berita' UNION ALL SELECT 'galeri') x WHERE p.`slug` = 'premium' AND v.`version` = 1;
+
+--> statement-breakpoint
+-- ===== 0003_kehadiran_jam_libur_alasan.sql =====
+CREATE TABLE `kehadiran_alasan_keluar` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`village_id` int NOT NULL,
+	`alasan` varchar(255) NOT NULL,
+	`keterangan` text,
+	`created_by` varchar(36),
+	`updated_by` varchar(36),
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	`updated_at` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `kehadiran_alasan_keluar_id` PRIMARY KEY(`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `kehadiran_hari_libur` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`village_id` int NOT NULL,
+	`tanggal` date NOT NULL,
+	`keterangan` text,
+	CONSTRAINT `kehadiran_hari_libur_id` PRIMARY KEY(`id`),
+	CONSTRAINT `kehadiran_hari_libur_village_tanggal_uq` UNIQUE(`village_id`,`tanggal`)
+);
+--> statement-breakpoint
+CREATE TABLE `kehadiran_jam_kerja` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`village_id` int NOT NULL,
+	`nama_hari` varchar(65) NOT NULL,
+	`jam_masuk` time NOT NULL,
+	`jam_keluar` time NOT NULL,
+	`status` boolean NOT NULL DEFAULT true,
+	`keterangan` text,
+	CONSTRAINT `kehadiran_jam_kerja_id` PRIMARY KEY(`id`),
+	CONSTRAINT `kehadiran_jam_kerja_village_hari_uq` UNIQUE(`village_id`,`nama_hari`)
+);
+--> statement-breakpoint
+ALTER TABLE `kehadiran_alasan_keluar` ADD CONSTRAINT `kehadiran_alasan_keluar_village_id_villages_id_fk` FOREIGN KEY (`village_id`) REFERENCES `villages`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `kehadiran_hari_libur` ADD CONSTRAINT `kehadiran_hari_libur_village_id_villages_id_fk` FOREIGN KEY (`village_id`) REFERENCES `villages`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `kehadiran_jam_kerja` ADD CONSTRAINT `kehadiran_jam_kerja_village_id_villages_id_fk` FOREIGN KEY (`village_id`) REFERENCES `villages`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX `kehadiran_alasan_keluar_village_idx` ON `kehadiran_alasan_keluar` (`village_id`);
+--> statement-breakpoint
+-- ===== 0004_hari_libur_rute.sql =====
+-- Halaman Hari Libur sudah tersedia di /kehadiran/hari-libur.
+-- Baris modul tenant lama dibuat saat provisioning dari template sehingga masih
+-- menyimpan URL placeholder /segera/hari-libur; arahkan ke rute sebenarnya.
+-- Perubahan hanya pada kolom `url`, tanpa menyentuh izin, status, atau urutan.
+UPDATE `modules`
+SET `url` = '/kehadiran/hari-libur'
+WHERE `slug` = 'hari-libur' AND `url` = '/segera/hari-libur';
+
+--> statement-breakpoint
+-- ===== 0005_jam_kerja_rute.sql =====
+-- Halaman Jam Kerja sudah tersedia di /kehadiran/jam-kerja.
+-- Baris modul tenant lama dibuat saat provisioning dari template sehingga masih
+-- menyimpan URL placeholder /segera/jam-kerja; arahkan ke rute sebenarnya.
+-- Perubahan hanya pada kolom `url`, tanpa menyentuh izin, status, atau urutan.
+UPDATE `modules`
+SET `url` = '/kehadiran/jam-kerja'
+WHERE `slug` = 'jam-kerja' AND `url` = '/segera/jam-kerja';
+
+--> statement-breakpoint
+-- ===== 0006_pengajuan_izin_modul.sql =====
+-- Menu Kehadiran → Pengajuan Izin dan Persetujuan Izin mengikuti OpenSID.
+-- Tenant lama dibuat lewat provisioning dari template sehingga belum memuat
+-- kedua modul ini. Tambahkan baris modul (beserta izin per role) hanya untuk
+-- tenant yang memiliki grup `kehadiran` dan belum punya modulnya.
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT g.`village_id`, 'pengajuan-izin', 'Pengajuan Izin', '/kehadiran/pengajuan-izin', NULL, 0, 0, 1, 5, g.`id`
+FROM `modules` g
+WHERE g.`slug` = 'kehadiran'
+  AND NOT EXISTS (
+    SELECT 1 FROM `modules` x WHERE x.`village_id` = g.`village_id` AND x.`slug` = 'pengajuan-izin'
+  );
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT g.`village_id`, 'persetujuan-izin', 'Persetujuan Izin', '/kehadiran/persetujuan-izin', NULL, 0, 0, 1, 6, g.`id`
+FROM `modules` g
+WHERE g.`slug` = 'kehadiran'
+  AND NOT EXISTS (
+    SELECT 1 FROM `modules` x WHERE x.`village_id` = g.`village_id` AND x.`slug` = 'persetujuan-izin'
+  );
+--> statement-breakpoint
+-- Administrator mengelola; role lain hanya membaca (aturan template tenant).
+INSERT INTO `role_permissions` (`role_id`, `module_id`, `access`, `can_read`, `can_create`, `can_update`, `can_delete`)
+SELECT r.`id`, m.`id`,
+       CASE WHEN r.`slug` = 'administrator' THEN 'manage' ELSE 'read' END,
+       1,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END
+FROM `modules` m
+JOIN `roles` r ON r.`village_id` = m.`village_id`
+WHERE m.`slug` IN ('pengajuan-izin', 'persetujuan-izin')
+  AND r.`slug` IN ('administrator', 'sekretaris', 'operator', 'kepala-desa')
+  AND NOT EXISTS (
+    SELECT 1 FROM `role_permissions` rp WHERE rp.`role_id` = r.`id` AND rp.`module_id` = m.`id`
+  );
+
+--> statement-breakpoint
+-- ===== 0007_kehadiran_fitur_paket.sql =====
+-- Fitur Kehadiran pada paket langganan.
+-- Menu Hari Libur, Jam Kerja, Pengajuan Izin, dan Persetujuan Izin sudah punya
+-- halaman, tetapi belum tercatat sebagai fitur paket. Paket yang dijual sebagai
+-- langganan menyaring modul lewat `subscription_plan_features`, sehingga tanpa
+-- baris ini role non-administrator tidak melihat menu tersebut.
+-- Kehadiran mengikuti paket Standar dan Premium (sama seperti Pengaduan dan
+-- Rekapitulasi Kehadiran), bukan paket Minimum. Hanya versi berstatus terbit
+-- yang disentuh; draf paket tetap diatur lewat halaman Paket Langganan. Aman
+-- dijalankan berulang karena setiap baris diperiksa lebih dulu.
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`)
+SELECT v.`id`, x.`module_slug`
+FROM `subscription_plan_versions` v
+JOIN `subscription_plans` p ON p.`id` = v.`plan_id`
+JOIN (
+  SELECT 'hari-libur' AS module_slug
+  UNION ALL SELECT 'jam-kerja'
+  UNION ALL SELECT 'pengajuan-izin'
+  UNION ALL SELECT 'persetujuan-izin'
+) x
+WHERE p.`slug` IN ('standar', 'premium')
+  AND v.`status` = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM `subscription_plan_features` f
+    WHERE f.`plan_version_id` = v.`id` AND f.`module_slug` = x.`module_slug`
+  );
+
+--> statement-breakpoint
+-- ===== 0008_alasan_keluar_rute.sql =====
+-- Halaman Alasan Keluar sudah tersedia di /kehadiran/alasan-keluar.
+-- 1) Baris modul tenant lama masih menunjuk URL placeholder /segera/alasan-keluar.
+UPDATE `modules`
+SET `url` = '/kehadiran/alasan-keluar'
+WHERE `slug` = 'alasan-keluar' AND `url` = '/segera/alasan-keluar';
+--> statement-breakpoint
+-- 2) Alasan Keluar melengkapi grup Kehadiran pada paket Standar dan Premium
+--    (paket Minimum tidak memuat menu Kehadiran). Hanya versi berstatus terbit
+--    yang disentuh; draf paket tetap diatur lewat halaman Paket Langganan.
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`)
+SELECT v.`id`, 'alasan-keluar'
+FROM `subscription_plan_versions` v
+JOIN `subscription_plans` p ON p.`id` = v.`plan_id`
+WHERE p.`slug` IN ('standar', 'premium')
+  AND v.`status` = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM `subscription_plan_features` f
+    WHERE f.`plan_version_id` = v.`id` AND f.`module_slug` = 'alasan-keluar'
+  );
+
+--> statement-breakpoint
+-- ===== 0009_cetak_surat_rute.sql =====
+-- Halaman Cetak Surat sudah tersedia di /persuratan/cetak-surat.
+-- 1) Baris modul tenant lama masih menunjuk URL placeholder /segera/cetak-surat.
+UPDATE `modules`
+SET `url` = '/persuratan/cetak-surat'
+WHERE `slug` = 'cetak-surat' AND `url` = '/segera/cetak-surat';
+--> statement-breakpoint
+-- 2) Cetak Surat adalah sisi perangkat desa dari Permohonan Surat, sehingga
+--    tersedia pada paket Minimum, Standar, dan Premium. Hanya versi berstatus
+--    terbit yang disentuh; draf paket tetap diatur lewat halaman Paket Langganan.
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`)
+SELECT v.`id`, 'cetak-surat'
+FROM `subscription_plan_versions` v
+JOIN `subscription_plans` p ON p.`id` = v.`plan_id`
+WHERE p.`slug` IN ('minimum', 'standar', 'premium')
+  AND v.`status` = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM `subscription_plan_features` f
+    WHERE f.`plan_version_id` = v.`id` AND f.`module_slug` = 'cetak-surat'
+  );
+
+--> statement-breakpoint
+-- ===== 0010_pengaturan_surat_rute.sql =====
+-- Menu Layanan Surat → Pengaturan Surat kini menuju halaman nyata
+-- (`/persuratan/jenis-surat`) dan diletakkan paling atas seperti OpenSID.
+UPDATE `modules`
+SET `url` = '/persuratan/jenis-surat', `sort_order` = 1
+WHERE `slug` = 'pengaturan-surat'
+  AND `url` <> '/persuratan/jenis-surat';
+
+--> statement-breakpoint
+-- ===== 0011_permohonan_di_bawah_cetak.sql =====
+-- Permohonan Surat dipindah tepat di bawah Cetak Surat pada grup Layanan Surat,
+-- dan Arsip Layanan digeser satu langkah agar tidak bertabrakan urutannya.
+UPDATE `modules`
+SET `sort_order` = 14
+WHERE `slug` = 'permohonan-surat' AND `sort_order` = 2;
+--> statement-breakpoint
+UPDATE `modules`
+SET `sort_order` = 15
+WHERE `slug` = 'arsip-layanan' AND `sort_order` = 14;
+
+--> statement-breakpoint
+-- ===== 0012_pengaturan_surat_fitur.sql =====
+-- Pengaturan Surat dibutuhkan semua paket yang menyediakan layanan surat,
+-- sama seperti Cetak Surat dan Permohonan Surat. Hanya versi terbit yang
+-- disentuh; draf paket tetap diatur lewat halaman Paket Langganan.
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`)
+SELECT v.`id`, 'pengaturan-surat'
+FROM `subscription_plan_versions` v
+JOIN `subscription_plans` p ON p.`id` = v.`plan_id`
+WHERE p.`slug` IN ('minimum', 'standar', 'premium')
+  AND v.`status` = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM `subscription_plan_features` f
+    WHERE f.`plan_version_id` = v.`id` AND f.`module_slug` = 'pengaturan-surat'
+  );
+
+--> statement-breakpoint
+-- ===== 0013_permohonan_surat_akses_operator.sql =====
+-- Operator dan sekretaris dapat memproses Permohonan Surat (periksa, kembalikan,
+-- batalkan, tandai siap/sudah diambil) seperti hak `u` di OpenSID.
+-- Hak hapus (`h`) tetap khusus administrator, jadi `can_delete` tidak diubah.
+UPDATE `role_permissions` rp
+JOIN `modules` m ON m.`id` = rp.`module_id`
+JOIN `roles` r ON r.`id` = rp.`role_id`
+SET rp.`access` = 'write',
+    rp.`can_read` = 1,
+    rp.`can_create` = 1,
+    rp.`can_update` = 1
+WHERE m.`slug` = 'permohonan-surat'
+  AND r.`slug` IN ('operator', 'sekretaris');
+
+--> statement-breakpoint
+-- ===== 0014_modul_surat.sql =====
+-- Resource `surat` belum pernah terdaftar sebagai modul tenant, sehingga seluruh
+-- alur persuratan (/persuratan/surat) tertutup izinnya dan operator tidak bisa
+-- membuat konsep surat. Tambahkan baris modul "Daftar Surat" di grup Layanan
+-- Surat untuk tenant yang belum memilikinya.
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT g.`village_id`, 'surat', 'Daftar Surat', '/persuratan/surat', NULL, 0, 0, 1, 2, g.`id`
+FROM `modules` g
+WHERE g.`slug` = 'layanan-surat'
+  AND NOT EXISTS (
+    SELECT 1 FROM `modules` x WHERE x.`village_id` = g.`village_id` AND x.`slug` = 'surat'
+  );
+--> statement-breakpoint
+-- Administrator mengelola (termasuk hapus); operator membuat konsep, sekretaris
+-- dan kepala desa memverifikasi/menandatangani — setara hak `u` di OpenSID.
+INSERT INTO `role_permissions` (`role_id`, `module_id`, `access`, `can_read`, `can_create`, `can_update`, `can_delete`)
+SELECT r.`id`, m.`id`,
+       CASE WHEN r.`slug` = 'administrator' THEN 'manage' ELSE 'write' END,
+       1,
+       1,
+       1,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END
+FROM `modules` m
+JOIN `roles` r ON r.`village_id` = m.`village_id`
+WHERE m.`slug` = 'surat'
+  AND r.`slug` IN ('administrator', 'sekretaris', 'operator', 'kepala-desa')
+  AND NOT EXISTS (
+    SELECT 1 FROM `role_permissions` rp WHERE rp.`role_id` = r.`id` AND rp.`module_id` = m.`id`
+  );
+--> statement-breakpoint
+-- Fitur `surat` juga harus aktif pada paket yang menyediakan layanan surat,
+-- karena modul yang tidak ada di paket akan tersaring dari izin efektif.
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`)
+SELECT v.`id`, 'surat'
+FROM `subscription_plan_versions` v
+JOIN `subscription_plans` p ON p.`id` = v.`plan_id`
+WHERE p.`slug` IN ('minimum', 'standar', 'premium')
+  AND v.`status` = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM `subscription_plan_features` f
+    WHERE f.`plan_version_id` = v.`id` AND f.`module_slug` = 'surat'
+  );
+
+--> statement-breakpoint
+-- ===== 0016_modul_surat_tersembunyi.sql =====
+-- Modul `surat` adalah modul izin, bukan submenu: halaman /persuratan/surat
+-- dibuka lewat Cetak Surat/Dashboard Surat. Rapikan baris yang sempat dibuat
+-- sebagai menu biasa agar tidak muncul di sidebar.
+UPDATE `modules`
+SET `url` = NULL,
+    `is_hidden` = 1,
+    `parent_id` = 0,
+    `sort_order` = 27
+WHERE `slug` = 'surat';
+
+--> statement-breakpoint
+-- ===== 0017_letter_types_lampiran_mandiri.sql =====
+-- Parity Pengaturan Surat OpenSID: daftar lampiran surat dan opsi
+-- "Sediakan di Layanan Mandiri" pada setiap jenis surat.
+ALTER TABLE `letter_types`
+  ADD COLUMN `lampiran` text,
+  ADD COLUMN `mandiri` boolean NOT NULL DEFAULT false;
+--> statement-breakpoint
+-- Jenis surat yang sudah ada selama ini tampil di katalog layanan publik;
+-- pertahankan perilaku itu dengan menandainya tersedia di layanan mandiri.
+UPDATE `letter_types` SET `mandiri` = true;
+
+--> statement-breakpoint
+-- ===== 0018_modul_surat_master.sql =====
+-- Resource `jenis-surat`, `surat-masuk`, `surat-keluar`, dan `surat-dinas`
+-- dipakai use case persuratan tetapi belum pernah terdaftar sebagai modul,
+-- sehingga halaman /persuratan/jenis-surat (dan buku agenda/surat dinas)
+-- melempar 403 untuk semua role tenant. Daftarkan sebagai modul izin
+-- tersembunyi tanpa menu, sama seperti modul `surat`.
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'jenis-surat', 'Jenis Surat', NULL, NULL, 0, 1, 1, 28, 0
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'jenis-surat'
+);
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'surat-masuk', 'Surat Masuk', NULL, NULL, 0, 1, 1, 29, 0
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'surat-masuk'
+);
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'surat-keluar', 'Surat Keluar', NULL, NULL, 0, 1, 1, 30, 0
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'surat-keluar'
+);
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'surat-dinas', 'Surat Dinas', NULL, NULL, 0, 1, 1, 31, 0
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'surat-dinas'
+);
+--> statement-breakpoint
+-- Administrator mengelola; role lain hanya membaca (aturan template tenant).
+INSERT INTO `role_permissions` (`role_id`, `module_id`, `access`, `can_read`, `can_create`, `can_update`, `can_delete`)
+SELECT r.`id`, m.`id`,
+       CASE WHEN r.`slug` = 'administrator' THEN 'manage' ELSE 'read' END,
+       1,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END
+FROM `modules` m
+JOIN `roles` r ON r.`village_id` = m.`village_id`
+WHERE m.`slug` IN ('jenis-surat', 'surat-masuk', 'surat-keluar', 'surat-dinas')
+  AND r.`slug` IN ('administrator', 'sekretaris', 'operator', 'kepala-desa')
+  AND NOT EXISTS (
+    SELECT 1 FROM `role_permissions` rp WHERE rp.`role_id` = r.`id` AND rp.`module_id` = m.`id`
+  );
+--> statement-breakpoint
+-- Fitur paket juga harus aktif, karena modul di luar paket tersaring dari
+-- izin efektif walau grant-nya ada.
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`)
+SELECT v.`id`, f.`slug`
+FROM `subscription_plan_versions` v
+JOIN `subscription_plans` p ON p.`id` = v.`plan_id`
+JOIN (
+  SELECT 'jenis-surat' AS slug UNION ALL
+  SELECT 'surat-masuk' UNION ALL
+  SELECT 'surat-keluar' UNION ALL
+  SELECT 'surat-dinas'
+) f
+WHERE p.`slug` IN ('minimum', 'standar', 'premium')
+  AND v.`status` = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM `subscription_plan_features` x
+    WHERE x.`plan_version_id` = v.`id` AND x.`module_slug` = f.`slug`
+  );
+
+--> statement-breakpoint
+-- ===== 0019_syarat_surat_rute.sql =====
+-- Menu Layanan Surat → Daftar Persyaratan kini menuju halaman nyata
+-- (`/persuratan/syarat-surat`) yang setara dengan `syarat_surat` OpenSID.
+UPDATE `modules`
+SET `url` = '/persuratan/syarat-surat'
+WHERE `slug` = 'syarat-surat'
+  AND (`url` IS NULL OR `url` <> '/persuratan/syarat-surat');
+--> statement-breakpoint
+-- Tenant lama yang belum memiliki modul ini mendapatkannya sekarang, di bawah
+-- grup Layanan Surat bila grup itu ada.
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'syarat-surat', 'Daftar Persyaratan', '/persuratan/syarat-surat', NULL, 0, 0, 1, 8,
+       COALESCE((SELECT g.`id` FROM `modules` g WHERE g.`village_id` = v.`id` AND g.`slug` = 'layanan-surat' LIMIT 1), 0)
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'syarat-surat'
+);
+--> statement-breakpoint
+INSERT INTO `role_permissions` (`role_id`, `module_id`, `access`, `can_read`, `can_create`, `can_update`, `can_delete`)
+SELECT r.`id`, m.`id`,
+       CASE WHEN r.`slug` = 'administrator' THEN 'manage' ELSE 'read' END,
+       1,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END
+FROM `modules` m
+JOIN `roles` r ON r.`village_id` = m.`village_id`
+WHERE m.`slug` = 'syarat-surat'
+  AND r.`slug` IN ('administrator', 'sekretaris', 'operator', 'kepala-desa')
+  AND NOT EXISTS (
+    SELECT 1 FROM `role_permissions` rp WHERE rp.`role_id` = r.`id` AND rp.`module_id` = m.`id`
+  );
+--> statement-breakpoint
+-- Fitur paket: semua paket yang menyediakan layanan surat.
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`)
+SELECT v.`id`, 'syarat-surat'
+FROM `subscription_plan_versions` v
+JOIN `subscription_plans` p ON p.`id` = v.`plan_id`
+WHERE p.`slug` IN ('minimum', 'standar', 'premium')
+  AND v.`status` = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM `subscription_plan_features` f
+    WHERE f.`plan_version_id` = v.`id` AND f.`module_slug` = 'syarat-surat'
+  );
+
+--> statement-breakpoint
+-- ===== 0020_klasifikasi_surat_paritas.sql =====
+-- Parity `klasifikasi_surat` OpenSID: kode sampai 50 karakter dan status
+-- aktif/nonaktif (`enabled`). Uraian sudah memakai kolom description.
+ALTER TABLE `letter_classifications`
+  ADD COLUMN `is_active` boolean NOT NULL DEFAULT true;
+--> statement-breakpoint
+ALTER TABLE `letter_classifications`
+  MODIFY `code` varchar(50) NOT NULL;
+--> statement-breakpoint
+-- Menu Layanan Surat → Klasifikasi Surat kini menuju halaman nyata.
+UPDATE `modules`
+SET `url` = '/persuratan/klasifikasi-surat'
+WHERE `slug` = 'klasifikasi-surat'
+  AND (`url` IS NULL OR `url` <> '/persuratan/klasifikasi-surat');
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'klasifikasi-surat', 'Klasifikasi Surat', '/persuratan/klasifikasi-surat', NULL, 0, 0, 1, 9,
+       COALESCE((SELECT g.`id` FROM `modules` g WHERE g.`village_id` = v.`id` AND g.`slug` = 'layanan-surat' LIMIT 1), 0)
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'klasifikasi-surat'
+);
+--> statement-breakpoint
+INSERT INTO `role_permissions` (`role_id`, `module_id`, `access`, `can_read`, `can_create`, `can_update`, `can_delete`)
+SELECT r.`id`, m.`id`,
+       CASE WHEN r.`slug` = 'administrator' THEN 'manage' ELSE 'read' END,
+       1,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END
+FROM `modules` m
+JOIN `roles` r ON r.`village_id` = m.`village_id`
+WHERE m.`slug` = 'klasifikasi-surat'
+  AND r.`slug` IN ('administrator', 'sekretaris', 'operator', 'kepala-desa')
+  AND NOT EXISTS (
+    SELECT 1 FROM `role_permissions` rp WHERE rp.`role_id` = r.`id` AND rp.`module_id` = m.`id`
+  );
+--> statement-breakpoint
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`)
+SELECT v.`id`, 'klasifikasi-surat'
+FROM `subscription_plan_versions` v
+JOIN `subscription_plans` p ON p.`id` = v.`plan_id`
+WHERE p.`slug` IN ('minimum', 'standar', 'premium')
+  AND v.`status` = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM `subscription_plan_features` f
+    WHERE f.`plan_version_id` = v.`id` AND f.`module_slug` = 'klasifikasi-surat'
+  );
+
+--> statement-breakpoint
+-- ===== 0021_penataan_menu.sql =====
+-- Penataan menu sidebar (penyederhanaan IA):
+-- - Layanan Surat -> Persuratan; modul tersembunyi Daftar Surat, Surat
+--   Masuk, Surat Keluar, Surat Dinas kini tampil sebagai submenu.
+-- - Sekretariat digabung dengan Buku Administrasi Desa.
+-- - Statistik & Kesehatan digabung ke Kependudukan.
+-- - Pertanahan digabung dengan Pemetaan Umum.
+-- - Layanan Mandiri digabung dengan Hubung Warga & Buku Tamu, plus
+--   Pengaduan publik -> "Layanan Warga".
+-- - Satu Data -> Data Desa (DTKS, Bantuan, SDGs, Lapak).
+-- - Admin Web diratakan ke Info Desa.
+-- - Modul paritas OpenSID yang belum ada (Dokumen & Informasi Publik,
+--   Lapak, Vaksin, Pendataan/Pemantauan Covid, OpenDK) didaftarkan;
+--   yang halamannya belum ada memakai URL /segera/<slug>.
+UPDATE `modules` SET `name` = 'Persuratan' WHERE `slug` = 'layanan-surat';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Pertanahan & Peta' WHERE `slug` = 'pertanahan';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Layanan Warga' WHERE `slug` = 'layanan-mandiri';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Data Desa' WHERE `slug` = 'satu-data';
+--> statement-breakpoint
+UPDATE `modules`
+SET `sort_order` = CASE `slug`
+  WHEN 'kehadiran' THEN 4
+  WHEN 'layanan-surat' THEN 5
+  WHEN 'sekretariat' THEN 6
+  WHEN 'keuangan' THEN 7
+  WHEN 'analisis' THEN 8
+  WHEN 'pertanahan' THEN 9
+  WHEN 'layanan-mandiri' THEN 10
+  WHEN 'anjungan' THEN 11
+  WHEN 'satu-data' THEN 12
+  WHEN 'pengaturan' THEN 13
+  ELSE `sort_order`
+END
+WHERE `slug` IN ('kehadiran', 'layanan-surat', 'sekretariat', 'keuangan', 'analisis', 'pertanahan', 'layanan-mandiri', 'anjungan', 'satu-data', 'pengaturan');
+--> statement-breakpoint
+-- Grup yang dibubarkan disembunyikan (modul & grant-nya tetap ada).
+UPDATE `modules` SET `is_hidden` = 1
+WHERE `slug` IN ('statistik', 'kesehatan', 'buku-administrasi-desa', 'pemetaan', 'hubung-warga', 'admin-web', 'buku-tamu');
+--> statement-breakpoint
+-- Pindahkan anak grup yang dibubarkan ke grup gabungan.
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'kependudukan'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('stunting', 'statistik-kependudukan', 'laporan-bulanan', 'laporan-kelompok-rentan', 'laporan-penduduk');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'pertanahan'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('peta', 'pengaturan-peta');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'layanan-mandiri'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('pengaduan', 'pesan-warga', 'daftar-kontak', 'data-tamu', 'data-kepuasan', 'data-pertanyaan', 'data-keperluan');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'sekretariat'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('bumindes');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'info-desa'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('website-pengaturan', 'berita', 'galeri', 'slider', 'menu-publik', 'widget', 'komentar', 'media-sosial', 'teks-berjalan', 'pengunjung');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'layanan-surat'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('surat', 'surat-masuk', 'surat-keluar', 'surat-dinas');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'satu-data'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('bantuan', 'idm-sdgs');
+--> statement-breakpoint
+-- Tampilkan modul surat & data desa yang sebelumnya tersembunyi.
+UPDATE `modules` SET `url` = '/persuratan/surat', `name` = 'Daftar Surat', `is_hidden` = 0, `sort_order` = 2 WHERE `slug` = 'surat';
+--> statement-breakpoint
+UPDATE `modules` SET `url` = '/persuratan/surat-masuk', `is_hidden` = 0, `sort_order` = 3 WHERE `slug` = 'surat-masuk';
+--> statement-breakpoint
+UPDATE `modules` SET `url` = '/persuratan/surat-keluar', `is_hidden` = 0, `sort_order` = 4 WHERE `slug` = 'surat-keluar';
+--> statement-breakpoint
+UPDATE `modules` SET `url` = '/persuratan/surat-dinas', `is_hidden` = 0, `sort_order` = 5 WHERE `slug` = 'surat-dinas';
+--> statement-breakpoint
+UPDATE `modules` SET `url` = '/segera/bantuan', `is_hidden` = 0, `sort_order` = 2 WHERE `slug` = 'bantuan';
+--> statement-breakpoint
+UPDATE `modules` SET `url` = '/desa/idm', `is_hidden` = 0, `sort_order` = 3 WHERE `slug` = 'idm-sdgs';
+--> statement-breakpoint
+-- Urutan submenu di dalam grup gabungan.
+UPDATE `modules`
+SET `sort_order` = CASE `slug`
+  WHEN 'stunting' THEN 8
+  WHEN 'statistik-kependudukan' THEN 9
+  WHEN 'laporan-bulanan' THEN 10
+  WHEN 'laporan-kelompok-rentan' THEN 11
+  WHEN 'laporan-penduduk' THEN 12
+  WHEN 'peta' THEN 3
+  WHEN 'pengaturan-peta' THEN 4
+  WHEN 'pengaduan' THEN 1
+  WHEN 'kotak-pesan' THEN 2
+  WHEN 'pendaftar-layanan-mandiri' THEN 3
+  WHEN 'gawai-layanan' THEN 4
+  WHEN 'pesan-warga' THEN 5
+  WHEN 'daftar-kontak' THEN 6
+  WHEN 'data-tamu' THEN 7
+  WHEN 'data-kepuasan' THEN 8
+  WHEN 'data-pertanyaan' THEN 9
+  WHEN 'data-keperluan' THEN 10
+  WHEN 'pendapat' THEN 11
+  WHEN 'pengaturan-layanan-mandiri' THEN 12
+  WHEN 'arsip' THEN 2
+  WHEN 'inventaris' THEN 3
+  WHEN 'website-pengaturan' THEN 6
+  WHEN 'berita' THEN 7
+  WHEN 'galeri' THEN 8
+  WHEN 'slider' THEN 9
+  WHEN 'menu-publik' THEN 10
+  WHEN 'widget' THEN 11
+  WHEN 'komentar' THEN 12
+  WHEN 'media-sosial' THEN 13
+  WHEN 'teks-berjalan' THEN 14
+  WHEN 'pengunjung' THEN 15
+  WHEN 'cetak-surat' THEN 6
+  WHEN 'permohonan-surat' THEN 7
+  WHEN 'syarat-surat' THEN 8
+  WHEN 'klasifikasi-surat' THEN 9
+  WHEN 'arsip-layanan' THEN 10
+  ELSE `sort_order`
+END
+WHERE `slug` IN ('stunting', 'statistik-kependudukan', 'laporan-bulanan', 'laporan-kelompok-rentan', 'laporan-penduduk', 'peta', 'pengaturan-peta', 'pengaduan', 'kotak-pesan', 'pendaftar-layanan-mandiri', 'gawai-layanan', 'pesan-warga', 'daftar-kontak', 'data-tamu', 'data-kepuasan', 'data-pertanyaan', 'data-keperluan', 'pendapat', 'pengaturan-layanan-mandiri', 'arsip', 'inventaris', 'website-pengaturan', 'berita', 'galeri', 'slider', 'menu-publik', 'widget', 'komentar', 'media-sosial', 'teks-berjalan', 'pengunjung', 'cetak-surat', 'permohonan-surat', 'syarat-surat', 'klasifikasi-surat', 'arsip-layanan');
+--> statement-breakpoint
+-- Modul paritas OpenSID yang belum pernah terdaftar.
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'dokumen', 'Dokumen & Informasi Publik', '/website/dokumen', NULL, 0, 0, 1, 16,
+       COALESCE((SELECT g.`id` FROM `modules` g WHERE g.`village_id` = v.`id` AND g.`slug` = 'info-desa' LIMIT 1), 0)
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'dokumen'
+);
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'lapak', 'Lapak', '/segera/lapak', NULL, 0, 0, 1, 4,
+       COALESCE((SELECT g.`id` FROM `modules` g WHERE g.`village_id` = v.`id` AND g.`slug` = 'satu-data' LIMIT 1), 0)
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'lapak'
+);
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'vaksin', 'Vaksin', '/segera/vaksin', NULL, 0, 0, 1, 13,
+       COALESCE((SELECT g.`id` FROM `modules` g WHERE g.`village_id` = v.`id` AND g.`slug` = 'kependudukan' LIMIT 1), 0)
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'vaksin'
+);
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'covid-pendataan', 'Pendataan Covid', '/segera/covid-pendataan', NULL, 0, 0, 1, 14,
+       COALESCE((SELECT g.`id` FROM `modules` g WHERE g.`village_id` = v.`id` AND g.`slug` = 'kependudukan' LIMIT 1), 0)
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'covid-pendataan'
+);
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'covid-pemantauan', 'Pemantauan Covid', '/segera/covid-pemantauan', NULL, 0, 0, 1, 15,
+       COALESCE((SELECT g.`id` FROM `modules` g WHERE g.`village_id` = v.`id` AND g.`slug` = 'kependudukan' LIMIT 1), 0)
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'covid-pemantauan'
+);
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'opendk-pesan', 'Pesan OpenDK', '/segera/opendk-pesan', NULL, 0, 0, 1, 10,
+       COALESCE((SELECT g.`id` FROM `modules` g WHERE g.`village_id` = v.`id` AND g.`slug` = 'pengaturan' LIMIT 1), 0)
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'opendk-pesan'
+);
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'opendk-sinkronisasi', 'Sinkronisasi OpenDK', '/segera/opendk-sinkronisasi', NULL, 0, 0, 1, 11,
+       COALESCE((SELECT g.`id` FROM `modules` g WHERE g.`village_id` = v.`id` AND g.`slug` = 'pengaturan' LIMIT 1), 0)
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'opendk-sinkronisasi'
+);
+--> statement-breakpoint
+-- Grant role untuk modul baru; administrator manage, role lain read.
+INSERT INTO `role_permissions` (`role_id`, `module_id`, `access`, `can_read`, `can_create`, `can_update`, `can_delete`)
+SELECT r.`id`, m.`id`,
+       CASE WHEN r.`slug` = 'administrator' THEN 'manage' ELSE 'read' END,
+       1,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END
+FROM `modules` m
+JOIN `roles` r ON r.`village_id` = m.`village_id`
+WHERE m.`slug` IN ('dokumen', 'lapak', 'vaksin', 'covid-pendataan', 'covid-pemantauan', 'opendk-pesan', 'opendk-sinkronisasi')
+  AND r.`slug` IN ('administrator', 'sekretaris', 'operator', 'kepala-desa')
+  AND NOT EXISTS (
+    SELECT 1 FROM `role_permissions` rp WHERE rp.`role_id` = r.`id` AND rp.`module_id` = m.`id`
+  );
+--> statement-breakpoint
+-- Bantuan kini tampil di menu: role lain perlu grant baca.
+INSERT INTO `role_permissions` (`role_id`, `module_id`, `access`, `can_read`, `can_create`, `can_update`, `can_delete`)
+SELECT r.`id`, m.`id`, 'read', 1, 0, 0, 0
+FROM `modules` m
+JOIN `roles` r ON r.`village_id` = m.`village_id`
+WHERE m.`slug` = 'bantuan'
+  AND r.`slug` IN ('sekretaris', 'operator', 'kepala-desa')
+  AND NOT EXISTS (
+    SELECT 1 FROM `role_permissions` rp WHERE rp.`role_id` = r.`id` AND rp.`module_id` = m.`id`
+  );
+--> statement-breakpoint
+-- Fitur paket juga harus aktif, karena modul di luar paket tersaring dari
+-- izin efektif walau grant-nya ada.
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`)
+SELECT v.`id`, f.`slug`
+FROM `subscription_plan_versions` v
+JOIN `subscription_plans` p ON p.`id` = v.`plan_id`
+JOIN (
+  SELECT 'dokumen' AS slug UNION ALL
+  SELECT 'bantuan' UNION ALL
+  SELECT 'idm-sdgs' UNION ALL
+  SELECT 'lapak' UNION ALL
+  SELECT 'vaksin' UNION ALL
+  SELECT 'covid-pendataan' UNION ALL
+  SELECT 'covid-pemantauan' UNION ALL
+  SELECT 'opendk-pesan' UNION ALL
+  SELECT 'opendk-sinkronisasi'
+) f
+WHERE p.`slug` IN ('minimum', 'standar', 'premium')
+  AND v.`status` = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM `subscription_plan_features` x
+    WHERE x.`plan_version_id` = v.`id` AND x.`module_slug` = f.`slug`
+  );
+
+--> statement-breakpoint
+-- ===== 0022_hapus_modul_covid.sql =====
+-- Hapus modul Covid (Pendataan Covid & Pemantauan Covid) sesuai keputusan
+-- pengguna: fitur Covid tidak diperlukan lagi di Appdes.
+-- Baris modul dihapus pada semua desa; grant role_permissions ikut terhapus
+-- lewat ON DELETE CASCADE pada `role_permissions.module_id`.
+-- Template tenant baru sudah tidak memuat kedua modul ini.
+DELETE rp FROM `role_permissions` rp
+JOIN `modules` m ON m.`id` = rp.`module_id`
+WHERE m.`slug` IN ('covid-pendataan', 'covid-pemantauan');
+--> statement-breakpoint
+DELETE FROM `modules`
+WHERE `slug` IN ('covid-pendataan', 'covid-pemantauan');
+
+--> statement-breakpoint
+-- ===== 0023_hapus_modul_vaksin.sql =====
+-- Hapus modul Vaksin, bagian dari fitur Kesehatan Covid OpenSID
+-- (`vaksin_covid`), mengikuti penghapusan Pendataan & Pemantauan Covid.
+-- Baris modul dihapus pada semua desa; grant role_permissions ikut terhapus
+-- lewat ON DELETE CASCADE pada `role_permissions.module_id`.
+-- Template tenant baru sudah tidak memuat modul ini.
+DELETE rp FROM `role_permissions` rp
+JOIN `modules` m ON m.`id` = rp.`module_id`
+WHERE m.`slug` = 'vaksin';
+--> statement-breakpoint
+DELETE FROM `modules`
+WHERE `slug` = 'vaksin';
+
+--> statement-breakpoint
+-- ===== 0024_hapus_pengguna_shortcut.sql =====
+-- Hapus tabel pintasan beranda (`pengguna_shortcut`).
+-- Fitur Pintasan Saya sudah dihapus dari beranda beserta use case, repository,
+-- dan skema Drizzle-nya, sehingga tabel ini tidak dipakai lagi. Indeks unik
+-- dan foreign key ke `users` ikut terhapus bersama tabel.
+DROP TABLE IF EXISTS `pengguna_shortcut`;
+
+--> statement-breakpoint
+-- ===== 0025_kepala_dusun_wilayah.sql =====
+-- Hubungkan aparat desa dengan wilayah yang dipimpinnya (kepala dusun).
+-- Sinkronisasi aplikasi mengisi `wilayah_id` saat kepala dusun diangkat pada
+-- halaman Wilayah Administratif; satu aparat per wilayah dijaga indeks unik.
+ALTER TABLE `perangkat_desa` ADD `wilayah_id` int;--> statement-breakpoint
+ALTER TABLE `perangkat_desa` ADD CONSTRAINT `perangkat_desa_village_wilayah_uq` UNIQUE(`village_id`,`wilayah_id`);
+
+--> statement-breakpoint
+-- ===== 0026_menu_dua_belas_grup.sql =====
+-- Penataan menu sidebar menjadi 12 grup:
+-- Beranda; Profil & Website Desa; Kependudukan; Pelayanan & Persuratan;
+-- Kehadiran & Kepegawaian; Administrasi Desa; Keuangan Desa;
+-- Pembangunan & Aset; Pertanahan & GIS; Program & Data Desa; Layanan Warga;
+-- Pengaturan.
+--
+-- Modul yang tidak lagi masuk daftar menu disembunyikan (baris modul dan grant
+-- tetap ada agar izin lama tidak yatim). Modul baru yang halamannya belum
+-- dibangun memakai URL /segera/<slug> agar sidebar menampilkan halaman
+-- placeholder, bukan tautan mati.
+UPDATE `modules` SET `name` = 'Beranda' WHERE `slug` = 'beranda';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Profil & Website Desa' WHERE `slug` = 'info-desa';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Pelayanan & Persuratan' WHERE `slug` = 'layanan-surat';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Kehadiran & Kepegawaian' WHERE `slug` = 'kehadiran';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Administrasi Desa' WHERE `slug` = 'sekretariat';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Keuangan Desa' WHERE `slug` = 'keuangan';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Pertanahan & GIS' WHERE `slug` = 'pertanahan';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Program & Data Desa' WHERE `slug` = 'satu-data';
+--> statement-breakpoint
+UPDATE `modules`
+SET `sort_order` = CASE `slug`
+  WHEN 'beranda' THEN 1
+  WHEN 'info-desa' THEN 2
+  WHEN 'kependudukan' THEN 3
+  WHEN 'layanan-surat' THEN 4
+  WHEN 'kehadiran' THEN 5
+  WHEN 'sekretariat' THEN 6
+  WHEN 'keuangan' THEN 7
+  WHEN 'pembangunan-aset' THEN 8
+  WHEN 'pertanahan' THEN 9
+  WHEN 'satu-data' THEN 10
+  WHEN 'layanan-mandiri' THEN 11
+  WHEN 'pengaturan' THEN 12
+  ELSE `sort_order`
+END
+WHERE `slug` IN ('beranda', 'info-desa', 'kependudukan', 'layanan-surat', 'kehadiran', 'sekretariat', 'keuangan', 'pembangunan-aset', 'pertanahan', 'satu-data', 'layanan-mandiri', 'pengaturan');
+--> statement-breakpoint
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, 'pembangunan-aset', 'Pembangunan & Aset', NULL, '◈', 1, 0, 1, 8, 0
+FROM `villages` v
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = 'pembangunan-aset'
+);
+--> statement-breakpoint
+-- Pindahkan submenu ke grup yang baru.
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'info-desa'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('pengaturan-desa', 'wilayah', 'perangkat-desa', 'lembaga-desa', 'status-desa', 'berita', 'galeri', 'dokumen', 'website-pengaturan');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'kependudukan'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('penduduk', 'keluarga', 'rumah-tangga', 'kelompok', 'suplemen', 'calon-pemilih', 'stunting', 'statistik-kependudukan', 'laporan-penduduk', 'laporan-bulanan', 'laporan-kelompok-rentan');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'layanan-surat'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('permohonan-surat', 'surat', 'pengaturan-surat', 'syarat-surat', 'klasifikasi-surat', 'cetak-surat', 'surat-masuk', 'surat-keluar', 'surat-dinas');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'kehadiran'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('data-pegawai', 'absensi', 'rekapitulasi-kehadiran', 'pengajuan-izin', 'persetujuan-izin', 'hari-libur', 'jam-kerja', 'alasan-keluar');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'sekretariat'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('bumindes', 'buku-administrasi-penduduk', 'buku-administrasi-pembangunan', 'buku-administrasi-lainnya', 'agenda-kegiatan', 'arsip');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'keuangan'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('apbdes', 'pendapatan', 'belanja', 'pembiayaan', 'penatausahaan', 'buku-kas-umum', 'realisasi', 'laporan-keuangan');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'pembangunan-aset'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('perencanaan-pembangunan', 'pembangunan', 'proyek-desa', 'inventaris', 'aset-desa', 'mutasi-aset', 'laporan-aset');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'pertanahan'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('peta', 'peta-wilayah', 'data-pertanahan', 'batas-wilayah', 'peta-penduduk');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'satu-data'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('bantuan', 'data-penerima-bantuan', 'idm-sdgs', 'potensi', 'statistik-program-desa');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'layanan-mandiri'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('pengaduan', 'aspirasi-warga', 'lapak', 'informasi-pelayanan');
+--> statement-breakpoint
+UPDATE `modules` m JOIN `modules` p ON p.`village_id` = m.`village_id` AND p.`slug` = 'pengaturan'
+SET m.`parent_id` = p.`id`
+WHERE m.`slug` IN ('pengguna', 'grup-akses', 'pengaturan-sistem', 'integrasi', 'template-website', 'log-aktivitas');
+--> statement-breakpoint
+-- Urutan submenu sesuai daftar menu baku.
+UPDATE `modules`
+SET `sort_order` = CASE `slug`
+  WHEN 'pengaturan-desa' THEN 1
+  WHEN 'wilayah' THEN 2
+  WHEN 'perangkat-desa' THEN 3
+  WHEN 'lembaga-desa' THEN 4
+  WHEN 'status-desa' THEN 5
+  WHEN 'berita' THEN 6
+  WHEN 'galeri' THEN 7
+  WHEN 'dokumen' THEN 8
+  WHEN 'website-pengaturan' THEN 9
+  WHEN 'penduduk' THEN 1
+  WHEN 'keluarga' THEN 2
+  WHEN 'rumah-tangga' THEN 3
+  WHEN 'kelompok' THEN 4
+  WHEN 'suplemen' THEN 5
+  WHEN 'calon-pemilih' THEN 6
+  WHEN 'stunting' THEN 7
+  WHEN 'statistik-kependudukan' THEN 8
+  WHEN 'laporan-penduduk' THEN 9
+  WHEN 'laporan-bulanan' THEN 10
+  WHEN 'laporan-kelompok-rentan' THEN 11
+  WHEN 'permohonan-surat' THEN 1
+  WHEN 'surat' THEN 2
+  WHEN 'pengaturan-surat' THEN 3
+  WHEN 'syarat-surat' THEN 4
+  WHEN 'klasifikasi-surat' THEN 5
+  WHEN 'cetak-surat' THEN 6
+  WHEN 'surat-masuk' THEN 7
+  WHEN 'surat-keluar' THEN 8
+  WHEN 'surat-dinas' THEN 9
+  WHEN 'rekapitulasi-kehadiran' THEN 3
+  WHEN 'pengajuan-izin' THEN 4
+  WHEN 'persetujuan-izin' THEN 5
+  WHEN 'hari-libur' THEN 6
+  WHEN 'jam-kerja' THEN 7
+  WHEN 'alasan-keluar' THEN 8
+  WHEN 'bumindes' THEN 1
+  WHEN 'arsip' THEN 6
+  WHEN 'laporan-keuangan' THEN 8
+  WHEN 'pembangunan' THEN 2
+  WHEN 'inventaris' THEN 4
+  WHEN 'peta' THEN 1
+  WHEN 'bantuan' THEN 1
+  WHEN 'idm-sdgs' THEN 3
+  WHEN 'pengaduan' THEN 1
+  WHEN 'lapak' THEN 3
+  WHEN 'pengguna' THEN 1
+  ELSE `sort_order`
+END
+WHERE `slug` IN ('pengaturan-desa', 'wilayah', 'perangkat-desa', 'lembaga-desa', 'status-desa', 'berita', 'galeri', 'dokumen', 'website-pengaturan', 'penduduk', 'keluarga', 'rumah-tangga', 'kelompok', 'suplemen', 'calon-pemilih', 'stunting', 'statistik-kependudukan', 'laporan-penduduk', 'laporan-bulanan', 'laporan-kelompok-rentan', 'permohonan-surat', 'surat', 'pengaturan-surat', 'syarat-surat', 'klasifikasi-surat', 'cetak-surat', 'surat-masuk', 'surat-keluar', 'surat-dinas', 'rekapitulasi-kehadiran', 'pengajuan-izin', 'persetujuan-izin', 'hari-libur', 'jam-kerja', 'alasan-keluar', 'bumindes', 'arsip', 'laporan-keuangan', 'pembangunan', 'inventaris', 'peta', 'bantuan', 'idm-sdgs', 'pengaduan', 'lapak', 'pengguna');
+--> statement-breakpoint
+-- Label dan tautan yang berubah.
+UPDATE `modules` SET `name` = 'Data Stunting' WHERE `slug` = 'stunting';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Rekapitulasi Kehadiran' WHERE `slug` = 'rekapitulasi-kehadiran';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Buku Administrasi Umum', `url` = '/bumindes/buku-administrasi?golongan=A' WHERE `slug` = 'bumindes';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Peta Desa' WHERE `slug` = 'peta';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Pengaduan Masyarakat' WHERE `slug` = 'pengaduan';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Lapak Desa' WHERE `slug` = 'lapak';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Kegiatan Pembangunan', `url` = '/keuangan/kegiatan', `is_hidden` = 0 WHERE `slug` = 'pembangunan';
+--> statement-breakpoint
+UPDATE `modules` SET `name` = 'Inventaris Barang' WHERE `slug` = 'inventaris';
+--> statement-breakpoint
+-- Modul yang tidak lagi tampil di sidebar.
+UPDATE `modules` SET `is_hidden` = 1
+WHERE `slug` IN ('slider', 'menu-publik', 'widget', 'komentar', 'media-sosial', 'teks-berjalan', 'pengunjung', 'arsip-layanan', 'pengaduan-kehadiran', 'c-desa', 'daftar-persil', 'pengaturan-peta', 'impor-data', 'laporan-manual', 'laporan-apbdes', 'pesan-warga', 'daftar-kontak', 'kotak-pesan', 'pendaftar-layanan-mandiri', 'gawai-layanan', 'pendapat', 'pengaturan-layanan-mandiri', 'data-tamu', 'data-kepuasan', 'data-pertanyaan', 'data-keperluan', 'dtks', 'opendk-pesan', 'opendk-sinkronisasi', 'pengaturan-aplikasi', 'modul', 'database', 'info-sistem', 'qr-code', 'optimasi-gambar', 'analisis', 'master-analisis', 'pengaturan-analisis', 'anjungan', 'daftar-anjungan', 'anjungan-menu', 'pengaturan-anjungan');
+--> statement-breakpoint
+-- Modul submenu baru.
+INSERT INTO `modules` (`village_id`, `slug`, `name`, `url`, `icon`, `is_group`, `is_hidden`, `is_active`, `sort_order`, `parent_id`)
+SELECT v.`id`, s.`slug`, s.`name`, s.`url`, NULL, 0, 0, 1, s.`sort_order`,
+       COALESCE((SELECT p.`id` FROM `modules` p WHERE p.`village_id` = v.`id` AND p.`slug` = s.`parent_slug` LIMIT 1), 0)
+FROM `villages` v
+JOIN (
+  SELECT 'data-pegawai' AS `slug`, 'Data Perangkat Desa' AS `name`, '/absensi-kepegawaian/pegawai' AS `url`, 'kehadiran' AS `parent_slug`, 1 AS `sort_order`
+  UNION ALL SELECT 'absensi', 'Kehadiran', '/absensi-kepegawaian/absensi', 'kehadiran', 2
+  UNION ALL SELECT 'buku-administrasi-penduduk', 'Buku Administrasi Penduduk', '/bumindes/buku-administrasi?golongan=B', 'sekretariat', 2
+  UNION ALL SELECT 'buku-administrasi-pembangunan', 'Buku Administrasi Pembangunan', '/segera/buku-administrasi-pembangunan', 'sekretariat', 3
+  UNION ALL SELECT 'buku-administrasi-lainnya', 'Buku Administrasi Lainnya', '/bumindes/buku-administrasi?golongan=E', 'sekretariat', 4
+  UNION ALL SELECT 'agenda-kegiatan', 'Agenda Kegiatan', '/segera/agenda-kegiatan', 'sekretariat', 5
+  UNION ALL SELECT 'apbdes', 'APBDes', '/keuangan/apbdes', 'keuangan', 1
+  UNION ALL SELECT 'pendapatan', 'Pendapatan', '/segera/pendapatan', 'keuangan', 2
+  UNION ALL SELECT 'belanja', 'Belanja', '/segera/belanja', 'keuangan', 3
+  UNION ALL SELECT 'pembiayaan', 'Pembiayaan', '/segera/pembiayaan', 'keuangan', 4
+  UNION ALL SELECT 'penatausahaan', 'Penatausahaan', '/segera/penatausahaan', 'keuangan', 5
+  UNION ALL SELECT 'buku-kas-umum', 'Buku Kas Umum', '/segera/buku-kas-umum', 'keuangan', 6
+  UNION ALL SELECT 'realisasi', 'Realisasi Anggaran', '/keuangan/realisasi', 'keuangan', 7
+  UNION ALL SELECT 'perencanaan-pembangunan', 'Perencanaan Pembangunan', '/segera/perencanaan-pembangunan', 'pembangunan-aset', 1
+  UNION ALL SELECT 'proyek-desa', 'Proyek Desa', '/segera/proyek-desa', 'pembangunan-aset', 3
+  UNION ALL SELECT 'aset-desa', 'Aset Desa', '/segera/aset-desa', 'pembangunan-aset', 5
+  UNION ALL SELECT 'mutasi-aset', 'Mutasi Aset', '/inventaris/mutasi', 'pembangunan-aset', 6
+  UNION ALL SELECT 'laporan-aset', 'Laporan Aset', '/inventaris/laporan', 'pembangunan-aset', 7
+  UNION ALL SELECT 'peta-wilayah', 'Peta Wilayah', '/segera/peta-wilayah', 'pertanahan', 2
+  UNION ALL SELECT 'data-pertanahan', 'Data Pertanahan', '/segera/data-pertanahan', 'pertanahan', 3
+  UNION ALL SELECT 'batas-wilayah', 'Batas Wilayah', '/segera/batas-wilayah', 'pertanahan', 4
+  UNION ALL SELECT 'peta-penduduk', 'Peta Penduduk', '/segera/peta-penduduk', 'pertanahan', 5
+  UNION ALL SELECT 'data-penerima-bantuan', 'Data Penerima Bantuan', '/segera/data-penerima-bantuan', 'satu-data', 2
+  UNION ALL SELECT 'potensi', 'Data Potensi Desa', '/konten/potensi', 'satu-data', 4
+  UNION ALL SELECT 'statistik-program-desa', 'Statistik Program Desa', '/segera/statistik-program-desa', 'satu-data', 5
+  UNION ALL SELECT 'aspirasi-warga', 'Aspirasi Warga', '/segera/aspirasi-warga', 'layanan-mandiri', 2
+  UNION ALL SELECT 'informasi-pelayanan', 'Informasi Pelayanan', '/pelayanan-publik/layanan', 'layanan-mandiri', 4
+  UNION ALL SELECT 'grup-akses', 'Role & Hak Akses', '/pengaturan/grup-akses', 'pengaturan', 2
+  UNION ALL SELECT 'pengaturan-sistem', 'Pengaturan Sistem', '/pengaturan/desa', 'pengaturan', 3
+  UNION ALL SELECT 'integrasi', 'Integrasi', '/segera/integrasi', 'pengaturan', 4
+  UNION ALL SELECT 'template-website', 'Template Website', '/segera/template-website', 'pengaturan', 5
+  UNION ALL SELECT 'log-aktivitas', 'Log Aktivitas', '/pengaturan/pengguna/aktivitas', 'pengaturan', 6
+) s
+WHERE NOT EXISTS (
+  SELECT 1 FROM `modules` x WHERE x.`village_id` = v.`id` AND x.`slug` = s.`slug`
+);
+--> statement-breakpoint
+-- Grant role: administrator manage, role lain membaca submenu operasional.
+INSERT INTO `role_permissions` (`role_id`, `module_id`, `access`, `can_read`, `can_create`, `can_update`, `can_delete`)
+SELECT r.`id`, m.`id`,
+       CASE WHEN r.`slug` = 'administrator' THEN 'manage' ELSE 'read' END,
+       1,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END,
+       CASE WHEN r.`slug` = 'administrator' THEN 1 ELSE 0 END
+FROM `modules` m
+JOIN `roles` r ON r.`village_id` = m.`village_id`
+WHERE m.`slug` IN ('pembangunan-aset', 'data-pegawai', 'absensi', 'buku-administrasi-penduduk', 'buku-administrasi-pembangunan', 'buku-administrasi-lainnya', 'agenda-kegiatan', 'apbdes', 'pendapatan', 'belanja', 'pembiayaan', 'penatausahaan', 'buku-kas-umum', 'realisasi', 'perencanaan-pembangunan', 'proyek-desa', 'aset-desa', 'mutasi-aset', 'laporan-aset', 'peta-wilayah', 'data-pertanahan', 'batas-wilayah', 'peta-penduduk', 'data-penerima-bantuan', 'potensi', 'statistik-program-desa', 'aspirasi-warga', 'informasi-pelayanan')
+  AND r.`slug` IN ('administrator', 'sekretaris', 'operator', 'kepala-desa')
+  AND NOT EXISTS (
+    SELECT 1 FROM `role_permissions` rp WHERE rp.`role_id` = r.`id` AND rp.`module_id` = m.`id`
+  );
+--> statement-breakpoint
+-- Submenu pengaturan sensitif hanya untuk administrator.
+INSERT INTO `role_permissions` (`role_id`, `module_id`, `access`, `can_read`, `can_create`, `can_update`, `can_delete`)
+SELECT r.`id`, m.`id`, 'manage', 1, 1, 1, 1
+FROM `modules` m
+JOIN `roles` r ON r.`village_id` = m.`village_id`
+WHERE m.`slug` IN ('grup-akses', 'pengaturan-sistem', 'integrasi', 'template-website', 'log-aktivitas')
+  AND r.`slug` = 'administrator'
+  AND NOT EXISTS (
+    SELECT 1 FROM `role_permissions` rp WHERE rp.`role_id` = r.`id` AND rp.`module_id` = m.`id`
+  );
+--> statement-breakpoint
+-- Fitur paket: modul baru harus aktif agar tidak tersaring dari izin efektif.
+INSERT INTO `subscription_plan_features` (`plan_version_id`, `module_slug`)
+SELECT v.`id`, f.`slug`
+FROM `subscription_plan_versions` v
+JOIN `subscription_plans` p ON p.`id` = v.`plan_id`
+JOIN (
+  SELECT 'pembangunan-aset' AS `slug` UNION ALL
+  SELECT 'data-pegawai' UNION ALL
+  SELECT 'absensi' UNION ALL
+  SELECT 'buku-administrasi-penduduk' UNION ALL
+  SELECT 'buku-administrasi-pembangunan' UNION ALL
+  SELECT 'buku-administrasi-lainnya' UNION ALL
+  SELECT 'agenda-kegiatan' UNION ALL
+  SELECT 'apbdes' UNION ALL
+  SELECT 'pendapatan' UNION ALL
+  SELECT 'belanja' UNION ALL
+  SELECT 'pembiayaan' UNION ALL
+  SELECT 'penatausahaan' UNION ALL
+  SELECT 'buku-kas-umum' UNION ALL
+  SELECT 'realisasi' UNION ALL
+  SELECT 'perencanaan-pembangunan' UNION ALL
+  SELECT 'proyek-desa' UNION ALL
+  SELECT 'aset-desa' UNION ALL
+  SELECT 'mutasi-aset' UNION ALL
+  SELECT 'laporan-aset' UNION ALL
+  SELECT 'peta-wilayah' UNION ALL
+  SELECT 'data-pertanahan' UNION ALL
+  SELECT 'batas-wilayah' UNION ALL
+  SELECT 'peta-penduduk' UNION ALL
+  SELECT 'data-penerima-bantuan' UNION ALL
+  SELECT 'potensi' UNION ALL
+  SELECT 'statistik-program-desa' UNION ALL
+  SELECT 'aspirasi-warga' UNION ALL
+  SELECT 'informasi-pelayanan' UNION ALL
+  SELECT 'grup-akses' UNION ALL
+  SELECT 'pengaturan-sistem' UNION ALL
+  SELECT 'integrasi' UNION ALL
+  SELECT 'template-website' UNION ALL
+  SELECT 'log-aktivitas'
+) f
+WHERE p.`slug` IN ('minimum', 'standar', 'premium')
+  AND v.`status` = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM `subscription_plan_features` x
+    WHERE x.`plan_version_id` = v.`id` AND x.`module_slug` = f.`slug`
+  );

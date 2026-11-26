@@ -20,12 +20,6 @@ import {
   villages,
 } from "@/db/schema";
 import {
-  buatKunciApiRecord,
-  findKunciApi,
-  listKunciApi,
-  nonaktifkanKunciApi,
-} from "@/features/api-eksternal/infrastructure/api-key-repository";
-import {
   deleteBumindesItem,
   getBumindesBuku,
   getBumindesItem,
@@ -33,38 +27,34 @@ import {
   listBumindesBuku,
   listBumindesItem,
   updateBumindesItem,
-} from "@/features/bumindes/infrastructure/bumindes-repository";
+} from "@/features/administrasi-desa/bumindes/infrastructure/bumindes-repository";
 import {
   getBumindesPembangunan,
   listBumindesKader,
   listBumindesPembangunan,
-} from "@/features/bumindes/infrastructure/pembangunan-repository";
+} from "@/features/administrasi-desa/bumindes/infrastructure/pembangunan-repository";
 import {
   getBumindesPeraturan,
   listBumindesAparat,
   listBumindesPeraturan,
-} from "@/features/bumindes/infrastructure/sekretariat-repository";
+} from "@/features/administrasi-desa/bumindes/infrastructure/sekretariat-repository";
 import {
   getBumindesTanahKas,
   listBumindesTanahKas,
   listBumindesTanahKasMutasi,
-} from "@/features/bumindes/infrastructure/tanah-kas-repository";
+} from "@/features/administrasi-desa/bumindes/infrastructure/tanah-kas-repository";
 import {
-  createIdm,
-  deleteIdm,
-  deleteSdgs,
-  listIdm,
-  listSdgs,
-  listTahunIdm,
-  updateIdm,
-  upsertSdgs,
-} from "@/features/idm/infrastructure/idm-repository";
+  buatKunciApiRecord,
+  findKunciApi,
+  listKunciApi,
+  nonaktifkanKunciApi,
+} from "@/features/api-eksternal/infrastructure/api-key-repository";
 import {
   deletePelanggan,
   findPelanggan,
   listPelanggan,
   updatePelanggan,
-} from "@/features/pelanggan/infrastructure/pelanggan-repository";
+} from "@/features/layanan-warga/pelanggan/infrastructure/pelanggan-repository";
 import {
   countTiketPadaTanggal,
   deletePengaduan,
@@ -74,12 +64,22 @@ import {
   listPengaduanPublik,
   setPublikPengaduan,
   updateTanggapanPengaduan,
-} from "@/features/pengaduan/infrastructure/pengaduan-repository";
+} from "@/features/layanan-warga/pengaduan/infrastructure/pengaduan-repository";
 import {
   hapusStatusPlugin,
   listStatusPlugin,
   simpanStatusPlugin,
-} from "@/features/plugin/infrastructure/plugin-repository";
+} from "@/features/pengaturan/plugin/infrastructure/plugin-repository";
+import {
+  createIdm,
+  deleteIdm,
+  deleteSdgs,
+  listIdm,
+  listSdgs,
+  listTahunIdm,
+  updateIdm,
+  upsertSdgs,
+} from "@/features/program-data-desa/idm/infrastructure/idm-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**

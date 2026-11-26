@@ -1,8 +1,8 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 
-import { resolveVillageByHost } from "@/features/desa/application/resolve-village";
-import { normalizeHost } from "@/features/desa/domain/host";
+import { resolveVillageByHost } from "@/features/info-desa/desa/application/resolve-village";
+import { normalizeHost } from "@/features/info-desa/desa/domain/host";
 import { terimaPesanEmailWebhook } from "@/features/notifikasi/application/mailbox-use-cases";
 import { pesanEmailMasukSchema } from "@/features/notifikasi/domain/mailbox";
 import { env } from "@/lib/env";

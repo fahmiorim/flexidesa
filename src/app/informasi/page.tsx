@@ -2,15 +2,15 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { agendaMendatang } from "@/features/agenda/application/agenda-use-cases";
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { getStatistikDesa } from "@/features/desa/application/statistik-desa";
+import { agendaMendatang } from "@/features/info-desa/agenda/application/agenda-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getStatistikDesa } from "@/features/info-desa/desa/application/statistik-desa";
 import {
   daftarBerita,
   daftarDokumenPublik,
   profilDesaPublik,
-} from "@/features/publik/application/konten-publik";
-import { isSafeDocumentLink } from "@/features/publik/domain/dokumen";
+} from "@/features/info-desa/publik/application/konten-publik";
+import { isSafeDocumentLink } from "@/features/info-desa/publik/domain/dokumen";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./informasi.module.css";

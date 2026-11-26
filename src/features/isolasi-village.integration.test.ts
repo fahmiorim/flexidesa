@@ -14,24 +14,24 @@ import {
   villages,
 } from "@/db/schema";
 import {
-  deleteAnjungan,
-  listAnjungan,
-  updateAnjungan,
-} from "@/features/anjungan/infrastructure/anjungan-repository";
-import {
   deleteArsip,
   listArsip,
   updateArsip,
-} from "@/features/arsip/infrastructure/arsip-repository";
-import { listBukuTamu } from "@/features/buku-tamu/infrastructure/buku-tamu-repository";
-import { listKehadiran } from "@/features/kehadiran/infrastructure/kehadiran-repository";
-import { listSisaLebih } from "@/features/keuangan/infrastructure/sisa-lebih-repository";
+} from "@/features/administrasi-desa/arsip/infrastructure/arsip-repository";
+import { listKehadiran } from "@/features/kehadiran/kehadiran/infrastructure/kehadiran-repository";
+import { listSisaLebih } from "@/features/keuangan-desa/keuangan/infrastructure/sisa-lebih-repository";
+import {
+  deleteAnjungan,
+  listAnjungan,
+  updateAnjungan,
+} from "@/features/layanan-warga/anjungan/infrastructure/anjungan-repository";
+import { listBukuTamu } from "@/features/layanan-warga/buku-tamu/infrastructure/buku-tamu-repository";
 import {
   deleteLapak,
   listKategoriLapak,
   listLapak,
   updateLapak,
-} from "@/features/lapak/infrastructure/lapak-repository";
+} from "@/features/layanan-warga/lapak/infrastructure/lapak-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**

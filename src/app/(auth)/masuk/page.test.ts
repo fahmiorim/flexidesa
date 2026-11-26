@@ -23,11 +23,11 @@ vi.mock("@/lib/dal", () => ({
   getCurrentUser: state.getCurrentUser,
 }));
 
-vi.mock("@/features/desa/application/resolve-village", () => ({
+vi.mock("@/features/info-desa/desa/application/resolve-village", () => ({
   getIdentitasFromRequest: async () => ({ id: 1, namaDesa: "Desa Contoh" }),
 }));
 
-vi.mock("@/features/desa/application/platform-host", () => ({
+vi.mock("@/features/info-desa/desa/application/platform-host", () => ({
   get hostPlatformEksplisit() {
     return state.platformHosts;
   },

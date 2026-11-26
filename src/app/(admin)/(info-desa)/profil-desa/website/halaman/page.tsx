@@ -1,0 +1,437 @@
+import type { Metadata } from "next";
+
+import { getWebsitePagesData } from "@/features/info-desa/publik/application/website-admin";
+
+import {
+  hapusHalamanWebsiteAction,
+  hapusMenuWebsiteAction,
+  hapusWidgetWebsiteAction,
+  tambahHalamanWebsiteAction,
+  tambahMenuWebsiteAction,
+  tambahWidgetWebsiteAction,
+  ubahHalamanWebsiteAction,
+  ubahMenuWebsiteAction,
+  ubahMenuWebsiteDetailAction,
+  ubahStatusHalamanWebsiteAction,
+  ubahStatusWidgetWebsiteAction,
+  ubahWidgetWebsiteAction,
+} from "../actions";
+import { WebsiteAdminShell, WebsiteSection } from "../website-admin-shell";
+
+export const metadata: Metadata = { title: "Halaman & Navigasi Website Desa" };
+
+export default async function WebsitePagesPage() {
+  const { menu, widget, pages, izin } = await getWebsitePagesData();
+  return (
+    <WebsiteAdminShell
+      title="Halaman & Navigasi"
+      description="Kelola halaman statis dan susunan menu yang tampil pada website desa."
+    >
+      <nav className="website-settings-tabs">
+        {izin.halaman.baca && (
+          <a className="is-active" href="#daftar-halaman">
+            Daftar Halaman
+          </a>
+        )}
+        {izin.menu.baca && <a href="#menu-navigasi">Menu Navigasi</a>}
+        {izin.widget.baca && <a href="#widget">Widget Website</a>}
+      </nav>
+      <div className="website-dashboard-grid website-pages-grid">
+        {izin.halaman.baca && (
+          <WebsiteSection title="Daftar Halaman">
+            <div id="daftar-halaman" className="website-table-wrap">
+              <table className="website-table website-table-pages">
+                <thead>
+                  <tr>
+                    <th>Judul Halaman</th>
+                    <th>Alamat</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pages.map((page) => (
+                    <tr key={page.id}>
+                      <td>
+                        <strong>{page.judul}</strong>
+                      </td>
+                      <td>/{page.slug}</td>
+                      <td>
+                        <span
+                          className={
+                            page.aktif ? "website-status" : "website-status website-status-off"
+                          }
+                        >
+                          {page.aktif ? "Aktif" : "Nonaktif"}
+                        </span>
+                      </td>
+                      <td>
+                        {izin.halaman.ubah && (
+                          <details>
+                            <summary className="website-mini-button">Edit</summary>
+                            <form action={ubahHalamanWebsiteAction} className="website-inline-form">
+                              <input type="hidden" name="id" value={page.id} />
+                              <label>
+                                Judul
+                                <input
+                                  name="judul"
+                                  defaultValue={page.judul}
+                                  required
+                                  maxLength={200}
+                                />
+                              </label>
+                              <label>
+                                Slug
+                                <input
+                                  name="slug"
+                                  defaultValue={page.slug}
+                                  required
+                                  maxLength={190}
+                                />
+                              </label>
+                              <label>
+                                Isi HTML
+                                <textarea name="isi" defaultValue={page.isi} rows={5} required />
+                              </label>
+                              <button className="website-mini-button" type="submit">
+                                Simpan
+                              </button>
+                            </form>
+                          </details>
+                        )}
+                        {(izin.halaman.ubah || izin.halaman.hapus) && (
+                          <div className="website-row-actions">
+                            {izin.halaman.ubah && (
+                              <form action={ubahStatusHalamanWebsiteAction}>
+                                <input type="hidden" name="id" value={page.id} />
+                                <input type="hidden" name="aktif" value={String(!page.aktif)} />
+                                <button className="website-mini-button" type="submit">
+                                  {page.aktif ? "Sembunyikan" : "Aktifkan"}
+                                </button>
+                              </form>
+                            )}
+                            {izin.halaman.hapus && (
+                              <form action={hapusHalamanWebsiteAction}>
+                                <input type="hidden" name="id" value={page.id} />
+                                <button className="website-mini-button is-danger" type="submit">
+                                  Hapus
+                                </button>
+                              </form>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {pages.length === 0 ? (
+                <p className="modul-empty">
+                  Belum ada halaman statis. Halaman profil inti dikelola melalui data Profil Desa.
+                </p>
+              ) : null}
+            </div>
+            {izin.halaman.tambah && (
+              <form action={tambahHalamanWebsiteAction} className="website-inline-form">
+                <strong>Tambah Halaman</strong>
+                <div className="website-form-grid">
+                  <label>
+                    Judul Halaman *
+                    <input name="judul" required maxLength={200} />
+                  </label>
+                  <label>
+                    Slug
+                    <input name="slug" maxLength={190} placeholder="otomatis dari judul" />
+                  </label>
+                </div>
+                <label>
+                  Isi HTML *
+                  <textarea name="isi" rows={5} required />
+                </label>
+                <label className="website-checkbox">
+                  <input name="aktif" type="checkbox" defaultChecked /> Tampilkan halaman
+                </label>
+                <button className="website-button website-button-primary" type="submit">
+                  ＋ Tambah Halaman
+                </button>
+              </form>
+            )}
+          </WebsiteSection>
+        )}
+        {izin.menu.baca && (
+          <WebsiteSection title="Menu Navigasi">
+            <div id="menu-navigasi" className="website-table-wrap">
+              <table className="website-table website-table-menu">
+                <thead>
+                  <tr>
+                    <th>Nama Menu</th>
+                    <th>Link</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {menu.map((item) => (
+                    <tr key={item.id}>
+                      <td>
+                        <strong>{item.nama}</strong>
+                        {item.parentId ? <small>Submenu · induk #{item.parentId}</small> : null}
+                      </td>
+                      <td className="website-cell-link">{item.link}</td>
+                      <td>
+                        <span
+                          className={
+                            item.aktif ? "website-status" : "website-status website-status-off"
+                          }
+                        >
+                          {item.aktif ? "Aktif" : "Nonaktif"}
+                        </span>
+                      </td>
+                      <td>
+                        {izin.menu.ubah && (
+                          <details>
+                            <summary className="website-mini-button">Edit</summary>
+                            <form
+                              action={ubahMenuWebsiteDetailAction}
+                              className="website-inline-form"
+                            >
+                              <input type="hidden" name="id" value={item.id} />
+                              <label>
+                                Nama
+                                <input
+                                  name="nama"
+                                  defaultValue={item.nama}
+                                  required
+                                  maxLength={50}
+                                />
+                              </label>
+                              <label>
+                                Link
+                                <input
+                                  name="link"
+                                  defaultValue={item.link}
+                                  required
+                                  maxLength={500}
+                                />
+                              </label>
+                              <label>
+                                Tipe
+                                <select name="linkTipe" defaultValue={item.linkTipe}>
+                                  <option value="internal">Internal</option>
+                                  <option value="eksternal">Eksternal</option>
+                                  <option value="halaman">Halaman Statis</option>
+                                </select>
+                              </label>
+                              <label>
+                                Induk
+                                <select name="parentId" defaultValue={item.parentId ?? ""}>
+                                  <option value="">Menu Utama</option>
+                                  {menu
+                                    .filter((x) => x.parentId === null && x.id !== item.id)
+                                    .map((x) => (
+                                      <option key={x.id} value={x.id}>
+                                        {x.nama}
+                                      </option>
+                                    ))}
+                                </select>
+                              </label>
+                              <button className="website-mini-button" type="submit">
+                                Simpan
+                              </button>
+                            </form>
+                          </details>
+                        )}
+                        {(izin.menu.ubah || izin.menu.hapus) && (
+                          <div className="website-row-actions">
+                            {izin.menu.ubah && (
+                              <form action={ubahMenuWebsiteAction}>
+                                <input type="hidden" name="id" value={item.id} />
+                                <input type="hidden" name="aktif" value={String(!item.aktif)} />
+                                <button type="submit" className="website-mini-button">
+                                  {item.aktif ? "Nonaktifkan" : "Aktifkan"}
+                                </button>
+                              </form>
+                            )}
+                            {izin.menu.hapus && (
+                              <form action={hapusMenuWebsiteAction}>
+                                <input type="hidden" name="id" value={item.id} />
+                                <button type="submit" className="website-mini-button is-danger">
+                                  Hapus
+                                </button>
+                              </form>
+                            )}
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {menu.length === 0 ? <p className="modul-empty">Belum ada menu navigasi.</p> : null}
+            </div>
+            {izin.menu.tambah && (
+              <form action={tambahMenuWebsiteAction} className="website-inline-form">
+                <strong>Tambah Menu</strong>
+                <div className="website-form-grid">
+                  <label>
+                    Nama Menu *<input name="nama" required maxLength={50} />
+                  </label>
+                  <label>
+                    URL / Link *
+                    <input name="link" required maxLength={500} placeholder="/desa/profil" />
+                  </label>
+                  <label>
+                    Tipe Link
+                    <select name="linkTipe" defaultValue="internal">
+                      <option value="internal">Internal</option>
+                      <option value="eksternal">Eksternal</option>
+                      <option value="halaman">Halaman Statis</option>
+                    </select>
+                  </label>
+                  <label>
+                    Menu Induk
+                    <select name="parentId" defaultValue="">
+                      <option value="">Menu Utama</option>
+                      {menu
+                        .filter((x) => x.parentId === null)
+                        .map((x) => (
+                          <option key={x.id} value={x.id}>
+                            {x.nama}
+                          </option>
+                        ))}
+                    </select>
+                  </label>
+                </div>
+                <button className="website-button website-button-primary" type="submit">
+                  ＋ Tambah Menu
+                </button>
+              </form>
+            )}
+          </WebsiteSection>
+        )}
+        {izin.widget.baca && (
+          <WebsiteSection title="Widget Website">
+            <div id="widget" className="website-list">
+              {widget.map((item) => (
+                <div className="website-list-row" key={item.id}>
+                  <div>
+                    <strong>{item.judul ?? `Widget ${item.jenis}`}</strong>
+                    <span>Urutan {item.urut}</span>
+                  </div>
+                  {(izin.widget.ubah || izin.widget.hapus) && (
+                    <div className="website-row-actions">
+                      {izin.widget.ubah && (
+                        <details>
+                          <summary className="website-mini-button">Edit</summary>
+                          <form action={ubahWidgetWebsiteAction} className="website-inline-form">
+                            <input type="hidden" name="id" value={item.id} />
+                            <label>
+                              Judul
+                              <input
+                                name="judulWidget"
+                                defaultValue={item.judul ?? ""}
+                                maxLength={100}
+                              />
+                            </label>
+                            <label>
+                              Jenis
+                              <select name="jenisWidget" defaultValue={item.jenis}>
+                                {[1, 2, 3, 4, 5, 6].map((value) => (
+                                  <option key={value} value={value}>
+                                    Widget {value}
+                                  </option>
+                                ))}
+                              </select>
+                            </label>
+                            <label>
+                              Isi
+                              <textarea name="isiWidget" defaultValue={item.isi ?? ""} />
+                            </label>
+                            <label>
+                              Urutan
+                              <input
+                                type="number"
+                                min="0"
+                                name="urutWidget"
+                                defaultValue={item.urut}
+                              />
+                            </label>
+                            <button className="website-mini-button" type="submit">
+                              Simpan
+                            </button>
+                          </form>
+                        </details>
+                      )}
+                      {izin.widget.ubah && (
+                        <form action={ubahStatusWidgetWebsiteAction}>
+                          <input type="hidden" name="id" value={item.id} />
+                          <input type="hidden" name="aktif" value={String(!item.aktif)} />
+                          <button className="website-mini-button" type="submit">
+                            {item.aktif ? "Nonaktifkan" : "Aktifkan"}
+                          </button>
+                        </form>
+                      )}
+                      {izin.widget.hapus && (
+                        <form action={hapusWidgetWebsiteAction}>
+                          <input type="hidden" name="id" value={item.id} />
+                          <button className="website-mini-button is-danger" type="submit">
+                            Hapus
+                          </button>
+                        </form>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+              {widget.length === 0 ? (
+                <p className="modul-empty">Belum ada widget yang dikonfigurasi.</p>
+              ) : null}
+            </div>
+            {izin.widget.tambah && (
+              <form action={tambahWidgetWebsiteAction} className="website-inline-form">
+                <strong>Tambah Widget</strong>
+                <div className="website-form-grid">
+                  <label>
+                    Judul
+                    <input name="judulWidget" maxLength={100} />
+                  </label>
+                  <label>
+                    Jenis
+                    <select name="jenisWidget" defaultValue="3">
+                      {[1, 2, 3, 4, 5, 6].map((value) => (
+                        <option key={value} value={value}>
+                          Widget {value}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Urutan
+                    <input type="number" min="0" name="urutWidget" defaultValue={0} />
+                  </label>
+                </div>
+                <label>
+                  Isi
+                  <textarea name="isiWidget" rows={3} />
+                </label>
+                <label className="website-checkbox">
+                  <input name="aktifWidget" type="checkbox" defaultChecked /> Aktifkan widget
+                </label>
+                <button className="website-button website-button-primary" type="submit">
+                  ＋ Tambah Widget
+                </button>
+              </form>
+            )}
+          </WebsiteSection>
+        )}
+        <WebsiteSection title="Tips Pengelolaan">
+          <ul className="website-tips">
+            <li>Gunakan judul menu yang singkat dan mudah dipahami.</li>
+            <li>Pastikan tautan internal mengarah ke halaman yang tersedia.</li>
+            <li>Nonaktifkan menu tanpa menghapusnya jika hanya ingin menyembunyikan sementara.</li>
+          </ul>
+        </WebsiteSection>
+      </div>
+    </WebsiteAdminShell>
+  );
+}

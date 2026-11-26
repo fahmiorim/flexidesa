@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { ambilAuditPlatform, eksporAuditPlatform } from "./audit-platform-use-cases";
 
 vi.mock("./provisioning-use-cases", () => ({ requireSuperAdmin: vi.fn() }));
-vi.mock("@/features/audit/infrastructure/audit-repository", () => ({
+vi.mock("@/features/pengaturan/audit/infrastructure/audit-repository", () => ({
   listAuditLogsLintasDesa: vi.fn(),
 }));
 
@@ -22,7 +22,7 @@ describe("ambilAuditPlatform", () => {
 
   it("menolak pembacaan audit lintas desa oleh non-platform", async () => {
     const guard = await import("./provisioning-use-cases");
-    const repo = await import("@/features/audit/infrastructure/audit-repository");
+    const repo = await import("@/features/pengaturan/audit/infrastructure/audit-repository");
     vi.mocked(guard.requireSuperAdmin).mockRejectedValue(
       Object.assign(new Error("Hanya super admin yang boleh mengelola desa."), {
         code: "FORBIDDEN",
@@ -35,7 +35,7 @@ describe("ambilAuditPlatform", () => {
 
   it("menormalkan halaman dan kata kunci dari query string", async () => {
     const guard = await import("./provisioning-use-cases");
-    const repo = await import("@/features/audit/infrastructure/audit-repository");
+    const repo = await import("@/features/pengaturan/audit/infrastructure/audit-repository");
     vi.mocked(guard.requireSuperAdmin).mockResolvedValue({ villageId: null } as never);
     vi.mocked(repo.listAuditLogsLintasDesa).mockResolvedValue(halamanKosong);
 
@@ -51,7 +51,7 @@ describe("ambilAuditPlatform", () => {
 
   it("jatuh ke halaman 1 untuk nilai tidak valid dan membatasi panjang kata kunci", async () => {
     const guard = await import("./provisioning-use-cases");
-    const repo = await import("@/features/audit/infrastructure/audit-repository");
+    const repo = await import("@/features/pengaturan/audit/infrastructure/audit-repository");
     vi.mocked(guard.requireSuperAdmin).mockResolvedValue({ villageId: null } as never);
     vi.mocked(repo.listAuditLogsLintasDesa).mockResolvedValue(halamanKosong);
 
@@ -67,7 +67,7 @@ describe("ambilAuditPlatform", () => {
 
   it("mengirim kata kunci kosong sebagai undefined", async () => {
     const guard = await import("./provisioning-use-cases");
-    const repo = await import("@/features/audit/infrastructure/audit-repository");
+    const repo = await import("@/features/pengaturan/audit/infrastructure/audit-repository");
     vi.mocked(guard.requireSuperAdmin).mockResolvedValue({ villageId: null } as never);
     vi.mocked(repo.listAuditLogsLintasDesa).mockResolvedValue(halamanKosong);
 
@@ -83,7 +83,7 @@ describe("ambilAuditPlatform", () => {
 
   it("meneruskan filter desa dan peristiwa yang valid", async () => {
     const guard = await import("./provisioning-use-cases");
-    const repo = await import("@/features/audit/infrastructure/audit-repository");
+    const repo = await import("@/features/pengaturan/audit/infrastructure/audit-repository");
     vi.mocked(guard.requireSuperAdmin).mockResolvedValue({ villageId: null } as never);
     vi.mocked(repo.listAuditLogsLintasDesa).mockResolvedValue(halamanKosong);
 
@@ -100,7 +100,7 @@ describe("ambilAuditPlatform", () => {
 
   it("mengabaikan filter desa/peristiwa yang tidak valid", async () => {
     const guard = await import("./provisioning-use-cases");
-    const repo = await import("@/features/audit/infrastructure/audit-repository");
+    const repo = await import("@/features/pengaturan/audit/infrastructure/audit-repository");
     vi.mocked(guard.requireSuperAdmin).mockResolvedValue({ villageId: null } as never);
     vi.mocked(repo.listAuditLogsLintasDesa).mockResolvedValue(halamanKosong);
 
@@ -123,7 +123,7 @@ describe("eksporAuditPlatform", () => {
 
   it("menolak ekspor oleh non-platform", async () => {
     const guard = await import("./provisioning-use-cases");
-    const repo = await import("@/features/audit/infrastructure/audit-repository");
+    const repo = await import("@/features/pengaturan/audit/infrastructure/audit-repository");
     vi.mocked(guard.requireSuperAdmin).mockRejectedValue(
       Object.assign(new Error("Ditolak"), { code: "FORBIDDEN" }),
     );
@@ -134,7 +134,7 @@ describe("eksporAuditPlatform", () => {
 
   it("menggabungkan seluruh halaman hasil filter", async () => {
     const guard = await import("./provisioning-use-cases");
-    const repo = await import("@/features/audit/infrastructure/audit-repository");
+    const repo = await import("@/features/pengaturan/audit/infrastructure/audit-repository");
     vi.mocked(guard.requireSuperAdmin).mockResolvedValue({ villageId: null } as never);
 
     const baris = (id: number) => ({

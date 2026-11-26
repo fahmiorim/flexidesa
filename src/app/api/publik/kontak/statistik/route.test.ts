@@ -1,16 +1,16 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { getStatistikPengunjungPublik } from "@/features/kontak/application/statistik-pengunjung-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getStatistikPengunjungPublik } from "@/features/layanan-warga/kontak/application/statistik-pengunjung-use-cases";
 import { batasiPermintaan } from "@/features/rate-limit/application/rate-limit";
 import { alamatIp } from "@/lib/client-ip";
 
 import { GET } from "./route";
 
-vi.mock("@/features/desa/application/resolve-village", () => ({
+vi.mock("@/features/info-desa/desa/application/resolve-village", () => ({
   getIdentitasFromRequest: vi.fn(),
 }));
-vi.mock("@/features/kontak/application/statistik-pengunjung-use-cases", () => ({
+vi.mock("@/features/layanan-warga/kontak/application/statistik-pengunjung-use-cases", () => ({
   getStatistikPengunjungPublik: vi.fn(),
 }));
 vi.mock("@/features/rate-limit/application/rate-limit", () => ({

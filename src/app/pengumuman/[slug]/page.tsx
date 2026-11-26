@@ -2,13 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { agendaBulan, agendaMendatang } from "@/features/agenda/application/agenda-use-cases";
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
+import {
+  agendaBulan,
+  agendaMendatang,
+} from "@/features/info-desa/agenda/application/agenda-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import {
   catatKunjunganBerita,
   daftarBerita,
   detailBerita,
-} from "@/features/publik/application/konten-publik";
+} from "@/features/info-desa/publik/application/konten-publik";
 import { sanitasiHtml } from "@/lib/sanitize";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";

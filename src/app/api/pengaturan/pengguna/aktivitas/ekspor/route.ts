@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { exportAuditLogs } from "@/features/audit/application/audit-use-cases";
-import { resolveVillageId } from "@/features/desa/application/resolve-village";
-import { RESOURCES } from "@/features/rbac/domain/resources";
+import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
+import { exportAuditLogs } from "@/features/pengaturan/audit/application/audit-use-cases";
+import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { requirePermission } from "@/lib/dal";
 
 function cell(value: unknown): string {

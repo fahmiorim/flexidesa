@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-/** Alias lama modul data suplemen; rute kanonisnya `/penduduk/suplemen`. */
+/** Alias lama modul data suplemen; rute kanonisnya `/kependudukan/penduduk/suplemen`. */
 export default function SegeraSuplemenPage() {
-  redirect("/penduduk/suplemen");
+  redirect("/kependudukan/penduduk/suplemen");
 }

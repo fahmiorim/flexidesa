@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { TENANT_TEMPLATE } from "@/db/templates/tenant-template";
+import { TENANT_TEMPLATE } from "@/features/multi-desa/domain/tenant-template-data";
 import { RUTE_ADMIN_TERSEDIA } from "@/features/navigation/domain/menu-tampil";
 
 import {
@@ -37,11 +37,13 @@ describe("katalogFiturPaket", () => {
       [
         modul("beranda", "Dashboard", "/beranda"),
         modul("kependudukan", "Kependudukan", null, { isGroup: true }),
-        modul("penduduk", "Data Penduduk", "/penduduk", { parentSlug: "kependudukan" }),
+        modul("penduduk", "Data Penduduk", "/kependudukan/penduduk", {
+          parentSlug: "kependudukan",
+        }),
         modul("segera", "Hari Libur", "/segera/hari-libur"),
         modul("internal", "Internal", "/internal", { isHidden: true }),
       ],
-      new Set(["/beranda", "/penduduk"]),
+      new Set(["/beranda", "/kependudukan/penduduk"]),
     );
 
     expect(hasil).toEqual([

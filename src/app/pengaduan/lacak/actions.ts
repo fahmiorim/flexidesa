@@ -1,8 +1,8 @@
 "use server";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { lacakPengaduanData } from "@/features/pengaduan/application/use-cases";
-import type { PengaduanLacak } from "@/features/pengaduan/domain/pengaduan";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { lacakPengaduanData } from "@/features/layanan-warga/pengaduan/application/use-cases";
+import type { PengaduanLacak } from "@/features/layanan-warga/pengaduan/domain/pengaduan";
 
 export interface StateLacakPengaduan {
   error: string | null;

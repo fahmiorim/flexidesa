@@ -2,9 +2,6 @@ import "server-only";
 
 import { z } from "zod";
 
-import { TENANT_TEMPLATE } from "@/db/templates/tenant-template";
-import { recordAuditEvent } from "@/features/audit/application/audit-use-cases";
-import { AUDIT_EVENTS } from "@/features/audit/domain/audit";
 import { requireSuperAdmin } from "@/features/multi-desa/application/provisioning-use-cases";
 import {
   buatVersiDrafPaketSchema,
@@ -19,6 +16,7 @@ import {
   ubahStatusPaketSchema,
   type StatusPaket,
 } from "@/features/multi-desa/domain/paket-langganan";
+import { TENANT_TEMPLATE } from "@/features/multi-desa/domain/tenant-template-data";
 import {
   buatDrafVersiPaket,
   buatPaket,
@@ -37,6 +35,8 @@ import {
   ubahStatusPaket,
 } from "@/features/multi-desa/infrastructure/paket-langganan-repository";
 import { RUTE_ADMIN_TERSEDIA, ruteTersedia } from "@/features/navigation/domain/menu-tampil";
+import { recordAuditEvent } from "@/features/pengaturan/audit/application/audit-use-cases";
+import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
 import { conflict, notFound } from "@/lib/errors";
 
 function katalogFitur() {

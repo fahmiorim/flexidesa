@@ -1,9 +1,9 @@
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { getStatistikPublik } from "@/features/desa/application/statistik-publik";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getStatistikPublik } from "@/features/info-desa/desa/application/statistik-publik";
 import {
   buildStatistikPublikCsv,
   statistikPublikCsvFilename,
-} from "@/features/desa/domain/statistik-publik-csv";
+} from "@/features/info-desa/desa/domain/statistik-publik-csv";
 
 export const dynamic = "force-dynamic";
 

@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { pengaturanKontakPublik } from "@/features/publik/application/konten-publik";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import {
+  daftarFaqKontak,
+  pengaturanKontakPublik,
+} from "@/features/info-desa/publik/application/konten-publik";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import { KontakFaq } from "./kontak-faq";
@@ -43,7 +46,10 @@ function socialUrl(value: string, base: string): string | null {
 
 export default async function KontakPage() {
   const desa = await getIdentitasFromRequest();
-  const settings = await pengaturanKontakPublik(desa.id);
+  const [settings, faq] = await Promise.all([
+    pengaturanKontakPublik(desa.id),
+    daftarFaqKontak(desa.id),
+  ]);
   const location = locationLabel(desa);
   const logoUrl = mediaUrl(desa.logo, desa.id);
   const officePhotoUrl = mediaUrl(desa.fotoKantor, desa.id);
@@ -296,7 +302,7 @@ export default async function KontakPage() {
               <p>Informasi umum mengenai komunikasi dan pengaduan kepada pemerintah desa.</p>
             </div>
           </div>
-          <KontakFaq />
+          <KontakFaq items={faq} />
         </section>
         <section className={styles.bottomCta}>
           <div className={styles.ctaArt}>✉　✓</div>

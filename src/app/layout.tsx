@@ -4,9 +4,9 @@ import type { ReactNode } from "react";
 
 import "./globals.css";
 
-import { hostPlatform } from "@/features/desa/application/platform-host";
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { adalahHostPlatform } from "@/features/desa/domain/host";
+import { hostPlatform } from "@/features/info-desa/desa/application/platform-host";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { adalahHostPlatform } from "@/features/info-desa/desa/domain/host";
 import { APP_DESCRIPTION, APP_NAME } from "@/lib/app-config";
 
 /** Ikon default aplikasi (host platform, landing page, dan fallback). */

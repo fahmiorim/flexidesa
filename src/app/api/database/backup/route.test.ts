@@ -1,12 +1,12 @@
 import { Readable } from "node:stream";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import * as useCase from "@/features/database/application/database-use-cases";
+import * as useCase from "@/features/pengaturan/database/application/database-use-cases";
 import { forbidden } from "@/lib/errors";
 
 import { GET } from "./route";
 
-vi.mock("@/features/database/application/database-use-cases", () => ({
+vi.mock("@/features/pengaturan/database/application/database-use-cases", () => ({
   unduhBackupSql: vi.fn(),
 }));
 

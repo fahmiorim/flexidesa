@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import { ajukanLayananWargaData } from "@/features/pelayanan/application/pengajuan-use-cases";
+import { ajukanLayananWargaData } from "@/features/layanan-warga/pelayanan/application/pengajuan-use-cases";
 
 export async function ajukanLayananWargaAction(formData: FormData) {
   const serviceId = Number(formData.get("layananId"));

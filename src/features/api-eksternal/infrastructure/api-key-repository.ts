@@ -61,6 +61,19 @@ export async function findKunciApi(
   return kunci ?? null;
 }
 
+export async function findApiKeyByHashedKey(
+  hashedKey: string,
+): Promise<typeof apiKeys.$inferSelect | null> {
+  const record = await db.query.apiKeys.findFirst({
+    where: eq(apiKeys.hashedKey, hashedKey),
+  });
+  return record ?? null;
+}
+
+export async function touchApiKeyLastUsed(id: number): Promise<void> {
+  await db.update(apiKeys).set({ lastUsedAt: new Date() }).where(eq(apiKeys.id, id));
+}
+
 export async function nonaktifkanKunciApi(villageId: number, id: number): Promise<void> {
   await db
     .update(apiKeys)

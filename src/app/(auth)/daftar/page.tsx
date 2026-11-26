@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { bacaPengaturan } from "@/features/pengaturan/application/pengaturan-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { bacaPengaturan } from "@/features/pengaturan/pengaturan/application/pengaturan-use-cases";
 
 import { FormPendaftaranWarga } from "./form-pendaftaran";
 

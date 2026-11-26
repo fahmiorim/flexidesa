@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 
-import { resolveVillageId } from "@/features/desa/application/resolve-village";
+import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
 import {
   getDataBackupDesa,
   pulihkanBackupDesa,
-} from "@/features/pengaturan/application/pengaturan-desa-use-cases";
+} from "@/features/pengaturan/pengaturan/application/pengaturan-desa-use-cases";
 import { requirePermission } from "@/lib/dal";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 

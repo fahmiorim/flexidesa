@@ -85,7 +85,7 @@ describe("rute publik", () => {
 
   it("rute privat yang berbagi prefix dengan halaman publik tetap terlindungi", () => {
     for (const rute of [
-      "/penduduk",
+      "/kependudukan/penduduk",
       "/pengaturan/desa",
       "/pemerintahan/pemilihan",
       "/profil/pengguna",

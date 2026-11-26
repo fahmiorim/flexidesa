@@ -18,6 +18,7 @@ export * from "./bumindes-sekretariat";
 export * from "./content";
 export * from "./pemerintahan";
 export * from "./potensi";
+export * from "./sarana-prasarana";
 export * from "./gallery-video";
 export * from "./family";
 export * from "./family-log";

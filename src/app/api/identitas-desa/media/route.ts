@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
 
-import { resolveVillageId } from "@/features/desa/application/resolve-village";
+import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
 import {
   hapusMediaIdentitas,
   simpanMediaIdentitas,
   type MediaIdentitas,
-} from "@/features/identitas-desa/application/identitas-desa-use-cases";
-import { terapkanUkuranLogo } from "@/features/identitas-desa/application/transformasi-logo";
-import { validasiMediaIdentitas } from "@/features/identitas-desa/application/validasi-media";
-import { validasiUkuranLogo } from "@/features/pengaturan/domain/identitas-form";
-import { simpanBerkasMedia } from "@/features/publik/application/simpan-berkas-media";
+} from "@/features/info-desa/identitas-desa/application/identitas-desa-use-cases";
+import { terapkanUkuranLogo } from "@/features/info-desa/identitas-desa/application/transformasi-logo";
+import { validasiMediaIdentitas } from "@/features/info-desa/identitas-desa/application/validasi-media";
+import { simpanBerkasMedia } from "@/features/info-desa/publik/application/simpan-berkas-media";
+import { validasiUkuranLogo } from "@/features/pengaturan/pengaturan/domain/identitas-form";
 import { requirePermission } from "@/lib/dal";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 
@@ -31,6 +31,8 @@ export async function POST(request: Request) {
     if (
       field !== "logo" &&
       field !== "foto-kantor" &&
+      field !== "tanda-tangan" &&
+      field !== "stempel" &&
       field !== "struktur-adat" &&
       field !== "dokumen-adat"
     )
@@ -73,9 +75,13 @@ export async function POST(request: Request) {
           ? "Logo desa berhasil diunggah."
           : field === "foto-kantor"
             ? "Foto kantor berhasil diunggah."
-            : field === "struktur-adat"
-              ? "Struktur adat berhasil diunggah."
-              : "Dokumen regulasi adat berhasil diunggah.",
+            : field === "tanda-tangan"
+              ? "Tanda tangan berhasil diunggah."
+              : field === "stempel"
+                ? "Stempel berhasil diunggah."
+                : field === "struktur-adat"
+                  ? "Struktur adat berhasil diunggah."
+                  : "Dokumen regulasi adat berhasil diunggah.",
       path,
     });
   } catch (e) {
@@ -90,6 +96,8 @@ export async function DELETE(request: Request) {
     if (
       field !== "logo" &&
       field !== "foto-kantor" &&
+      field !== "tanda-tangan" &&
+      field !== "stempel" &&
       field !== "struktur-adat" &&
       field !== "dokumen-adat"
     )

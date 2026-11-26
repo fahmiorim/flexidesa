@@ -29,7 +29,7 @@ import {
   terbitkanVersiPaket,
 } from "@/features/multi-desa/infrastructure/paket-langganan-repository";
 import { provisionDesa } from "@/features/multi-desa/infrastructure/provisioning-repository";
-import { listPlanModuleSlugs } from "@/features/rbac/infrastructure/rbac-repository";
+import { listPlanModuleSlugs } from "@/features/pengaturan/rbac/infrastructure/rbac-repository";
 import { validasiDatabaseUji } from "@/testing/db-test-guard";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 

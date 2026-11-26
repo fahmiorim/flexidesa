@@ -39,13 +39,19 @@ export function PaketPenetapanForm({
   const [selectedTenants, setSelectedTenants] = useState<Set<number>>(() => new Set());
   const [planVersionId, setPlanVersionId] = useState("");
   const [confirmed, setConfirmed] = useState(false);
+  const selesai = state.status === "success";
 
+  // Segarkan data server setelah penetapan berhasil agar label paket tenant
+  // ikut terbarui. Tidak ada setState di sini; status sukses dibaca langsung
+  // dari `state` saat render.
   useEffect(() => {
-    if (state.status !== "success") return;
+    if (state.status === "success") router.refresh();
+  }, [router, state]);
+
+  function mulaiBaru() {
     setSelectedTenants(new Set());
     setConfirmed(false);
-    router.refresh();
-  }, [router, state]);
+  }
 
   function toggleTenant(id: number, checked: boolean) {
     setSelectedTenants((current) => {
@@ -217,13 +223,19 @@ export function PaketPenetapanForm({
             {angka.format(selectedTenants.size)} dari {angka.format(tenants.length)} tenant dipilih
             {selectedTenants.size === 500 ? " · batas maksimum 500 tenant per penetapan" : ""}
           </span>
-          <button
-            className="button button-primary"
-            disabled={pending || selectedTenants.size === 0 || !selectedPackage || !confirmed}
-            type="submit"
-          >
-            {pending ? "Menerapkan penetapan…" : "Konfirmasi penetapan"}
-          </button>
+          {selesai ? (
+            <button className="button button-secondary" onClick={mulaiBaru} type="button">
+              Penetapan baru
+            </button>
+          ) : (
+            <button
+              className="button button-primary"
+              disabled={pending || selectedTenants.size === 0 || !selectedPackage || !confirmed}
+              type="submit"
+            >
+              {pending ? "Menerapkan penetapan…" : "Konfirmasi penetapan"}
+            </button>
+          )}
         </div>
       </div>
     </form>

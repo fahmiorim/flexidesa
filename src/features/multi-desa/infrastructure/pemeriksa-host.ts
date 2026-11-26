@@ -11,7 +11,10 @@ import { isIP } from "node:net";
  * TTE agar aturan SSRF tidak diduplikasi.
  */
 
-import { hostTerlarang, klasifikasiAlamat } from "@/features/surat/domain/tte-alamat";
+import {
+  hostTerlarang,
+  klasifikasiAlamat,
+} from "@/features/pelayanan-persuratan/surat/domain/tte-alamat";
 import { env } from "@/lib/env";
 
 const POLA_HOST = /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}$/i;

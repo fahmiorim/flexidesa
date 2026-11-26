@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import {
   daftarKomentarPublik,
   kirimKomentarPublik,
-} from "@/features/kontak/application/kontak-use-cases";
-import { bacaPengaturan } from "@/features/pengaturan/application/pengaturan-use-cases";
+} from "@/features/layanan-warga/kontak/application/kontak-use-cases";
+import { bacaPengaturan } from "@/features/pengaturan/pengaturan/application/pengaturan-use-cases";
 import { batasiPermintaan } from "@/features/rate-limit/application/rate-limit";
 import { alamatIp } from "@/lib/client-ip";
 import { bacaJsonTerbatas, BodyLimitError } from "@/lib/request-body";

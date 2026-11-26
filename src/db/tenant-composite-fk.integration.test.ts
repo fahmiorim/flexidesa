@@ -21,11 +21,11 @@ import {
   rumahTangga,
   villages,
 } from "@/db/schema";
-import { deleteKeluarga } from "@/features/keluarga/infrastructure/keluarga-repository";
-import { deletePenduduk } from "@/features/penduduk/infrastructure/penduduk-repository";
-import { deleteRumahTangga } from "@/features/rumah-tangga/infrastructure/rumah-tangga-repository";
-import { deleteSurat } from "@/features/surat/infrastructure/surat-repository";
-import { deleteWilayah } from "@/features/wilayah/infrastructure/wilayah-repository";
+import { deleteWilayah } from "@/features/info-desa/wilayah/infrastructure/wilayah-repository";
+import { deleteKeluarga } from "@/features/kependudukan/keluarga/infrastructure/keluarga-repository";
+import { deletePenduduk } from "@/features/kependudukan/penduduk/infrastructure/penduduk-repository";
+import { deleteRumahTangga } from "@/features/kependudukan/rumah-tangga/infrastructure/rumah-tangga-repository";
+import { deleteSurat } from "@/features/pelayanan-persuratan/surat/infrastructure/surat-repository";
 import { validasiDatabaseUji } from "@/testing/db-test-guard";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
@@ -394,6 +394,8 @@ describe("AUD-002 composite tenant foreign keys", () => {
       "inventaris_pemeliharaan_history_schedule_tenant_fk",
       "inventaris_pj_history_asset_tenant_fk",
       "kehadiran_izin_resident_tenant_fk",
+      "kehadiran_pengaduan_pegawai_tenant_fk",
+      "kehadiran_pengaduan_pelapor_tenant_fk",
       "kehadiran_perangkat_pegawai_tenant_fk",
       "kelompok_anggota_kelompok_tenant_fk",
       "kelompok_anggota_resident_tenant_fk",
@@ -405,7 +407,10 @@ describe("AUD-002 composite tenant foreign keys", () => {
       "kontak_resident_tenant_fk",
       "lapak_produk_lapak_tenant_fk",
       "lapak_resident_tenant_fk",
+      "lembaga_anggota_resident_tenant_fk",
       "lembaga_anggota_tenant_fk",
+      "lembaga_desa_ketua_tenant_fk",
+      "lembaga_desa_master_tenant_fk",
       "letter_dinas_classification_tenant_fk",
       "letter_number_archive_letter_tenant_fk",
       "letter_types_classification_tenant_fk",
@@ -436,6 +441,8 @@ describe("AUD-002 composite tenant foreign keys", () => {
       "residents_rtm_tenant_fk",
       "riwayat_pengajuan_request_tenant_fk",
       "rtm_region_tenant_fk",
+      "sasaran_paud_kia_tenant_fk",
+      "sasaran_paud_posyandu_tenant_fk",
       "suplemen_terdata_keluarga_tenant_fk",
       "suplemen_terdata_penduduk_tenant_fk",
       "suplemen_terdata_suplemen_tenant_fk",
@@ -787,12 +794,16 @@ describe("AUD-002 composite tenant foreign keys", () => {
       );
       residentId = hasil.insertId;
       await koneksi.query("SET FOREIGN_KEY_CHECKS = 1");
-
       const sqlPreflight = fs.readFileSync(PREFLIGHT_SQL, "utf8");
       const [hasilPreflight] = await koneksi.query(sqlPreflight);
+      // Preflight boleh berupa satu SELECT (hasilnya langsung array baris) atau
+      // beberapa statement (hasilnya array result set); keduanya diterima.
       const rows = Array.isArray(hasilPreflight)
-        ? ((hasilPreflight.find(Array.isArray) as
-            Array<{ relasi: string; jenis: string; child_id: number }> | undefined) ?? [])
+        ? ((hasilPreflight.find(Array.isArray) ?? hasilPreflight) as Array<{
+            relasi: string;
+            jenis: string;
+            child_id: number;
+          }>)
         : [];
       const temuan = rows.find(
         (row) =>
@@ -852,13 +863,24 @@ describe("AUD-002 composite tenant foreign keys", () => {
     }
     harusMenolakFk(errorFamily, "delete");
 
+    // KK yang masih memiliki anggota sengaja dilewati agar riwayat kependudukan
+    // tidak hilang, sehingga referensi penduduk tidak berubah.
     await deleteKeluarga(desaA, familyA);
     const [residentSetelahKk] = await db
       .select({ familyId: residents.familyId })
       .from(residents)
       .where(eq(residents.id, residentA))
       .limit(1);
-    expect(residentSetelahKk).toEqual({ familyId: null });
+    expect(residentSetelahKk).toEqual({ familyId: familyA });
+
+    // Setelah seluruh anggota dilepas, KK kosong dapat dihapus lewat repository.
+    await db.update(residents).set({ familyId: null }).where(eq(residents.id, residentA));
+    await deleteKeluarga(desaA, familyA);
+    const keluargaTersisa = await db
+      .select({ id: families.id })
+      .from(families)
+      .where(eq(families.id, familyA));
+    expect(keluargaTersisa).toHaveLength(0);
 
     let errorRtm: unknown;
     try {

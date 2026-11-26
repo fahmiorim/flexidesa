@@ -1,16 +1,20 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AUDIT_EVENTS } from "@/features/audit/domain/audit";
 import type { DesaRetensiRow } from "@/features/multi-desa/infrastructure/lifecycle-tenant-repository";
-import * as rbac from "@/features/rbac/infrastructure/rbac-repository";
+import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
+import * as rbac from "@/features/pengaturan/rbac/infrastructure/rbac-repository";
 import * as dal from "@/lib/dal";
 import type { CurrentUser } from "@/lib/dal";
 
 import { eksporDataDesa, purgeDesa, statusLifecycleDesa } from "./lifecycle-desa-use-cases";
 
 vi.mock("@/lib/dal", () => ({ requireUser: vi.fn() }));
-vi.mock("@/features/rbac/infrastructure/rbac-repository", () => ({ getRoleById: vi.fn() }));
-vi.mock("@/features/audit/application/audit-use-cases", () => ({ recordAuditEvent: vi.fn() }));
+vi.mock("@/features/pengaturan/rbac/infrastructure/rbac-repository", () => ({
+  getRoleById: vi.fn(),
+}));
+vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
+  recordAuditEvent: vi.fn(),
+}));
 vi.mock("@/features/multi-desa/infrastructure/lifecycle-tenant-repository", () => ({
   getDesaRetensi: vi.fn(),
   eksporBerlakuTerbaru: vi.fn(),
@@ -57,7 +61,7 @@ async function modulRepo() {
 }
 
 async function modulAudit() {
-  return import("@/features/audit/application/audit-use-cases");
+  return import("@/features/pengaturan/audit/application/audit-use-cases");
 }
 
 describe("lifecycle desa", () => {

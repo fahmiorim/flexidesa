@@ -1,25 +1,28 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { listLaporanDokumenApbdesPublik } from "@/features/keuangan/application/laporan-dokumen-publik-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { listLaporanDokumenApbdesPublik } from "@/features/keuangan-desa/keuangan/application/laporan-dokumen-publik-use-cases";
 import {
   getLaporanApbdesPublik,
   getLaporanTriwulanPublik,
-} from "@/features/keuangan/application/laporan-publik-use-cases";
-import { formatMoney, formatRupiah, toMinor } from "@/features/keuangan/domain/keuangan";
+} from "@/features/keuangan-desa/keuangan/application/laporan-publik-use-cases";
+import {
+  formatMoney,
+  formatRupiah,
+  toMinor,
+} from "@/features/keuangan-desa/keuangan/domain/keuangan";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
+import { MetaLaporan, MetrikLaporan } from "./bagian-meta";
+import { GrafikRealisasi, GrafikTriwulan, InfoLaporan } from "./bagian-samping";
+import { DokumenTerkait, RealisasiApbdes, RincianBidang } from "./bagian-tabel";
 import styles from "./laporan-keuangan.module.css";
 
 export const metadata: Metadata = { title: "Detail Laporan Keuangan Desa" };
 export const dynamic = "force-dynamic";
 
 type Props = { searchParams: Promise<{ tahun?: string }> };
-
-function persen(value: number) {
-  return value.toLocaleString("id-ID", { maximumFractionDigits: 2 }) + "%";
-}
 
 function locationLabel(desa: {
   namaKecamatan: string | null;
@@ -36,13 +39,6 @@ function mediaUrl(value: string | null, villageId: number): string | null {
     return null;
   const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
   return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
-}
-
-function tanggal(value: string) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime())
-    ? "Tanggal tidak tersedia"
-    : new Intl.DateTimeFormat("id-ID", { dateStyle: "long" }).format(date);
 }
 
 export default async function LaporanKeuanganPublikPage({ searchParams }: Props) {
@@ -152,273 +148,36 @@ export default async function LaporanKeuanganPublikPage({ searchParams }: Props)
 
         {hasData ? (
           <>
-            <section className={styles.metaGrid}>
-              <article className={styles.documentStatus}>
-                <span className={styles.fileIcon}>▤</span>
-                <div>
-                  <strong>APBDes Tahun {laporan.tahun}</strong>
-                  <small className={dokumen.length ? styles.published : styles.pending}>
-                    {dokumen.length ? "✓　Dokumen dipublikasikan" : "Belum ada dokumen diserahkan"}
-                  </small>
-                </div>
-              </article>
-              <article className={styles.metaItem}>
-                <span>▦</span>
-                <div>
-                  <strong>Periode Laporan</strong>
-                  <small>
-                    Data tahun anggaran {laporan.tahun}; realisasi triwulan mengikuti pencatatan
-                    yang tersedia.
-                  </small>
-                </div>
-              </article>
-              <article className={styles.metaItem}>
-                <span>▣</span>
-                <div>
-                  <strong>Dokumen Publik</strong>
-                  <small>{dokumen.length} dokumen APBDes telah diserahkan untuk tahun ini.</small>
-                </div>
-              </article>
-            </section>
+            <MetaLaporan laporan={laporan} dokumen={dokumen} />
 
-            <section className={styles.metrics}>
-              <article className={styles.income}>
-                <span>⇩</span>
-                <div>
-                  <small>Pendapatan</small>
-                  <strong>{formatRupiah(totalPendapatan)}</strong>
-                  <em>Anggaran tahun {laporan.tahun}</em>
-                </div>
-              </article>
-              <article className={styles.expense}>
-                <span>▣</span>
-                <div>
-                  <small>Belanja</small>
-                  <strong>{formatRupiah(totalBelanja)}</strong>
-                  <em>Anggaran tahun {laporan.tahun}</em>
-                </div>
-              </article>
-              <article className={styles.realized}>
-                <span>▥</span>
-                <div>
-                  <small>Realisasi Belanja</small>
-                  <strong>{formatRupiah(realisasiBelanja)}</strong>
-                  <em>{persen(serapan)} dari anggaran</em>
-                </div>
-              </article>
-              <article className={styles.remaining}>
-                <span>⚖</span>
-                <div>
-                  <small>Sisa Anggaran</small>
-                  <strong>{sisaBelanjaTampil}</strong>
-                  <em>{persen(Math.max(0, 100 - serapan))} belum terserap</em>
-                </div>
-              </article>
-            </section>
+            <MetrikLaporan
+              laporan={laporan}
+              totalPendapatan={totalPendapatan}
+              totalBelanja={totalBelanja}
+              realisasiBelanja={realisasiBelanja}
+              sisaBelanjaTampil={sisaBelanjaTampil}
+              serapan={serapan}
+            />
 
             <div className={styles.dashboard}>
               <div className={styles.mainColumn}>
-                <section className={styles.panel}>
-                  <div className={styles.sectionTitle}>
-                    <span>▥</span>
-                    <div>
-                      <h2>Realisasi APBDes {laporan.tahun}</h2>
-                      <p>Ringkasan pendapatan, belanja, dan pembiayaan desa.</p>
-                    </div>
-                  </div>
-                  <div className={styles.tableWrap}>
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Uraian</th>
-                          <th>Anggaran (Rp)</th>
-                          <th>Realisasi (Rp)</th>
-                          <th>Persentase</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {laporan.baris.map((row, index) => (
-                          <tr key={row.kode} className={styles["row" + index]}>
-                            <td>
-                              <span className={styles.rowDot} />
-                              {row.uraian}
-                            </td>
-                            <td>{formatRupiah(row.anggaran)}</td>
-                            <td>{formatRupiah(row.realisasi)}</td>
-                            <td>{persen(row.persen)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <th>Total Pendapatan + Belanja + Pembiayaan</th>
-                          <th>{formatRupiah(laporan.total.anggaran)}</th>
-                          <th>{formatRupiah(laporan.total.realisasi)}</th>
-                          <th>—</th>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                  <div className={styles.note}>
-                    Nilai ditampilkan berdasarkan pencatatan APBDes tenant desa yang sedang diakses.
-                  </div>
-                </section>
-
-                <section className={styles.panel}>
-                  <div className={styles.sectionTitle}>
-                    <span>▤</span>
-                    <div>
-                      <h2>Rincian Belanja per Bidang</h2>
-                      <p>Perbandingan anggaran dan realisasi pada setiap bidang belanja.</p>
-                    </div>
-                  </div>
-                  {laporan.bidang.length ? (
-                    <div className={styles.budgetRows}>
-                      {laporan.bidang.map((row) => (
-                        <div className={styles.budgetRow} key={row.kode}>
-                          <div>
-                            <strong>{row.uraian}</strong>
-                            <small>
-                              {formatRupiah(row.realisasi)} / {formatRupiah(row.anggaran)}
-                            </small>
-                          </div>
-                          <div className={styles.progress}>
-                            <i style={{ width: Math.min(100, Math.max(0, row.persen)) + "%" }} />
-                          </div>
-                          <b>{persen(row.persen)}</b>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className={styles.empty}>Rincian bidang belanja belum tersedia.</p>
-                  )}
-                </section>
-
-                <section className={styles.panel}>
-                  <div className={styles.sectionTitle}>
-                    <span>▧</span>
-                    <div>
-                      <h2>Dokumen Terkait</h2>
-                      <p>Dokumen APBDes yang telah diserahkan dan dapat diakses publik.</p>
-                    </div>
-                  </div>
-                  {dokumen.length ? (
-                    <div className={styles.documents}>
-                      {dokumen.map((doc) => (
-                        <article key={doc.id}>
-                          <span className={styles.pdf}>PDF</span>
-                          <div>
-                            <strong>{doc.judul}</strong>
-                            <small>
-                              {doc.tahun} · {doc.semesterLabel} · Diserahkan{" "}
-                              {tanggal(doc.diserahkanPada)}
-                            </small>
-                          </div>
-                          <Link
-                            href={"/desa/apbdes/dokumen/" + doc.id + "/berkas"}
-                            aria-label={"Unduh " + doc.judul}
-                          >
-                            ↓
-                          </Link>
-                        </article>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className={styles.empty}>
-                      Belum ada dokumen APBDes yang dipublikasikan untuk tahun ini. Dokumen akan
-                      muncul setelah Admin Desa mengunggah dan mencatat penyerahannya.
-                    </p>
-                  )}
-                </section>
+                <RealisasiApbdes laporan={laporan} />
+                <RincianBidang bidang={laporan.bidang} />
+                <DokumenTerkait dokumen={dokumen} />
               </div>
 
               <aside className={styles.sideColumn}>
-                <section className={styles.panel + " " + styles.donutPanel}>
-                  <div className={styles.sectionTitle}>
-                    <span>◔</span>
-                    <div>
-                      <h2>Grafik Realisasi Anggaran</h2>
-                      <p>Persentase realisasi belanja tahunan.</p>
-                    </div>
-                  </div>
-                  <div
-                    className={styles.donut}
-                    style={{ background: "conic-gradient(#7528ee " + serapan + "%, #e6d9ff 0)" }}
-                  >
-                    <div>
-                      <small>Realisasi</small>
-                      <strong>{persen(serapan)}</strong>
-                    </div>
-                  </div>
-                  <div className={styles.legend}>
-                    <span>
-                      <i />
-                      Realisasi <b>{formatRupiah(realisasiBelanja)}</b>
-                    </span>
-                    <span>
-                      <i />
-                      Sisa anggaran <b>{sisaBelanjaTampil}</b>
-                    </span>
-                  </div>
-                </section>
-
-                <section className={styles.panel}>
-                  <div className={styles.sectionTitle}>
-                    <span>▥</span>
-                    <div>
-                      <h2>Realisasi Penyerapan per Triwulan</h2>
-                      <p>Akumulasi nilai triwulan dibanding pagu anggaran.</p>
-                    </div>
-                  </div>
-                  <div className={styles.quarterChart}>
-                    {quarters.map((quarter) => (
-                      <div className={styles.quarter} key={quarter.label}>
-                        <strong>
-                          {persen(
-                            Number(totalBelanja) > 0
-                              ? (Number(quarter.value) / Number(totalBelanja)) * 100
-                              : 0,
-                          )}
-                        </strong>
-                        <div className={styles.barTrack}>
-                          <i style={{ height: (Number(quarter.value) / maxQuarter) * 100 + "%" }} />
-                        </div>
-                        <b>{quarter.label}</b>
-                        <small>{quarter.period}</small>
-                      </div>
-                    ))}
-                  </div>
-                  <p className={styles.note}>
-                    Triwulan tanpa pencatatan ditampilkan sebagai Rp0, bukan estimasi.
-                  </p>
-                </section>
-
-                <section className={styles.panel + " " + styles.infoPanel}>
-                  <div className={styles.sectionTitle}>
-                    <span>ⓘ</span>
-                    <div>
-                      <h2>Informasi Laporan</h2>
-                      <p>Keterangan data yang ditampilkan.</p>
-                    </div>
-                  </div>
-                  <dl>
-                    <div>
-                      <dt>Tahun anggaran</dt>
-                      <dd>{laporan.tahun}</dd>
-                    </div>
-                    <div>
-                      <dt>Dokumen diserahkan</dt>
-                      <dd>{dokumen.length}</dd>
-                    </div>
-                    <div>
-                      <dt>Realisasi triwulan</dt>
-                      <dd>{triwulan.baris.length} bidang</dd>
-                    </div>
-                  </dl>
-                  <Link href={"/transparansi/apbdes?tahun=" + laporan.tahun}>
-                    Lihat APBDes lengkap　→
-                  </Link>
-                </section>
+                <GrafikRealisasi
+                  serapan={serapan}
+                  realisasiBelanja={realisasiBelanja}
+                  sisaBelanjaTampil={sisaBelanjaTampil}
+                />
+                <GrafikTriwulan
+                  quarters={quarters}
+                  maxQuarter={maxQuarter}
+                  totalBelanja={totalBelanja}
+                />
+                <InfoLaporan laporan={laporan} dokumenCount={dokumen.length} triwulan={triwulan} />
               </aside>
             </div>
           </>

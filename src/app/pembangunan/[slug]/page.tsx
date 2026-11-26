@@ -3,9 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { getPembangunanPublikBySlug } from "@/features/pembangunan/application/use-cases";
-import { formatAnggaran, statusPembangunanLabel } from "@/features/pembangunan/domain/pembangunan";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getPembangunanPublikBySlug } from "@/features/pembangunan-aset/pembangunan/application/use-cases";
+import {
+  formatAnggaran,
+  statusPembangunanLabel,
+} from "@/features/pembangunan-aset/pembangunan/domain/pembangunan";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
 import styles from "../pembangunan.module.css";

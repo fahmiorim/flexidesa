@@ -1,18 +1,19 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { resolveVillageId } from "@/features/desa/application/resolve-village";
-import { simpanSebutanDesa } from "@/features/identitas-desa/application/identitas-desa-use-cases";
+import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
+import { simpanSebutanDesa } from "@/features/info-desa/identitas-desa/application/identitas-desa-use-cases";
 import {
   getDataPengaturanDesa,
+  simpanFaqDesa,
   simpanIntegrasiDesa,
   simpanKontakDesa,
   terapkanTemplateDesa,
-} from "@/features/pengaturan/application/pengaturan-desa-use-cases";
+} from "@/features/pengaturan/pengaturan/application/pengaturan-desa-use-cases";
 import {
   bacaPengaturan,
   simpanPengaturanTenant,
-} from "@/features/pengaturan/application/pengaturan-use-cases";
+} from "@/features/pengaturan/pengaturan/application/pengaturan-use-cases";
 import { requirePermission } from "@/lib/dal";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 
@@ -51,6 +52,10 @@ export async function PUT(request: Request) {
     if (body.section === "kontak") {
       await simpanKontakDesa(villageId, body.data);
       return json({ message: "Kontak dan lokasi berhasil disimpan." });
+    }
+    if (body.section === "faq-kontak" || body.section === "faq-surat") {
+      await simpanFaqDesa(villageId, body.section === "faq-kontak" ? "kontak" : "surat", body.data);
+      return json({ message: "FAQ berhasil disimpan." });
     }
     if (body.section === "integrasi") {
       await simpanIntegrasiDesa(villageId, body.data);

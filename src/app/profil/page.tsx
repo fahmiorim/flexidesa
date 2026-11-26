@@ -2,15 +2,17 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { getStatistikDesa } from "@/features/desa/application/statistik-desa";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getStatistikDesa } from "@/features/info-desa/desa/application/statistik-desa";
 import {
   daftarAlbumGaleri,
   daftarFotoAlbum,
   daftarPerangkatPublik,
+  daftarPotensiDesa,
+  daftarSaranaPrasarana,
   daftarSliderBeranda,
   profilDesaPublik,
-} from "@/features/publik/application/konten-publik";
+} from "@/features/info-desa/publik/application/konten-publik";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./profil.module.css";
@@ -60,13 +62,17 @@ function locationLabel(desa: {
 
 export default async function ProfilDesaPage() {
   const desa = await getIdentitasFromRequest();
-  const [profil, perangkat, statistik, slider, albums] = await Promise.all([
+  const [profil, perangkat, statistik, slider, albums, potensi, sarana] = await Promise.all([
     profilDesaPublik(desa.id),
     daftarPerangkatPublik(desa.id),
     getStatistikDesa(desa.id),
     daftarSliderBeranda(desa.id),
     daftarAlbumGaleri(desa.id),
+    daftarPotensiDesa(desa.id),
+    daftarSaranaPrasarana(desa.id),
   ]);
+  const potensiUnggulan = potensi.filter((item) => item.unggulan).slice(0, 3);
+  const potensiRingkasan = (potensiUnggulan.length ? potensiUnggulan : potensi).slice(0, 3);
   const populatedAlbums = albums.filter((album) => album.jumlahFoto > 0);
   const photoResults = await Promise.all(
     populatedAlbums.slice(0, 3).map((album) => daftarFotoAlbum(desa.id, album.id)),
@@ -201,7 +207,9 @@ export default async function ProfilDesaPage() {
                   <span className={styles.factIcon}>▦</span>
                   <span>
                     <small>Tahun Berdiri</small>
-                    <strong>Belum tersedia</strong>
+                    <strong>
+                      {profil?.tahunBerdiri ? String(profil.tahunBerdiri) : "Belum tersedia"}
+                    </strong>
                   </span>
                 </div>
                 <div>
@@ -352,7 +360,24 @@ export default async function ProfilDesaPage() {
                   </p>
                 </div>
               </div>
-              <div className={styles.emptyInline}>Informasi potensi desa belum dipublikasikan.</div>
+              {potensiRingkasan.length ? (
+                <>
+                  <div className={styles.potentialList}>
+                    {potensiRingkasan.map((item) => (
+                      <article key={item.id}>
+                        <h3>{item.judul}</h3>
+                        {item.ringkasan ? <p>{item.ringkasan}</p> : null}
+                        {item.lokasi ? <small>⌖ {item.lokasi}</small> : null}
+                      </article>
+                    ))}
+                  </div>
+                  <Link href="/potensi">Lihat semua potensi →</Link>
+                </>
+              ) : (
+                <div className={styles.emptyInline}>
+                  Informasi potensi desa belum dipublikasikan.
+                </div>
+              )}
             </section>
 
             <section className={styles.facilityCard} id="sarana-prasarana">
@@ -365,9 +390,21 @@ export default async function ProfilDesaPage() {
                   </p>
                 </div>
               </div>
-              <div className={styles.emptyInline}>
-                Data sarana dan prasarana desa belum tersedia untuk ditampilkan.
-              </div>
+              {sarana.length ? (
+                <div className={styles.facilityList}>
+                  {sarana.map((item) => (
+                    <article key={item.id}>
+                      <h3>{item.nama}</h3>
+                      {item.keterangan ? <p>{item.keterangan}</p> : null}
+                      {item.lokasi ? <small>⌖ {item.lokasi}</small> : null}
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className={styles.emptyInline}>
+                  Data sarana dan prasarana desa belum tersedia untuk ditampilkan.
+                </div>
+              )}
             </section>
             <section className={styles.generalData} id="data-umum">
               <h2>Data Umum Desa</h2>

@@ -4,19 +4,19 @@ import { batasiPermintaan } from "@/features/rate-limit/application/rate-limit";
 
 import { jalankanApiPublik } from "./public-api";
 
-vi.mock("@/features/publik/api/middleware", () => ({
+vi.mock("@/features/info-desa/publik/api/middleware", () => ({
   getTenantFromRequest: vi.fn(),
 }));
 
-vi.mock("@/features/audit/application/audit-use-cases", () => ({
+vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
   recordAuditEvent: vi.fn(),
 }));
 vi.mock("@/features/rate-limit/application/rate-limit", () => ({
   batasiPermintaan: vi.fn(),
 }));
 
-const middleware = await import("@/features/publik/api/middleware");
-const audit = await import("@/features/audit/application/audit-use-cases");
+const middleware = await import("@/features/info-desa/publik/api/middleware");
+const audit = await import("@/features/pengaturan/audit/application/audit-use-cases");
 
 function permintaan(ip = "10.0.0.1"): Request {
   return new Request("https://desa.example.id/api/publik/informasi", {

@@ -2,9 +2,9 @@
 
 import { redirect } from "next/navigation";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { kirimPengaduanDenganLampiranData } from "@/features/pengaduan/application/use-cases";
-import type { BerkasUnggahan } from "@/features/publik/domain/media";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { kirimPengaduanDenganLampiranData } from "@/features/layanan-warga/pengaduan/application/use-cases";
+import type { BerkasUnggahan } from "@/features/media/domain/media";
 
 export async function kirimPengaduanAction(formData: FormData): Promise<never> {
   const desa = await getIdentitasFromRequest();

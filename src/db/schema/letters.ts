@@ -11,7 +11,7 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core";
 
-import { LETTER_STATUSES } from "@/features/surat/domain/surat";
+import { LETTER_STATUSES } from "@/features/pelayanan-persuratan/surat/domain/surat";
 
 import { users } from "./auth";
 import { letterTypes } from "./letter-types";

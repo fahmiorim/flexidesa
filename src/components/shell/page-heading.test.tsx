@@ -21,96 +21,61 @@ afterEach(() => {
 });
 
 describe("PageHeading", () => {
-  it("memindah tombol aksi dari bilah atas ke badan halaman", () => {
-    render(
-      <PageHeading>
-        <div className="page-heading">
-          <div>
-            <span className="eyebrow">Layanan Surat</span>
-            <h1>Cetak Surat</h1>
-            <p>Pilih jenis surat.</p>
-          </div>
-          <div className="page-heading-actions">
-            <Link href="/persuratan/surat/baru" className="button button-primary">
-              Buat Surat Baru
-            </Link>
-          </div>
-        </div>
-      </PageHeading>,
-    );
+  it("merender judul dan deskripsi ke bilah atas", () => {
+    render(<PageHeading judul="Cetak Surat" deskripsi="Pilih jenis surat." />);
 
     const slot = document.getElementById(PAGE_HEADING_SLOT_ID);
     expect(slot?.querySelector("h1")?.textContent).toBe("Cetak Surat");
+    expect(slot?.querySelector("p")?.textContent).toBe("Pilih jenis surat.");
+    expect(document.querySelector(".page-heading-actions-body")).toBeNull();
+  });
+
+  it("merender aksi di badan halaman, bukan di bilah atas", () => {
+    render(
+      <PageHeading
+        judul="Daftar Surat"
+        aksi={
+          <Link href="/layanan-surat/persuratan/surat/baru" className="button button-primary">
+            Buat Surat Baru
+          </Link>
+        }
+      />,
+    );
+
+    const slot = document.getElementById(PAGE_HEADING_SLOT_ID);
     expect(slot?.querySelector("a")).toBeNull();
 
     const badan = document.querySelector(".page-heading-actions-body");
     expect(badan?.querySelector("a")?.textContent).toContain("Buat Surat Baru");
-    expect(badan?.querySelector("a")?.getAttribute("href")).toBe("/persuratan/surat/baru");
-  });
-
-  it("memindah tautan kembali di dalam blok judul ke badan halaman", () => {
-    render(
-      <PageHeading>
-        <div className="page-heading">
-          <div>
-            <Link href="/persuratan/surat" className="button button-secondary">
-              Kembali
-            </Link>
-            <h1>Buat Surat Baru</h1>
-            <p>Buat konsep surat.</p>
-          </div>
-        </div>
-      </PageHeading>,
-    );
-
-    const slot = document.getElementById(PAGE_HEADING_SLOT_ID);
-    expect(slot?.querySelector("h1")?.textContent).toBe("Buat Surat Baru");
-    expect(slot?.querySelector("a")).toBeNull();
-    expect(document.querySelector(".page-heading-actions-body a")?.textContent).toContain(
-      "Kembali",
+    expect(badan?.querySelector("a")?.getAttribute("href")).toBe(
+      "/layanan-surat/persuratan/surat/baru",
     );
   });
 
-  it("membiarkan heading tanpa aksi tetap utuh di bilah atas", () => {
+  it("mendukung judul berupa JSX dan teks di atas judul", () => {
     render(
-      <PageHeading>
-        <div className="page-heading">
-          <div>
-            <h1>Judul Saja</h1>
-            <p>Tanpa tombol.</p>
-          </div>
-        </div>
-      </PageHeading>,
+      <PageHeading
+        atasJudul={<span className="eyebrow">PEMERINTAHAN DESA</span>}
+        judul={
+          <>
+            Data <strong>Lembaga</strong>
+          </>
+        }
+        deskripsi="Daftar lembaga desa."
+      />,
     );
 
     const slot = document.getElementById(PAGE_HEADING_SLOT_ID);
-    expect(slot?.querySelector("h1")?.textContent).toBe("Judul Saja");
-    expect(document.querySelector(".page-heading-actions-body")).toBeNull();
+    expect(slot?.querySelector(".eyebrow")?.textContent).toBe("PEMERINTAHAN DESA");
+    expect(slot?.querySelector("h1 strong")?.textContent).toBe("Lembaga");
   });
 
-  it("menangani aksi berformat form tanpa mengubahnya", () => {
-    render(
-      <PageHeading>
-        <header className="page-heading">
-          <div aria-hidden="true">ikon</div>
-          <div>
-            <h1>Buku Administrasi</h1>
-            <p>Semua buku.</p>
-          </div>
-          <div>
-            <form action="/sinkron">
-              <button type="submit">Sinkron</button>
-            </form>
-          </div>
-        </header>
-      </PageHeading>,
-    );
+  it("mempertahankan kelas wadah kustom", () => {
+    render(<PageHeading kelas="page-heading pemerintahan-cetak-toolbar" judul="Cetak Data" />);
 
     const slot = document.getElementById(PAGE_HEADING_SLOT_ID);
-    expect(slot?.querySelector("h1")?.textContent).toBe("Buku Administrasi");
-    expect(slot?.querySelector("form")).toBeNull();
-    expect(document.querySelector(".page-heading-actions-body form button")?.textContent).toBe(
-      "Sinkron",
+    expect(slot?.querySelector("header")?.className).toBe(
+      "page-heading pemerintahan-cetak-toolbar",
     );
   });
 });

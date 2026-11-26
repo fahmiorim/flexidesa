@@ -12,7 +12,7 @@ import {
   outgoingLetters,
   villages,
 } from "@/db/schema";
-import { deleteKlasifikasi } from "@/features/surat/infrastructure/master-repository";
+import { deleteKlasifikasi } from "@/features/pelayanan-persuratan/surat/infrastructure/master-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**

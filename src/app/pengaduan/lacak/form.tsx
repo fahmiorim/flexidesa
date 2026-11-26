@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 
-import { labelKategori, labelStatus } from "@/features/pengaduan/domain/pengaduan";
+import { labelKategori, labelStatus } from "@/features/layanan-warga/pengaduan/domain/pengaduan";
 
 import { lacakPengaduanAction, type StateLacakPengaduan } from "./actions";
 

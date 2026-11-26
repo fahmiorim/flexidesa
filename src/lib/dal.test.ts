@@ -19,7 +19,7 @@ vi.mock("@/db", () => ({
 vi.mock("@/lib/auth", () => ({ auth: { api: { getSession: mocks.getSession } } }));
 vi.mock("next/headers", () => ({ headers: vi.fn(async () => new Headers()) }));
 vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
-vi.mock("@/features/rbac/application/authorization", () => ({
+vi.mock("@/features/pengaturan/rbac/application/authorization", () => ({
   computeEffectivePermissions: mocks.compute,
   hasPermission: vi.fn(),
 }));

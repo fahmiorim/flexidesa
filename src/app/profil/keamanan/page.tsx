@@ -1,5 +1,5 @@
-import { TwoFactorSetup } from "@/app/(admin)/pengaturan/pengguna/keamanan/two-factor-setup";
-import { getKeamananAkunSaya } from "@/features/pengguna/application/pengguna-use-cases";
+import { TwoFactorSetup } from "@/app/(admin)/(pengaturan)/pengaturan/pengguna/keamanan/two-factor-setup";
+import { getKeamananAkunSaya } from "@/features/pengaturan/pengguna/application/pengguna-use-cases";
 import { requireUser } from "@/lib/dal";
 import { env } from "@/lib/env";
 

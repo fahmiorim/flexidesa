@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { KATEGORI_PENGADUAN } from "@/features/pengaduan/domain/pengaduan";
-import { getNavPublik } from "@/features/publik/application/nav-publik";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getNavPublik } from "@/features/info-desa/publik/application/nav-publik";
+import { KATEGORI_PENGADUAN } from "@/features/layanan-warga/pengaduan/domain/pengaduan";
 
 import styles from "../../informasi-publik.module.css";
 import { PublicShell } from "../../public-shell";
@@ -46,11 +46,7 @@ export default async function BuatPengaduanPage({
                 {params.error}
               </p>
             ) : null}
-            <form
-              action={kirimPengaduanAction}
-              className="modul-form-grid"
-              encType="multipart/form-data"
-            >
+            <form action={kirimPengaduanAction} className="modul-form-grid">
               <label className="modul-field">
                 Nama lengkap
                 <input name="namaPelapor" required maxLength={100} autoComplete="name" />

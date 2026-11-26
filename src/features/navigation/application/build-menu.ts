@@ -1,4 +1,4 @@
-import type { ModuleRecord } from "@/features/rbac/infrastructure/rbac-repository";
+import type { ModuleRecord } from "@/features/pengaturan/rbac/application/kontrak";
 
 /** Satu simpul menu (hasil penggabungan modul + izin). */
 export interface MenuNode {

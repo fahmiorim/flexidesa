@@ -10,7 +10,7 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core";
 
-import { ACCESS_LEVELS } from "@/features/rbac/domain/permission";
+import { ACCESS_LEVELS } from "@/features/pengaturan/rbac/domain/permission";
 
 import { villages } from "./village";
 
@@ -19,6 +19,16 @@ import { villages } from "./village";
  *
  * Tingkat akses disimpan sebagai nilai bernama (`read`/`write`/`manage`) yang
  * kosakatanya berasal dari domain RBAC, bukan kode bitmask.
+ *
+ * Aturan lintas tenant yang dijaga database (migrasi
+ * `0006_rbac_batas_tenant_dan_slug_global.sql`, tidak dapat ditulis lewat
+ * Drizzle):
+ * - `role_permissions` hanya boleh menautkan role dan modul bila keduanya satu
+ *   tenant, atau salah satunya global (`village_id IS NULL`).
+ * - Slug role/modul global wajib unik; unique index `(village_id, slug)` tidak
+ *   menegakkannya karena NULL dianggap berbeda.
+ * - `modules.isActive = false` mencabut izin modul (dihitung di
+ *   `computeEffectivePermissions`); `modules.isHidden` hanya urusan menu.
  */
 
 /** `roles` — role pengguna. Role sistem tidak boleh diubah/dihapus lewat UI. */

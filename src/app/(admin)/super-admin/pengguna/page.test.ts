@@ -25,7 +25,15 @@ vi.mock("next/navigation", () => ({
 // langsung agar aksi header ikut terverifikasi.
 vi.mock("@/components/shell/page-heading", () => ({
   PAGE_HEADING_SLOT_ID: "admin-topbar-heading",
-  PageHeading: ({ children }: { children: React.ReactNode }) => children,
+  PageHeading: ({
+    judul,
+    isiJudul,
+    aksi,
+  }: {
+    judul?: string;
+    isiJudul?: React.ReactNode;
+    aksi?: React.ReactNode;
+  }) => [isiJudul ?? judul, aksi],
 }));
 
 vi.mock("@/features/multi-desa/application/provisioning-use-cases", () => ({

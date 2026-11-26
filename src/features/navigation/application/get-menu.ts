@@ -1,7 +1,10 @@
 import "server-only";
 
-import { DEFAULT_RESOURCE, readableResources } from "@/features/rbac/application/authorization";
-import { listModules } from "@/features/rbac/infrastructure/rbac-repository";
+import {
+  DEFAULT_RESOURCE,
+  readableResources,
+} from "@/features/pengaturan/rbac/application/authorization";
+import { listModules } from "@/features/pengaturan/rbac/application/kontrak";
 import type { CurrentUser } from "@/lib/dal";
 
 import { MODUL_DIHENTIKAN } from "../domain/menu-tampil";

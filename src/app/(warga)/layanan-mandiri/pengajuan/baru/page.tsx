@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-import { getLayananPublikWargaData } from "@/features/pelayanan/application/pengajuan-use-cases";
+import { getLayananPublikWargaData } from "@/features/layanan-warga/pelayanan/application/pengajuan-use-cases";
 import { verifyWargaPage } from "@/lib/dal";
 
 import { ajukanLayananWargaAction } from "./actions";
@@ -37,11 +37,7 @@ export default async function AjukanLayananPage() {
       </section>
       <section className="dashboard-section">
         <h2>Formulir Pengajuan</h2>
-        <form
-          action={ajukanLayananWargaAction}
-          className="modul-form-grid"
-          encType="multipart/form-data"
-        >
+        <form action={ajukanLayananWargaAction} className="modul-form-grid">
           <label className="modul-field">
             <span>Pilih layanan</span>
             <select name="layananId" required defaultValue="">

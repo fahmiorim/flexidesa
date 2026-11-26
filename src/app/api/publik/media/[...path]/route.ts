@@ -1,6 +1,6 @@
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { bacaBerkasMediaPublik } from "@/features/publik/application/media-publik";
-import { CSP_MEDIA_SANDBOX, isKategoriMediaPublik } from "@/features/publik/domain/media";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { bacaBerkasMediaPublik } from "@/features/info-desa/publik/application/media-publik";
+import { CSP_MEDIA_SANDBOX, isKategoriMediaPublik } from "@/features/media/domain/media";
 import { isAppError } from "@/lib/errors";
 
 /**

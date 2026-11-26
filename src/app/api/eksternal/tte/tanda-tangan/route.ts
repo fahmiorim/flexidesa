@@ -1,12 +1,12 @@
 import type { NextRequest } from "next/server";
 
-import { authenticateApiKey } from "@/features/api-eksternal/domain/auth";
+import { authenticateApiKey } from "@/features/api-eksternal/application/authenticate";
 import { jsonGalat } from "@/features/api-eksternal/presentation/respons";
-import { recordAuditEvent } from "@/features/audit/application/audit-use-cases";
-import { AUDIT_EVENTS } from "@/features/audit/domain/audit";
+import { tandatanganiPdfTte } from "@/features/pelayanan-persuratan/surat/application/tte-use-cases";
+import { adalahPdf } from "@/features/pelayanan-persuratan/surat/domain/tte";
+import { recordAuditEvent } from "@/features/pengaturan/audit/application/audit-use-cases";
+import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
 import { batasiPermintaan } from "@/features/rate-limit/application/rate-limit";
-import { tandatanganiPdfTte } from "@/features/surat/application/tte-use-cases";
-import { adalahPdf } from "@/features/surat/domain/tte";
 import { bacaBytesTerbatas, BodyLimitError } from "@/lib/request-body";
 
 /** Batas ukuran berkas PDF yang diterima API eksternal (20 MB). */

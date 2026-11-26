@@ -1,6 +1,6 @@
-import { agendaMendatang } from "@/features/agenda/application/agenda-use-cases";
 import { jalankanApiPublik } from "@/features/api-publik/application/public-api";
-import { listJenisSuratPublik } from "@/features/surat/application/surat-publik-use-cases";
+import { agendaMendatang } from "@/features/info-desa/agenda/application/agenda-use-cases";
+import { listJenisSuratPublik } from "@/features/pelayanan-persuratan/surat/application/surat-publik-use-cases";
 
 /**
  * GET /api/publik/surat

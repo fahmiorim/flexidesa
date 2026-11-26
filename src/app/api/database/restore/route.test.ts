@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import * as useCase from "@/features/database/application/database-use-cases";
-import { MAX_RESTORE_BYTES } from "@/features/database/domain/database";
 import * as gate from "@/features/multi-desa/application/provisioning-use-cases";
+import * as useCase from "@/features/pengaturan/database/application/database-use-cases";
+import { MAX_RESTORE_BYTES } from "@/features/pengaturan/database/domain/database";
 import { forbidden } from "@/lib/errors";
 
 import { POST } from "./route";
 
-vi.mock("@/features/database/application/database-use-cases", () => ({
+vi.mock("@/features/pengaturan/database/application/database-use-cases", () => ({
   pulihkanBackupSql: vi.fn(),
 }));
 vi.mock("@/features/multi-desa/application/provisioning-use-cases", () => ({

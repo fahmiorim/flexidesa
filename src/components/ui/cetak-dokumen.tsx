@@ -1,6 +1,10 @@
 import Image from "next/image";
 
-import { kopDesaAlamat, kopDesaLines, type KopDesa } from "@/features/bumindes/domain/buku-resmi";
+import {
+  kopDesaAlamat,
+  kopDesaLines,
+  type KopDesa,
+} from "@/features/administrasi-desa/bumindes/domain/buku-resmi";
 
 /** Pejabat penandatangan pada blok tanda tangan dokumen cetak. */
 export interface PejabatCetak {

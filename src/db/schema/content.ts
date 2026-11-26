@@ -82,6 +82,12 @@ export const profilDesa = mysqlTable(
 
     /** GeoJSON Polygon batas desa; dikelola dari halaman Identitas Desa. */
     batasDesa: text("batas_desa"),
+    /** Tahun berdirinya desa; tampil pada kartu fakta halaman profil publik. */
+    tahunBerdiri: int("tahun_berdiri"),
+    /** Tujuan, nilai dasar, dan arah kebijakan pembangunan (satu per baris). */
+    tujuanPembangunan: text("tujuan_pembangunan"),
+    nilaiDasar: text("nilai_dasar"),
+    arahKebijakan: text("arah_kebijakan"),
 
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at")

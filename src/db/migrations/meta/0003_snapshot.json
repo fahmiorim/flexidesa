@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "a537d698-555f-47e2-8c01-c19e5181507e",
-  "prevId": "5f2a9c41-7d18-4b6e-9a03-2c8e6b5d4f71",
+  "id": "c1b25d61-5069-4b9f-8c5d-4d7840aa6053",
+  "prevId": "1655326d-c7cf-408f-a7d5-430c4bf246a1",
   "tables": {
     "agenda_kegiatan": {
       "name": "agenda_kegiatan",
@@ -4405,6 +4405,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "wilayah_id": {
+          "name": "wilayah_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "foto": {
           "name": "foto",
           "type": "varchar(255)",
@@ -4580,6 +4587,14 @@
             "resident_id"
           ],
           "isUnique": false
+        },
+        "perangkat_desa_village_wilayah_uq": {
+          "name": "perangkat_desa_village_wilayah_uq",
+          "columns": [
+            "village_id",
+            "wilayah_id"
+          ],
+          "isUnique": true
         }
       },
       "foreignKeys": {
@@ -4867,6 +4882,13 @@
         "batas_desa": {
           "name": "batas_desa",
           "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tahun_berdiri": {
+          "name": "tahun_berdiri",
+          "type": "int",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
@@ -11644,6 +11666,130 @@
       "uniqueConstraints": {},
       "checkConstraint": {}
     },
+    "sarana_prasarana": {
+      "name": "sarana_prasarana",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "village_id": {
+          "name": "village_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kategori": {
+          "name": "kategori",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'lainnya'"
+        },
+        "lokasi": {
+          "name": "lokasi",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "aktif": {
+          "name": "aktif",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "urut": {
+          "name": "urut",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "sarana_prasarana_village_id_uq": {
+          "name": "sarana_prasarana_village_id_uq",
+          "columns": [
+            "village_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "sarana_prasarana_village_active_idx": {
+          "name": "sarana_prasarana_village_active_idx",
+          "columns": [
+            "village_id",
+            "aktif",
+            "urut"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "sarana_prasarana_village_fk": {
+          "name": "sarana_prasarana_village_fk",
+          "tableFrom": "sarana_prasarana",
+          "tableTo": "villages",
+          "columnsFrom": [
+            "village_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "sarana_prasarana_id": {
+          "name": "sarana_prasarana_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
     "inventaris": {
       "name": "inventaris",
       "columns": {
@@ -14349,7 +14495,7 @@
         },
         "code": {
           "name": "code",
-          "type": "varchar(20)",
+          "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -14367,6 +14513,14 @@
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
         },
         "created_at": {
           "name": "created_at",
@@ -14765,6 +14919,13 @@
           "notNull": false,
           "autoincrement": false
         },
+        "lampiran": {
+          "name": "lampiran",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "requires_resident": {
           "name": "requires_resident",
           "type": "boolean",
@@ -14780,6 +14941,14 @@
           "notNull": true,
           "autoincrement": false,
           "default": true
+        },
+        "mandiri": {
+          "name": "mandiri",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
         },
         "number_format": {
           "name": "number_format",
@@ -24644,83 +24813,6 @@
       "compositePrimaryKeys": {
         "pengaturan_desa_id": {
           "name": "pengaturan_desa_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {},
-      "checkConstraint": {}
-    },
-    "pengguna_shortcut": {
-      "name": "pengguna_shortcut",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "varchar(36)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "href": {
-          "name": "href",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "urut": {
-          "name": "urut",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
-        }
-      },
-      "indexes": {
-        "pengguna_shortcut_user_href_uq": {
-          "name": "pengguna_shortcut_user_href_uq",
-          "columns": [
-            "user_id",
-            "href"
-          ],
-          "isUnique": true
-        }
-      },
-      "foreignKeys": {
-        "pengguna_shortcut_user_id_users_id_fk": {
-          "name": "pengguna_shortcut_user_id_users_id_fk",
-          "tableFrom": "pengguna_shortcut",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {
-        "pengguna_shortcut_id": {
-          "name": "pengguna_shortcut_id",
           "columns": [
             "id"
           ]

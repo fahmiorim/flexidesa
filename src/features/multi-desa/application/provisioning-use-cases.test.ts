@@ -1,15 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { AUDIT_EVENTS } from "@/features/audit/domain/audit";
-import * as rbac from "@/features/rbac/infrastructure/rbac-repository";
+import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
+import * as rbac from "@/features/pengaturan/rbac/infrastructure/rbac-repository";
 import * as dal from "@/lib/dal";
 import type { CurrentUser } from "@/lib/dal";
 
 import { buatDesaBaru, isSuperAdminUser, requireSuperAdmin } from "./provisioning-use-cases";
 
 vi.mock("@/lib/dal", () => ({ requireUser: vi.fn() }));
-vi.mock("@/features/rbac/infrastructure/rbac-repository", () => ({ getRoleById: vi.fn() }));
-vi.mock("@/features/audit/application/audit-use-cases", () => ({ recordAuditEvent: vi.fn() }));
+vi.mock("@/features/pengaturan/rbac/infrastructure/rbac-repository", () => ({
+  getRoleById: vi.fn(),
+}));
+vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
+  recordAuditEvent: vi.fn(),
+}));
 vi.mock("@/features/multi-desa/infrastructure/provisioning-repository", () => ({
   listDesaSuperAdmin: vi.fn(),
   provisionDesa: vi.fn(),
@@ -135,7 +139,7 @@ describe("buatDesaBaru", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     const repo = await import("@/features/multi-desa/infrastructure/provisioning-repository");
-    const audit = await import("@/features/audit/application/audit-use-cases");
+    const audit = await import("@/features/pengaturan/audit/application/audit-use-cases");
     vi.mocked(repo.provisionDesa).mockReset();
     vi.mocked(audit.recordAuditEvent).mockReset();
   });
@@ -153,7 +157,7 @@ describe("buatDesaBaru", () => {
     vi.mocked(dal.requireUser).mockResolvedValue(platform);
     vi.mocked(rbac.getRoleById).mockResolvedValue({ slug: "super-admin" } as never);
     const repo = await import("@/features/multi-desa/infrastructure/provisioning-repository");
-    const audit = await import("@/features/audit/application/audit-use-cases");
+    const audit = await import("@/features/pengaturan/audit/application/audit-use-cases");
     vi.mocked(repo.provisionDesa).mockResolvedValue({ id: 9, planSlug: "standar", planVersion: 2 });
 
     await expect(buatDesaBaru(desaBaru)).resolves.toEqual({ id: 9 });

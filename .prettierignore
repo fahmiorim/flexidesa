@@ -12,4 +12,6 @@ package-lock.json
 *.md
 src/db/migrations
 # Dataset wilayah hasil generator (minified, lihat scripts/wilayah).
-src/features/wilayah/data/*.json
+src/features/**/wilayah/data/*.json
+# Scratch/artefak agen lokal, tidak ikut gaya kode proyek.
+.tmp

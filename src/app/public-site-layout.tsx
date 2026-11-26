@@ -1,7 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { muatMenuPublik, muatTemaPublik } from "@/features/publik/application/website-admin";
+import {
+  muatMenuPublik,
+  muatTemaPublik,
+} from "@/features/info-desa/publik/application/website-admin";
 
 import styles from "./public-site-layout.module.css";
 
@@ -62,6 +65,7 @@ const navigation: readonly (NavigationLink | NavigationGroup)[] = [
       { href: "/pembangunan", label: "Pembangunan Desa" },
       { href: "/transparansi/apbdes", label: "APBDes & Transparansi Anggaran" },
       { href: "/transparansi/laporan-keuangan", label: "Laporan Keuangan Desa" },
+      { href: "/desa/status-des", label: "Status Desa (IDM)" },
     ],
   },
   { href: "/galeri", label: "Galeri" },

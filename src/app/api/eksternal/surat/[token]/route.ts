@@ -1,11 +1,11 @@
 import type { NextRequest } from "next/server";
 
-import { authenticateApiKey } from "@/features/api-eksternal/domain/auth";
+import { authenticateApiKey } from "@/features/api-eksternal/application/authenticate";
 import { jsonGalat } from "@/features/api-eksternal/presentation/respons";
-import { recordAuditEvent } from "@/features/audit/application/audit-use-cases";
-import { AUDIT_EVENTS } from "@/features/audit/domain/audit";
+import { cariSuratEksternal } from "@/features/pelayanan-persuratan/surat/application/verifikasi-publik";
+import { recordAuditEvent } from "@/features/pengaturan/audit/application/audit-use-cases";
+import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
 import { batasiPermintaan } from "@/features/rate-limit/application/rate-limit";
-import { cariSuratEksternal } from "@/features/surat/application/verifikasi-publik";
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;

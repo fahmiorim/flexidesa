@@ -538,6 +538,38 @@
   font-size: 10px;
   text-align: center;
 }
+.potentialList,
+.facilityList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin: 10px 0;
+}
+.potentialList article,
+.facilityList article {
+  padding: 12px;
+  border: 1px solid #e2eaf6;
+  border-radius: 10px;
+  background: #f8faff;
+}
+.potentialList h3,
+.facilityList h3 {
+  margin: 0 0 5px;
+  font-size: 12px;
+}
+.potentialList p,
+.facilityList p {
+  margin: 0;
+  color: #5a6b86;
+  font-size: 10px;
+}
+.potentialList small,
+.facilityList small {
+  display: block;
+  margin-top: 6px;
+  color: #75829a;
+  font-size: 10px;
+}
 .generalData {
   padding: 13px 15px;
 }

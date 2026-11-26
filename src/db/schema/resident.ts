@@ -28,7 +28,7 @@ import {
   PREGNANCY_STATUSES,
   RESIDENCE_STATUSES,
   STATUS_REKAMS,
-} from "@/features/penduduk/domain/penduduk";
+} from "@/features/kependudukan/penduduk/domain/penduduk";
 
 import { families } from "./family";
 import {

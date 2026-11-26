@@ -2,9 +2,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { detailPerangkatPemerintahanPublik } from "@/features/pemerintahan/application/publik";
-import { daftarPerangkatPublik } from "@/features/publik/application/konten-publik";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { detailPerangkatPemerintahanPublik } from "@/features/info-desa/pemerintahan/application/publik";
+import { daftarPerangkatPublik } from "@/features/info-desa/publik/application/konten-publik";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
 import styles from "./detail-perangkat.module.css";

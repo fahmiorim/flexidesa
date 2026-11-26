@@ -24,11 +24,11 @@ vi.mock("@/lib/dal", () => ({
   getCurrentUser: state.getCurrentUser,
 }));
 
-vi.mock("@/features/desa/application/resolve-village", () => ({
+vi.mock("@/features/info-desa/desa/application/resolve-village", () => ({
   getIdentitasFromRequest: async () => ({ id: 1, namaDesa: "Desa Contoh" }),
 }));
 
-vi.mock("@/features/desa/application/platform-host", () => ({
+vi.mock("@/features/info-desa/desa/application/platform-host", () => ({
   get hostPlatformEksplisit() {
     return state.platformHosts;
   },
@@ -83,9 +83,9 @@ describe("AdminLoginPage — login khusus staf desa", () => {
     const { default: AdminLoginPage } = await import("./page");
 
     await expect(
-      AdminLoginPage({ searchParams: Promise.resolve({ next: "/penduduk?page=2" }) }),
+      AdminLoginPage({ searchParams: Promise.resolve({ next: "/kependudukan/penduduk?page=2" }) }),
     ).rejects.toThrow("NEXT_REDIRECT");
-    expect(state.redirect).toHaveBeenCalledWith("/penduduk?page=2");
+    expect(state.redirect).toHaveBeenCalledWith("/kependudukan/penduduk?page=2");
     expect(state.isSuperAdminUser).not.toHaveBeenCalled();
   });
 

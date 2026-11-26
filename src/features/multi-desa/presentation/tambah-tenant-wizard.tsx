@@ -3,15 +3,24 @@
 import Link from "next/link";
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 
+import type { Wilayah } from "@/features/info-desa/wilayah/domain/data-wilayah";
+import { PickerWilayah } from "@/features/info-desa/wilayah/presentation/picker-wilayah";
 import { normalisasiDomain, POLA_DOMAIN } from "@/features/multi-desa/domain/desa-baru";
 import { susunSubdomainPlatform } from "@/features/multi-desa/domain/jenis-domain";
-import type { TokenTemplate } from "@/features/multi-desa/domain/template-website";
-import type { Wilayah } from "@/features/wilayah/domain/data-wilayah";
-import { PickerWilayah } from "@/features/wilayah/presentation/picker-wilayah";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
 import { PlatformCard } from "./platform-ui";
 import { TemplatePreview } from "./template-preview";
+import {
+  AlurTenantCard,
+  LANGKAH,
+  PratinjauTenantCard,
+  RingkasanTenant,
+  slugDariNama,
+  TenantSelesai,
+  type PilihanPaketTenant,
+  type PilihanTemplateTenant,
+} from "./tenant-wizard-bagian";
 
 /**
  * Wizard pendaftaran tenant (desa) baru.
@@ -23,45 +32,9 @@ import { TemplatePreview } from "./template-preview";
  * berjalan di server lewat use case yang sama dengan dialog Konsol Tenant.
  */
 
-export interface PilihanTemplateTenant {
-  id: number;
-  slug: string;
-  name: string;
-  description: string;
-  version: string;
-  tokens: TokenTemplate;
-}
-
-export interface PilihanPaketTenant {
-  planId: number;
-  planSlug: string;
-  planName: string;
-  description: string | null;
-  versionId: number;
-  version: number;
-  features: readonly { slug: string; name: string }[];
-}
+export type { PilihanPaketTenant, PilihanTemplateTenant } from "./tenant-wizard-bagian";
 
 type JenisDomain = "subdomain" | "custom";
-
-const LANGKAH = [
-  { nomor: 1, judul: "Identitas Desa", keterangan: "Nama, kode, dan wilayah desa" },
-  { nomor: 2, judul: "Domain", keterangan: "Alamat website desa" },
-  { nomor: 3, judul: "Template", keterangan: "Tema website publik" },
-  { nomor: 4, judul: "Paket", keterangan: "Langganan tenant baru" },
-  { nomor: 5, judul: "Administrator", keterangan: "Akun admin desa pertama" },
-  { nomor: 6, judul: "Ringkasan", keterangan: "Periksa lalu buat tenant" },
-] as const;
-
-const slugDariNama = (nama: string): string => {
-  const dasar = nama
-    .normalize("NFKD")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 50);
-  return dasar || "desa";
-};
 
 export function TambahTenantWizard({
   baseDomain,
@@ -687,128 +660,34 @@ export function TambahTenantWizard({
             </div>
 
             <div hidden={langkah !== 6 || selesai}>
-              <PlatformCard>
-                <div className="domain-wizard-card-head">
-                  <div>
-                    <span className="domain-wizard-eyebrow">Langkah 6</span>
-                    <h2>Ringkasan pendaftaran</h2>
-                    <p>Periksa kembali sebelum tenant dibuat. Fondasi tenant disalin otomatis.</p>
-                  </div>
-                </div>
-
-                <dl className="domain-wizard-finish-list">
-                  <div>
-                    <dt>Desa</dt>
-                    <dd>
-                      {namaDesa} · kode {kodeDesa}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Domain</dt>
-                    <dd>{hostTarget ?? "Belum diisi"}</dd>
-                  </div>
-                  <div>
-                    <dt>Kontak desa</dt>
-                    <dd>
-                      {[officeAddress.trim(), phone.trim(), emailDesa.trim()]
-                        .filter(Boolean)
-                        .join(" · ") || "Belum diisi"}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Template</dt>
-                    <dd>
-                      {templateTerpilih
-                        ? `${templateTerpilih.name} · v${templateTerpilih.version}`
-                        : "Tema bawaan platform"}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Paket</dt>
-                    <dd>
-                      {paketTerpilih
-                        ? `${paketTerpilih.planName} · v${paketTerpilih.version}`
-                        : "Belum dipilih"}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Administrator</dt>
-                    <dd>
-                      {adminName} · {adminUsername} · {adminEmail}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Kuota media</dt>
-                    <dd>{kuotaMediaMb.trim() ? `${kuotaMediaMb} MB` : "Tanpa batas"}</dd>
-                  </div>
-                </dl>
-
-                {formState.status === "error" ? (
-                  <p className="domain-wizard-note is-error" role="alert">
-                    {formState.message}
-                  </p>
-                ) : null}
-              </PlatformCard>
+              <RingkasanTenant
+                adminEmail={adminEmail}
+                adminName={adminName}
+                adminUsername={adminUsername}
+                emailDesa={emailDesa}
+                formState={formState}
+                hostTarget={hostTarget}
+                kodeDesa={kodeDesa}
+                kuotaMediaMb={kuotaMediaMb}
+                namaDesa={namaDesa}
+                officeAddress={officeAddress}
+                paketTerpilih={paketTerpilih}
+                phone={phone}
+                templateTerpilih={templateTerpilih}
+              />
             </div>
 
             {selesai ? (
-              <PlatformCard>
-                <div className="domain-wizard-finish">
-                  <span className="domain-wizard-finish-icon" aria-hidden="true">
-                    ✓
-                  </span>
-                  <span className="domain-wizard-eyebrow">Selesai</span>
-                  <h2>Tenant {namaDesa} berhasil dibuat</h2>
-                  <p>
-                    Fondasi tenant (role, modul, tema, menu publik) sudah disalin dan akun
-                    administrator sudah siap dipakai.
-                  </p>
-
-                  <dl className="domain-wizard-finish-list">
-                    <div>
-                      <dt>Desa</dt>
-                      <dd>
-                        {namaDesa} · kode {kodeDesa}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Domain</dt>
-                      <dd>{hostTarget ?? "Belum diisi"}</dd>
-                    </div>
-                    <div>
-                      <dt>Template</dt>
-                      <dd>
-                        {templateTerpilih
-                          ? `${templateTerpilih.name} · v${templateTerpilih.version}`
-                          : "Tema bawaan platform"}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Paket</dt>
-                      <dd>
-                        {paketTerpilih
-                          ? `${paketTerpilih.planName} · v${paketTerpilih.version}`
-                          : "Belum dipilih"}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Administrator</dt>
-                      <dd>
-                        {adminName} · {adminUsername}
-                      </dd>
-                    </div>
-                  </dl>
-
-                  <div className="domain-wizard-finish-actions">
-                    <Link className="button button-primary" href="/super-admin/tenant">
-                      Lihat Konsol Tenant
-                    </Link>
-                    <button className="button button-secondary" onClick={mulaiLagi} type="button">
-                      Tambah Tenant Lain
-                    </button>
-                  </div>
-                </div>
-              </PlatformCard>
+              <TenantSelesai
+                adminName={adminName}
+                adminUsername={adminUsername}
+                hostTarget={hostTarget}
+                kodeDesa={kodeDesa}
+                namaDesa={namaDesa}
+                onMulaiLagi={mulaiLagi}
+                paketTerpilih={paketTerpilih}
+                templateTerpilih={templateTerpilih}
+              />
             ) : null}
 
             {/* Nilai akhir untuk Server Action: semua langkah dalam satu form. */}
@@ -819,63 +698,8 @@ export function TambahTenantWizard({
           </div>
 
           <aside className="domain-wizard-side">
-            <PlatformCard title="Pratinjau Domain">
-              <div className="domain-preview">
-                <div className="domain-preview-browser">
-                  <span className="domain-preview-dots" aria-hidden="true">
-                    <span />
-                    <span />
-                    <span />
-                  </span>
-                  <span className="domain-preview-url">{hostTarget ?? "domain-belum-dipilih"}</span>
-                </div>
-                <div className="domain-preview-nav">
-                  <span className="domain-preview-brand">
-                    <span aria-hidden="true">
-                      {(namaDesa.trim().charAt(0) || "D").toUpperCase()}
-                    </span>
-                    {namaDesa.trim() || "Desa baru"}
-                  </span>
-                  <span>Beranda</span>
-                  <span>Profil</span>
-                  <span>Layanan</span>
-                  <span>Berita</span>
-                  <span>Kontak</span>
-                </div>
-                <div className="domain-preview-hero">
-                  <div>
-                    <strong>{namaDesa.trim() || "Desa baru"}</strong>
-                    <span>Kode {kodeDesa.trim() || "—"}</span>
-                  </div>
-                </div>
-                <p className="domain-preview-caption">
-                  Pratinjau alamat dan identitas desa. Tampilan situs mengikuti tema terpilih.
-                </p>
-              </div>
-            </PlatformCard>
-
-            <PlatformCard title="Alur Pendaftaran Tenant">
-              <ol className="domain-wizard-flow">
-                {LANGKAH.map((item) => (
-                  <li
-                    className={
-                      item.nomor < langkahTampil
-                        ? "is-done"
-                        : item.nomor === langkahTampil
-                          ? "is-active"
-                          : undefined
-                    }
-                    key={item.nomor}
-                  >
-                    <span aria-hidden="true">{item.nomor < langkahTampil ? "✓" : item.nomor}</span>
-                    <div>
-                      <strong>{item.judul}</strong>
-                      <p>{item.keterangan}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </PlatformCard>
+            <PratinjauTenantCard kodeDesa={kodeDesa} hostTarget={hostTarget} namaDesa={namaDesa} />
+            <AlurTenantCard langkahTampil={langkahTampil} />
           </aside>
         </div>
 

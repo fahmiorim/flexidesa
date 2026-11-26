@@ -15,10 +15,10 @@ import {
   polygons,
   villages,
 } from "@/db/schema";
-import { deleteAnalisisKategori } from "@/features/analisis/infrastructure/analisis-repository";
-import { deletePolygon } from "@/features/gis/infrastructure/gis-repository";
-import { deleteInventarisKategori } from "@/features/inventaris/infrastructure/inventaris-repository";
-import { deleteKategori } from "@/features/kelompok/infrastructure/kelompok-repository";
+import { deleteKategori } from "@/features/kependudukan/kelompok/infrastructure/kelompok-repository";
+import { deleteAnalisisKategori } from "@/features/layanan-warga/analisis/infrastructure/analisis-repository";
+import { deleteInventarisKategori } from "@/features/pembangunan-aset/inventaris/infrastructure/inventaris-repository";
+import { deletePolygon } from "@/features/pertanahan-gis/gis/infrastructure/gis-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 const MIGRATIONS_FOLDER = fileURLToPath(new URL("./migrations", import.meta.url));

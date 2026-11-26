@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import {
   getKonfigurasiTtePageData,
   simpanKonfigurasiTteData,
-} from "@/features/surat/application/tte-use-cases";
+} from "@/features/pelayanan-persuratan/surat/application/tte-use-cases";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 
 const response = (data: unknown, status = 200) =>

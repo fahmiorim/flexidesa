@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { cariPendudukUntukPerangkat } from "@/features/pemerintahan/application/use-cases";
+import { cariPendudukUntukPerangkat } from "@/features/info-desa/pemerintahan/application/perangkat";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 
 export const runtime = "nodejs";

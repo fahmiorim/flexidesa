@@ -62,12 +62,120 @@ const nextConfig: NextConfig = {
    */
   async redirects() {
     return [
-      { source: "/pengaturan-desa", destination: "/identitas-desa", permanent: true },
-      { source: "/pemerintahan-desa/perangkat", destination: "/pemerintah-desa", permanent: true },
-      { source: "/pemerintahan-desa/lembaga", destination: "/lembaga-desa", permanent: true },
+      { source: "/pengaturan-desa", destination: "/profil-desa/identitas-desa", permanent: true },
+      {
+        source: "/pemerintahan-desa/perangkat",
+        destination: "/profil-desa/pemerintah-desa",
+        permanent: true,
+      },
+      {
+        source: "/pemerintahan-desa/lembaga",
+        destination: "/profil-desa/lembaga-desa",
+        permanent: true,
+      },
       {
         source: "/pemerintahan-desa/wilayah",
-        destination: "/wilayah-administratif",
+        destination: "/profil-desa/wilayah-administratif",
+        permanent: true,
+      },
+      // Rute Kehadiran & Layanan Surat kini berprefiks grup sidebar.
+      { source: "/absensi-kepegawaian/:path*", destination: "/kehadiran/:path*", permanent: true },
+      {
+        source: "/permohonan-surat/:path*",
+        destination: "/layanan-surat/permohonan-surat/:path*",
+        permanent: true,
+      },
+      {
+        source: "/persuratan/:path*",
+        destination: "/layanan-surat/persuratan/:path*",
+        permanent: true,
+      },
+      // Rute "Profil & Website Desa" kini berprefiks grup sidebar.
+      { source: "/website/dokumen", destination: "/profil-desa/dokumen", permanent: true },
+      { source: "/website/:path*", destination: "/profil-desa/website/:path*", permanent: true },
+      {
+        source: "/identitas-desa/:path*",
+        destination: "/profil-desa/identitas-desa/:path*",
+        permanent: true,
+      },
+      {
+        source: "/wilayah-administratif/:path*",
+        destination: "/profil-desa/wilayah-administratif/:path*",
+        permanent: true,
+      },
+      {
+        source: "/pemerintah-desa/:path*",
+        destination: "/profil-desa/pemerintah-desa/:path*",
+        permanent: true,
+      },
+      {
+        source: "/lembaga-desa/:path*",
+        destination: "/profil-desa/lembaga-desa/:path*",
+        permanent: true,
+      },
+      {
+        source: "/status-desa/:path*",
+        destination: "/profil-desa/status-desa/:path*",
+        permanent: true,
+      },
+      {
+        source: "/konten/berita/:path*",
+        destination: "/profil-desa/berita/:path*",
+        permanent: true,
+      },
+      {
+        source: "/konten/galeri/:path*",
+        destination: "/profil-desa/galeri/:path*",
+        permanent: true,
+      },
+      {
+        source: "/konten/dokumen/:path*",
+        destination: "/profil-desa/dokumen/:path*",
+        permanent: true,
+      },
+      {
+        source: "/konten/potensi/:path*",
+        destination: "/satu-data/potensi/:path*",
+        permanent: true,
+      },
+      // Rute Kependudukan kini berprefiks grup sidebar. Menu pada database
+      // tenant lama dan tautan tersimpan tetap memakai URL lama.
+      { source: "/penduduk/:path*", destination: "/kependudukan/penduduk/:path*", permanent: true },
+      { source: "/keluarga/:path*", destination: "/kependudukan/keluarga/:path*", permanent: true },
+      {
+        source: "/rumah-tangga/:path*",
+        destination: "/kependudukan/rumah-tangga/:path*",
+        permanent: true,
+      },
+      { source: "/kelompok/:path*", destination: "/kependudukan/kelompok/:path*", permanent: true },
+      {
+        source: "/laporan-bulanan/:path*",
+        destination: "/kependudukan/laporan-bulanan/:path*",
+        permanent: true,
+      },
+      {
+        source: "/mutasi-penduduk/:path*",
+        destination: "/kependudukan/mutasi-penduduk/:path*",
+        permanent: true,
+      },
+      {
+        source: "/statistik/kependudukan/:path*",
+        destination: "/kependudukan/statistik/:path*",
+        permanent: true,
+      },
+      {
+        source: "/statistik/kelompok-rentan/:path*",
+        destination: "/kependudukan/kelompok-rentan/:path*",
+        permanent: true,
+      },
+      {
+        source: "/statistik/laporan-penduduk/:path*",
+        destination: "/kependudukan/laporan-penduduk/:path*",
+        permanent: true,
+      },
+      {
+        source: "/kesehatan/stunting/:path*",
+        destination: "/kependudukan/stunting/:path*",
         permanent: true,
       },
     ];

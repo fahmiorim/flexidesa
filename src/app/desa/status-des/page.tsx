@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { ringkasanIdmPublik } from "@/features/idm/application/idm-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { urlMediaDesa } from "@/features/info-desa/publik/application/media-url";
+import { ringkasanIdmPublik } from "@/features/program-data-desa/idm/application/idm-use-cases";
 import {
   formatSkor,
   formatSkorRujukan,
@@ -10,8 +11,7 @@ import {
   hitungRekapSdgs,
   IDM_DIMENSI,
   SDGS_GOALS,
-} from "@/features/idm/domain/idm";
-import { urlMediaDesa } from "@/features/publik/application/media-url";
+} from "@/features/program-data-desa/idm/domain/idm";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
 import styles from "./status-des.module.css";

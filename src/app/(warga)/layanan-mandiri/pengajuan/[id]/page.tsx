@@ -2,11 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { listHasilPengajuanWargaData } from "@/features/pelayanan/application/pengajuan-use-cases";
+import { listHasilPengajuanWargaData } from "@/features/layanan-warga/pelayanan/application/pengajuan-use-cases";
 import {
   getPengajuanWargaDetailData,
   listBerkasPengajuanWargaDetailData,
-} from "@/features/pelayanan/application/pengajuan-warga-use-cases";
+} from "@/features/layanan-warga/pelayanan/application/pengajuan-warga-use-cases";
 import { verifyWargaPage } from "@/lib/dal";
 
 const labels: Record<string, string> = {

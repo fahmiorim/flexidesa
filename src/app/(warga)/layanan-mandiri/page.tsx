@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Card } from "@/components/ui/card";
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import { getCurrentUser } from "@/lib/dal";
 
 export const metadata: Metadata = {

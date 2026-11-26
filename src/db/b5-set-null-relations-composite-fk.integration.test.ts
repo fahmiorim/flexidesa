@@ -18,9 +18,9 @@ import {
   users,
   villages,
 } from "@/db/schema";
-import { deleteKeluarga } from "@/features/keluarga/infrastructure/keluarga-repository";
-import { deletePenduduk } from "@/features/penduduk/infrastructure/penduduk-repository";
-import { deleteSurat } from "@/features/surat/infrastructure/surat-repository";
+import { deleteKeluarga } from "@/features/kependudukan/keluarga/infrastructure/keluarga-repository";
+import { deletePenduduk } from "@/features/kependudukan/penduduk/infrastructure/penduduk-repository";
+import { deleteSurat } from "@/features/pelayanan-persuratan/surat/infrastructure/surat-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**

@@ -1,17 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { bacaLampiranPengaduan } from "@/features/pengaduan/application/use-cases";
-import { hasPermission } from "@/features/rbac/application/authorization";
+import { bacaLampiranPengaduan } from "@/features/layanan-warga/pengaduan/application/use-cases";
+import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { requireUser } from "@/lib/dal";
 
 import { GET } from "./route";
 
 vi.mock("@/lib/dal", () => ({ requireUser: vi.fn() }));
-vi.mock("@/features/pengaduan/application/use-cases", () => ({
+vi.mock("@/features/layanan-warga/pengaduan/application/use-cases", () => ({
   bacaLampiranPengaduan: vi.fn(),
 }));
-vi.mock("@/features/rbac/application/authorization", () => ({ hasPermission: vi.fn() }));
-vi.mock("@/features/rbac/domain/resources", () => ({
+vi.mock("@/features/pengaturan/rbac/application/authorization", () => ({ hasPermission: vi.fn() }));
+vi.mock("@/features/pengaturan/rbac/domain/resources", () => ({
   RESOURCES: { pengaduan: "pengaduan" },
 }));
 

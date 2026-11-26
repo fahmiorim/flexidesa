@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { AUDIT_EVENT_LABELS, type AuditEvent } from "@/features/audit/domain/audit";
 import { eksporAuditPlatform } from "@/features/multi-desa/application/audit-platform-use-cases";
+import { AUDIT_EVENT_LABELS, type AuditEvent } from "@/features/pengaturan/audit/domain/audit";
 import { toCsv } from "@/lib/csv";
 import { isAppError } from "@/lib/errors";
 

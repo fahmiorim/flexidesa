@@ -3,16 +3,16 @@ import Link from "next/link";
 
 import { Alert } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
-import { ambilProfilWargaData } from "@/features/layanan-mandiri/application/profil-warga-use-cases";
+import { listPengajuanLayananWargaData } from "@/features/layanan-warga/pelayanan/application/pengajuan-warga-use-cases";
+import { getSurveiWargaPageData } from "@/features/layanan-warga/pelayanan/application/survei-use-cases";
+import { ambilProfilWargaData } from "@/features/pelayanan-persuratan/layanan-mandiri/application/profil-warga-use-cases";
 import {
   daftarDokumenWargaData,
   listJenisSuratWargaData,
   listPermohonanWargaData,
-} from "@/features/layanan-mandiri/application/warga-use-cases";
-import { labelJenisDokumen } from "@/features/layanan-mandiri/domain/dokumen-warga";
-import { labelPermohonanStatus } from "@/features/layanan-mandiri/domain/layanan-mandiri";
-import { listPengajuanLayananWargaData } from "@/features/pelayanan/application/pengajuan-warga-use-cases";
-import { getSurveiWargaPageData } from "@/features/pelayanan/application/survei-use-cases";
+} from "@/features/pelayanan-persuratan/layanan-mandiri/application/warga-use-cases";
+import { labelJenisDokumen } from "@/features/pelayanan-persuratan/layanan-mandiri/domain/dokumen-warga";
+import { labelPermohonanStatus } from "@/features/pelayanan-persuratan/layanan-mandiri/domain/layanan-mandiri";
 import { verifyWargaPage } from "@/lib/dal";
 
 export const metadata: Metadata = {

@@ -1,5 +1,5 @@
 import { jalankanApiPublik } from "@/features/api-publik/application/public-api";
-import { cariInventarisPublik } from "@/features/inventaris/application/inventaris-publik-use-cases";
+import { cariInventarisPublik } from "@/features/pembangunan-aset/inventaris/application/inventaris-publik-use-cases";
 
 /**
  * GET /api/publik/inventaris

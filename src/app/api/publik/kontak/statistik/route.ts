@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { getStatistikPengunjungPublik } from "@/features/kontak/application/statistik-pengunjung-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getStatistikPengunjungPublik } from "@/features/layanan-warga/kontak/application/statistik-pengunjung-use-cases";
 import { batasiPermintaan } from "@/features/rate-limit/application/rate-limit";
 import { alamatIp } from "@/lib/client-ip";
 

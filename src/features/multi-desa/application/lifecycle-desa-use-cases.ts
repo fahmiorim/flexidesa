@@ -2,8 +2,6 @@ import "server-only";
 
 import { z } from "zod";
 
-import { recordAuditEvent } from "@/features/audit/application/audit-use-cases";
-import { AUDIT_EVENTS } from "@/features/audit/domain/audit";
 import { requireSuperAdmin } from "@/features/multi-desa/application/provisioning-use-cases";
 import {
   alasanTidakBolehPurge,
@@ -21,6 +19,8 @@ import {
   type DesaRetensiRow,
   type HasilEkspor,
 } from "@/features/multi-desa/infrastructure/lifecycle-tenant-repository";
+import { recordAuditEvent } from "@/features/pengaturan/audit/application/audit-use-cases";
+import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
 import { conflict, notFound } from "@/lib/errors";
 
 /**

@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { SEGERA_INFO } from "@/app/(admin)/segera/segera-info";
-import { TENANT_TEMPLATE } from "@/db/templates/tenant-template";
+import { TENANT_TEMPLATE } from "@/features/multi-desa/domain/tenant-template-data";
 import { ruteTersedia } from "@/features/navigation/domain/menu-tampil";
 
 import {
@@ -24,7 +24,7 @@ function template(overrides: Partial<TemplateTenant> = {}): TemplateTenant {
       {
         slug: "penduduk",
         name: "Penduduk",
-        url: "/penduduk",
+        url: "/kependudukan/penduduk",
         icon: null,
         isGroup: false,
         isHidden: false,
@@ -104,7 +104,7 @@ describe("template bawaan yang dikirim", () => {
     // Admin Web, Buku Tamu) tetap tersembunyi agar grant lama tidak yatim.
     expect(atas).toEqual([
       "beranda",
-      "info-desa",
+      "profil-desa",
       "kependudukan",
       "layanan-surat",
       "kehadiran",
@@ -166,8 +166,7 @@ describe("template bawaan yang dikirim", () => {
 
   it("menampilkan seluruh modul yang tersisa, termasuk yang halamannya belum dibangun", () => {
     const izinSaja: Record<string, true> = {
-      "profil-desa": true,
-      // Resource master surat dipakai halaman /persuratan/jenis-surat yang
+      // Resource master surat dipakai halaman /layanan-surat/persuratan/jenis-surat yang
       // pintu masuknya lewat menu Pengaturan Surat; tanpa baris modul ini
       // use case-nya melempar 403.
       "jenis-surat": true,
@@ -215,7 +214,7 @@ describe("template bawaan yang dikirim", () => {
     }
   });
 
-  it("membuang Dashboard Pemerintahan dan submenu Profil Desa", () => {
+  it("membuang Dashboard Pemerintahan dan memakai slug profil-desa untuk grup", () => {
     const slugs = template.modules.map((modul) => modul.slug);
 
     expect(slugs).not.toContain("pemerintahan-dashboard");
@@ -223,15 +222,17 @@ describe("template bawaan yang dikirim", () => {
       false,
     );
 
-    // Profil Desa tetap modul izin tersembunyi karena slug itu menggerbangi
-    // halaman Potensi Desa, tetapi tidak lagi menjadi submenu Info Desa.
+    // Modul izin tersembunyi `profil-desa` lama digabung ke grup "Profil &
+    // Website Desa" supaya slug izin sama dengan prefiks rutenya.
+    expect(slugs).not.toContain("info-desa");
     expect(template.modules.find((modul) => modul.slug === "profil-desa")).toMatchObject({
       url: null,
-      isHidden: true,
+      isGroup: true,
+      isHidden: false,
       isActive: true,
       parentSlug: null,
     });
-    expect(template.modules.some((modul) => modul.parentSlug === "profil-desa")).toBe(false);
+    expect(template.modules.some((modul) => modul.parentSlug === "profil-desa")).toBe(true);
   });
 
   it("memindah Stunting ke Kependudukan dan menghapus modul kesehatan Covid", () => {
@@ -269,14 +270,14 @@ describe("template bawaan yang dikirim", () => {
 
   it("menautkan modul yang halamannya sudah ada ke rute nyata", () => {
     const halaman = new Map([
-      ["pengaturan-desa", "/identitas-desa"],
-      ["wilayah", "/wilayah-administratif"],
+      ["pengaturan-desa", "/profil-desa/identitas-desa"],
+      ["wilayah", "/profil-desa/wilayah-administratif"],
       ["peta", "/pemetaan/peta"],
-      ["penduduk", "/penduduk"],
-      ["calon-pemilih", "/penduduk/dpt"],
-      ["keluarga", "/keluarga"],
-      ["laporan-bulanan", "/laporan-bulanan"],
-      ["laporan-penduduk", "/statistik/laporan-penduduk"],
+      ["penduduk", "/kependudukan/penduduk"],
+      ["calon-pemilih", "/kependudukan/penduduk/dpt"],
+      ["keluarga", "/kependudukan/keluarga"],
+      ["laporan-bulanan", "/kependudukan/laporan-bulanan"],
+      ["laporan-penduduk", "/kependudukan/laporan-penduduk"],
       ["inventaris", "/inventaris"],
       ["bumindes", "/bumindes/buku-administrasi?golongan=A"],
       ["pengaduan", "/pengaduan-admin"],
@@ -367,7 +368,7 @@ describe("template bawaan yang dikirim", () => {
       "template-website",
       "log-aktivitas",
     ]);
-    expect(grup("info-desa")).toEqual([
+    expect(grup("profil-desa")).toEqual([
       "pengaturan-desa",
       "wilayah",
       "perangkat-desa",
@@ -397,6 +398,7 @@ describe("template bawaan yang dikirim", () => {
       "data-penerima-bantuan",
       "idm-sdgs",
       "potensi",
+      "sarana-prasarana",
       "statistik-program-desa",
     ]);
   });
@@ -559,7 +561,7 @@ describe("urutkanModulIndukDulu", () => {
   const anak = {
     slug: "penduduk-detail",
     name: "Detail Penduduk",
-    url: "/penduduk/detail",
+    url: "/kependudukan/penduduk/detail",
     icon: null,
     isGroup: false,
     isHidden: false,

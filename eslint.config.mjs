@@ -43,6 +43,15 @@ const eslintConfig = defineConfig([
     },
   },
 
+  // Skrip operator CLI: console adalah keluaran utama untuk operator, bukan log
+  // aplikasi web. Aturan no-console tetap berlaku di src/**.
+  {
+    files: ["scripts/**/*.{mjs,ts}", "provision-*.mts"],
+    rules: {
+      "no-console": "off",
+    },
+  },
+
   // Override default ignores of eslint-config-next.
   globalIgnores([".next/**", "out/**", "build/**", ".tmp/**", "next-env.d.ts"]),
 ]);

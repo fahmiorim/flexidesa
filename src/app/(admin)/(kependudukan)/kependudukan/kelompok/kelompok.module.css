@@ -1,0 +1,329 @@
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: #5b4bc4;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+/* --- Grup tombol (paritas baris tombol OpenSID) ------------------------- */
+
+.buttonGroups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.buttonGroup {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border: 1px solid #dfe2f0;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.buttonGroup > * + * {
+  border-left: 1px solid #dfe2f0;
+}
+
+.buttonGroup a,
+.buttonGroup button {
+  border: 0;
+  border-radius: 0;
+  text-decoration: none;
+}
+
+.buttonGroupLabel {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  background: #f4f1fb;
+  color: #5b4bc4;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* --- Detail & tabel ------------------------------------------------------ */
+
+.hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 22px 24px;
+  border-radius: 16px;
+  background: linear-gradient(120deg, #2b2350 0%, #5b4bc4 100%);
+  color: #fff;
+}
+
+.heroLabel {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+.hero strong {
+  display: block;
+  font-size: 26px;
+  line-height: 1.15;
+}
+
+.hero p {
+  margin: 6px 0 0;
+  opacity: 0.85;
+}
+
+.heroMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+}
+
+.heroMeta span {
+  display: grid;
+  gap: 2px;
+}
+
+.heroMeta small {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.heroMeta b {
+  font-size: 16px;
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.infoList {
+  display: grid;
+  gap: 0;
+  margin: 0;
+}
+
+.infoList > div {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eceef7;
+}
+
+.infoList > div:last-child {
+  border-bottom: 0;
+}
+
+.infoList dt {
+  color: #6a6f82;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.infoList dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.memberActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.inlineForm {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.muted {
+  color: #6a6f82;
+}
+
+.badgeKetua {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #eeebff;
+  color: #3f2f9e;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.badgeAnggota {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #eef1f8;
+  color: #454b66;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* --- Cetak --------------------------------------------------------------- */
+
+.printPage {
+  display: grid;
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.printActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.printCard {
+  padding: 30px;
+  border: 1px solid #dcd7ea;
+  border-radius: 12px;
+  background: #fff;
+  color: #1b1f36;
+  box-shadow: 0 10px 30px #2e1d5b12;
+}
+
+.printHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 3px double #2b2350;
+}
+
+.printHead > div {
+  display: grid;
+  gap: 2px;
+}
+
+.printHead > div:last-child {
+  text-align: right;
+}
+
+.printHead strong {
+  font-size: 17px;
+  letter-spacing: 0.02em;
+}
+
+.printHead span {
+  color: #5e6378;
+  font-size: 11px;
+}
+
+.printInfo,
+.printMembers {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+}
+
+.printInfo th,
+.printInfo td,
+.printMembers th,
+.printMembers td {
+  padding: 7px 8px;
+  border: 1px solid #cfc9df;
+  text-align: left;
+  vertical-align: top;
+}
+
+.printInfo th,
+.printMembers th {
+  background: #f4f1fb;
+  font-weight: 800;
+}
+
+.printMembers {
+  margin-top: 16px;
+}
+
+.printFoot {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  color: #6a6f82;
+  font-size: 10px;
+}
+
+@media print {
+  .printPage {
+    max-width: none;
+    padding: 0;
+  }
+
+  .printActions {
+    display: none;
+  }
+
+  .printCard {
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+  }
+
+  :global(.admin-sidebar),
+  :global(.admin-topbar),
+  :global(.mobile-menu-button),
+  :global(.admin-drawer-backdrop) {
+    display: none !important;
+  }
+
+  :global(.admin-main) {
+    margin: 0 !important;
+  }
+
+  :global(.admin-content),
+  :global(.admin-page) {
+    padding: 0 !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .detailGrid {
+    grid-template-columns: 1fr;
+  }
+}

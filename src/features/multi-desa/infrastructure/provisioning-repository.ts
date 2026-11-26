@@ -130,7 +130,8 @@ function slugDariNama(nama: string): string {
  * Buat desa baru beserta seluruh fondasinya.
  *
  * Fondasi (role, modul, matriks akses, tema, menu publik) berasal dari template
- * platform di `src/db/templates/tenant-template.ts`, **bukan** dari desa lain
+ * platform di `src/features/multi-desa/domain/tenant-template-data.ts`,
+ * **bukan** dari desa lain
  * yang kebetulan sudah ada. Karena itu provisioning berjalan pada instalasi baru
  * yang belum berisi desa sama sekali.
  *

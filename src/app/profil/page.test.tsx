@@ -12,20 +12,24 @@ const sumber = vi.hoisted(() => ({
   daftarSliderBeranda: vi.fn(),
   daftarAlbumGaleri: vi.fn(),
   daftarFotoAlbum: vi.fn(),
+  daftarPotensiDesa: vi.fn(),
+  daftarSaranaPrasarana: vi.fn(),
 }));
 
-vi.mock("@/features/desa/application/resolve-village", () => ({
+vi.mock("@/features/info-desa/desa/application/resolve-village", () => ({
   getIdentitasFromRequest: sumber.getIdentitasFromRequest,
 }));
-vi.mock("@/features/desa/application/statistik-desa", () => ({
+vi.mock("@/features/info-desa/desa/application/statistik-desa", () => ({
   getStatistikDesa: sumber.getStatistikDesa,
 }));
-vi.mock("@/features/publik/application/konten-publik", () => ({
+vi.mock("@/features/info-desa/publik/application/konten-publik", () => ({
   profilDesaPublik: sumber.profilDesaPublik,
   daftarPerangkatPublik: sumber.daftarPerangkatPublik,
   daftarSliderBeranda: sumber.daftarSliderBeranda,
   daftarAlbumGaleri: sumber.daftarAlbumGaleri,
   daftarFotoAlbum: sumber.daftarFotoAlbum,
+  daftarPotensiDesa: sumber.daftarPotensiDesa,
+  daftarSaranaPrasarana: sumber.daftarSaranaPrasarana,
 }));
 vi.mock("../public-site-layout", () => ({
   PublicSiteHeader: () => null,
@@ -36,8 +40,13 @@ vi.mock("next/link", () => ({
     <a href={href}>{children}</a>
   ),
 }));
+// Pengganti `next/image` untuk test: yang diperiksa adalah markup gambar yang
+// dihasilkan halaman, bukan optimasi aset, jadi elemen `<img>` biasa disengaja.
 vi.mock("next/image", () => ({
-  default: ({ src, alt }: { src: string; alt?: string }) => <img src={src} alt={alt ?? ""} />,
+  default: ({ src, alt }: { src: string; alt?: string }) => (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt ?? ""} />
+  ),
 }));
 
 describe("ProfilDesaPage", () => {
@@ -90,11 +99,14 @@ describe("ProfilDesaPage", () => {
       curahHujan: null,
       topografi: null,
       batasDesa: null,
+      tahunBerdiri: null,
     });
     sumber.daftarPerangkatPublik.mockResolvedValue([]);
     sumber.daftarSliderBeranda.mockResolvedValue([]);
     sumber.daftarAlbumGaleri.mockResolvedValue([]);
     sumber.daftarFotoAlbum.mockResolvedValue([]);
+    sumber.daftarPotensiDesa.mockResolvedValue([]);
+    sumber.daftarSaranaPrasarana.mockResolvedValue([]);
   });
 
   it("menampilkan luas wilayah yang tersimpan dalam profil desa", async () => {

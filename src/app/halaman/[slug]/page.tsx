@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { muatHalamanPublik } from "@/features/publik/application/website-admin";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { muatHalamanPublik } from "@/features/info-desa/publik/application/website-admin";
 import { sanitasiHtml } from "@/lib/sanitize";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";

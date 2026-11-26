@@ -39,18 +39,24 @@ export function PlatformPageHeader({
   const { title, description, aksi } = headerPlatform(path);
 
   return (
-    <PageHeading>
-      <div className="platform-page-header">
+    <PageHeading
+      wadah="div"
+      kelas="platform-page-header"
+      isiJudul={
         <div className="platform-page-heading">
           {backHref ? (
             <Link className="platform-back-link" href={backHref}>
               ← {backLabel ?? "Kembali"}
             </Link>
           ) : null}
-          <h1>{judul ?? title}</h1>
-          <p>{deskripsi ?? description}</p>
+          <div>
+            <h1>{judul ?? title}</h1>
+            <p>{deskripsi ?? description}</p>
+          </div>
         </div>
-        {aksi || actions ? (
+      }
+      aksi={
+        aksi || actions ? (
           <div className="platform-page-actions">
             {aksi ? (
               <Link className="button button-secondary" href={aksi.href}>
@@ -59,9 +65,9 @@ export function PlatformPageHeader({
             ) : null}
             {actions}
           </div>
-        ) : null}
-      </div>
-    </PageHeading>
+        ) : null
+      }
+    />
   );
 }
 

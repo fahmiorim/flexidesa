@@ -1,23 +1,26 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { getTenantFromRequest } from "@/features/publik/api/middleware";
-import { cariHalamanDokumenPublik } from "@/features/publik/application/dokumen-publik";
-import { daftarBerita, profilDesaPublik } from "@/features/publik/application/konten-publik";
+import { getTenantFromRequest } from "@/features/info-desa/publik/api/middleware";
+import { cariHalamanDokumenPublik } from "@/features/info-desa/publik/application/dokumen-publik";
+import {
+  daftarBerita,
+  profilDesaPublik,
+} from "@/features/info-desa/publik/application/konten-publik";
 import { batasiPermintaan } from "@/features/rate-limit/application/rate-limit";
 
 import { GET } from "./route";
 
-vi.mock("@/features/publik/api/middleware", () => ({
+vi.mock("@/features/info-desa/publik/api/middleware", () => ({
   getTenantFromRequest: vi.fn(),
 }));
-vi.mock("@/features/audit/application/audit-use-cases", () => ({
+vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
   recordAuditEvent: vi.fn(),
 }));
-vi.mock("@/features/publik/application/konten-publik", () => ({
+vi.mock("@/features/info-desa/publik/application/konten-publik", () => ({
   daftarBerita: vi.fn(),
   profilDesaPublik: vi.fn(),
 }));
-vi.mock("@/features/publik/application/dokumen-publik", () => ({
+vi.mock("@/features/info-desa/publik/application/dokumen-publik", () => ({
   cariHalamanDokumenPublik: vi.fn(),
 }));
 vi.mock("@/features/rate-limit/application/rate-limit", () => ({

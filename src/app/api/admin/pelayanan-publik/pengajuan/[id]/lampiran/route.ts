@@ -1,4 +1,4 @@
-import { bacaLampiranPengajuanAdminData } from "@/features/pelayanan/application/pengajuan-use-cases";
+import { bacaLampiranPengajuanAdminData } from "@/features/layanan-warga/pelayanan/application/pengajuan-use-cases";
 import { getCurrentUser } from "@/lib/dal";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 

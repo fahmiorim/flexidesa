@@ -4,7 +4,7 @@ import {
   namaBerkasKesehatan,
   responsCsvKesehatan,
   responsGalatKesehatan,
-} from "@/features/kesehatan/application/ekspor-kesehatan";
+} from "@/features/kependudukan/kesehatan/application/ekspor-kesehatan";
 
 function statusKehamilanLabel(value: number | null): string {
   if (value === 1) return "Normal";

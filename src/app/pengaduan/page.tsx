@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { listPengaduanPublikData } from "@/features/pengaduan/application/use-cases";
-import { labelKategori, labelStatus } from "@/features/pengaduan/domain/pengaduan";
-import { getNavPublik } from "@/features/publik/application/nav-publik";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getNavPublik } from "@/features/info-desa/publik/application/nav-publik";
+import { listPengaduanPublikData } from "@/features/layanan-warga/pengaduan/application/use-cases";
+import { labelKategori, labelStatus } from "@/features/layanan-warga/pengaduan/domain/pengaduan";
 
 import styles from "../informasi-publik.module.css";
 import { PublicShell } from "../public-shell";

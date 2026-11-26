@@ -1,4 +1,4 @@
-import { getSuratDinasLampiranData } from "@/features/surat/application/surat-dinas-use-cases";
+import { getSuratDinasLampiranData } from "@/features/pelayanan-persuratan/surat/application/surat-dinas-use-cases";
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const id = Number((await params).id);

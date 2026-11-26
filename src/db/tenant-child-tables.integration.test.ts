@@ -12,8 +12,11 @@ import {
   surveySoal,
   villages,
 } from "@/db/schema";
-import { insertDokumentasi } from "@/features/pembangunan/infrastructure/pembangunan-repository";
-import { insertResponden, insertSoal } from "@/features/survey/infrastructure/survey-repository";
+import {
+  insertResponden,
+  insertSoal,
+} from "@/features/layanan-warga/survey/infrastructure/survey-repository";
+import { insertDokumentasi } from "@/features/pembangunan-aset/pembangunan/infrastructure/pembangunan-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**

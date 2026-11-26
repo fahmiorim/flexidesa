@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { unduhDokumenPemerintahanData } from "@/features/pemerintahan/application/use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { unduhDokumenPemerintahanData } from "@/features/info-desa/pemerintahan/application/dokumen";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";

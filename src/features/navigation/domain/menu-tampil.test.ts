@@ -13,8 +13,8 @@ function simpul(p: Partial<MenuNodeLike> & Pick<MenuNodeLike, "label">): MenuNod
 
 describe("pathMenu", () => {
   it("membuang query dan garis miring di akhir", () => {
-    expect(pathMenu("/penduduk/?page=2")).toBe("/penduduk");
-    expect(pathMenu("/penduduk")).toBe("/penduduk");
+    expect(pathMenu("/kependudukan/penduduk/?page=2")).toBe("/kependudukan/penduduk");
+    expect(pathMenu("/kependudukan/penduduk")).toBe("/kependudukan/penduduk");
   });
 
   it("mengembalikan null untuk url kosong", () => {
@@ -27,17 +27,20 @@ describe("pathMenu", () => {
   });
 
   it("mengubah alias lama menjadi rute kanonis", () => {
-    expect(pathMenu("/segera/status-desa")).toBe("/status-desa");
-    expect(pathMenu("/segera/status-desa/?tahun=2024")).toBe("/status-desa");
-    expect(pathMenu("/segera/rumah-tangga")).toBe("/rumah-tangga");
-    expect(pathMenu("/segera/kelompok")).toBe("/kelompok");
-    expect(pathMenu("/segera/laporan-bulanan")).toBe("/laporan-bulanan");
-    expect(pathMenu("/segera/statistik-kependudukan")).toBe("/statistik/kependudukan");
+    expect(pathMenu("/segera/status-desa")).toBe("/profil-desa/status-desa");
+    expect(pathMenu("/segera/status-desa/?tahun=2024")).toBe("/profil-desa/status-desa");
+    expect(pathMenu("/segera/rumah-tangga")).toBe("/kependudukan/rumah-tangga");
+    expect(pathMenu("/segera/kelompok")).toBe("/kependudukan/kelompok");
+    expect(pathMenu("/segera/laporan-bulanan")).toBe("/kependudukan/laporan-bulanan");
+    expect(pathMenu("/segera/statistik-kependudukan")).toBe("/kependudukan/statistik");
     expect(pathMenu("/segera/jam-kerja")).toBe("/kehadiran/jam-kerja");
     expect(pathMenu("/segera/persetujuan-izin")).toBe("/kehadiran/persetujuan-izin");
     expect(pathMenu("/segera/alasan-keluar")).toBe("/kehadiran/alasan-keluar");
-    expect(pathMenu("/segera/cetak-surat")).toBe("/persuratan/cetak-surat");
-    expect(pathMenu("/segera/laporan-kelompok-rentan")).toBe("/statistik/kelompok-rentan");
+    expect(pathMenu("/segera/cetak-surat")).toBe("/layanan-surat/persuratan/cetak-surat");
+    expect(pathMenu("/segera/laporan-kelompok-rentan")).toBe("/kependudukan/kelompok-rentan");
+    expect(pathMenu("/website/dokumen")).toBe("/profil-desa/dokumen");
+    expect(pathMenu("/persuratan/surat-masuk")).toBe("/layanan-surat/persuratan/surat-masuk");
+    expect(pathMenu("/absensi-kepegawaian/pegawai")).toBe("/kehadiran/pegawai");
   });
 });
 
@@ -46,29 +49,30 @@ describe("ruteTersedia", () => {
     expect(ruteTersedia("/beranda")).toBe(true);
     expect(ruteTersedia("/super-admin")).toBe(true);
     expect(ruteTersedia("/beranda?tab=ringkasan")).toBe(true);
-    expect(ruteTersedia("/penduduk")).toBe(true);
+    expect(ruteTersedia("/kependudukan/penduduk")).toBe(true);
     expect(ruteTersedia("/inventaris/123")).toBe(true);
     expect(ruteTersedia("/inventaris/[id]")).toBe(true);
-    expect(ruteTersedia("/penduduk/dashboard")).toBe(false);
-    expect(ruteTersedia("/keluarga")).toBe(true);
-    expect(ruteTersedia("/rumah-tangga")).toBe(true);
-    expect(ruteTersedia("/rumah-tangga/123")).toBe(true);
-    expect(ruteTersedia("/rumah-tangga/123/ubah")).toBe(true);
-    expect(ruteTersedia("/kelompok")).toBe(true);
-    expect(ruteTersedia("/kelompok/123")).toBe(true);
-    expect(ruteTersedia("/kelompok/kategori")).toBe(true);
-    expect(ruteTersedia("/mutasi-penduduk")).toBe(true);
-    expect(ruteTersedia("/laporan-bulanan")).toBe(true);
+    expect(ruteTersedia("/kependudukan/penduduk/dashboard")).toBe(false);
+    expect(ruteTersedia("/kependudukan/keluarga")).toBe(true);
+    expect(ruteTersedia("/kependudukan/rumah-tangga")).toBe(true);
+    expect(ruteTersedia("/kependudukan/rumah-tangga/123")).toBe(true);
+    expect(ruteTersedia("/kependudukan/rumah-tangga/123/ubah")).toBe(true);
+    expect(ruteTersedia("/kependudukan/kelompok")).toBe(true);
+    expect(ruteTersedia("/kependudukan/kelompok/123")).toBe(true);
+    // Tidak ada halaman kategori terpisah lagi; rute ini kini cocok dengan `/kependudukan/kelompok/[id]`.
+    expect(ruteTersedia("/kependudukan/kelompok/kategori")).toBe(true);
+    expect(ruteTersedia("/kependudukan/mutasi-penduduk")).toBe(true);
+    expect(ruteTersedia("/kependudukan/laporan-bulanan")).toBe(true);
     expect(ruteTersedia("/statistik/penduduk")).toBe(false);
     expect(ruteTersedia("/laporan-statistik/laporan-desa")).toBe(false);
-    expect(ruteTersedia("/persuratan/dashboard")).toBe(true);
-    expect(ruteTersedia("/persuratan/surat")).toBe(true);
-    expect(ruteTersedia("/persuratan/verifikasi")).toBe(true);
-    expect(ruteTersedia("/persuratan/jenis-surat")).toBe(true);
-    expect(ruteTersedia("/persuratan/arsip")).toBe(true);
-    expect(ruteTersedia("/persuratan/master")).toBe(true);
-    expect(ruteTersedia("/permohonan-surat")).toBe(true);
-    expect(ruteTersedia("/konten/berita")).toBe(true);
+    expect(ruteTersedia("/layanan-surat/persuratan/dashboard")).toBe(true);
+    expect(ruteTersedia("/layanan-surat/persuratan/surat")).toBe(true);
+    expect(ruteTersedia("/layanan-surat/persuratan/verifikasi")).toBe(true);
+    expect(ruteTersedia("/layanan-surat/persuratan/jenis-surat")).toBe(true);
+    expect(ruteTersedia("/layanan-surat/persuratan/arsip")).toBe(true);
+    expect(ruteTersedia("/layanan-surat/persuratan/master")).toBe(true);
+    expect(ruteTersedia("/layanan-surat/permohonan-surat")).toBe(true);
+    expect(ruteTersedia("/profil-desa/berita")).toBe(true);
     expect(ruteTersedia("/pemetaan/peta")).toBe(true);
     expect(ruteTersedia("/pengaturan/desa")).toBe(true);
     expect(ruteTersedia("/pengaturan/pengguna")).toBe(true);
@@ -76,11 +80,11 @@ describe("ruteTersedia", () => {
     expect(ruteTersedia("/kehadiran/jam-kerja")).toBe(true);
     expect(ruteTersedia("/kehadiran/persetujuan-izin")).toBe(true);
     expect(ruteTersedia("/kehadiran/alasan-keluar")).toBe(true);
-    expect(ruteTersedia("/persuratan/cetak-surat")).toBe(true);
+    expect(ruteTersedia("/layanan-surat/persuratan/cetak-surat")).toBe(true);
   });
 
   it("menolak rute yang belum punya halaman", () => {
-    expect(ruteTersedia("/penduduk/tambah")).toBe(false);
+    expect(ruteTersedia("/kependudukan/penduduk/tambah")).toBe(false);
     expect(ruteTersedia("/keuangan/laporan")).toBe(true);
     expect(ruteTersedia(null)).toBe(false);
   });
@@ -94,7 +98,7 @@ describe("susunMenuTampil", () => {
         icon: "♙",
         children: [
           simpul({ label: "Beranda", url: "/beranda" }),
-          simpul({ label: "Data Penduduk", url: "/penduduk" }),
+          simpul({ label: "Data Penduduk", url: "/kependudukan/penduduk" }),
         ],
       }),
     ];
@@ -121,7 +125,7 @@ describe("susunMenuTampil", () => {
             kind: "item",
             slug: "Data Penduduk",
             label: "Data Penduduk",
-            url: "/penduduk",
+            url: "/kependudukan/penduduk",
             icon: null,
             tersedia: true,
             items: [],
@@ -135,7 +139,7 @@ describe("susunMenuTampil", () => {
     const [baris] = susunMenuTampil([simpul({ label: "Status Desa", url: "/segera/status-desa" })]);
 
     expect(baris).toMatchObject({
-      url: "/status-desa",
+      url: "/profil-desa/status-desa",
       tersedia: true,
     });
   });
@@ -169,7 +173,7 @@ describe("susunMenuTampil", () => {
         children: [
           simpul({
             label: "Dalam",
-            children: [simpul({ label: "Halaman", url: "/penduduk" })],
+            children: [simpul({ label: "Halaman", url: "/kependudukan/penduduk" })],
           }),
         ],
       }),
@@ -184,10 +188,10 @@ describe("susunMenuTampil", () => {
   });
 
   it("mengenali lima halaman Website Desa", () => {
-    expect(ruteTersedia("/website")).toBe(true);
-    expect(ruteTersedia("/website/pengaturan")).toBe(true);
-    expect(ruteTersedia("/website/halaman")).toBe(true);
-    expect(ruteTersedia("/website/konten")).toBe(true);
-    expect(ruteTersedia("/website/dokumen")).toBe(true);
+    expect(ruteTersedia("/profil-desa/website")).toBe(true);
+    expect(ruteTersedia("/profil-desa/website/pengaturan")).toBe(true);
+    expect(ruteTersedia("/profil-desa/website/halaman")).toBe(true);
+    expect(ruteTersedia("/profil-desa/website/konten")).toBe(true);
+    expect(ruteTersedia("/profil-desa/dokumen")).toBe(true);
   });
 });

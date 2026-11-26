@@ -7,5 +7,5 @@ import { redirect } from "next/navigation";
  * `/segera/laporan-kelompok-rentan`; rute kanonisnya kini di Statistik.
  */
 export default function SegeraLaporanKelompokRentanPage() {
-  redirect("/statistik/kelompok-rentan");
+  redirect("/kependudukan/kelompok-rentan");
 }

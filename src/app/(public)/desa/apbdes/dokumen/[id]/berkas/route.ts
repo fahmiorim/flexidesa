@@ -1,5 +1,5 @@
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { getBerkasLaporanDokumenApbdesPublik } from "@/features/keuangan/application/laporan-dokumen-publik-use-cases";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getBerkasLaporanDokumenApbdesPublik } from "@/features/keuangan-desa/keuangan/application/laporan-dokumen-publik-use-cases";
 import { isAppError } from "@/lib/errors";
 
 /** Unduh berkas dokumen APBDes yang sudah diserahkan (akses publik per host). */

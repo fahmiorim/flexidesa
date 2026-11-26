@@ -5,7 +5,7 @@ import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { db } from "@/db";
 import { roles, users, villages } from "@/db/schema";
-import { deleteRole } from "@/features/rbac/infrastructure/rbac-repository";
+import { deleteRole } from "@/features/pengaturan/rbac/infrastructure/rbac-repository";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**

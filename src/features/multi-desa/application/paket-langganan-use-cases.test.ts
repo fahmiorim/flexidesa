@@ -6,7 +6,9 @@ import { simpanFiturDrafPaketPlatform } from "./paket-langganan-use-cases";
 import * as guard from "./provisioning-use-cases";
 
 vi.mock("./provisioning-use-cases", () => ({ requireSuperAdmin: vi.fn() }));
-vi.mock("@/features/audit/application/audit-use-cases", () => ({ recordAuditEvent: vi.fn() }));
+vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
+  recordAuditEvent: vi.fn(),
+}));
 vi.mock("@/features/multi-desa/infrastructure/paket-langganan-repository", () => ({
   simpanFiturDrafPaket: vi.fn(),
 }));

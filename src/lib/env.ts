@@ -1,7 +1,7 @@
 import { isIP } from "node:net";
 import { z } from "zod";
 
-import { normalisasiDaftarHost } from "@/features/desa/domain/host";
+import { normalisasiDaftarHost } from "@/features/info-desa/desa/domain/host";
 
 /**
  * Skema variabel lingkungan (environment variables).

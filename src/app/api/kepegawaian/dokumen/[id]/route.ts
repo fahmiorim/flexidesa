@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { bacaDokumenPegawaiData } from "@/features/kepegawaian/application/use-cases";
+import { bacaDokumenPegawaiData } from "@/features/kehadiran/kepegawaian/application/pegawai";
 
 const MIME: Record<string, string> = {
   pdf: "application/pdf",

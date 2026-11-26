@@ -1,4 +1,5 @@
 import {
+  decimal,
   index,
   int,
   mysqlTable,
@@ -50,6 +51,8 @@ export const regions = mysqlTable(
     warna: varchar("warna", { length: 25 }),
     /** Warna garis batas wilayah, mis. `#047857`. */
     border: varchar("border", { length: 25 }),
+    /** Luas wilayah baris ini dalam hektare; diisi pada tingkat dusun. */
+    luasHa: decimal("luas_ha", { precision: 12, scale: 2 }),
 
     sortOrder: int("sort_order").notNull().default(0),
 

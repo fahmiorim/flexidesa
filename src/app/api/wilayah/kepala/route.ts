@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { cariKepalaWilayah } from "@/features/wilayah/application/use-cases";
+import { cariKepalaWilayah } from "@/features/info-desa/wilayah/application/use-cases";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 
 export const runtime = "nodejs";

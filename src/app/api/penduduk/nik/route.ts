@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { cariPendudukByNikData } from "@/features/penduduk/application/use-cases";
+import { cariPendudukByNikData } from "@/features/kependudukan/penduduk/application/use-cases";
 import { getCurrentUser } from "@/lib/dal";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 import { privateNoStore } from "@/lib/response-headers";

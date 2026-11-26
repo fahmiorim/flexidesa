@@ -7,7 +7,9 @@ import {
 } from "./template-website-use-cases";
 
 vi.mock("./provisioning-use-cases", () => ({ requireSuperAdmin: vi.fn() }));
-vi.mock("@/features/audit/application/audit-use-cases", () => ({ recordAuditEvent: vi.fn() }));
+vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
+  recordAuditEvent: vi.fn(),
+}));
 vi.mock("@/features/multi-desa/infrastructure/template-website-repository", () => ({
   listTemplateWebsite: vi.fn(),
   getTemplateWebsite: vi.fn(),
@@ -51,7 +53,7 @@ const template = {
 async function modul() {
   const guard = await import("./provisioning-use-cases");
   const repo = await import("@/features/multi-desa/infrastructure/template-website-repository");
-  const audit = await import("@/features/audit/application/audit-use-cases");
+  const audit = await import("@/features/pengaturan/audit/application/audit-use-cases");
   return { guard, repo, audit };
 }
 

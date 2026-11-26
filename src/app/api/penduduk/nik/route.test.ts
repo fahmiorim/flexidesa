@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { cariPendudukByNikData } from "@/features/penduduk/application/use-cases";
+import { cariPendudukByNikData } from "@/features/kependudukan/penduduk/application/use-cases";
 import { getCurrentUser } from "@/lib/dal";
 import { AppError } from "@/lib/errors";
 
 import { GET } from "./route";
 
 vi.mock("@/lib/dal", () => ({ getCurrentUser: vi.fn() }));
-vi.mock("@/features/penduduk/application/use-cases", () => ({
+vi.mock("@/features/kependudukan/penduduk/application/use-cases", () => ({
   cariPendudukByNikData: vi.fn(),
 }));
 

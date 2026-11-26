@@ -1,14 +1,14 @@
 import { createHmac } from "node:crypto";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { resolveVillageByHost } from "@/features/desa/application/resolve-village";
+import { resolveVillageByHost } from "@/features/info-desa/desa/application/resolve-village";
 import { terimaPesanEmailWebhook } from "@/features/notifikasi/application/mailbox-use-cases";
 
 import { POST } from "./route";
 
 const secret = "a".repeat(32);
 vi.mock("@/lib/env", () => ({ env: { EMAIL_WEBHOOK_TOKEN: "a".repeat(32) } }));
-vi.mock("@/features/desa/application/resolve-village", () => ({
+vi.mock("@/features/info-desa/desa/application/resolve-village", () => ({
   resolveVillageByHost: vi.fn(),
 }));
 vi.mock("@/features/notifikasi/application/mailbox-use-cases", () => ({

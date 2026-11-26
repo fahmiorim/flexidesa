@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { getIdentitasFromRequest } from "@/features/desa/application/resolve-village";
-import { getStatistikPublik } from "@/features/desa/application/statistik-publik";
-import { getRincianStatistikPublik } from "@/features/desa/application/statistik-rinci-publik";
-import { formatRupiah } from "@/features/keuangan/domain/keuangan";
+import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { getStatistikPublik } from "@/features/info-desa/desa/application/statistik-publik";
+import { getRincianStatistikPublik } from "@/features/info-desa/desa/application/statistik-rinci-publik";
+import { formatRupiah } from "@/features/keuangan-desa/keuangan/domain/keuangan";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import { PrintStatisticsButton } from "./print-statistics-button";
