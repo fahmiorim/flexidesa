@@ -10,7 +10,7 @@
 
 **Spec:** Prinsip paritas OpenSID di `AGENTS.md` dan sumber lokal `D:\laragon\www\opensid\storage\app\themes`.
 
-**Status (27 November 2026):** Registry, shell paket, form/API opsi tenant, helper migrasi, dan peta adapter 35 route tersedia. `npm run check` lulus (307 file/2.507 test); `NODE_ENV=production npm run build` lulus (250/250 halaman). Masih ada gap komposisi page per tema dan route, uji browser, migrasi tulis/rollback, serta konfigurasi deployment/DNS/TLS. Lihat bagian 6 dan 8.
+**Status (27 November 2026):** Registry, shell paket, form/API opsi tenant, helper migrasi, dan peta adapter 35 route tersedia. `npm run check` lulus (307 file/2.507 test); `NODE_ENV=production npm run build` lulus (250/250 halaman). Aplikasi kini berjalan di server melalui SSH tunnel; `flexides.id` belum resolve sehingga DNS/TLS publik belum aktif. Gap komposisi page per tema dan route serta uji tulis/rollback tetap dapat dilanjutkan setelahnya. Lihat bagian 6 dan 8.
 
 **Untuk:** Agent yang mengimplementasikan paket tema dan alur pemilihan tenant.
 
@@ -336,8 +336,9 @@ UI lama `/super-admin/template/baru` tidak boleh membuat slug bebas yang tidak a
 - [x] `npm run lint` lulus.
 - [x] `npm run check` lulus penuh: typecheck, ESLint, Prettier, dan 307 file test / 2.507 test.
 - [x] `NODE_ENV=production npm run build` exit 0; 250/250 halaman diprerender. `.env` lokal menetapkan `NODE_ENV=development`, jadi build release harus memakai environment production.
-- [ ] Uji browser/aksesibilitas dan migrasi tulis/rollback tenant belum diverifikasi.
-- [ ] Jangan upload sebelum gap paritas ditutup, test/format/build lulus, dan target server serta prosedur rollback dikonfirmasi.
+- [x] Browser desktop memverifikasi landing platform, login Super Admin, dan provisioning tenant melalui SSH tunnel.
+- [ ] Uji browser publik/mobile/aksesibilitas belum dilakukan; DNS `flexides.id` belum resolve, TLS tepercaya dan akses publik masih menunggu konfigurasi DNS.
+- [ ] Jangan tandai rilis publik selesai sebelum DNS/TLS, rollback, dan review seluruh surface lulus.
 
 **Kriteria selesai:** registry menghubungkan semua surface, opsi yang disepakati memiliki consumer runtime, data tenant lama aman, formatting/test/build lulus, dan browser smoke tercatat.
 
@@ -361,7 +362,7 @@ UI lama `/super-admin/template/baru` tidak boleh membuat slug bebas yang tidak a
 3. Peta route mencatat 35 entri: 1 renderer langsung, 6 shell, 25 header bersama, dan 3 alias. Hanya 7 route instance memakai `TemaRenderer`; test memeriksa adapter/impor, bukan output render semua route.
 4. Form opsi dan API simpan/unggah tersedia. `jam=0` menyembunyikan jam sidebar Natra; page-size menggunakan pagination `?page=`; shell bersama menerapkan warna/pintasan; fallback foto dipakai di `/pembangunan`; path media dibatasi ke tenant.
 5. `migrasiOpsiVersi` dipakai saat menyimpan opsi dan menerapkan template. Alur Super Admin ganti/distribusi mempertahankan key lama di luar schema tujuan dan mencatat jumlah opsi tak terpetakan pada audit. Dry-run dev mencatat 2 tenant `esensi@1.0.0` tanpa penulisan; uji tulis/rollback belum dilakukan.
-6. Verifikasi terbaru: `npm run check` exit 0 (307 file/2.507 test); `NODE_ENV=production npm run build` exit 0 (250/250 halaman). Browser smoke visual, DNS/TLS, dan target deployment/rollback belum diverifikasi.
+6. Verifikasi terbaru: `npm run check` exit 0 (307 file/2.507 test); `NODE_ENV=production npm run build` exit 0 (250/250 halaman). Browser landing/admin/provisioning lulus melalui SSH tunnel; domain publik belum resolve, jadi uji subdomain dan TLS publik belum dilakukan.
 7. Allowlist proxy publik (`src/lib/public-paths.ts`) diperluas untuk halaman yang sebelumnya dialihkan ke `/masuk-admin`: `/informasi`, `/halaman`, `/agenda`, `/pengumuman`, `/transparansi`, `/perangkat`, `/pengaduan`, serta pola `/pembangunan/[slug]` dengan pengecualian `/pembangunan/buku`.
 
 ## 9. Rujukan kode

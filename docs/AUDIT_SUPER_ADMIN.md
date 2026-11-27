@@ -268,5 +268,6 @@ Verifikasi dijalankan pada 27 November 2026:
 - `NODE_ENV=production npm run build`: exit 0, 250/250 halaman diprerender; build dipanggil dengan `NODE_ENV=production` karena `.env` lokal menetapkan `development`.
 - `ui-guard` lulus; halaman backup memakai `Button`/komponen bersama, tanpa tombol mentah.
 - Prettier bersih pada seluruh proyek; script `scripts/platform/tambah-template-samudra.mjs` kini terformat.
-- Belum dijalankan: browser smoke desktop/mobile, uji tulis/rollback opsi, restore data nyata, dan deployment smoke.
-- Repository tidak memiliki workflow deploy/runbook; server dan domain perlu dikonfigurasi terpisah.
+- `npm ci` di server melaporkan 13 advisori dependensi tingkat sedang; belum ditriase.
+- Browser desktop memverifikasi landing platform, login Super Admin, dan konsol tenant melalui SSH tunnel. Public DNS `flexides.id` belum resolve; mobile/accessibility, restore data nyata, dan deployment smoke publik belum dijalankan.
+- Tidak ditemukan workflow deploy/runbook di repo. Aplikasi berjalan dengan proxy staging loopback; DNS A/wildcard dan TLS tepercaya masih perlu disiapkan sebelum akses publik.
