@@ -10,7 +10,7 @@
 
 **Spec:** Prinsip paritas OpenSID di `AGENTS.md` dan sumber lokal `D:\laragon\www\opensid\storage\app\themes`.
 
-**Status:** Rencana target. Implementasi token saat ini adalah baseline migrasi, bukan desain akhir.
+**Status (27 November 2026):** Registry, shell paket, form/API opsi tenant, helper migrasi, dan peta adapter 35 route tersedia. `npm run check` lulus (307 file/2.507 test); `NODE_ENV=production npm run build` lulus (250/250 halaman). Masih ada gap komposisi page per tema dan route, uji browser, migrasi tulis/rollback, serta konfigurasi deployment/DNS/TLS. Lihat bagian 6 dan 8.
 
 **Untuk:** Agent yang mengimplementasikan paket tema dan alur pemilihan tenant.
 
@@ -73,11 +73,11 @@ Cakupan situs publik saat ini berjumlah 35 route-file: 26 mengimpor `PublicSiteH
 
 ### 2.3 Celah terhadap target
 
-1. **Hanya 3 susunan:** `klasik/modern/ringkas` mengubah header, hero, dan urutan 6 bagian beranda; daftar, galeri, statistik, dan form masih memakai komposisi bersama.
-2. **Belum ada paket tema berkode:** `src/themes/` dan `TemaRenderer` belum ada. `src/db/schema/theme.ts` sudah menyebut registry yang belum tersedia; selaraskan komentar dan implementasi saat paket dibangun.
-3. **Opsi tema terbatas:** token saat ini mengatur 6 warna, font judul, radius, mode terang/gelap, 3 susunan, dan 3 teks. Opsi OpenSID seperti widget, jumlah per halaman, serta gambar fallback belum dipetakan seluruhnya.
-4. **Admin katalog masih token-based:** Super Admin dapat membuat metadata/token tema; target baru hanya menerima slug/versi dari registry kode. Admin Desa tidak boleh membuat atau mengunggah paket.
-5. **Tidak ada unggah paket tema saat ini:** ini kondisi baseline, bukan target. Source tema baru ditambahkan lewat perubahan kode dan build aplikasi.
+1. **Masih ada 3 susunan token:** `klasik/modern/ringkas` mengubah header, hero, dan urutan beranda; sebagian besar isi halaman masih memakai komponen bersama.
+2. **Kontrak tema tersedia, tetapi komposisi halaman per surface belum utuh:** page function saat ini hanya membungkus children bersama.
+3. **Cakupan tema per route masih parsial:** peta mencatat 35 route, tetapi hanya 7 route instance memakai layout/page paket; route lain terutama memakai header/footer bersama.
+4. **Form opsi tenant dan API simpan/unggah tersedia; consumer utama sudah terhubung:** toggle jam Natra, warna/pintasan di shell bersama, pagination page-size, dan validasi path media per tenant kini ada; uji browser serta migrasi tulis belum dilakukan.
+5. **Slug registry dibatasi:** Super Admin tidak dapat mendaftarkan slug kode asing, tetapi katalog token masih dikelola melalui form.
 
 ---
 
@@ -246,114 +246,131 @@ UI lama `/super-admin/template/baru` tidak boleh membuat slug bebas yang tidak a
 
 ### Task 1: Inventaris paritas dan slug aktif
 
-**Berkas:** `docs/Dokumentasi-Implementasi-Template-ala-OpenSID.md`; OpenSID `storage/app/themes/esensi/config.json` dan `natra/config.json`; `src/db/schema/theme.ts`; `src/db/schema/website-templates.ts`.
+**Berkas:** OpenSID `storage/app/themes/esensi/config.json` dan `natra/config.json`; `src/themes/*/config.json`; `src/db/schema/theme.ts`; `src/db/schema/website-templates.ts`.
 
-- [ ] Catat semua key/config OpenSID, jenis kontrol, nilai default, options, attributes, group, readonly, file upload, serta halaman/widget yang menggunakannya.
-- [ ] Buat pemetaan OpenSID → AppDes untuk label, type, schema Zod, nilai tenant, komponen publik, izin, dan test.
-- [ ] Inventaris slug/versi dari katalog dan tema aktif tenant pada database non-produksi; jangan query atau migrasi produksi tanpa persetujuan.
-- [ ] Putuskan pemetaan `samudra-modern` sebelum kode renderer membatasi slug ke registry.
+- [x] Inventaris dua konfigurasi bawaan: Natra memiliki tujuh key, Esensi memakai kembali dua key page-size.
+- [x] Catat type, default, options, attributes, group, readonly, serta tujuan field pada matriks bagian 4.4.
+- [x] Tambahkan alias kode `samudra-modern@1.0.0` ke `natra@1.0.0` di registry.
+- [x] Inventaris slug/versi aktif tiap tenant memakai database nonproduksi (dry-run `scripts/platform/backfill-opsi-tema.mjs`).
 
-**Hasil dan cek:** setiap field punya pemilik dan test; setiap slug aktif punya paket kompatibilitas atau instruksi migrasi.
+**Status:** dry-run pada database dev menemukan 2 tenant aktif, keduanya `esensi@1.0.0`; tidak ada baris `samudra-modern` aktif. Tidak ada penulisan data.
 
-### Task 2: Definisikan kontrak tema dan registry statis
+### Task 2: Registry statis dan kontrak tema
 
-**Berkas:** buat `src/themes/types.ts`, `src/themes/registry.ts`, dan `src/themes/registry.test.ts`; ubah `src/features/multi-desa/domain/template-website.ts` bila schema input katalog perlu dipersempit.
+**Berkas:** `src/themes/types.ts`, `src/themes/registry.ts`, `src/themes/registry.test.ts`, `src/features/multi-desa/application/template-website-use-cases.ts`.
 
-- [ ] Definisikan `ThemeManifest`, `ThemeOptionDefinition`, `ThemeDefinition`, `ThemeLayoutProps`, dan prop data per page surface.
-- [ ] Daftarkan setiap tema/versi lewat static imports, bukan string path dari database.
-- [ ] Validasi manifest, schema opsi, keunikan `slug@version`, dan semua surface wajib saat test/build.
-- [ ] Tolak katalog dengan slug/versi yang tidak ada di registry; registry menentukan kode yang dapat dijalankan.
+- [x] Buat manifest/config parser, static registry, alias legacy, dan guard slug katalog.
+- [x] Tambahkan komponen per page surface (`pages`) dan widget (`widgets`) ke `ThemeDefinition`.
+- [x] `validasiRegistry()`/`registry.test.ts` memastikan setiap surface memiliki fungsi; ini membuktikan struktur, bukan perilaku halaman yang berbeda.
+- [ ] Implementasikan dan uji komposisi per surface yang terlihat pengguna; page function saat ini hanya membungkus children bersama.
+- [x] Use case Super Admin menolak pembuatan katalog untuk slug yang tidak ada di registry.
 
-**Hasil dan cek:** test registry menolak slug/versi asing, duplikat, schema config invalid, dan surface wajib yang hilang.
+**Status:** registry dan kontrak page/widget bertipe tersedia; komposisi halaman paket yang berbeda masih belum lengkap.
 
-### Task 3: Port `esensi` sebagai paket kompatibilitas
+### Task 3: Paket Esensi
 
-**Berkas:** buat `src/themes/esensi/1.0.0/`; adaptasi `src/app/public-site-layout.tsx`, `src/app/public-shell.tsx`, `src/app/galeri/gallery-shell.tsx`, dan `src/app/page.tsx`.
+**Berkas:** `src/themes/esensi/1.0.0/`, `src/app/page.tsx`, `src/app/public-site-layout.tsx`, `src/app/public-shell.tsx`, `src/app/galeri/gallery-shell.tsx`.
 
-- [ ] Pindahkan struktur header/footer/hero/beranda sekarang tanpa mengganti data atau menghilangkan bagian.
-- [ ] Map token lama ke `config.json`; nilai tanpa `layout`/teks tetap menghasilkan tampilan klasik yang sama.
-- [ ] Pertahankan semua menu, field, aksi publik, status kosong, error, dan perilaku aksesibilitas.
+- [x] Paket memiliki manifest, config, CSS module, dan `layout.tsx`.
+- [x] Paket menyediakan fungsi page untuk setiap surface, tetapi saat ini semuanya membungkus `children` bersama, bukan menyusun halaman khusus per route.
+- [x] Header/footer/hero tetap komponen bersama bertema token karena paritas field dan aksi harus dipertahankan; pemetaannya dicatat pada peta route publik.
+- [ ] Bukti visual paritas semua route, empty/error state, dan aksesibilitas di browser (belum dijalankan).
 
-**Hasil dan cek:** `src/app/public-site-layout.test.ts`, `src/app/public-shell.test.ts`, `src/app/galeri/gallery-shell.test.ts`, dan test renderer baru membuktikan tema Esensi memakai opsi desa serta menjaga output lama.
+**Status:** Esensi memakai konten bersama dengan shell kompatibilitas; komposisi halaman khusus paket dan bukti browser masih terbuka.
 
-### Task 4: Port `natra` sebagai tema kedua
+### Task 4: Paket Natra
 
-**Berkas:** buat `src/themes/natra/1.0.0/`; schema/pemetaan opsi pada `src/themes/natra/1.0.0/config.json`.
+**Berkas:** `src/themes/natra/1.0.0/`, `src/themes/types.ts`, `src/app/public-site-layout.tsx`.
 
-- [ ] Implementasikan layout/header/footer, hero, page surface, widgets, dan CSS dengan struktur yang benar-benar berbeda dari Esensi.
-- [ ] Implementasikan tujuh key opsi Natra yang tercatat di bagian 4.4, termasuk page size dan gambar fallback.
-- [ ] Jangan menghilangkan atau mengganti fungsi hanya karena paket Natra belum memiliki komponen padanan; gunakan surface bersama atau tandai pengecualian yang disetujui.
+- [x] Paket memiliki manifest, config tujuh key, CSS module, dan layout sidebar.
+- [x] Consumer runtime ditemukan untuk warna/pintasan di `PublicSiteHeader`/`PublicShell`/`GalleryShell`, statistik/jam di footer atau layout Natra, fallback foto di `/galeri` dan `/pembangunan`, serta kedua opsi page-size.
+- [x] `jam=0` menyembunyikan jam sidebar Natra: `NatraLayout` memeriksa `opsi.jam` sebelum memanggil `widgets.jam`.
+- [x] Pagination untuk kedua opsi `jumlah_*_perhalaman`: `/pembangunan` (`?tahun=&page=`) dan `/pengaduan` (`?page=`) menampilkan batas per halaman + navigasi Sebelumnya/Berikutnya, sehingga data di luar halaman pertama tetap terjangkau.
+- [ ] Uji menu aktif, responsive, fallback aset, dan alur publik pada tema Natra di browser.
 
-**Hasil dan cek:** test tiap key opsi memeriksa validasi/default dan perubahan UI/data; test rendering membuktikan Natra berbeda struktur dari Esensi.
+**Status:** consumer opsi dan pagination tersedia di source; verifikasi browser dan data nyata belum dilakukan.
 
-### Task 5: Arahkan semua route situs publik ke kontrak tema
+### Task 5: Integrasi registry ke route publik
 
-**Berkas:** `src/app/public-site-layout.tsx`, `src/app/public-shell.tsx`, `src/app/galeri/gallery-shell.tsx`, `src/app/page.tsx`, serta route publik lain yang saat ini memuat `PublicSiteHeader/Footer`.
+**Berkas:** `src/themes/renderer.tsx`, `src/app/page.tsx`, `src/app/public-shell.tsx`, `src/app/galeri/gallery-shell.tsx`, route publik lainnya.
 
-- [ ] Tambahkan `ThemeRenderer` server-side yang memilih `registry[slug][version]` dan menerima page key serta data bertipe.
-- [ ] Pertahankan data fetching di route/use case. Tema hanya merender props, tidak membaca database atau menentukan tenant.
-- [ ] Satukan loader tema per request dan teruskan hasilnya ke header, footer, layout, dan page component.
-- [ ] Pastikan 35 route situs publik, termasuk alias `/data/statistik`, `/profil/sejarah`, dan `/profil/visi-misi`, masuk ke shell/page map. Portal warga dan keamanan akun tetap di luar cakupan tema.
+- [x] `TemaRenderer` server-side memilih slug/versi dari registry statis.
+- [x] Renderer membungkus beranda, `PublicShell`, dan `GalleryShell`.
+- [x] Petakan 35 route ke adapter yang disetujui (renderer, shell, header/footer bersama, atau alias). Peta adapter tidak berarti seluruh route memakai renderer paket.
+- [x] Tambahkan `surface` + `ThemePageProps` bertipe; renderer memilih `definisi.pages[surface]` di dalam layout paket.
+- [x] Satukan pemuatan tema satu kali per route dengan `cache()` React pada `muatTemaPublik`.
+- [x] Tambahkan test peta route untuk impor adapter/alias; test tidak memverifikasi hasil render atau layout paket di setiap route.
 
-**Hasil dan cek:** test route map memastikan seluruh surface wajib punya renderer; tidak ada route publik yang diam-diam memakai shell berbeda.
+**Status:** inventaris adapter tersedia; hanya sebagian route instance memakai renderer paket langsung. Shell bersama `PublicShell`/`GalleryShell` kini ikut menerapkan `warna_dasar` dan `pintasan_masuk` dari opsi tenant (`public-shell.test.ts`, `gallery-shell.test.ts`); uji browser belum dilakukan.
 
-### Task 6: Terapkan batas peran katalog
+### Task 6: Batas katalog Super Admin dan pilihan tenant
 
-**Berkas:** `src/app/(admin)/super-admin/template/*`, `src/features/multi-desa/presentation/form-template.tsx`, `src/features/multi-desa/presentation/aksi-template.tsx`, `src/features/multi-desa/application/template-website-use-cases.ts`, `src/features/pengaturan/pengaturan/presentation/pengaturan-desa-client.tsx`, dan `src/app/(admin)/(pengaturan)/pengaturan/desa/page.tsx`.
+**Berkas:** `src/app/(admin)/super-admin/template/*`, `src/features/multi-desa/presentation/form-template.tsx`, `src/features/multi-desa/application/template-website-use-cases.ts`, `src/features/pengaturan/pengaturan/presentation/pengaturan-desa-client.tsx`.
 
-- [ ] Ganti pembuatan slug bebas dengan daftar paket/versi registry.
-- [ ] Batasi Super Admin pada pratinjau, terbit/arsip, metadata yang diizinkan, pilihan tenant, dan distribusi versi registry.
-- [ ] Batasi Admin Desa pada pemilihan tema terbit dan pengisian opsi tenant yang editable.
-- [ ] Hapus kontrol unggah/pindai source paket; pertahankan unggah media hanya untuk field opsi yang secara eksplisit memerlukannya.
-- [ ] Uji permission, tenant isolation, slug asing, tema draft, dan distribusi versi.
+- [x] Slug katalog tanpa paket registry ditolak.
+- [x] Admin Desa dapat memilih dan menerapkan template terbit.
+- [x] Batasi form Super Admin pada metadata/status registry: form katalog baru memilih paket `slug@version` dari registry (bukan isian bebas), dan use case menolak pasangan di luar registry. Token katalog ditetapkan sebagai **default katalog**, opsi tema per desa menjadi override.
+- [x] Sediakan form opsi tenant dari `config.json` (`pengaturan-desa-bagian-tema-opsi.tsx`, section `opsi-tema` di `/api/pengaturan-desa`, serta unggah/hapus aset lewat `/api/pengaturan-desa/opsi-tema/media`).
+- [x] Validasi path media opsi terhadap `villageId` sebelum mengganti/menghapusnya: simpan opsi menolak path di luar `<villageId>/`, dan ganti/hapus aset mengabaikan path tenant lain (`pengaturan-desa-opsi-tema.test.ts`).
+- [x] Tidak ada unggah ZIP source tema; upload media untuk field `unggah` terpisah.
 
-**Hasil dan cek:** test use case menolak slug/versi tanpa paket, tenant tidak dapat mengubah katalog, dan Super Admin tidak dapat mengaktifkan kode yang belum dibuild.
+**Status:** form opsi, upload, dan pembatasan path media per tenant selesai; kebijakan katalog selesai.
 
-### Task 7: Migrasikan katalog, opsi, dan tema tenant
+### Task 7: Migrasi opsi dan data tema tenant
 
-**Berkas:** `src/features/multi-desa/infrastructure/template-website-repository.ts`, `src/features/multi-desa/application/template-website-use-cases.ts`, `src/db/schema/theme.ts`, migrasi Drizzle bila kontrak database berubah, dan skrip backfill terarah.
+**Berkas:** `src/features/multi-desa/infrastructure/template-website-repository.ts`, `src/features/multi-desa/application/template-website-use-cases.ts`, `src/themes/types.ts`, `src/db/schema/theme.ts`, migrasi/backfill bila diperlukan.
 
-- [ ] Sinkronkan metadata paket dari registry ke katalog tanpa menghapus riwayat versi.
-- [ ] Migrasikan `templateTokens` lama ke schema opsi baru, pertahankan `branding`, serta catat nilai default yang diterapkan.
-- [ ] Map `esensi` dan `samudra-modern` secara eksplisit; jangan hapus versi lama selama masih ada tenant aktif.
-- [ ] Uji idempotensi, tenant tanpa tema, nilai opsi invalid, rollback distribusi, dan tidak adanya kehilangan opsi.
+- [x] Alias runtime `samudra-modern@1.0.0` → `natra@1.0.0` tersedia.
+- [x] Inventaris slug/versi aktif tenant dari database dev (dry-run `backfill-opsi-tema.mjs`): 2 tenant aktif, keduanya `esensi@1.0.0`; tanpa penulisan.
+- [x] Hubungkan `migrasiOpsiVersi` ke alur simpan opsi, penerapan template, dan distribusi versi (`src/themes/migrasi.ts` → use case + repository).
+- [x] Alur ganti/distribusi Super Admin mempertahankan nilai yang tidak dikenal (`{...opsiLama, ...migrasi.opsi}`) dan mencatat jumlah opsi tak terpetakan pada audit, sehingga tidak ada penghapusan diam-diam.
+- [x] Penghapusan berkas opsi media dibatasi ke ruang tenant (`pathMediaTenant`), sehingga path dari data lama tidak dapat menghapus berkas desa lain.
+- [x] Dry-run `templateTokens`/`templateOptions` dijalankan dua kali dengan hasil identik (idempoten, tidak menulis). Uji opsi invalid dan tenant tanpa tema tercakup unit test (`src/themes/migrasi.test.ts`).
+- [ ] Uji tulis nyata dan rollback pada database nonproduksi belum dijalankan (menunggu persetujuan).
 
-**Hasil dan cek:** laporan dry-run mencatat jumlah tenant dan perubahan sebelum/sesudah; backup serta rollback tersedia sebelum persetujuan produksi.
+**Status:** migrasi, preservasi opsi tak dikenal, pembatasan path media, dan dry-run terbukti; hanya uji tulis/rollback yang belum dijalankan.
 
 ### Task 8: Verifikasi dan rilis
 
-- [ ] Jalankan `npm run typecheck`, lint terarah, `npx prettier --check` pada file berubah, test tema, dan `npm run build`.
-- [ ] Jalankan browser smoke test untuk semua page family pada Esensi dan Natra: desktop, 320 px, terang/gelap, opsi aktif/nonaktif, empty/error, dan navigasi tenant.
-- [ ] Verifikasi `prefers-reduced-motion`, focus dialog, dan aset tema tidak bocor antar tenant.
-- [ ] Terbitkan paket registry hanya setelah build, test, dan pratinjau lulus; simpan versi lama selama masih dipakai.
+- [x] `npm run typecheck` lulus tanpa diagnostic TypeScript.
+- [x] `npm run lint` lulus.
+- [x] `npm run check` lulus penuh: typecheck, ESLint, Prettier, dan 307 file test / 2.507 test.
+- [x] `NODE_ENV=production npm run build` exit 0; 250/250 halaman diprerender. `.env` lokal menetapkan `NODE_ENV=development`, jadi build release harus memakai environment production.
+- [ ] Uji browser/aksesibilitas dan migrasi tulis/rollback tenant belum diverifikasi.
+- [ ] Jangan upload sebelum gap paritas ditutup, test/format/build lulus, dan target server serta prosedur rollback dikonfirmasi.
 
-**Kriteria selesai:** seluruh surface publik dirender melalui registry; tiap field OpenSID yang disepakati memiliki pemetaan/test; role Super Admin/Admin Desa sesuai tabel; tidak ada upload/eksekusi source ZIP; semua slug aktif dapat dirender atau sudah dimigrasikan dengan rollback.
+**Kriteria selesai:** registry menghubungkan semua surface, opsi yang disepakati memiliki consumer runtime, data tenant lama aman, formatting/test/build lulus, dan browser smoke tercatat.
 
 ---
 
-## 7. Matriks paritas OpenSID → AppDes
+## 7. Matriks paritas dan status source
 
-| OpenSID | AppDes kini | Target implementasi |
+| OpenSID | Implementasi yang ditemukan | Status terhadap target |
 |---|---|---|
-| Folder tema berisi Blade, partial, widget, aset | Token warna/layout; belum ada `src/themes` | Paket folder versi di `src/themes/<slug>/<version>/`, masuk registry statis |
-| `template.blade.php` dan `layouts/*.blade.php` | Header/footer dan shell bersama | `layout.tsx` per tema dengan props tenant/menu yang sama |
-| `partials/`, `widgets/`, halaman fitur | Banyak markup masih komponen bersama | `pages/` dan `widgets/` per tema menerima data bertipe dari use case |
-| CSS/JS tema | CSS module dan token global | CSS module per tema; interaksi ditulis sebagai komponen React yang direview, bukan JS unggahan |
-| `config.json` dan form dinamis | Token tetap di katalog | Config manifest tervalidasi Zod, form opsi dinamis, opsi tenant di `theme.opsi.templateOptions` |
-| Unggah ZIP, pindai folder, aktifkan | Tidak ada upload paket | Perubahan code melalui repo/build; Super Admin menerbitkan paket registry, Admin Desa memilih |
-| Satu tema aktif per desa | Sudah ada melalui baris `theme` dan transaksi aplikasi | Pertahankan satu tema `slug@version` aktif per tenant dan uji konkurensi/migrasi |
-| Data setiap desa | Use case/data tetap per tenant | Tetap dimuat oleh route/use case dan diteruskan sebagai props ke tema |
+| Folder tema, Blade, layout, partial, widget, aset | Dua paket memiliki manifest, config, layout, CSS, `pages.tsx`, dan `widgets.tsx` | Parsial; komponen page masih membungkus children bersama, belum memberi komposisi per surface |
+| `template.blade.php` dan layout page | Peta 35 route: 1 renderer langsung, 6 shell, 25 header, 3 alias | Parsial; hanya 7 route instance memakai layout/page paket, sisanya memakai header/footer bersama |
+| `config.json` dan form dinamis | Parser, form opsi tenant, endpoint simpan/unggah, widget, serta consumer semua tujuh opsi | Setara fungsi; uji browser belum dilakukan |
+| Scan/unggah ZIP/aktifkan | Tidak ada upload source; slug dibatasi registry | Sesuai keputusan produk; source paket datang melalui repository/build |
+| Satu tema aktif per desa | Row `theme` dan transaksi tenant tersedia | Dry-run database dev mencatat 2 tenant aktif `esensi@1.0.0` tanpa penulisan; migrasi tulis/rollback belum dijalankan |
+| Data per desa dari database | Use case publik tetap menjadi sumber data | Batas tenant dipertahankan; banyak route masih memakai markup/layout bersama, bukan renderer paket |
 
-Paritas field konfigurasi harus dinilai dari pemetaan pada bagian 4.4, bukan hanya dari keberadaan `config.json`.
+## 8. Status implementasi dan bukti verifikasi
 
----
+1. Registry dan paket Esensi/Natra memiliki `layout`, `pages.tsx`, `widgets.tsx`, config, CSS, dan manifest; page function saat ini membungkus children bersama.
+2. `ThemeDefinition` mewajibkan `layout`, `pages`, dan `widgets`; registry test memeriksa keberadaan fungsi, bukan perilaku/komposisi visual setiap page.
+3. Peta route mencatat 35 entri: 1 renderer langsung, 6 shell, 25 header bersama, dan 3 alias. Hanya 7 route instance memakai `TemaRenderer`; test memeriksa adapter/impor, bukan output render semua route.
+4. Form opsi dan API simpan/unggah tersedia. `jam=0` menyembunyikan jam sidebar Natra; page-size menggunakan pagination `?page=`; shell bersama menerapkan warna/pintasan; fallback foto dipakai di `/pembangunan`; path media dibatasi ke tenant.
+5. `migrasiOpsiVersi` dipakai saat menyimpan opsi dan menerapkan template. Alur Super Admin ganti/distribusi mempertahankan key lama di luar schema tujuan dan mencatat jumlah opsi tak terpetakan pada audit. Dry-run dev mencatat 2 tenant `esensi@1.0.0` tanpa penulisan; uji tulis/rollback belum dilakukan.
+6. Verifikasi terbaru: `npm run check` exit 0 (307 file/2.507 test); `NODE_ENV=production npm run build` exit 0 (250/250 halaman). Browser smoke visual, DNS/TLS, dan target deployment/rollback belum diverifikasi.
+7. Allowlist proxy publik (`src/lib/public-paths.ts`) diperluas untuk halaman yang sebelumnya dialihkan ke `/masuk-admin`: `/informasi`, `/halaman`, `/agenda`, `/pengumuman`, `/transparansi`, `/perangkat`, `/pengaduan`, serta pola `/pembangunan/[slug]` dengan pengecualian `/pembangunan/buku`.
 
-## 8. Catatan audit dan keputusan yang dikunci
+## 9. Rujukan kode
 
-1. `src/themes/` dan `TemaRenderer` belum ada pada checkout yang diaudit. `src/db/schema/theme.ts` masih merujuk `src/themes/registry.ts`; buat file tersebut atau perbarui komentar bersamaan dengan implementasi.
-2. `samudra-modern` adalah slug katalog terbit yang dibuat oleh `scripts/platform/tambah-template-samudra.mjs`. Inventaris tenant aktif sebelum mengarsipkan atau memetakan slug ini.
-3. Konfigurasi lokal Natra berisi tujuh key unik; Esensi mengulang dua key jumlah per halaman. Pemetaan awal di bagian 4.4 harus diperluas jika inventaris OpenSID lain menemukan field tambahan.
-4. Route count saat ini 26 file mengimpor header/footer, 5 memakai `PublicShell`, 1 memakai `GalleryShell`, dan 3 alias (`/profil/sejarah`, `/profil/visi-misi`, `/data/statistik`) yang mengimpor komponen halaman utama. Tujuh halaman layanan mandiri warga dan keamanan akun tidak termasuk situs publik bertema.
-5. Test header saat ini memeriksa varian, tetapi test `PublicShell` dan `GalleryShell` belum memberi `villageId`; tambahkan test untuk cabang yang memuat tema.
-6. Tema Super Admin di UI saat ini berupa katalog token, bukan paket kode. Migrasi UI harus membatasi katalog ke registry dan menghapus pembuatan slug bebas.
-7. Upload paket ZIP sengaja tidak menjadi target karena tema ditulis dan direview di kode. Upload media untuk opsi `unggah` tetap berbeda, dibatasi izin dan penyimpanan tenant.
+1. Registry/types: `src/themes/{registry,renderer,types}.ts`; paket `src/themes/esensi/1.0.0/` dan `src/themes/natra/1.0.0/`.
+2. Route/render: `src/app/page.tsx`, `src/app/public-site-layout.tsx`, `src/app/public-shell.tsx`, `src/app/galeri/gallery-shell.tsx`.
+3. Tenant/catalog: `src/features/multi-desa/application/template-website-use-cases.ts`, `src/features/multi-desa/infrastructure/template-website-repository.ts`, `src/features/pengaturan/pengaturan/presentation/pengaturan-desa-client.tsx`.
+4. Test: `src/themes/registry.test.ts`, `src/features/multi-desa/domain/template-website.test.ts`, `src/features/multi-desa/application/template-website-use-cases.test.ts`, `src/app/public-site-layout.test.ts`, `src/app/public-shell.test.ts`, `src/app/galeri/gallery-shell.test.ts`.
+
+## 10. Batas verifikasi
+
+Source, test terarah, typecheck, ESLint, Prettier, production build (salinan terisolasi), dan dry-run inventaris tenant telah diperiksa. Belum diverifikasi: browser smoke (tampilan Esensi vs Natra, reduced-motion, fokus keyboard, isolasi aset), eksekusi tulis migrasi opsi/backfill pada database nonproduksi beserta rollback, serta rilis paket.

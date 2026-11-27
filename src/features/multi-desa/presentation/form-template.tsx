@@ -61,14 +61,19 @@ const AWAL: IsianTemplate = {
   },
 };
 
+/** Paket berkode yang boleh diterbitkan (dibaca dari registry saat render server). */
+export type PaketTemplateTersedia = { slug: string; version: string };
+
 export function FormTemplate({
   aksi,
   awal = AWAL,
   mode,
+  paketTersedia = [],
 }: {
   aksi: AksiFormTemplate;
   awal?: IsianTemplate;
   mode: "baru" | "ubah";
+  paketTersedia?: PaketTemplateTersedia[];
 }) {
   const router = useRouter();
   const [state, formAction, pending] = useActionState(
@@ -80,6 +85,7 @@ export function FormTemplate({
   const [category, setCategory] = useState(awal.category);
   const [description, setDescription] = useState(awal.description);
   const [version, setVersion] = useState(awal.version);
+  const kunciPaket = slug ? `${slug}@${version}` : "";
   const [tags, setTags] = useState(awal.tags.join(", "));
   const [tokens, setTokens] = useState<TokenTemplate>(awal.tokens);
   const [changelog, setChangelog] = useState("");
@@ -125,22 +131,51 @@ export function FormTemplate({
                 <GalatField pesan={fieldErrors.name?.[0]} />
               </label>
               <label className="form-field">
-                <span className="form-label">Slug</span>
-                <input
-                  aria-readonly={mode === "ubah"}
-                  className="form-input"
-                  maxLength={50}
-                  name="slug"
-                  onChange={(event) => setSlug(event.target.value)}
-                  pattern="[a-z0-9]+(-[a-z0-9]+)*"
-                  readOnly={mode === "ubah"}
-                  required
-                  value={slug}
-                />
+                <span className="form-label">{mode === "baru" ? "Paket tema" : "Slug"}</span>
+                {mode === "baru" ? (
+                  <>
+                    <select
+                      className="form-input"
+                      onChange={(event) => {
+                        const [paketSlug, paketVersi] = event.target.value.split("@");
+                        setSlug(paketSlug ?? "");
+                        setVersion(paketVersi ?? "");
+                      }}
+                      required
+                      value={kunciPaket}
+                    >
+                      <option value="">Pilih paket dari registry…</option>
+                      {paketTersedia.map((paket) => (
+                        <option
+                          key={`${paket.slug}@${paket.version}`}
+                          value={`${paket.slug}@${paket.version}`}
+                        >
+                          {paket.slug} v{paket.version}
+                        </option>
+                      ))}
+                    </select>
+                    <input name="slug" type="hidden" value={slug} />
+                    <input name="version" type="hidden" value={version} />
+                    <span className="form-help">
+                      Hanya pasangan slug/versi yang sudah dikodekan di registry yang dapat
+                      diterbitkan. Paket baru masuk melalui repository dan deployment.
+                    </span>
+                  </>
+                ) : (
+                  <input
+                    aria-readonly
+                    className="form-input"
+                    maxLength={50}
+                    name="slug"
+                    readOnly
+                    required
+                    value={slug}
+                  />
+                )}
                 <span className="form-help">
                   {mode === "ubah"
                     ? "Slug dikunci agar tema tenant tidak kehilangan kaitan."
-                    : "Huruf kecil, angka, dan tanda hubung. Contoh: desa-modern."}
+                    : "Token di bawah menjadi default katalog; Admin Desa dapat menimpa opsi tema."}
                 </span>
                 <GalatField pesan={fieldErrors.slug?.[0]} />
               </label>
@@ -159,19 +194,21 @@ export function FormTemplate({
                   ))}
                 </select>
               </label>
-              <label className="form-field">
-                <span className="form-label">Versi</span>
-                <input
-                  className="form-input"
-                  maxLength={20}
-                  name="version"
-                  onChange={(event) => setVersion(event.target.value)}
-                  pattern="[0-9]+\.[0-9]+\.[0-9]+"
-                  required
-                  value={version}
-                />
-                <GalatField pesan={fieldErrors.version?.[0]} />
-              </label>
+              {mode === "ubah" ? (
+                <label className="form-field">
+                  <span className="form-label">Versi</span>
+                  <input
+                    className="form-input"
+                    maxLength={20}
+                    name="version"
+                    onChange={(event) => setVersion(event.target.value)}
+                    pattern="[0-9]+\.[0-9]+\.[0-9]+"
+                    required
+                    value={version}
+                  />
+                  <GalatField pesan={fieldErrors.version?.[0]} />
+                </label>
+              ) : null}
             </div>
 
             <label className="form-field">
@@ -447,8 +484,9 @@ export function FormTemplate({
               menyimpan metadata dan token tampilan yang tervalidasi.
             </p>
             <p>
-              Penerapan token ke situs publik masih mengikuti komponen aplikasi; perubahan token
-              belum otomatis mengubah rendering halaman publik.
+              Token dan opsi baku berasal dari paket tema di registry. Super Admin hanya menerbitkan
+              paket tersebut; Admin Desa memilih tema terbit dan menimpa opsi yang diizinkan pada
+              Pengaturan Desa.
             </p>
           </div>
         </section>

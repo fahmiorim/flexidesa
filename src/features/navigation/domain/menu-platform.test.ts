@@ -19,10 +19,12 @@ describe("menuPlatformAktif", () => {
     expect(menuPlatformAktif("/super-admin/tenant", "/super-admin/domain")).toBe(false);
   });
 
-  it("menandai menu Tenant pada halaman tenant yang memakai prefiks lain", () => {
-    expect(menuPlatformAktif("/super-admin/domain", "/super-admin/tenant")).toBe(true);
-    expect(menuPlatformAktif("/super-admin/domain", "/super-admin/tenant/tambah")).toBe(true);
-    expect(menuPlatformAktif("/super-admin/domain", "/super-admin/tenant-lain")).toBe(false);
+  it("memisahkan menu Tenant dan Domain", () => {
+    expect(menuPlatformAktif("/super-admin/tenant", "/super-admin/tenant")).toBe(true);
+    expect(menuPlatformAktif("/super-admin/tenant", "/super-admin/tenant/tambah")).toBe(true);
+    expect(menuPlatformAktif("/super-admin/tenant", "/super-admin/tenant-lain")).toBe(false);
+    expect(menuPlatformAktif("/super-admin/tenant", "/super-admin/domain")).toBe(false);
+    expect(menuPlatformAktif("/super-admin/tenant", "/super-admin/domain/12")).toBe(false);
   });
 
   it("tidak salah mencocokkan prefiks yang mirip", () => {
@@ -50,9 +52,9 @@ describe("submenuPlatformAktif", () => {
 });
 
 describe("MENU_PLATFORM", () => {
-  it("memuat tujuh menu konsol dengan tautan unik", () => {
-    expect(MENU_PLATFORM).toHaveLength(7);
-    expect(new Set(MENU_PLATFORM.map((item) => item.href)).size).toBe(7);
+  it("memuat sembilan menu konsol dengan tautan unik", () => {
+    expect(MENU_PLATFORM).toHaveLength(9);
+    expect(new Set(MENU_PLATFORM.map((item) => item.href)).size).toBe(9);
     expect(MENU_PLATFORM[0]?.href).toBe("/super-admin");
     expect(MENU_PLATFORM.every((item) => item.href.startsWith("/super-admin"))).toBe(true);
   });
@@ -61,13 +63,16 @@ describe("MENU_PLATFORM", () => {
     expect(MENU_PLATFORM.every((item) => item.grup.trim().length > 0)).toBe(true);
   });
 
-  it("menautkan Tenant ke satu halaman bertab tanpa submenu", () => {
-    const desaDomain = MENU_PLATFORM.find((item) => item.href === "/super-admin/domain");
+  it("menautkan Tenant ke halaman tenant tanpa mencampurnya dengan domain", () => {
+    const tenant = MENU_PLATFORM.find((item) => item.href === "/super-admin/tenant");
+    const domain = MENU_PLATFORM.find((item) => item.href === "/super-admin/domain");
 
-    expect(desaDomain?.label).toBe("Tenant");
-    expect(desaDomain?.submenu).toBeUndefined();
+    expect(tenant?.label).toBe("Tenant");
+    expect(tenant?.submenu).toBeUndefined();
+    expect(tenant?.ruteTambahan).toBeUndefined();
+    expect(domain?.label).toBe("Domain & infrastruktur");
+    expect(domain?.grup).not.toBe(tenant?.grup);
     expect(MENU_PLATFORM.some((item) => item.href === "/super-admin/domain/tambah")).toBe(false);
-    expect(MENU_PLATFORM.some((item) => item.href === "/super-admin/tenant")).toBe(false);
   });
 
   it("menautkan katalog paket dan penetapan tenant tepat di bawah Tenant", () => {
@@ -78,7 +83,14 @@ describe("MENU_PLATFORM", () => {
       "/super-admin/paket",
       "/super-admin/paket/tenant",
     ]);
-    expect(urutan.indexOf("/super-admin/paket")).toBe(urutan.indexOf("/super-admin/domain") + 1);
+    expect(urutan.indexOf("/super-admin/paket")).toBe(urutan.indexOf("/super-admin/tenant") + 1);
+  });
+
+  it("menyediakan menu backup & restore untuk operasi manual", () => {
+    const backup = MENU_PLATFORM.find((item) => item.href === "/super-admin/backup");
+
+    expect(backup?.label).toBe("Backup & restore");
+    expect(backup?.grup).toBe("Operasional");
   });
 
   it("menautkan katalog, penggunaan, dan fondasi template pada submenu", () => {
@@ -95,7 +107,13 @@ describe("grupMenuPlatform", () => {
   it("mengelompokkan menu sesuai urutan tanpa kehilangan item", () => {
     const grup = grupMenuPlatform();
 
-    expect(grup.map((kelompok) => kelompok.grup)).toEqual(["Menu utama", "Tenant", "Platform"]);
+    expect(grup.map((kelompok) => kelompok.grup)).toEqual([
+      "Menu utama",
+      "Tenant",
+      "Domain & infrastruktur",
+      "Platform",
+      "Operasional",
+    ]);
     expect(grup.flatMap((kelompok) => kelompok.item)).toHaveLength(MENU_PLATFORM.length);
   });
 });

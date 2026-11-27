@@ -704,7 +704,7 @@ export function TambahTenantWizard({
         </div>
 
         <div className="domain-wizard-footer">
-          <Link className="button button-secondary domain-wizard-cancel" href="/super-admin/domain">
+          <Link className="button button-secondary domain-wizard-cancel" href="/super-admin/tenant">
             <span aria-hidden="true">✕</span> Batal
           </Link>
           <div className="domain-wizard-footer-actions">

@@ -73,7 +73,19 @@ describe("rute publik", () => {
       "/potensi",
       "/kontak",
       "/pengaduan",
+      "/pengaduan/baru",
+      "/pengaduan/berhasil",
+      "/pengaduan/lacak",
+      "/informasi",
+      "/pembangunan",
+      "/pembangunan/pembangunan-jalan-desa",
       "/transparansi/apbdes",
+      "/transparansi/laporan-keuangan",
+      // Detail konten publik.
+      "/halaman/profil-singkat",
+      "/agenda/kegiatan-musyawarah",
+      "/pengumuman/jadwal-posyandu",
+      "/perangkat/1",
       "/layanan",
       "/layanan/surat",
     ];
@@ -90,6 +102,10 @@ describe("rute publik", () => {
       "/pemerintahan/pemilihan",
       "/profil/pengguna",
       "/layanan-mandiri/beranda",
+      // Area admin yang berbagi prefix dengan halaman publik.
+      "/pembangunan/buku",
+      "/pembangunan/buku/ekspor",
+      "/pengaduan-admin",
     ]) {
       expect(isPublicPath(rute), rute).toBe(false);
     }

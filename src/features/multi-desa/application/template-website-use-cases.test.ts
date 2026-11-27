@@ -20,6 +20,7 @@ vi.mock("@/features/multi-desa/infrastructure/template-website-repository", () =
   ubahTemplateWebsite: vi.fn(),
   setStatusTemplateWebsite: vi.fn(),
   distribusikanVersiTemplate: vi.fn(),
+  opsiTemaTenant: vi.fn(async () => []),
   listDesaUntukTemplate: vi.fn(async () => [{ id: 1, namaDesa: "Kwala Gunung" }]),
   terapkanTemplateKeDesaRepo: vi.fn(),
 }));
@@ -160,7 +161,7 @@ describe("distribusi versi template", () => {
       villageIds: ["1", "999"],
     });
 
-    expect(repo.distribusikanVersiTemplate).toHaveBeenCalledWith(template, [1]);
+    expect(repo.distribusikanVersiTemplate).toHaveBeenCalledWith(template, [1], expect.any(Map));
     expect(audit.recordAuditEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         details: { slug: "esensi", version: "2.0.0", jumlahTenant: 1 },

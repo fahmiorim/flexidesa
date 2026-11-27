@@ -18,6 +18,7 @@ import { muatTemaPublik } from "@/features/info-desa/publik/application/website-
 import { bacaPengaturan } from "@/features/pengaturan/pengaturan/application/pengaturan-use-cases";
 import { ringkasanIdmPublik } from "@/features/program-data-desa/idm/application/idm-use-cases";
 import { hitungRekapIdm } from "@/features/program-data-desa/idm/domain/idm";
+import { TemaRenderer } from "@/themes/renderer";
 
 import { cleanText, mediaUrl } from "./bagian-beranda";
 import { HeroBeranda } from "./bagian-hero";
@@ -152,11 +153,19 @@ export default async function PublicHomePage() {
         subHero={tema?.subHero}
       />
 
-      <div className={styles.container}>
-        {URUTAN_BAGIAN[varian].map((kunci) => (
-          <Fragment key={kunci}>{bagian[kunci]}</Fragment>
-        ))}
-      </div>
+      <TemaRenderer
+        villageId={desa.id}
+        villageName={desa.namaDesa ?? null}
+        location={location}
+        activePath="/"
+        surface="beranda"
+      >
+        <div className={styles.container}>
+          {URUTAN_BAGIAN[varian].map((kunci) => (
+            <Fragment key={kunci}>{bagian[kunci]}</Fragment>
+          ))}
+        </div>
+      </TemaRenderer>
       <PublicSiteFooter desa={desa} location={location} logoUrl={mediaUrl(desa.logo, desa.id)} />
     </main>
   );

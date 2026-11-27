@@ -27,6 +27,7 @@ const dataKosong: Data = {
   favicon: null,
   templates: [],
   temaAktif: null,
+  temaOpsi: null,
   umum: { ...blankUmum },
   sebutan: blankSebutan,
   layanan: [],

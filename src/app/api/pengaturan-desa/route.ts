@@ -8,6 +8,7 @@ import {
   simpanFaqDesa,
   simpanIntegrasiDesa,
   simpanKontakDesa,
+  simpanOpsiTemaDesa,
   terapkanTemplateDesa,
 } from "@/features/pengaturan/pengaturan/application/pengaturan-desa-use-cases";
 import {
@@ -74,6 +75,14 @@ export async function PUT(request: Request) {
     if (body.section === "tampilan") {
       const message = await terapkanTemplateDesa(villageId, body.data);
       return json({ message });
+    }
+    if (body.section === "opsi-tema") {
+      const { peringatan } = await simpanOpsiTemaDesa(villageId, body.data);
+      return json({
+        message: peringatan.length
+          ? `Opsi tema disimpan. ${peringatan.join(" ")}`
+          : "Opsi tema berhasil disimpan.",
+      });
     }
     return json({ error: "Bagian pengaturan tidak dikenal." }, 400);
   } catch (error) {

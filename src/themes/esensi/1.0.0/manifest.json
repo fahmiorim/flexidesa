@@ -1,0 +1,7 @@
+{
+  "slug": "esensi",
+  "version": "1.0.0",
+  "kompatibilitas": "token klasik",
+  "surfaces": ["beranda", "profil", "konten", "data", "media", "layanan"],
+  "preview": "/themes/esensi/preview.svg"
+}

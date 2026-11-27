@@ -37,11 +37,10 @@ export interface MenuPlatformItem {
 export const MENU_PLATFORM: readonly MenuPlatformItem[] = [
   { href: "/super-admin", label: "Dashboard", icon: "▦", grup: "Menu utama" },
   {
-    href: "/super-admin/domain",
+    href: "/super-admin/tenant",
     label: "Tenant",
-    icon: "⇄",
+    icon: "⌂",
     grup: "Tenant",
-    ruteTambahan: ["/super-admin/tenant"],
   },
   {
     href: "/super-admin/paket",
@@ -52,6 +51,12 @@ export const MENU_PLATFORM: readonly MenuPlatformItem[] = [
       { href: "/super-admin/paket", label: "Katalog paket" },
       { href: "/super-admin/paket/tenant", label: "Paket tenant" },
     ],
+  },
+  {
+    href: "/super-admin/domain",
+    label: "Domain & infrastruktur",
+    icon: "⇄",
+    grup: "Domain & infrastruktur",
   },
   {
     href: "/super-admin/pengguna",
@@ -71,7 +76,13 @@ export const MENU_PLATFORM: readonly MenuPlatformItem[] = [
       { href: "/super-admin/template/fondasi", label: "Fondasi tenant" },
     ],
   },
-  { href: "/super-admin/pengaturan", label: "Pengaturan", icon: "⚙", grup: "Platform" },
+  {
+    href: "/super-admin/backup",
+    label: "Backup & restore",
+    icon: "⤓",
+    grup: "Operasional",
+  },
+  { href: "/super-admin/pengaturan", label: "Pengaturan", icon: "⚙", grup: "Operasional" },
 ] as const;
 
 /**

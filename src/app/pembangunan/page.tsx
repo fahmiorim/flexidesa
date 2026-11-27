@@ -2,12 +2,16 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { getPembangunanPublik } from "@/features/pembangunan-aset/pembangunan/application/use-cases";
 import {
   formatAnggaran,
   statusPembangunanLabel,
 } from "@/features/pembangunan-aset/pembangunan/domain/pembangunan";
+import { resolveTema } from "@/themes/registry";
+import { validasiOpsiTenant } from "@/themes/types";
 
+import { FotoTema } from "../foto-tema";
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./pembangunan.module.css";
 
@@ -16,7 +20,7 @@ export const metadata: Metadata = {
   description: "Proyek pembangunan desa beserta anggaran dan status pelaksanaannya.",
 };
 export const dynamic = "force-dynamic";
-type Props = { searchParams: Promise<{ tahun?: string }> };
+type Props = { searchParams: Promise<{ tahun?: string; page?: string }> };
 function mediaUrl(value: string | null | undefined, villageId: number) {
   if (!value) return null;
   const parts = value.split(/[\\\\/]/).filter(Boolean);
@@ -36,6 +40,30 @@ export default async function PembangunanPage({ searchParams }: Props) {
   const raw = Number(params.tahun);
   const tahun = Number.isInteger(raw) && raw >= 2000 && raw <= 2100 ? raw : null;
   const data = await getPembangunanPublik(tahun);
+  const tema = await muatTemaPublik(desa.id);
+  const opsiTema = tema
+    ? validasiOpsiTenant(resolveTema(tema.slug, tema.versi)?.opsi ?? [], tema.templateOptions)
+    : {};
+  const perHalaman = Math.max(
+    1,
+    Math.min(50, Number(opsiTema.jumlah_pembangunan_perhalaman ?? 10) || 10),
+  );
+  // Page-size tema menjadi batas per halaman; sisa data tetap terjangkau
+  // melalui navigasi halaman berikutnya (paritas pagination OpenSID).
+  const totalHalaman = Math.max(1, Math.ceil(data.rows.length / perHalaman));
+  const halamanDiminta = Number(params.page);
+  const halaman =
+    Number.isInteger(halamanDiminta) && halamanDiminta > 0
+      ? Math.min(halamanDiminta, totalHalaman)
+      : 1;
+  const rows = data.rows.slice((halaman - 1) * perHalaman, halaman * perHalaman);
+  const tautanHalaman = (n: number) => {
+    const q = new URLSearchParams();
+    if (tahun) q.set("tahun", String(tahun));
+    if (n > 1) q.set("page", String(n));
+    const s = q.toString();
+    return s ? `/pembangunan?${s}` : "/pembangunan";
+  };
   const logoUrl = mediaUrl(desa.logo, desa.id);
   return (
     <main className={styles.site}>
@@ -95,12 +123,19 @@ export default async function PembangunanPage({ searchParams }: Props) {
             <button type="submit">Tampilkan</button>
           </form>
         </section>
-        {data.rows.length ? (
+        {rows.length ? (
           <div className={styles.cards}>
-            {data.rows.map((row) => (
+            {rows.map((row) => (
               <article className={styles.card} key={row.id}>
                 <div className={styles.cardVisual}>
-                  <div className={styles.placeholder}>PEMBANGUNAN DESA</div>
+                  <FotoTema
+                    villageId={desa.id}
+                    opsi={opsiTema}
+                    alt={`Ilustrasi ${row.judul}`}
+                    height={200}
+                    width={360}
+                    fallback={<div className={styles.placeholder}>PEMBANGUNAN DESA</div>}
+                  />
                   <span className={styles.status}>{statusPembangunanLabel(row.status)}</span>
                 </div>
                 <div className={styles.cardBody}>
@@ -159,6 +194,19 @@ export default async function PembangunanPage({ searchParams }: Props) {
             Belum ada data pembangunan yang dipublikasikan untuk periode ini.
           </p>
         )}
+        {totalHalaman > 1 ? (
+          <nav aria-label="Navigasi halaman pembangunan" className={styles.pagination}>
+            {halaman > 1 ? <Link href={tautanHalaman(halaman - 1)}>← Sebelumnya</Link> : <span />}
+            <span>
+              Halaman {halaman} dari {totalHalaman}
+            </span>
+            {halaman < totalHalaman ? (
+              <Link href={tautanHalaman(halaman + 1)}>Berikutnya →</Link>
+            ) : (
+              <span />
+            )}
+          </nav>
+        ) : null}
       </div>
       <PublicSiteFooter desa={desa} location={lokasi(desa)} logoUrl={logoUrl} />
     </main>

@@ -9,6 +9,7 @@ import { PageHeading } from "@/components/shell/page-heading";
 import { IntegrationManager } from "./integration-manager";
 import { TabKontak } from "./pengaturan-desa-bagian-kontak";
 import { TabLayanan } from "./pengaturan-desa-bagian-layanan";
+import { TabOpsiTema } from "./pengaturan-desa-bagian-tema-opsi";
 import { Field } from "./pengaturan-desa-field";
 import {
   blankKontak,
@@ -59,6 +60,7 @@ export function PengaturanDesaClient({ initialSection }: { initialSection?: stri
   const [general, setGeneral] = useState<Umum>(blankUmum);
   const [sebutan, setSebutan] = useState<Sebutan>(blankSebutan);
   const [templateSlug, setTemplateSlug] = useState("");
+  const [opsiTema, setOpsiTema] = useState<Record<string, unknown>>({});
   const [service, setService] = useState({ ...blankService });
   const [editingService, setEditingService] = useState<number | null>(null);
 
@@ -93,6 +95,48 @@ export function PengaturanDesaClient({ initialSection }: { initialSection?: stri
     });
     setGeneral({ ...blankUmum, ...d.umum });
     setTemplateSlug(d.temaAktif?.slug ?? d.templates?.[0]?.slug ?? "");
+    setOpsiTema(d.temaOpsi?.nilai ?? {});
+  }
+
+  async function uploadOpsiTema(key: string, file?: File) {
+    if (!file) return;
+    setBusy(true);
+    setError("");
+    setMessage("");
+    try {
+      const fd = new FormData();
+      fd.set("key", key);
+      fd.set("file", file);
+      const r = await fetch("/api/pengaturan-desa/opsi-tema/media", { method: "POST", body: fd });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "Unggah gambar opsi tema gagal.");
+      setMessage(d.message);
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unggah gambar opsi tema gagal.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function hapusOpsiTema(key: string) {
+    if (!window.confirm("Hapus gambar opsi tema ini?")) return;
+    setBusy(true);
+    setError("");
+    setMessage("");
+    try {
+      const r = await fetch("/api/pengaturan-desa/opsi-tema/media?key=" + encodeURIComponent(key), {
+        method: "DELETE",
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.error || "Gagal menghapus gambar opsi tema.");
+      setMessage(d.message);
+      await load();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Gagal menghapus gambar opsi tema.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function load() {
@@ -485,6 +529,17 @@ export function PengaturanDesaClient({ initialSection }: { initialSection?: stri
                   <p>Atur warna utama, warna aksen, dan font tema aktif melalui editor website.</p>
                   <Link href="/profil-desa/website/pengaturan">Buka Pengaturan Website →</Link>
                 </div>
+                {data.temaOpsi ? (
+                  <TabOpsiTema
+                    busy={busy}
+                    data={data.temaOpsi}
+                    hapus={hapusOpsiTema}
+                    opsi={opsiTema}
+                    save={save}
+                    setOpsi={setOpsiTema}
+                    upload={uploadOpsiTema}
+                  />
+                ) : null}
               </section>
               <aside className={styles.side}>
                 <section className={styles.panel}>

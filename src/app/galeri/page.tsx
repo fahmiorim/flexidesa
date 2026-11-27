@@ -8,6 +8,9 @@ import {
   daftarFotoAlbum,
   daftarVideoGaleriPublik,
 } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { resolveTema } from "@/themes/registry";
+import { validasiOpsiTenant } from "@/themes/types";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./galeri.module.css";
@@ -82,7 +85,14 @@ export default async function GaleriPage({ searchParams }: Props) {
   const logoUrl = desa.logo ? mediaUrl(desa.logo, desa.id) : null;
   const location = locationLabel(desa);
   const heroAlbum = albums.find((album) => mediaUrl(album.sampul, desa.id)) ?? albums[0] ?? null;
-  const heroCover = heroAlbum ? mediaUrl(heroAlbum.sampul, desa.id) : null;
+  const tema = await muatTemaPublik(desa.id);
+  const opsiTema = tema
+    ? validasiOpsiTenant(resolveTema(tema.slug, tema.versi)?.opsi ?? [], tema.templateOptions)
+    : {};
+  const fotoFallback =
+    typeof opsiTema.foto_tidak_tersedia === "string" ? opsiTema.foto_tidak_tersedia : null;
+  const heroCover =
+    (heroAlbum ? mediaUrl(heroAlbum.sampul, desa.id) : null) ?? mediaUrl(fotoFallback, desa.id);
 
   return (
     <main className={styles.site}>

@@ -22,6 +22,7 @@ export default async function BuatPengaduanPage({
     <PublicShell
       villageName={desa.namaDesa ?? "Pemerintah Desa"}
       villageId={desa.id}
+      surface="layanan"
       brandLabel="Pengaduan Masyarakat"
       navigation={await getNavPublik(desa.id)}
     >

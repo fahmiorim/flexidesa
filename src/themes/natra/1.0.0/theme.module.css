@@ -1,0 +1,118 @@
+.tema {
+  background: var(--public-background, #fdf2f2);
+}
+
+.shell {
+  max-width: 76rem;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 15rem 1fr;
+  gap: 0;
+  min-height: 100%;
+}
+
+.bilah {
+  border-right: 2px solid var(--public-primary, #e64946);
+  background: var(--public-surface, #ffffff);
+  padding: 1.5rem 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  align-self: start;
+  position: sticky;
+  top: 0;
+}
+
+.judul {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.02rem;
+  color: var(--public-text, #1f2937);
+}
+
+.lokasi {
+  margin: 0;
+  font-size: 0.82rem;
+  color: color-mix(in srgb, var(--public-text, #1f2937) 70%, transparent);
+}
+
+.nav {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.nav a {
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.5rem;
+  color: var(--public-text, #1f2937);
+  text-decoration: none;
+  border-left: 3px solid transparent;
+}
+
+.nav a:hover {
+  background: color-mix(in srgb, var(--public-primary, #e64946) 12%, transparent);
+  border-left-color: var(--public-primary, #e64946);
+  color: var(--public-primary, #e64946);
+}
+
+.masuk {
+  margin: 0;
+  padding-top: 0.6rem;
+  border-top: 1px dashed color-mix(in srgb, var(--public-text, #1f2937) 25%, transparent);
+  font-size: 0.82rem;
+}
+
+.widget {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--public-primary, #e64946) 10%, transparent);
+  font-size: 0.82rem;
+}
+
+.widget span {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.68rem;
+  opacity: 0.75;
+}
+
+.widget strong {
+  font-size: 0.95rem;
+}
+
+.widget small {
+  opacity: 0.75;
+}
+
+.fotoFallback {
+  width: 100%;
+  height: auto;
+  border-radius: 0.6rem;
+  object-fit: cover;
+  background: color-mix(in srgb, var(--public-text, #1f2937) 8%, transparent);
+}
+
+.konten {
+  padding: 1.25rem 1rem 2rem;
+  min-width: 0;
+}
+
+@media (max-width: 56rem) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+  .bilah {
+    position: static;
+    border-right: 0;
+    border-bottom: 2px solid var(--public-primary, #e64946);
+  }
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .konten {
+    padding: 1rem 0.75rem 1.5rem;
+  }
+}

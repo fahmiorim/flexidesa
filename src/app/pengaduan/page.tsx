@@ -3,8 +3,11 @@ import Link from "next/link";
 
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import { getNavPublik } from "@/features/info-desa/publik/application/nav-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { listPengaduanPublikData } from "@/features/layanan-warga/pengaduan/application/use-cases";
 import { labelKategori, labelStatus } from "@/features/layanan-warga/pengaduan/domain/pengaduan";
+import { resolveTema } from "@/themes/registry";
+import { validasiOpsiTenant } from "@/themes/types";
 
 import styles from "../informasi-publik.module.css";
 import { PublicShell } from "../public-shell";
@@ -30,13 +33,39 @@ function plainText(value: string) {
     .trim();
 }
 
-export default async function PengaduanPage() {
+export default async function PengaduanPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const desa = await getIdentitasFromRequest();
-  const items = await listPengaduanPublikData(desa.id);
+  const params = await searchParams;
+  const [allItems, tema] = await Promise.all([
+    listPengaduanPublikData(desa.id),
+    muatTemaPublik(desa.id),
+  ]);
+  const opsiTema = tema
+    ? validasiOpsiTenant(resolveTema(tema.slug, tema.versi)?.opsi ?? [], tema.templateOptions)
+    : {};
+  const perHalaman = Math.max(
+    1,
+    Math.min(50, Number(opsiTema.jumlah_pengaduan_perhalaman ?? 10) || 10),
+  );
+  // `jumlah_pengaduan_perhalaman` adalah batas per halaman, bukan potongan
+  // total: halaman berikutnya tetap dapat dibuka lewat `?page=`.
+  const totalHalaman = Math.max(1, Math.ceil(allItems.length / perHalaman));
+  const halamanDiminta = Number(params.page);
+  const halaman =
+    Number.isInteger(halamanDiminta) && halamanDiminta > 0
+      ? Math.min(halamanDiminta, totalHalaman)
+      : 1;
+  const items = allItems.slice((halaman - 1) * perHalaman, halaman * perHalaman);
+  const tautanHalaman = (n: number) => (n > 1 ? `/pengaduan?page=${n}` : "/pengaduan");
   return (
     <PublicShell
       villageName={desa.namaDesa ?? "Pemerintah Desa"}
       villageId={desa.id}
+      surface="layanan"
       brandLabel="Pengaduan Masyarakat"
       navigation={await getNavPublik(desa.id)}
     >
@@ -89,6 +118,19 @@ export default async function PengaduanPage() {
               <p>Pengaduan hanya ditampilkan di sini setelah petugas menyetujui publikasinya.</p>
             </div>
           )}
+          {totalHalaman > 1 ? (
+            <nav aria-label="Navigasi halaman pengaduan" className={styles.pagination}>
+              {halaman > 1 ? <Link href={tautanHalaman(halaman - 1)}>← Sebelumnya</Link> : <span />}
+              <span>
+                Halaman {halaman} dari {totalHalaman}
+              </span>
+              {halaman < totalHalaman ? (
+                <Link href={tautanHalaman(halaman + 1)}>Berikutnya →</Link>
+              ) : (
+                <span />
+              )}
+            </nav>
+          ) : null}
         </div>
       </section>
     </PublicShell>

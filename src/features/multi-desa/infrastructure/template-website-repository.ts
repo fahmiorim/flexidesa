@@ -213,8 +213,13 @@ export async function listDesaUntukTemplate(): Promise<DesaUntukTemplateRow[]> {
 export async function terapkanTemplateKeDesaRepo(
   villageId: number,
   template: { slug: string; nama: string; versi: string; tokens: TokenTemplate },
+  templateOptions?: Record<string, unknown>,
 ): Promise<void> {
-  const options = { templateSlug: template.slug, templateTokens: template.tokens };
+  const options: Record<string, unknown> = {
+    templateSlug: template.slug,
+    templateTokens: template.tokens,
+  };
+  if (templateOptions) options.templateOptions = templateOptions;
   const bacaObjek = (value: string | null | undefined): Record<string, unknown> => {
     try {
       const parsed: unknown = JSON.parse(value ?? "");
@@ -370,29 +375,62 @@ export async function setStatusTemplateWebsite(id: number, status: StatusTemplat
   if (hasil[0].affectedRows === 0) throw notFound("Template website tidak ditemukan.");
 }
 
+/** Baris `theme.opsi` tenant terpilih; dipakai migrasi opsi saat distribusi versi. */
+export async function opsiTemaTenant(
+  villageIds: number[],
+): Promise<{ villageId: number; opsi: string | null }[]> {
+  if (villageIds.length === 0) return [];
+  return db
+    .select({ villageId: theme.villageId, opsi: theme.opsi })
+    .from(theme)
+    .where(and(eq(theme.aktif, true), inArray(theme.villageId, villageIds)));
+}
+
 /**
  * Perbarui versi tema tenant terpilih.
  *
  * Hanya baris `theme` dengan slug template yang sama dan masih aktif yang
  * disentuh. Id desa yang tidak memakai template ini diabaikan, sehingga form
- * yang dimanipulasi tidak dapat mengubah tema tenant lain.
+ * yang dimanipulasi tidak dapat mengubah tema tenant lain. `opsiBaru` berisi
+ * hasil migrasi schema opsi per tenant agar versi baru tidak menghapus nilai
+ * yang masih valid atau menyimpan key asing.
  */
 export async function distribusikanVersiTemplate(
   template: Pick<TemplateWebsiteRow, "slug" | "name" | "version">,
   villageIds: number[],
+  opsiBaru?: Map<number, Record<string, unknown>>,
 ): Promise<number> {
   if (villageIds.length === 0) return 0;
 
-  const hasil = await db
-    .update(theme)
-    .set({ nama: template.name, versi: template.version })
-    .where(
-      and(
-        eq(theme.slug, template.slug),
-        eq(theme.aktif, true),
-        inArray(theme.villageId, villageIds),
-      ),
-    );
-
-  return hasil[0].affectedRows;
+  return db.transaction(async (tx) => {
+    let jumlah = 0;
+    for (const villageId of villageIds) {
+      const [row] = await tx
+        .select({ id: theme.id, opsi: theme.opsi })
+        .from(theme)
+        .where(
+          and(eq(theme.slug, template.slug), eq(theme.aktif, true), eq(theme.villageId, villageId)),
+        )
+        .limit(1);
+      if (!row) continue;
+      let opsi = row.opsi;
+      if (opsiBaru?.has(villageId)) {
+        let root: Record<string, unknown> = {};
+        try {
+          const parsed: unknown = JSON.parse(row.opsi ?? "{}");
+          if (parsed && typeof parsed === "object" && !Array.isArray(parsed))
+            root = parsed as Record<string, unknown>;
+        } catch {
+          root = {};
+        }
+        opsi = JSON.stringify({ ...root, templateOptions: opsiBaru.get(villageId) });
+      }
+      await tx
+        .update(theme)
+        .set({ nama: template.name, versi: template.version, opsi })
+        .where(eq(theme.id, row.id));
+      jumlah += 1;
+    }
+    return jumlah;
+  });
 }

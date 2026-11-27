@@ -45,11 +45,11 @@ export const HEADER_PLATFORM: Readonly<Record<string, HeaderPlatform>> = {
     remah: [{ label: "Tenant", href: "/super-admin/tenant" }],
   },
   "/super-admin/domain": {
-    eyebrow: "Tenant",
+    eyebrow: "Domain & infrastruktur",
     title: "Daftar domain",
     description:
       "Kelola domain dan alamat website publik seluruh desa/tenant pada platform FlexiDesa.",
-    remah: [{ label: "Tenant" }],
+    remah: [{ label: "Domain & infrastruktur" }],
   },
   "/super-admin/pengguna": {
     eyebrow: "Konsol platform",
@@ -105,6 +105,13 @@ export const HEADER_PLATFORM: Readonly<Record<string, HeaderPlatform>> = {
       "Tetapkan paket terbit kepada desa; modul di luar paket akan dibatasi tanpa menghapus datanya.",
     remah: [{ label: "Paket & fitur", href: "/super-admin/paket" }],
   },
+  "/super-admin/backup": {
+    eyebrow: "Operasional",
+    title: "Backup & restore",
+    description:
+      "Unduh salinan basis data platform atau pulihkan dari berkas SQL. Restore mengganti seluruh basis data dan memengaruhi semua desa.",
+    remah: [{ label: "Operasional" }],
+  },
   "/super-admin/pengaturan": {
     eyebrow: "Konsol platform",
     title: "Pengaturan platform",
@@ -133,7 +140,10 @@ export function headerPlatform(pathname: string): HeaderPlatform {
       eyebrow: "Tenant",
       title: "Detail Domain",
       description: "Informasi dan pengaturan domain, DNS, SSL, serta riwayat perubahan.",
-      remah: [{ label: "Tenant" }, { label: "Daftar Domain", href: "/super-admin/domain" }],
+      remah: [
+        { label: "Domain & infrastruktur" },
+        { label: "Daftar domain", href: "/super-admin/domain" },
+      ],
     };
   }
 

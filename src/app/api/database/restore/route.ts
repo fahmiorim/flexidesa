@@ -119,7 +119,7 @@ export async function POST(request: Request) {
     }
     return new Response(null, {
       status: 303,
-      headers: { Location: "/pengaturan/database?restored=1" },
+      headers: { Location: "/super-admin/backup?restored=1" },
     });
   } catch (error) {
     if (error instanceof UnggahanError) {

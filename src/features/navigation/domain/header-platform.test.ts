@@ -37,16 +37,25 @@ describe("headerPlatform", () => {
     expect(headerPlatform("/super-admin/tenant/12").title).toBe("Konsol tenant");
   });
 
-  it("menampilkan Tenant sebagai remah Daftar domain", () => {
-    expect(headerPlatform("/super-admin/domain").remah).toEqual([{ label: "Tenant" }]);
+  it("memberi remah Domain & infrastruktur pada daftar domain", () => {
+    expect(headerPlatform("/super-admin/domain").remah).toEqual([
+      { label: "Domain & infrastruktur" },
+    ]);
     expect(headerPlatform("/super-admin/domain").title).toBe("Daftar domain");
+    expect(headerPlatform("/super-admin/domain").eyebrow).toBe("Domain & infrastruktur");
+  });
+
+  it("memisahkan remah Tenant dari Domain", () => {
+    expect(headerPlatform("/super-admin/tenant").remah).toEqual([{ label: "Tenant" }]);
+    expect(headerPlatform("/super-admin/tenant").eyebrow).toBe("Tenant");
+    expect(headerPlatform("/super-admin/domain").eyebrow).not.toBe("Tenant");
   });
 
   it("memakai header Daftar domain untuk rute tambah lama yang dialihkan", () => {
     const header = headerPlatform("/super-admin/domain/tambah");
 
     expect(header.title).toBe("Daftar domain");
-    expect(header.remah).toEqual([{ label: "Tenant" }]);
+    expect(header.remah).toEqual([{ label: "Domain & infrastruktur" }]);
   });
 
   it("menampilkan breadcrumb Detail Domain untuk id domain dinamis", () => {
@@ -54,8 +63,8 @@ describe("headerPlatform", () => {
 
     expect(header.title).toBe("Detail Domain");
     expect(header.remah).toEqual([
-      { label: "Tenant" },
-      { label: "Daftar Domain", href: "/super-admin/domain" },
+      { label: "Domain & infrastruktur" },
+      { label: "Daftar domain", href: "/super-admin/domain" },
     ]);
   });
 

@@ -104,6 +104,28 @@ export type Umum = {
   penomoranSurat: number;
 };
 
+/** Satu opsi paket tema, bentuknya mengikuti `config.json` tema (ala OpenSID). */
+export type TemaOpsiDefinisi = {
+  key: string;
+  label: string;
+  description: string;
+  type: "color-picker" | "select" | "input-number" | "input-text" | "unggah";
+  default: unknown;
+  group: string;
+  readonly?: boolean;
+  options?: Record<string, string>;
+  attributes?: { min?: number; max?: number; step?: number; accept?: string };
+};
+
+/** Opsi tema aktif tenant beserta nilai tervalidasi. */
+export type TemaOpsi = {
+  slug: string | null;
+  versi: string | null;
+  definisi: TemaOpsiDefinisi[];
+  nilai: Record<string, unknown>;
+  peringatan: string[];
+};
+
 export type Template = {
   id: number;
   slug: string;
@@ -138,6 +160,8 @@ export type Data = {
   favicon: string | null;
   templates: Template[];
   temaAktif: { slug: string; nama: string; versi: string; opsi: string | null } | null;
+  /** Opsi paket tema aktif; `null` bila tema tidak punya paket berkode. */
+  temaOpsi?: TemaOpsi | null;
   umum: Umum;
   sebutan: Sebutan;
   layanan: Layanan[];

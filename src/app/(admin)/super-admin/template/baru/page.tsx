@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { FormTemplate } from "@/features/multi-desa/presentation/form-template";
 import { PlatformPageHeader } from "@/features/multi-desa/presentation/platform-ui";
+import { daftarPaketTersedia } from "@/themes/registry";
 
 import { pastikanSuperAdmin } from "../../guard";
 import { buatTemplateAction } from "../actions";
@@ -17,7 +18,7 @@ export default async function SuperAdminTambahTemplatePage() {
   return (
     <>
       <PlatformPageHeader path="/super-admin/template/baru" />
-      <FormTemplate aksi={buatTemplateAction} mode="baru" />
+      <FormTemplate aksi={buatTemplateAction} mode="baru" paketTersedia={daftarPaketTersedia()} />
     </>
   );
 }

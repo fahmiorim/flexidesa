@@ -3,6 +3,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { TemaRenderer } from "@/themes/renderer";
+import { opsiYa, warnaDasarDari, type SurfaceKey } from "@/themes/types";
 
 import styles from "./galeri.module.css";
 
@@ -10,11 +12,21 @@ type GalleryShellProps = {
   villageName: string;
   /** Bila diisi, shell memuat tema aktif desa agar tampilan mengikuti template. */
   villageId?: number;
+  /** Surface tema yang dirender; detail galeri memakai surface media. */
+  surface?: SurfaceKey;
   children?: ReactNode;
 };
 
-export async function GalleryShell({ villageName, villageId, children }: GalleryShellProps) {
+export async function GalleryShell({
+  villageName,
+  villageId,
+  surface = "media",
+  children,
+}: GalleryShellProps) {
   const tema = typeof villageId === "number" ? await muatTemaPublik(villageId) : null;
+  const opsiTema = tema?.templateOptions ?? {};
+  const warnaDasar = warnaDasarDari(opsiTema) ?? tema?.primary;
+  const tampilkanMasuk = opsiYa(opsiTema, "pintasan_masuk");
   return (
     <main
       className={styles.site}
@@ -22,7 +34,7 @@ export async function GalleryShell({ villageName, villageId, children }: Gallery
       data-varian={tema?.layout ?? "klasik"}
     >
       {tema ? (
-        <style>{`:root{--public-primary:${tema.primary};--public-secondary:${tema.secondary};--public-accent:${tema.accent};--public-background:${tema.background};--public-surface:${tema.surface};--public-text:${tema.text};--public-heading-font:${tema.fontHeading === "serif" ? "Georgia,serif" : "inherit"};--public-radius:${tema.radius}}main[class*="site"]{background-color:var(--public-background)!important;color:var(--public-text)!important}${
+        <style>{`:root{--public-primary:${warnaDasar};--public-secondary:${tema.secondary};--public-accent:${tema.accent};--public-background:${tema.background};--public-surface:${tema.surface};--public-text:${tema.text};--public-heading-font:${tema.fontHeading === "serif" ? "Georgia,serif" : "inherit"};--public-radius:${tema.radius}}main[class*="site"]{background-color:var(--public-background)!important;color:var(--public-text)!important}${
           tema.style === "gelap"
             ? 'main[class*="site"]{background-color:#0b1220!important;color:#e8eef8!important}'
             : ""
@@ -43,13 +55,27 @@ export async function GalleryShell({ villageName, villageId, children }: Gallery
             <Link href="/berita">Berita</Link>
             <Link href="/agenda">Agenda</Link>
           </nav>
-          <Link href="/masuk" className={styles.login}>
-            Masuk ↗
-          </Link>
+          {tampilkanMasuk ? (
+            <Link href="/masuk" className={styles.login}>
+              Masuk ↗
+            </Link>
+          ) : null}
         </div>
       </header>
 
-      {children}
+      {typeof villageId === "number" ? (
+        <TemaRenderer
+          villageId={villageId}
+          villageName={villageName}
+          location=""
+          activePath="/galeri"
+          surface={surface}
+        >
+          {children}
+        </TemaRenderer>
+      ) : (
+        children
+      )}
 
       <footer className={styles.footer}>
         <div className={styles.container}>

@@ -5,6 +5,8 @@ import {
   muatMenuPublik,
   muatTemaPublik,
 } from "@/features/info-desa/publik/application/website-admin";
+import { resolveTema } from "@/themes/registry";
+import { opsiYa, validasiOpsiTenant, warnaDasarDari, type ThemeWidgets } from "@/themes/types";
 
 import styles from "./public-site-layout.module.css";
 
@@ -77,6 +79,11 @@ export async function PublicSiteHeader({ desa, logoUrl, activePath = "/" }: Prop
     muatMenuPublik(desa.id),
     muatTemaPublik(desa.id),
   ]);
+  const opsiTema = tema
+    ? validasiOpsiTenant(resolveTema(tema.slug, tema.versi)?.opsi ?? [], tema.templateOptions)
+    : {};
+  const natraPintasanMasuk = tema ? String(opsiTema.pintasan_masuk ?? "1") === "1" : true;
+  const warnaDasar = warnaDasarDari(opsiTema);
   const menuItems =
     configuredMenu.length > 0
       ? configuredMenu
@@ -104,7 +111,7 @@ export async function PublicSiteHeader({ desa, logoUrl, activePath = "/" }: Prop
   return (
     <>
       {tema ? (
-        <style>{`:root{--public-primary:${tema.primary};--public-secondary:${tema.secondary};--public-accent:${tema.accent};--public-background:${tema.background};--public-surface:${tema.surface};--public-text:${tema.text};--public-heading-font:${tema.fontHeading === "serif" ? "Georgia,serif" : "inherit"};--public-radius:${tema.radius}}main[class*="site"]{background-color:var(--public-background)!important;color:var(--public-text)!important}main[class*="site"] h1,main[class*="site"] h2,main[class*="site"] h3{font-family:var(--public-heading-font)}main[class*="site"] [class*="primary"]{background-color:var(--public-primary)!important;border-color:var(--public-primary)!important}main[class*="site"] [class*="active"]{color:var(--public-primary)!important}main[class*="site"] [class*="card"]{border-radius:var(--public-radius);background-color:var(--public-surface)}main[class*="site"] a:hover{color:var(--public-accent)}footer[class*="footer"]{background:var(--public-secondary)!important}${tema.style === "gelap" ? 'main[class*="site"]{background-color:#0b1220!important;color:#e8eef8!important}main[class*="site"] h1,main[class*="site"] h2,main[class*="site"] h3{color:#f1f5fb!important}' : ""}`}</style>
+        <style>{`:root{--public-primary:${warnaDasar ?? tema.primary};--public-secondary:${tema.secondary};--public-accent:${tema.accent};--public-background:${tema.background};--public-surface:${tema.surface};--public-text:${tema.text};--public-heading-font:${tema.fontHeading === "serif" ? "Georgia,serif" : "inherit"};--public-radius:${tema.radius}}main[class*="site"]{background-color:var(--public-background)!important;color:var(--public-text)!important}main[class*="site"] h1,main[class*="site"] h2,main[class*="site"] h3{font-family:var(--public-heading-font)}main[class*="site"] [class*="primary"]{background-color:var(--public-primary)!important;border-color:var(--public-primary)!important}main[class*="site"] [class*="active"]{color:var(--public-primary)!important}main[class*="site"] [class*="card"]{border-radius:var(--public-radius);background-color:var(--public-surface)}main[class*="site"] a:hover{color:var(--public-accent)}footer[class*="footer"]{background:var(--public-secondary)!important}${tema.style === "gelap" ? 'main[class*="site"]{background-color:#0b1220!important;color:#e8eef8!important}main[class*="site"] h1,main[class*="site"] h2,main[class*="site"] h3{color:#f1f5fb!important}' : ""}`}</style>
       ) : null}
       <header
         className={styles.header}
@@ -167,15 +174,17 @@ export async function PublicSiteHeader({ desa, logoUrl, activePath = "/" }: Prop
             <Link href="/cari" className={styles.searchLink} aria-label="Cari informasi">
               ⌕
             </Link>
-            <details className={styles.loginMenu}>
-              <summary className={styles.login}>
-                ♙ <span>Masuk</span>
-              </summary>
-              <div className={styles.loginMenuPanel}>
-                <Link href="/masuk">Warga</Link>
-                <Link href="/masuk-admin">Admin Desa</Link>
-              </div>
-            </details>
+            {natraPintasanMasuk ? (
+              <details className={styles.loginMenu}>
+                <summary className={styles.login}>
+                  ♙ <span>Masuk</span>
+                </summary>
+                <div className={styles.loginMenuPanel}>
+                  <Link href="/masuk">Warga</Link>
+                  <Link href="/masuk-admin">Admin Desa</Link>
+                </div>
+              </details>
+            ) : null}
           </div>
         </div>
       </header>
@@ -185,6 +194,18 @@ export async function PublicSiteHeader({ desa, logoUrl, activePath = "/" }: Prop
 
 export async function PublicSiteFooter({ desa, location, logoUrl }: Props) {
   const tema = await muatTemaPublik(desa.id);
+  const definisi = tema ? resolveTema(tema.slug, tema.versi) : null;
+  const opsiTema = definisi ? validasiOpsiTenant(definisi.opsi, tema?.templateOptions) : {};
+  // Widget berasal dari paket tema aktif; opsi `jam`/`statistik_desa` mengatur
+  // tampil/tidaknya. Tema tanpa opsi tersebut (Esensi) tidak menampilkan widget.
+  const widgets: ThemeWidgets | null = definisi?.widgets ?? null;
+  const propsWidget = {
+    villageId: desa.id,
+    villageName: desa.namaDesa,
+    opsi: opsiTema,
+  };
+  const tampilJam = Boolean(widgets) && opsiYa(opsiTema, "jam", false);
+  const tampilStatistik = Boolean(widgets) && opsiYa(opsiTema, "statistik_desa", false);
   return (
     <footer
       className={styles.footer}
@@ -239,6 +260,8 @@ export async function PublicSiteFooter({ desa, location, logoUrl }: Props) {
         <span>
           © {new Date().getFullYear()} {desa.namaDesa ?? "Pemerintah Desa"}. All rights reserved.
         </span>
+        {tampilStatistik && widgets ? widgets.statistik(propsWidget) : null}
+        {tampilJam && widgets ? widgets.jam(propsWidget) : null}
         <span>Pemerintah Desa {desa.namaDesa ?? ""}　|　Transparan · Informatif · Melayani</span>
       </div>
     </footer>

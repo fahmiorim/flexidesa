@@ -26,8 +26,7 @@ const tokens = {
   judulHero: "Portal Desa Digital",
   subHero:
     "Layanan administrasi, informasi, dan keterbukaan data desa dapat diakses kapan saja melalui perangkat warga.",
-  taglineFooter:
-    "Portal modern untuk warga desa — cepat, transparan, dan mudah diakses.",
+  taglineFooter: "Portal modern untuk warga desa — cepat, transparan, dan mudah diakses.",
 };
 
 const conn = await mysql.createConnection(url);

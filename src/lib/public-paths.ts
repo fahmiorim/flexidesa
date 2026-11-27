@@ -23,6 +23,15 @@ export const PUBLIC_PATHS = [
   // Daftar dan detail konten publik.
   "/berita",
   "/galeri",
+  // Halaman konten & data publik beserta turunannya. Prefix ini tidak dipakai
+  // area admin (area admin berada di `/profil-desa`, `/kehadiran`, dst.).
+  "/informasi",
+  "/halaman",
+  "/agenda",
+  "/pengumuman",
+  "/transparansi",
+  "/perangkat",
+  "/pengaduan",
 ] as const;
 
 /**
@@ -49,7 +58,10 @@ export const PUBLIC_EXACT_PATHS = [
   "/potensi",
   "/kontak",
   "/pengaduan",
+  "/informasi",
+  "/pembangunan",
   "/transparansi/apbdes",
+  "/transparansi/laporan-keuangan",
   "/layanan",
   "/layanan/surat",
 ] as const;
@@ -66,6 +78,14 @@ export const PUBLIC_FILES = [
   "/opengraph-image",
 ] as const;
 
+/**
+ * Rute dinamis publik yang berbagi prefix dengan area admin.
+ *
+ * `/pembangunan/[slug]` publik, tetapi `/pembangunan/buku` adalah area admin
+ * (buku administrasi pembangunan), sehingga prefix tidak boleh dibuka semua.
+ */
+export const PUBLIC_DYNAMIC_PATHS: readonly RegExp[] = [/^\/pembangunan\/(?!buku(?:\/|$))[^/]+$/];
+
 export function isPublicPath(pathname: string): boolean {
   if (pathname === "/") return true;
 
@@ -78,6 +98,8 @@ export function isPublicPath(pathname: string): boolean {
   }
 
   if (PUBLIC_FILES.includes(pathname as (typeof PUBLIC_FILES)[number])) return true;
+
+  if (PUBLIC_DYNAMIC_PATHS.some((pola) => pola.test(pathname))) return true;
 
   return PUBLIC_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`));
 }

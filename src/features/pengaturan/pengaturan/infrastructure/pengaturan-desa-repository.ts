@@ -118,12 +118,23 @@ function bacaObjek(raw: string | null): Record<string, unknown> {
   }
 }
 
-/** Aktifkan template terbit sebagai tema desa, pertahankan opsi tema sebelumnya. */
+/**
+ * Aktifkan template terbit sebagai tema desa, pertahankan opsi tema sebelumnya.
+ *
+ * `templateOptions` (opsi paket ala OpenSID) sudah dimigrasikan pemanggil ke
+ * schema slug/versi baru; bila tidak dikirim, nilai tenant lama dipertahankan
+ * agar penggantian tema tidak menghapus opsi yang masih berlaku.
+ */
 export async function terapkanTemaDesa(
   villageId: number,
   template: { slug: string; nama: string; versi: string; tokens: Record<string, unknown> },
+  templateOptions?: Record<string, unknown>,
 ): Promise<void> {
-  const options = { templateSlug: template.slug, templateTokens: template.tokens };
+  const options: Record<string, unknown> = {
+    templateSlug: template.slug,
+    templateTokens: template.tokens,
+  };
+  if (templateOptions) options.templateOptions = templateOptions;
   await db.transaction(async (tx) => {
     const [currentActive] = await tx
       .select({ opsi: theme.opsi })
@@ -160,6 +171,30 @@ export async function terapkanTemaDesa(
     }
   });
   await simpanNilaiPengaturan(villageId, KUNCI.template, template.slug);
+}
+
+/**
+ * Simpan opsi tema tenant (hasil validasi schema paket) pada row tema aktif.
+ *
+ * Nilai lain di `theme.opsi` (token, branding) dipertahankan; hanya subtree
+ * `templateOptions` yang diganti agar perubahan opsi tidak menghapus token.
+ */
+export async function simpanOpsiTemaDesa(
+  villageId: number,
+  templateOptions: Record<string, unknown>,
+): Promise<boolean> {
+  const [aktif] = await db
+    .select({ id: theme.id, opsi: theme.opsi })
+    .from(theme)
+    .where(and(eq(theme.villageId, villageId), eq(theme.aktif, true)))
+    .limit(1);
+  if (!aktif) return false;
+  const opsi = { ...bacaObjek(aktif.opsi), templateOptions };
+  const [hasil] = await db
+    .update(theme)
+    .set({ opsi: JSON.stringify(opsi) })
+    .where(and(eq(theme.id, aktif.id), eq(theme.villageId, villageId)));
+  return Boolean(hasil.affectedRows);
 }
 
 export async function simpanKontakDesa(villageId: number, d: KontakDesa): Promise<void> {

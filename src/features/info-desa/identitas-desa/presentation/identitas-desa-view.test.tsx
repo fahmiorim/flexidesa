@@ -132,6 +132,7 @@ const DATA: Data = {
   favicon: null,
   templates: [],
   temaAktif: null,
+  temaOpsi: null,
   umum: {
     komentarAktif: false,
     beritaBeranda: 3,

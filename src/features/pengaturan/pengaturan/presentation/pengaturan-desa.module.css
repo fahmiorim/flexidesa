@@ -608,6 +608,19 @@
 .field b {
   color: #df3151;
 }
+.colorRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.colorRow input[type="color"] {
+  width: 44px;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid #d7dbe8;
+  border-radius: 8px;
+  background: #fff;
+}
 .fieldHint {
   margin: -4px 0 12px;
   color: #687491;

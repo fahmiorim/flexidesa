@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import { getIdentitasDesa } from "@/features/info-desa/desa/application/kontrak";
 import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
 import {
@@ -216,8 +218,8 @@ export async function muatMenuPublik(villageId: number): Promise<MenuPublikRingk
   return listMenuPublik(villageId);
 }
 
-/** Token tema aktif tenant untuk rendering situs publik; hanya nilai HEX/enum tervalidasi yang diteruskan ke CSS. */
-export async function muatTemaPublik(villageId: number) {
+/** Token tema aktif tenant untuk rendering situs publik; hanya nilai HEX/enum tervalidasi yang diteruskan ke CSS. Cache per-request agar header/footer/renderer membaca sekali. */
+export const muatTemaPublik = cache(async function muatTemaPublik(villageId: number) {
   const active = await ambilTemaAktifDenganOpsi(villageId);
   if (!active?.opsi) return null;
   try {
@@ -243,7 +245,16 @@ export async function muatTemaPublik(villageId: number) {
     };
     const teks = (key: string) =>
       typeof token[key] === "string" ? (token[key] as string).trim() : "";
+    const templateOptions =
+      root.templateOptions &&
+      typeof root.templateOptions === "object" &&
+      !Array.isArray(root.templateOptions)
+        ? (root.templateOptions as Record<string, unknown>)
+        : null;
     return {
+      slug: active.slug,
+      versi: active.versi,
+      templateOptions,
       primary: color("primary", "#075cf0", "warnaUtama"),
       secondary: color("secondary", "#0d2136"),
       accent: color("accent", "#7a20f0", "warnaAksen"),
@@ -271,4 +282,4 @@ export async function muatTemaPublik(villageId: number) {
   } catch {
     return null;
   }
-}
+});

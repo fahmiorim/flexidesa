@@ -17,6 +17,7 @@ import {
   listPenggunaanTemplateWebsite,
   listTemplateWebsite,
   listVersiTemplateWebsite,
+  opsiTemaTenant,
   setStatusTemplateWebsite,
   slugTemplateDipakai,
   terapkanTemplateKeDesaRepo,
@@ -29,6 +30,8 @@ import {
 import { recordAuditEvent } from "@/features/pengaturan/audit/application/audit-use-cases";
 import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
 import { conflict, notFound } from "@/lib/errors";
+import { migrasiOpsiUntukTema } from "@/themes/migrasi";
+import { resolveTema, slugTerdaftar } from "@/themes/registry";
 
 /**
  * Katalog tema website platform.
@@ -38,6 +41,20 @@ import { conflict, notFound } from "@/lib/errors";
  * tampilan tervalidasi. Distribusi versi dibatasi pada tenant yang benar-benar
  * memakai slug template tersebut.
  */
+
+/** Subtree `templateOptions` dari JSON `theme.opsi` tenant. */
+function opsiTersimpan(raw: string | null | undefined): Record<string, unknown> | null {
+  try {
+    const root: unknown = JSON.parse(raw ?? "{}");
+    if (!root || typeof root !== "object" || Array.isArray(root)) return null;
+    const opsi = (root as Record<string, unknown>).templateOptions;
+    return opsi && typeof opsi === "object" && !Array.isArray(opsi)
+      ? (opsi as Record<string, unknown>)
+      : null;
+  } catch {
+    return null;
+  }
+}
 
 export interface DetailTemplateWebsite {
   template: TemplateWebsiteRow;
@@ -68,6 +85,14 @@ export async function ambilTemplateWebsite(id: number): Promise<DetailTemplateWe
 export async function buatTemplateWebsiteBaru(input: unknown): Promise<{ id: number }> {
   const user = await requireSuperAdmin();
   const parsed = websiteTemplateInputSchema.parse(input);
+
+  // Katalog hanya menerbitkan paket yang sudah ada di registry statis:
+  // slug bebas tanpa paket kode ditolak agar tidak ada tema tak duplikasi.
+  if (!slugTerdaftar().has(parsed.slug) || !resolveTema(parsed.slug, parsed.version)) {
+    throw conflict(
+      "Template hanya dapat dibuat untuk pasangan slug/versi yang sudah dikodekan (ada di registry statis).",
+    );
+  }
 
   if (await slugTemplateDipakai(parsed.slug)) {
     throw conflict("Slug template sudah digunakan.");
@@ -175,12 +200,29 @@ export async function gantiTemplateDesa(input: {
     throw notFound("Desa tidak ditemukan.");
   }
 
-  await terapkanTemplateKeDesaRepo(villageId, {
-    slug: template.slug,
-    nama: template.name,
-    versi: template.version,
-    tokens: template.tokens,
-  });
+  // Opsi tenant lama dimigrasikan ke schema paket tujuan agar ganti template
+  // dari Super Admin tidak menghapus opsi yang masih berlaku.
+  const [sebelum] = await opsiTemaTenant([villageId]);
+  const opsiLama = opsiTersimpan(sebelum?.opsi) ?? {};
+  const migrasi = migrasiOpsiUntukTema(template.slug, template.version, opsiLama);
+  if (!migrasi) {
+    throw conflict("Template ini belum memiliki paket tema berkode di registry aplikasi.");
+  }
+  // Nilai yang tidak dikenal schema tujuan tetap disimpan agar tidak hilang
+  // diam-diam; renderer mengabaikannya, dan admin dapat memeriksanya kembali
+  // bila tema lama dipulihkan. Peringatan dicatat pada audit.
+  const opsiFinal = { ...opsiLama, ...migrasi.opsi };
+
+  await terapkanTemplateKeDesaRepo(
+    villageId,
+    {
+      slug: template.slug,
+      nama: template.name,
+      versi: template.version,
+      tokens: template.tokens,
+    },
+    opsiFinal,
+  );
 
   await recordAuditEvent({
     villageId,
@@ -188,7 +230,12 @@ export async function gantiTemplateDesa(input: {
     event: AUDIT_EVENTS.websiteTemplateDistribute,
     resource: "website_templates",
     resourceId: String(template.id),
-    details: { slug: template.slug, version: template.version, aksi: "ganti-tenant" },
+    details: {
+      slug: template.slug,
+      version: template.version,
+      aksi: "ganti-tenant",
+      opsiTidakDipetakan: migrasi.peringatan.length,
+    },
   });
 
   return { villageId, templateId };
@@ -213,7 +260,15 @@ export async function distribusikanVersiTemplateWebsite(
     throw conflict("Tidak ada tenant terpilih yang memakai template ini.");
   }
 
-  const jumlah = await distribusikanVersiTemplate(template, target);
+  // Distribusi versi juga memigrasikan opsi tenant ke schema versi baru.
+  // Nilai yang tidak dikenal schema baru dipertahankan agar tidak hilang.
+  const opsiBaru = new Map<number, Record<string, unknown>>();
+  for (const row of await opsiTemaTenant(target)) {
+    const lama = opsiTersimpan(row.opsi) ?? {};
+    const migrasi = migrasiOpsiUntukTema(template.slug, template.version, lama);
+    if (migrasi) opsiBaru.set(row.villageId, { ...lama, ...migrasi.opsi });
+  }
+  const jumlah = await distribusikanVersiTemplate(template, target, opsiBaru);
 
   await recordAuditEvent({
     villageId: null,

@@ -84,7 +84,7 @@ export default async function SuperAdminDomainPage({ searchParams }: Props) {
 
   return (
     <>
-      <PlatformPageHeader judul="Tenant" path="/super-admin/domain" />
+      <PlatformPageHeader path="/super-admin/domain" />
       <div className="platform-stat-grid is-enam is-domain">
         <PlatformStat
           icon={

@@ -1,8 +1,17 @@
 import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 
 import { PublicShell } from "./public-shell";
+
+vi.mock("@/features/info-desa/publik/application/website-admin", () => ({
+  muatTemaPublik: vi.fn(),
+}));
+vi.mock("@/themes/renderer", () => ({
+  TemaRenderer: ({ children }: { children?: unknown }) => children,
+}));
 
 const navigation = [
   { href: "/", label: "Beranda" },
@@ -69,5 +78,40 @@ describe("PublicShell", () => {
 
     expect(markup).not.toContain("logo.png");
     expect(markup).toContain("Transparansi Anggaran");
+  });
+
+  it("menerapkan warna dasar tema dan menyembunyikan pintasan masuk dari opsi tenant", async () => {
+    vi.mocked(muatTemaPublik).mockResolvedValue({
+      slug: "natra",
+      versi: "1.0.0",
+      templateOptions: { warna_dasar: "#abcdef", pintasan_masuk: "0" },
+      primary: "#e64946",
+      secondary: "#0d2136",
+      accent: "#7a20f0",
+      background: "#f1f6ff",
+      surface: "#ffffff",
+      text: "#101b4b",
+      judulHero: "",
+      subHero: "",
+      taglineFooter: "",
+      fontHeading: "sans",
+      logoTampil: true,
+      radius: "15px",
+      style: "terang",
+      layout: "klasik",
+      templateName: "Natra",
+    });
+
+    const markup = renderToStaticMarkup(
+      await PublicShell({
+        villageName: "Desa Contoh",
+        brandLabel: "Dokumen Publik",
+        navigation,
+        villageId: 3,
+      }),
+    );
+
+    expect(markup).toContain("--public-primary:#abcdef");
+    expect(markup).not.toContain('href="/masuk"');
   });
 });

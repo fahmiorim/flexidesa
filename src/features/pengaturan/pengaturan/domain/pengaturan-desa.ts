@@ -44,6 +44,15 @@ export type IntegrasiDesa = z.infer<typeof integrasiDesaSchema>;
 
 export const tampilanDesaSchema = z.object({ templateSlug: z.string().trim().min(1).max(50) });
 
+/**
+ * Opsi tema tenant (ala `config.json` OpenSID).
+ * Nilai mentah divalidasi terhadap schema paket tema di use case, bukan di
+ * sini, agar default/min/max berasal dari kode tema dan bukan dari klien.
+ */
+export const temaOpsiDesaSchema = z.object({
+  opsi: z.record(z.string(), z.unknown()),
+});
+
 export const layananDesaSchema = z.object({
   nama: z.string().trim().min(2).max(180),
   kategori: z.string().trim().min(2).max(60).default("administrasi"),

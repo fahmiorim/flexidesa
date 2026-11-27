@@ -113,7 +113,7 @@ describe("POST /api/database/restore", () => {
     const response = await POST(permintaan(body, { contentType, contentLength: ukuran }));
 
     expect(response.status).toBe(303);
-    expect(response.headers.get("location")).toBe("/pengaturan/database?restored=1");
+    expect(response.headers.get("location")).toBe("/super-admin/backup?restored=1");
     expect(useCase.pulihkanBackupSql).toHaveBeenCalledWith(
       expect.objectContaining({ filename: "backup.sql", konfirmasi: true }),
     );

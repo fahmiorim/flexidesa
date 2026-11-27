@@ -41,7 +41,11 @@ export default async function DetailGaleriPage({ params }: Props) {
   if (!album) notFound();
   const photos = await daftarFotoAlbum(desa.id, album.id);
   return (
-    <GalleryShell villageName={desa.namaDesa ?? "Pemerintah Desa"} villageId={desa.id}>
+    <GalleryShell
+      villageName={desa.namaDesa ?? "Pemerintah Desa"}
+      villageId={desa.id}
+      surface="media"
+    >
       <section className={styles.hero}>
         <div className={styles.container}>
           <div className={styles.breadcrumb}>
