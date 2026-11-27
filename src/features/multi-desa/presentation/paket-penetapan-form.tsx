@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type {
   PaketTenantRow,
   PilihanPaketTenantBaru,
@@ -128,25 +129,25 @@ export function PaketPenetapanForm({
         </p>
       ) : null}
 
-      <div className="tenant-table-scroll">
-        <table className="tenant-table tenant-table-list">
-          <thead>
-            <tr>
-              <th scope="col">
+      <TableScroll className="tenant-table-scroll">
+        <Table className="tenant-table tenant-table-list">
+          <THead>
+            <Row>
+              <HeaderCell scope="col">
                 <span className="sr-only">Pilih tenant</span>
-              </th>
-              <th scope="col">Tenant</th>
-              <th scope="col">Status tenant</th>
-              <th scope="col">Penetapan sekarang</th>
-            </tr>
-          </thead>
-          <tbody>
+              </HeaderCell>
+              <HeaderCell scope="col">Tenant</HeaderCell>
+              <HeaderCell scope="col">Status tenant</HeaderCell>
+              <HeaderCell scope="col">Penetapan sekarang</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
             {tenants.map((tenant) => {
               const label = tenant.name ?? `Desa #${tenant.villageId}`;
               const isSelected = selectedTenants.has(tenant.villageId);
               return (
-                <tr key={tenant.villageId}>
-                  <td>
+                <Row key={tenant.villageId}>
+                  <Cell>
                     <input
                       aria-label={`Pilih ${label}`}
                       checked={isSelected}
@@ -156,12 +157,12 @@ export function PaketPenetapanForm({
                       type="checkbox"
                       value={tenant.villageId}
                     />
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <strong>{label}</strong>
                     {tenant.code ? <div className="tenant-secondary">{tenant.code}</div> : null}
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <span
                       className={
                         tenant.active ? "tenant-status is-active" : "tenant-status is-inactive"
@@ -170,8 +171,8 @@ export function PaketPenetapanForm({
                       <span aria-hidden="true" />
                       {tenant.active ? "Aktif" : "Nonaktif"}
                     </span>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     {tenant.planVersionId ? (
                       <span>
                         {tenant.planName ?? tenant.planSlug ?? "Paket"}
@@ -180,13 +181,13 @@ export function PaketPenetapanForm({
                     ) : (
                       <span className="tenant-secondary">Belum ditetapkan</span>
                     )}
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               );
             })}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
 
       <div className="form-stack">
         <p className="form-help">

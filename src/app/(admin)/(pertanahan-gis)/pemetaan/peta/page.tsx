@@ -1,8 +1,8 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
 import { FormDialog } from "@/components/ui/form-dialog";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { getPetaWilayahData } from "@/features/pertanahan-gis/gis/application/use-cases";
 import {
   hapusAreaPetaAction,
@@ -137,12 +137,12 @@ export default async function PetaWilayahPage({
         aksi={
           <>
             <div className="page-heading-actions">
-              <Link className="button button-ghost" href="/profil-desa/wilayah-administratif">
+              <ButtonLink variant="ghost" href="/profil-desa/wilayah-administratif">
                 Kelola Dusun / RW / RT ↗
-              </Link>
-              <Link className="button button-ghost" href="/profil-desa/identitas-desa">
+              </ButtonLink>
+              <ButtonLink variant="ghost" href="/profil-desa/identitas-desa">
                 Identitas Desa ↗
-              </Link>
+              </ButtonLink>
             </div>
           </>
         }
@@ -216,25 +216,25 @@ export default async function PetaWilayahPage({
         </div>
 
         {layers.length ? (
-          <div className="modul-table-wrap">
-            <table className="modul-table pemerintah-table">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Layer</th>
-                  <th>Status</th>
-                  <th>Urutan</th>
-                  <th>Area</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-table-wrap">
+            <Table className="modul-table pemerintah-table">
+              <THead>
+                <Row>
+                  <HeaderCell>No</HeaderCell>
+                  <HeaderCell>Layer</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Urutan</HeaderCell>
+                  <HeaderCell>Area</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {layers.map((layer, index) => {
                   const jumlahArea = shapes.filter((shape) => shape.refPolygon === layer.id).length;
                   return (
-                    <tr key={layer.id}>
-                      <td>{index + 1}</td>
-                      <td>
+                    <Row key={layer.id}>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>
                         <div className="pemerintah-nama">
                           <span
                             aria-hidden
@@ -248,17 +248,17 @@ export default async function PetaWilayahPage({
                             </small>
                           </div>
                         </div>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span
                           className={`pd-chip ${layer.enabled === 1 ? "is-aktif" : "is-nonaktif"}`}
                         >
                           {layer.enabled === 1 ? "Aktif" : "Nonaktif"}
                         </span>
-                      </td>
-                      <td>{layer.sortOrder}</td>
-                      <td>{jumlahArea} area</td>
-                      <td>
+                      </Cell>
+                      <Cell>{layer.sortOrder}</Cell>
+                      <Cell>{jumlahArea} area</Cell>
+                      <Cell>
                         {akses.ubah || akses.hapus ? (
                           <div className="pd-aparat-aksi">
                             {akses.ubah ? (
@@ -275,27 +275,25 @@ export default async function PetaWilayahPage({
                               </FormDialog>
                             ) : null}
                             {akses.hapus ? (
-                              <form action={hapusLayerPetaAction}>
-                                <input type="hidden" name="id" value={layer.id} />
-                                <ConfirmSubmit
-                                  className="button button-danger-ghost"
-                                  message={`Hapus layer ${layer.nama}?`}
-                                >
-                                  Hapus
-                                </ConfirmSubmit>
-                              </form>
+                              <DialogHapusForm
+                                aksi={hapusLayerPetaAction}
+                                id={layer.id}
+                                judul={`Hapus layer "${layer.nama}"?`}
+                                keterangan="Layer peta dan geometrinya akan dihapus permanen."
+                                labelAksi="Hapus layer"
+                              />
                             ) : null}
                           </div>
                         ) : (
                           "—"
                         )}
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <p className="modul-empty">Belum ada layer peta.</p>
         )}
@@ -341,67 +339,65 @@ export default async function PetaWilayahPage({
         ) : null}
 
         {shapes.length ? (
-          <div className="modul-table-wrap">
-            <table className="modul-table pemerintah-table">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Area</th>
-                  <th>Layer Polygon</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-table-wrap">
+            <Table className="modul-table pemerintah-table">
+              <THead>
+                <Row>
+                  <HeaderCell>No</HeaderCell>
+                  <HeaderCell>Area</HeaderCell>
+                  <HeaderCell>Layer Polygon</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {shapes.map((shape, index) => (
-                  <tr key={shape.id}>
-                    <td>{index + 1}</td>
-                    <td>
+                  <Row key={shape.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       <strong className="pemerintah-jabatan">{shape.nama}</strong>
                       <small className="pemerintah-jenis-jabatan">
                         {shape.desk?.trim() || "Tanpa deskripsi"}
                       </small>
-                    </td>
-                    <td>{namaLayer(shape.refPolygon) || "Belum terhubung"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{namaLayer(shape.refPolygon) || "Belum terhubung"}</Cell>
+                    <Cell>
                       <span
                         className={`pd-chip ${shape.enabled === 1 ? "is-aktif" : "is-nonaktif"}`}
                       >
                         {shape.enabled === 1 ? "Tayang" : "Disembunyikan"}
                       </span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {akses.ubah || akses.hapus ? (
                         <div className="pd-aparat-aksi">
                           {akses.ubah ? (
-                            <Link
-                              className="button button-ghost"
+                            <ButtonLink
+                              variant="ghost"
                               href={`/pemetaan/peta?editArea=${shape.id}#peta`}
                             >
                               Ubah
-                            </Link>
+                            </ButtonLink>
                           ) : null}
                           {akses.hapus ? (
-                            <form action={hapusAreaPetaAction}>
-                              <input type="hidden" name="id" value={shape.id} />
-                              <ConfirmSubmit
-                                className="button button-danger-ghost"
-                                message={`Hapus area ${shape.nama}?`}
-                              >
-                                Hapus
-                              </ConfirmSubmit>
-                            </form>
+                            <DialogHapusForm
+                              aksi={hapusAreaPetaAction}
+                              id={shape.id}
+                              judul={`Hapus area "${shape.nama}"?`}
+                              keterangan="Area peta akan dihapus permanen."
+                              labelAksi="Hapus area"
+                            />
                           ) : null}
                         </div>
                       ) : (
                         "—"
                       )}
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <p className="modul-empty">
             Belum ada area GIS. Tambahkan GeoJSON Polygon untuk menampilkan batas wilayah.

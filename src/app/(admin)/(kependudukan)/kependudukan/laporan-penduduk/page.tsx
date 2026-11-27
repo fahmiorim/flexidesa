@@ -1,7 +1,14 @@
 import type { Metadata } from "next";
 
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { HapusTerpilih } from "@/components/ui/hapus-terpilih";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   getLaporanPendudukData,
   LAPORAN_PENDUDUK_RESOURCE,
@@ -14,12 +21,8 @@ import {
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { verifySession } from "@/lib/dal";
 
-import {
-  hapusLaporanPendudukAction,
-  hapusMassalLaporanPendudukAction,
-  simpanLaporanPendudukAction,
-} from "./actions";
-import { HapusMassalLaporan } from "./hapus-massal-laporan";
+import { hapusLaporanPendudukAction, hapusMassalLaporanPendudukAction } from "./actions";
+import { simpanLaporanPendudukFormAction } from "./form-actions";
 import { PilihSemuaLaporan } from "./pilih-semua-laporan";
 
 export const metadata: Metadata = { title: "Laporan Penduduk" };
@@ -42,6 +45,56 @@ function tanggal(nilai: string | null): string {
 function teks(params: Record<string, string | string[] | undefined>, kunci: string): string {
   const nilai = params[kunci];
   return typeof nilai === "string" ? nilai : "";
+}
+
+type LaporanRow = Awaited<ReturnType<typeof getLaporanPendudukData>>["rows"][number];
+
+function formLaporan(row: LaporanRow | null, tahunDefault: number) {
+  return (
+    <div className="modul-form-grid">
+      {row ? <input name="id" type="hidden" value={row.id} /> : null}
+      <FormField
+        containerClassName="form-field-full"
+        defaultValue={row?.judul ?? ""}
+        label="Judul"
+        maxLength={255}
+        name="judul"
+        required
+      />
+      <FormField
+        defaultValue={String(row?.bulan ?? new Date().getMonth() + 1)}
+        kind="select"
+        label="Bulan"
+        name="bulan"
+        options={BULAN_LAPORAN.map((bulan) => ({
+          value: String(bulan.value),
+          label: bulan.label,
+        }))}
+      />
+      <FormField
+        defaultValue={String(row?.tahun ?? tahunDefault)}
+        label="Tahun"
+        max={TAHUN_MAX}
+        min={TAHUN_MIN}
+        name="tahun"
+        required
+        type="number"
+      />
+      <FormField
+        accept="application/pdf,.pdf"
+        containerClassName="form-field-full"
+        helpText={
+          row
+            ? "Kosongkan berkas jika tidak ingin mengubah dokumen. Maksimal 8 MB."
+            : "Unggah berkas PDF maksimal 8 MB."
+        }
+        label={row ? "Ganti berkas (opsional)" : "File PDF"}
+        name="berkas"
+        required={row === null}
+        type="file"
+      />
+    </div>
+  );
 }
 
 export default async function LaporanPendudukPage({
@@ -85,177 +138,122 @@ export default async function LaporanPendudukPage({
         </p>
       ) : null}
 
-      <section className="platform-card data-panel">
-        <header>
-          <h2>Daftar Laporan Penduduk</h2>
-          <p>
-            Satu dokumen per bulan dan tahun. Kolom Tanggal Kirim terisi setelah laporan dikirim ke
-            OpenDK.
-          </p>
-        </header>
-
-        <div className="pemerintahan-row-actions">
-          {bolehUbah ? (
-            <a className="button button-primary" href="#form-laporan-penduduk">
-              Tambah
-            </a>
-          ) : null}
-          {bolehHapus ? <HapusMassalLaporan aksi={hapusMassalLaporanPendudukAction} /> : null}
-          <button
-            className="button button-secondary"
-            disabled
-            title="API Key Belum Ditentukan"
-            type="button"
-          >
-            Kirim Ke OpenDK
-          </button>
-        </div>
-
-        <form className="data-custom-filter" method="get">
-          <label className="form-field">
-            <span className="form-label">Tahun</span>
-            <select className="form-input" defaultValue={data.tahun} name="tahun">
-              <option value="">Pilih Tahun</option>
-              {(data.tahunTersedia.length > 0 ? data.tahunTersedia : [data.tahun]).map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="data-custom-actions">
-            <button className="button button-secondary" type="submit">
+      <TableCard
+        actions={
+          <>
+            {bolehUbah ? (
+              <FormDialog
+                aksi={simpanLaporanPendudukFormAction}
+                deskripsi="Unggah PDF maksimal 8 MB. Satu dokumen per bulan dan tahun."
+                judul="Tambah laporan penduduk"
+                label="+ Tambah"
+                labelSimpan="Simpan laporan"
+              >
+                {formLaporan(null, data.tahun)}
+              </FormDialog>
+            ) : null}
+            {bolehHapus ? (
+              <HapusTerpilih
+                aksi={hapusMassalLaporanPendudukAction}
+                judul="Hapus laporan terpilih?"
+                keterangan="Laporan yang dicentang beserta berkasnya akan dihapus permanen dan tidak dapat dibatalkan."
+                label="Hapus"
+                namaField="id_cb"
+              />
+            ) : null}
+          </>
+        }
+        description="Satu dokumen per bulan dan tahun, diunggah sebagai arsip PDF resmi desa."
+        filter={
+          <form className="data-custom-filter" method="get">
+            <FormField
+              defaultValue={String(data.tahun)}
+              kind="select"
+              label="Tahun"
+              name="tahun"
+              options={[
+                { value: "", label: "Pilih Tahun" },
+                ...(data.tahunTersedia.length > 0 ? data.tahunTersedia : [data.tahun]).map(
+                  (item) => ({ value: String(item), label: String(item) }),
+                ),
+              ]}
+            />
+            <Button variant="secondary" type="submit">
               Tampilkan
-            </button>
-          </div>
-        </form>
-
+            </Button>
+          </form>
+        }
+        title="Daftar Laporan Penduduk"
+      >
         {data.rows.length === 0 ? (
           <div className="modul-empty">
             <strong>Belum ada laporan penduduk untuk tahun {data.tahun}.</strong>
             <p>Unggah dokumen PDF pada formulir di bawah untuk menambah arsip.</p>
           </div>
         ) : (
-          <div className="table-scroll">
-            <table className="data-table">
-              <thead>
-                <tr>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
                   {bolehHapus ? (
-                    <th scope="col">
+                    <HeaderCell scope="col">
                       <PilihSemuaLaporan />
-                    </th>
+                    </HeaderCell>
                   ) : null}
-                  <th scope="col">No</th>
-                  <th scope="col">Aksi</th>
-                  <th scope="col">Judul</th>
-                  <th scope="col">Bulan</th>
-                  <th scope="col">Tahun</th>
-                  <th scope="col">Tanggal Upload</th>
-                  <th scope="col">Tanggal Kirim</th>
-                </tr>
-              </thead>
-              <tbody>
+                  <HeaderCell scope="col">No</HeaderCell>
+                  <HeaderCell scope="col">Aksi</HeaderCell>
+                  <HeaderCell scope="col">Judul</HeaderCell>
+                  <HeaderCell scope="col">Bulan</HeaderCell>
+                  <HeaderCell scope="col">Tahun</HeaderCell>
+                  <HeaderCell scope="col">Tanggal Upload</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {data.rows.map((row, index) => (
-                  <tr key={row.id}>
+                  <Row key={row.id}>
                     {bolehHapus ? (
-                      <td>
+                      <Cell>
                         <input
                           aria-label={`Pilih ${row.judul}`}
                           name="id_cb"
                           type="checkbox"
                           value={row.id}
                         />
-                      </td>
+                      </Cell>
                     ) : null}
-                    <td>{index + 1}</td>
-                    <td>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       <div className="pemerintahan-row-actions">
                         {bolehUbah ? (
-                          <details className="pemerintahan-row-edit">
-                            <summary>Ubah</summary>
-                            <form action={simpanLaporanPendudukAction} className="wilayah-form">
-                              <input name="id" type="hidden" value={row.id} />
-                              <label className="form-field">
-                                <span className="form-label">Judul</span>
-                                <input
-                                  className="form-input"
-                                  defaultValue={row.judul}
-                                  maxLength={255}
-                                  name="judul"
-                                  required
-                                />
-                              </label>
-                              <label className="form-field">
-                                <span className="form-label">Bulan</span>
-                                <select
-                                  className="form-input"
-                                  defaultValue={row.bulan}
-                                  name="bulan"
-                                >
-                                  {BULAN_LAPORAN.map((bulan) => (
-                                    <option key={bulan.value} value={bulan.value}>
-                                      {bulan.label}
-                                    </option>
-                                  ))}
-                                </select>
-                              </label>
-                              <label className="form-field">
-                                <span className="form-label">Tahun</span>
-                                <input
-                                  className="form-input"
-                                  defaultValue={row.tahun}
-                                  max={TAHUN_MAX}
-                                  min={TAHUN_MIN}
-                                  name="tahun"
-                                  required
-                                  type="number"
-                                />
-                              </label>
-                              <label className="form-field">
-                                <span className="form-label">Ganti berkas (opsional)</span>
-                                <input
-                                  accept="application/pdf,.pdf"
-                                  className="form-input"
-                                  name="berkas"
-                                  type="file"
-                                />
-                              </label>
-                              <p className="form-help">
-                                Kosongkan berkas jika tidak ingin mengubah dokumen. Ukuran maksimal
-                                8 MB.
-                              </p>
-                              <button className="button button-primary" type="submit">
-                                Simpan
-                              </button>
-                            </form>
-                          </details>
+                          <FormDialog
+                            aksi={simpanLaporanPendudukFormAction}
+                            deskripsi={`Ubah arsip laporan "${row.judul}".`}
+                            judul="Ubah laporan penduduk"
+                            label="Ubah"
+                            labelSimpan="Simpan perubahan"
+                            varian="secondary"
+                          >
+                            {formLaporan(row, data.tahun)}
+                          </FormDialog>
                         ) : null}
-                        <a
-                          className="button button-secondary"
+                        <ButtonLink
+                          variant="secondary"
                           href={`/kependudukan/laporan-penduduk/${row.id}/berkas?unduh=1`}
                         >
                           Unduh
-                        </a>
+                        </ButtonLink>
                         {bolehHapus ? (
-                          <>
-                            <ConfirmSubmit
-                              className="button button-danger"
-                              form={`hapus-laporan-penduduk-${row.id}`}
-                              message={`Hapus laporan "${row.judul}" beserta berkasnya?`}
-                            >
-                              Hapus
-                            </ConfirmSubmit>
-                            <form
-                              action={hapusLaporanPendudukAction}
-                              id={`hapus-laporan-penduduk-${row.id}`}
-                            >
-                              <input name="id" type="hidden" value={row.id} />
-                            </form>
-                          </>
+                          <DialogHapusForm
+                            aksi={hapusLaporanPendudukAction}
+                            id={row.id}
+                            judul={`Hapus laporan "${row.judul}"?`}
+                            keterangan="Laporan beserta berkasnya akan dihapus permanen."
+                            labelAksi="Hapus laporan"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <a
                         href={`/kependudukan/laporan-penduduk/${row.id}/berkas`}
                         rel="noopener noreferrer"
@@ -263,72 +261,17 @@ export default async function LaporanPendudukPage({
                       >
                         {row.judul}
                       </a>
-                    </td>
-                    <td>{row.bulanLabel}</td>
-                    <td>{row.tahun}</td>
-                    <td>{tanggal(row.diunggahPada)}</td>
-                    <td>{row.kirim ? tanggal(row.kirim) : "-"}</td>
-                  </tr>
+                    </Cell>
+                    <Cell>{row.bulanLabel}</Cell>
+                    <Cell>{row.tahun}</Cell>
+                    <Cell>{tanggal(row.diunggahPada)}</Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
-      </section>
-
-      {bolehUbah ? (
-        <section className="platform-card data-panel" id="form-laporan-penduduk">
-          <header>
-            <h2>Tambah Laporan Penduduk</h2>
-            <p>Unggah PDF maksimal 8 MB. Satu dokumen per bulan dan tahun.</p>
-          </header>
-          <form action={simpanLaporanPendudukAction} className="data-custom-filter">
-            <label className="form-field">
-              <span className="form-label">Judul</span>
-              <input className="form-input" maxLength={255} name="judul" required />
-            </label>
-            <label className="form-field">
-              <span className="form-label">Bulan</span>
-              <select className="form-input" defaultValue={new Date().getMonth() + 1} name="bulan">
-                {BULAN_LAPORAN.map((bulan) => (
-                  <option key={bulan.value} value={bulan.value}>
-                    {bulan.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="form-field">
-              <span className="form-label">Tahun</span>
-              <input
-                className="form-input"
-                defaultValue={data.tahun}
-                max={TAHUN_MAX}
-                min={TAHUN_MIN}
-                name="tahun"
-                required
-                type="number"
-              />
-            </label>
-            <label className="form-field">
-              <span className="form-label">File (.pdf)</span>
-              <input
-                accept="application/pdf,.pdf"
-                className="form-input"
-                name="berkas"
-                required
-                type="file"
-              />
-            </label>
-            <div className="data-custom-actions">
-              <button className="button button-primary" type="submit">
-                Simpan
-              </button>
-            </div>
-          </form>
-        </section>
-      ) : (
-        <p className="form-help">Anda hanya memiliki akses baca untuk laporan penduduk.</p>
-      )}
+      </TableCard>
     </div>
   );
 }

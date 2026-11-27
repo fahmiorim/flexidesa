@@ -2,6 +2,10 @@
 
 import { useMemo, useState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormField } from "@/components/ui/form-field";
 import type { SyaratSuratDTO } from "@/features/pelayanan-persuratan/surat/domain/isian";
 import {
   DEFAULT_NUMBER_FORMAT,
@@ -174,75 +178,67 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
           </div>
         </div>
         <div className="modul-form-grid">
-          <label>
-            Kode surat
-            <input
-              name="code"
-              required
-              maxLength={30}
-              defaultValue={jenis?.code ?? ""}
-              placeholder="SKTM"
-            />
-          </label>
-          <label>
-            Nama jenis surat
-            <input
-              name="name"
-              required
-              maxLength={150}
-              defaultValue={jenis?.name ?? ""}
-              placeholder="Surat Keterangan Tidak Mampu"
-            />
-          </label>
-          <label>
-            Klasifikasi
-            <select name="classificationId" defaultValue={jenis?.classificationId ?? "none"}>
-              <option value="none">Tanpa klasifikasi</option>
-              {klasifikasi.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.code} — {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Urutan tampil
-            <input
-              name="sortOrder"
-              type="number"
-              min="0"
-              max="9999"
-              defaultValue={jenis?.sortOrder ?? 0}
-            />
-          </label>
-          <label>
-            Masa berlaku default (0 = tidak dibatasi)
-            <input
-              name="validityMonths"
-              type="number"
-              min="0"
-              max="31"
-              defaultValue={jenis?.validityMonths ?? 1}
-            />
-          </label>
-          <label>
-            Satuan masa berlaku
-            <select name="satuanMasaBerlaku" defaultValue={jenis?.satuanMasaBerlaku ?? "M"}>
-              {SATUAN_MASA_BERLAKU.map((item) => (
-                <option key={item.nilai} value={item.nilai}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Varian template
-            <input
-              name="templateVariant"
-              maxLength={50}
-              defaultValue={jenis?.templateVariant ?? "default"}
-            />
-          </label>
+          <FormField
+            label="Kode surat"
+            name="code"
+            required
+            maxLength={30}
+            defaultValue={jenis?.code ?? ""}
+            placeholder="SKTM"
+          />
+          <FormField
+            label="Nama jenis surat"
+            name="name"
+            required
+            maxLength={150}
+            defaultValue={jenis?.name ?? ""}
+            placeholder="Surat Keterangan Tidak Mampu"
+          />
+          <FormField
+            label="Klasifikasi"
+            kind="select"
+            name="classificationId"
+            defaultValue={jenis?.classificationId ?? "none"}
+            options={[
+              { value: "none", label: "Tanpa klasifikasi" },
+              ...klasifikasi.map((item) => ({
+                value: String(item.id),
+                label: `${item.code} — ${item.name}`,
+              })),
+            ]}
+          />
+          <FormField
+            label="Urutan tampil"
+            name="sortOrder"
+            type="number"
+            min={0}
+            max={9999}
+            defaultValue={jenis?.sortOrder ?? 0}
+          />
+          <FormField
+            label="Masa berlaku default (0 = tidak dibatasi)"
+            name="validityMonths"
+            type="number"
+            min={0}
+            max={31}
+            defaultValue={jenis?.validityMonths ?? 1}
+          />
+          <FormField
+            label="Satuan masa berlaku"
+            kind="select"
+            name="satuanMasaBerlaku"
+            defaultValue={jenis?.satuanMasaBerlaku ?? "M"}
+            options={SATUAN_MASA_BERLAKU.map((item) => ({
+              value: item.nilai,
+              label: item.label,
+            }))}
+          />
+          <FormField
+            label="Varian template"
+            name="templateVariant"
+            maxLength={50}
+            defaultValue={jenis?.templateVariant ?? "default"}
+          />
         </div>
         <div className="modul-form-checks">
           <label>
@@ -314,27 +310,27 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
             ))}
           </div>
         </div>
-        <label className="template-editor-label">
-          Isi template
-          <textarea
-            name="templateBody"
-            required
-            maxLength={20000}
-            rows={15}
-            value={template}
-            onChange={(event) => setTemplate(event.target.value)}
-            spellCheck={false}
-          />
-        </label>
-        <label className="template-editor-label">
-          Template alternatif (opsional)
-          <textarea
-            name="templateBodyAlt"
-            maxLength={20000}
-            rows={5}
-            defaultValue={jenis?.templateBodyAlt ?? ""}
-          />
-        </label>
+        <FormField
+          label="Isi template"
+          kind="textarea"
+          name="templateBody"
+          required
+          maxLength={20000}
+          rows={15}
+          value={template}
+          onChange={(event) => setTemplate(event.target.value)}
+          spellCheck={false}
+          containerClassName="form-field-full"
+        />
+        <FormField
+          label="Template alternatif (opsional)"
+          kind="textarea"
+          name="templateBodyAlt"
+          maxLength={20000}
+          rows={5}
+          defaultValue={jenis?.templateBodyAlt ?? ""}
+          containerClassName="form-field-full"
+        />
       </div>
       <div className="modul-card">
         <div className="beranda-card-head">
@@ -346,36 +342,27 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
           </div>
         </div>
         <div className="modul-form-grid">
-          <label>
-            Orientasi kertas
-            <select name="orientasi" defaultValue={jenis?.orientasi ?? "potrait"}>
-              {ORIENTASI_SURAT.map((item) => (
-                <option key={item.nilai} value={item.nilai}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Ukuran kertas
-            <select name="ukuran" defaultValue={jenis?.ukuran ?? "F4"}>
-              {UKURAN_SURAT.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Tampilkan header
-            <select name="header" defaultValue={String(jenis?.header ?? 1)}>
-              {HEADER_SURAT.map((item) => (
-                <option key={item.nilai} value={item.nilai}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <FormField
+            label="Orientasi kertas"
+            kind="select"
+            name="orientasi"
+            defaultValue={jenis?.orientasi ?? "potrait"}
+            options={ORIENTASI_SURAT.map((item) => ({ value: item.nilai, label: item.label }))}
+          />
+          <FormField
+            label="Ukuran kertas"
+            kind="select"
+            name="ukuran"
+            defaultValue={jenis?.ukuran ?? "F4"}
+            options={UKURAN_SURAT.map((item) => ({ value: item, label: item }))}
+          />
+          <FormField
+            label="Tampilkan header"
+            kind="select"
+            name="header"
+            defaultValue={String(jenis?.header ?? 1)}
+            options={HEADER_SURAT.map((item) => ({ value: String(item.nilai), label: item.label }))}
+          />
         </div>
         <div className="modul-form-checks">
           <label>
@@ -423,18 +410,17 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
               { kunci: "bawah", label: "Margin bawah" },
             ] as const
           ).map((item) => (
-            <label key={item.kunci}>
-              {item.label} (cm)
-              <input
-                defaultValue={margin[item.kunci]}
-                max="10"
-                min="0"
-                name={`margin${item.kunci.charAt(0).toUpperCase()}${item.kunci.slice(1)}`}
-                readOnly={marginGlobal}
-                step="0.1"
-                type="number"
-              />
-            </label>
+            <FormField
+              key={item.kunci}
+              label={`${item.label} (cm)`}
+              defaultValue={margin[item.kunci]}
+              max={10}
+              min={0}
+              name={`margin${item.kunci.charAt(0).toUpperCase()}${item.kunci.slice(1)}`}
+              readOnly={marginGlobal}
+              step={0.1}
+              type="number"
+            />
           ))}
         </div>
         <p className="modul-muted">
@@ -452,36 +438,32 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
           </div>
         </div>
         <div className="modul-form-grid">
-          <label>
-            Kode isian
-            <input
-              value={fieldDraft.kode}
-              onChange={(e) => setFieldDraft((v) => ({ ...v, kode: e.target.value }))}
-              placeholder="nama_usaha"
-            />
-          </label>
-          <label>
-            Label pada formulir
-            <input
-              value={fieldDraft.label}
-              onChange={(e) => setFieldDraft((v) => ({ ...v, label: e.target.value }))}
-              placeholder="Nama usaha"
-            />
-          </label>
-          <label>
-            Tipe isian
-            <select
-              value={fieldDraft.tipe}
-              onChange={(e) => setFieldDraft((v) => ({ ...v, tipe: e.target.value }))}
-            >
-              <option value="text">Teks pendek</option>
-              <option value="textarea">Teks panjang</option>
-              <option value="number">Angka</option>
-              <option value="date">Tanggal</option>
-              <option value="select">Pilihan</option>
-              <option value="checkbox">Centang</option>
-            </select>
-          </label>
+          <FormField
+            label="Kode isian"
+            value={fieldDraft.kode}
+            onChange={(e) => setFieldDraft((v) => ({ ...v, kode: e.target.value }))}
+            placeholder="nama_usaha"
+          />
+          <FormField
+            label="Label pada formulir"
+            value={fieldDraft.label}
+            onChange={(e) => setFieldDraft((v) => ({ ...v, label: e.target.value }))}
+            placeholder="Nama usaha"
+          />
+          <FormField
+            label="Tipe isian"
+            kind="select"
+            value={fieldDraft.tipe}
+            onChange={(e) => setFieldDraft((v) => ({ ...v, tipe: e.target.value }))}
+            options={[
+              { value: "text", label: "Teks pendek" },
+              { value: "textarea", label: "Teks panjang" },
+              { value: "number", label: "Angka" },
+              { value: "date", label: "Tanggal" },
+              { value: "select", label: "Pilihan" },
+              { value: "checkbox", label: "Centang" },
+            ]}
+          />
           <label className="modul-inline-check">
             <input
               type="checkbox"
@@ -492,18 +474,18 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
           </label>
         </div>
         {fieldDraft.tipe === "select" ? (
-          <label>
-            Opsi pilihan (satu per baris)
-            <textarea
-              rows={3}
-              value={fieldDraft.opsi}
-              onChange={(e) => setFieldDraft((v) => ({ ...v, opsi: e.target.value }))}
-            />
-          </label>
+          <FormField
+            label="Opsi pilihan (satu per baris)"
+            kind="textarea"
+            rows={3}
+            value={fieldDraft.opsi}
+            onChange={(e) => setFieldDraft((v) => ({ ...v, opsi: e.target.value }))}
+            containerClassName="form-field-full"
+          />
         ) : null}
-        <button type="button" className="button button-secondary" onClick={addField}>
+        <Button variant="secondary" type="button" onClick={addField}>
           ＋ Tambahkan isian
-        </button>
+        </Button>
         <div className="template-field-list">
           {parsedFields.map((item) => (
             <div className="template-field-row" key={item.kode}>
@@ -514,9 +496,9 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
                   {item.required ? " · wajib" : ""}
                 </small>
               </span>
-              <button
+              <Button
+                variant="ghost"
                 type="button"
-                className="button button-ghost"
                 onClick={() =>
                   setFields(
                     JSON.stringify(
@@ -528,7 +510,7 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
                 }
               >
                 Hapus
-              </button>
+              </Button>
             </div>
           ))}
         </div>
@@ -575,16 +557,16 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
             </label>
           ))}
         </div>
-        <label>
-          Lampiran surat (satu per baris)
-          <textarea
-            defaultValue={parseDaftarLampiran(jenis?.lampiran).join("\n")}
-            maxLength={2000}
-            name="lampiran"
-            placeholder={"Fotokopi KTP\nFotokopi Kartu Keluarga"}
-            rows={3}
-          />
-        </label>
+        <FormField
+          label="Lampiran surat (satu per baris)"
+          kind="textarea"
+          defaultValue={parseDaftarLampiran(jenis?.lampiran).join("\n")}
+          maxLength={2000}
+          name="lampiran"
+          placeholder={"Fotokopi KTP\nFotokopi Kartu Keluarga"}
+          rows={3}
+          containerClassName="form-field-full"
+        />
         <p className="modul-muted">
           Nama lampiran ini tercetak pada surat melalui token [lampiran] dan tampil sebagai kolom
           Lampiran di daftar surat.
@@ -598,14 +580,12 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
           />{" "}
           Gunakan format penomoran desa
         </label>
-        <label>
-          Format nomor surat
-          <input
-            name="numberFormat"
-            maxLength={100}
-            defaultValue={jenis?.numberFormat ?? DEFAULT_NUMBER_FORMAT}
-          />
-        </label>
+        <FormField
+          label="Format nomor surat"
+          name="numberFormat"
+          maxLength={100}
+          defaultValue={jenis?.numberFormat ?? DEFAULT_NUMBER_FORMAT}
+        />
         <p className="modul-muted">
           Token: [kode_surat], [nomor], [kode_desa], [tahun], [bulan_romawi].
         </p>
@@ -616,31 +596,22 @@ export function JenisSuratForm({ jenis, klasifikasi, syarat, canDelete = false }
         </p>
       ) : null}
       <div className="page-actions">
-        <a href="/layanan-surat/persuratan/jenis-surat" className="button button-secondary">
+        <ButtonLink variant="secondary" href="/layanan-surat/persuratan/jenis-surat">
           Kembali
-        </a>
+        </ButtonLink>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
           {jenis && canDelete ? (
-            <button
-              className="button button-danger-ghost"
-              type="submit"
-              formAction={hapusJenisSuratAction}
-              formNoValidate
-              onClick={(event) => {
-                if (
-                  !window.confirm(
-                    "Hapus jenis surat ini? Penghapusan hanya berhasil jika belum pernah dipakai surat.",
-                  )
-                )
-                  event.preventDefault();
-              }}
-            >
-              Hapus jenis surat
-            </button>
+            <DialogHapusForm
+              aksi={hapusJenisSuratAction}
+              id={jenis.id}
+              judul="Hapus jenis surat ini?"
+              keterangan="Penghapusan hanya berhasil jika jenis surat belum pernah dipakai surat."
+              labelAksi="Hapus jenis surat"
+            />
           ) : null}
-          <button className="button button-primary" type="submit">
+          <Button variant="primary" type="submit">
             Simpan jenis surat
-          </button>
+          </Button>
         </div>
       </div>
     </form>

@@ -54,6 +54,7 @@ export default async function DokumenPage({ searchParams }: Props) {
   return (
     <PublicShell
       villageName={desa.namaDesa ?? "Pemerintah Desa"}
+      villageId={desa.id}
       brandLabel="Dokumen & Informasi Publik"
       navigation={await getNavPublik(desa.id)}
     >

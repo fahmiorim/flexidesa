@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   formatRentang,
   formatWaktuPengajuan,
@@ -76,65 +80,52 @@ export default async function PersetujuanIzinPage({
         </p>
       ) : null}
 
-      <section className="platform-card data-panel">
-        <header>
-          <h2>Filter Pengajuan</h2>
-          <p>
-            {rows.length === 0
-              ? "Belum ada pengajuan izin."
-              : `${jumlahMenunggu} menunggu, ${jumlahDisetujui} disetujui, ${jumlahDitolak} ditolak.`}
-          </p>
-        </header>
-
-        <form className="data-custom-filter" method="get">
-          <label className="form-field">
-            <span className="form-label">Status</span>
-            <select className="form-input" defaultValue={filterStatus} name="status">
-              {PILIHAN_STATUS.map((status) => (
-                <option key={status || "semua"} value={status}>
-                  {status === ""
+      <TableCard
+        actions={
+          <ButtonLink variant="secondary" href="/kehadiran/persetujuan-izin">
+            Atur Ulang Filter
+          </ButtonLink>
+        }
+        description={
+          terfilter.length === 0
+            ? "Tidak ada pengajuan yang sesuai filter."
+            : `${terfilter.length} pengajuan ditampilkan · ${jumlahMenunggu} menunggu, ${jumlahDisetujui} disetujui, ${jumlahDitolak} ditolak.`
+        }
+        filter={
+          <form className="data-custom-filter" method="get">
+            <FormField
+              defaultValue={filterStatus}
+              kind="select"
+              label="Status"
+              name="status"
+              options={PILIHAN_STATUS.map((status) => ({
+                value: status,
+                label:
+                  status === ""
                     ? "Semua Status"
                     : status === "menunggu"
                       ? "Menunggu Persetujuan"
-                      : labelStatusPengajuan(status)}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="form-field">
-            <span className="form-label">Jenis Izin</span>
-            <select className="form-input" defaultValue={filterJenis} name="jenis">
-              <option value="">Semua Jenis Izin</option>
-              {JENIS_PENGAJUAN_IZIN.map((jenis) => (
-                <option key={jenis.nilai} value={jenis.nilai}>
-                  {jenis.label}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <div className="data-custom-actions">
-            <button className="button button-primary" type="submit">
-              Tampilkan
-            </button>
-            <Link className="button button-secondary" href="/kehadiran/persetujuan-izin">
-              Atur Ulang
-            </Link>
-          </div>
-        </form>
-      </section>
-
-      <section className="platform-card data-panel">
-        <header>
-          <h2>Daftar Pengajuan Izin</h2>
-          <p>
-            {terfilter.length === 0
-              ? "Tidak ada pengajuan yang sesuai filter."
-              : `${terfilter.length} pengajuan ditampilkan.`}
-          </p>
-        </header>
-
+                      : labelStatusPengajuan(status),
+              }))}
+            />
+            <FormField
+              defaultValue={filterJenis}
+              kind="select"
+              label="Jenis Izin"
+              name="jenis"
+              options={[
+                { value: "", label: "Semua Jenis Izin" },
+                ...JENIS_PENGAJUAN_IZIN.map((jenis) => ({
+                  value: jenis.nilai,
+                  label: jenis.label,
+                })),
+              ]}
+            />
+            <Button type="submit">Tampilkan</Button>
+          </form>
+        }
+        title="Daftar Pengajuan Izin"
+      >
         {terfilter.length === 0 ? (
           <div className="modul-empty">
             <strong>Tidak ada pengajuan izin.</strong>
@@ -144,30 +135,30 @@ export default async function PersetujuanIzinPage({
             </p>
           </div>
         ) : (
-          <div className="table-scroll">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th scope="col">No.</th>
-                  <th scope="col">Nama Perangkat</th>
-                  <th scope="col">Jabatan</th>
-                  <th scope="col">Jenis Izin</th>
-                  <th scope="col">Keterangan</th>
-                  <th scope="col">Tanggal</th>
-                  <th scope="col">Durasi</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Tanggal Pengajuan</th>
-                  {bolehPutuskan ? <th scope="col">Aksi</th> : null}
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">No.</HeaderCell>
+                  <HeaderCell scope="col">Nama Perangkat</HeaderCell>
+                  <HeaderCell scope="col">Jabatan</HeaderCell>
+                  <HeaderCell scope="col">Jenis Izin</HeaderCell>
+                  <HeaderCell scope="col">Keterangan</HeaderCell>
+                  <HeaderCell scope="col">Tanggal</HeaderCell>
+                  <HeaderCell scope="col">Durasi</HeaderCell>
+                  <HeaderCell scope="col">Status</HeaderCell>
+                  <HeaderCell scope="col">Tanggal Pengajuan</HeaderCell>
+                  {bolehPutuskan ? <HeaderCell scope="col">Aksi</HeaderCell> : null}
+                </Row>
+              </THead>
+              <TBody>
                 {terfilter.map((row, index) => (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>{row.nama}</td>
-                    <td>{row.jabatan ?? "-"}</td>
-                    <td>{labelJenisPengajuan(row.jenis)}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>{row.nama}</Cell>
+                    <Cell>{row.jabatan ?? "-"}</Cell>
+                    <Cell>{labelJenisPengajuan(row.jenis)}</Cell>
+                    <Cell>
                       {row.keterangan}
                       {row.lampiran ? (
                         <>
@@ -181,13 +172,13 @@ export default async function PersetujuanIzinPage({
                           <small>Catatan keputusan: {row.catatan}</small>
                         </>
                       ) : null}
-                    </td>
-                    <td>{formatRentang(row.mulai, row.selesai)}</td>
-                    <td>{row.durasi} hari kerja</td>
-                    <td>{labelStatusPengajuan(row.status)}</td>
-                    <td>{formatWaktuPengajuan(row.createdAt)}</td>
+                    </Cell>
+                    <Cell>{formatRentang(row.mulai, row.selesai)}</Cell>
+                    <Cell>{row.durasi} hari kerja</Cell>
+                    <Cell>{labelStatusPengajuan(row.status)}</Cell>
+                    <Cell>{formatWaktuPengajuan(row.createdAt)}</Cell>
                     {bolehPutuskan ? (
-                      <td>
+                      <Cell>
                         {row.status === "menunggu" ? (
                           <details>
                             <summary>Putuskan</summary>
@@ -196,15 +187,15 @@ export default async function PersetujuanIzinPage({
                         ) : (
                           "-"
                         )}
-                      </td>
+                      </Cell>
                     ) : null}
-                  </tr>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

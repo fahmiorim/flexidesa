@@ -1,5 +1,7 @@
 "use client";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+
 import { FaqEditor } from "./pengaturan-desa-faq";
 import { Field } from "./pengaturan-desa-field";
 import { blankService, type Data, type FaqItem, type Layanan } from "./pengaturan-desa-types";
@@ -123,34 +125,34 @@ export function TabLayanan({
           )}
         </div>
       </div>
-      <div className={styles.tableWrap}>
-        <table>
-          <thead>
-            <tr>
-              <th>Nama Layanan</th>
-              <th>Kategori</th>
-              <th>Biaya</th>
-              <th>Estimasi</th>
-              <th>Status</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
+      <TableScroll className={styles.tableWrap}>
+        <Table>
+          <THead>
+            <Row>
+              <HeaderCell>Nama Layanan</HeaderCell>
+              <HeaderCell>Kategori</HeaderCell>
+              <HeaderCell>Biaya</HeaderCell>
+              <HeaderCell>Estimasi</HeaderCell>
+              <HeaderCell>Status</HeaderCell>
+              <HeaderCell>Aksi</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
             {data.layanan.map((item) => (
-              <tr key={item.id}>
-                <td>
+              <Row key={item.id}>
+                <Cell>
                   <strong>{item.nama}</strong>
                   <small>{item.deskripsi}</small>
-                </td>
-                <td>{item.kategori}</td>
-                <td>Rp {item.biaya.toLocaleString("id-ID")}</td>
-                <td>{item.estimasiHari} hari</td>
-                <td>
+                </Cell>
+                <Cell>{item.kategori}</Cell>
+                <Cell>Rp {item.biaya.toLocaleString("id-ID")}</Cell>
+                <Cell>{item.estimasiHari} hari</Cell>
+                <Cell>
                   <span className={item.aktif ? styles.statusOn : styles.statusOff}>
                     {item.aktif ? "Aktif" : "Nonaktif"}
                   </span>
-                </td>
-                <td>
+                </Cell>
+                <Cell>
                   <button
                     onClick={() => {
                       setEditingService(item.id);
@@ -171,12 +173,12 @@ export function TabLayanan({
                   <button className={styles.textDanger} onClick={() => void removeService(item)}>
                     Nonaktifkan
                   </button>
-                </td>
-              </tr>
+                </Cell>
+              </Row>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
       <p className={styles.muted}>
         Perubahan katalog layanan juga digunakan oleh modul Pelayanan Publik.
       </p>

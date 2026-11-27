@@ -55,7 +55,6 @@ export const kiaSchema = z.object({
   hariPerkiraanLahir: z.string().optional().or(z.literal("")),
 });
 
-export type KiaInput = z.infer<typeof kiaSchema>;
 export type KiaRow = {
   id: number;
   villageId: number;
@@ -88,7 +87,6 @@ export const ibuHamilSchema = z.object({
   jaminanKesehatan: z.coerce.boolean().optional(),
 });
 
-export type IbuHamilInput = z.infer<typeof ibuHamilSchema>;
 export interface IbuHamilRow {
   id: number;
   posyanduId: number;
@@ -136,7 +134,6 @@ export const bulananAnakSchema = z.object({
   pengasuhanPaud: z.coerce.boolean().optional(),
 });
 
-export type BulananAnakInput = z.infer<typeof bulananAnakSchema>;
 export interface BulananAnakRow {
   id: number;
   posyanduId: number;
@@ -194,8 +191,6 @@ export const BULAN_PAUD = [
   "november",
   "desember",
 ] as const;
-
-export type BulanPaud = (typeof BULAN_PAUD)[number];
 
 export const paudSchema = z.object({
   id: z.number().int().positive().optional(),

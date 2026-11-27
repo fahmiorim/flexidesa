@@ -35,7 +35,6 @@ import {
   type BantuanDTO,
   type BantuanFormInput,
   type BantuanListRow,
-  type BantuanReferenceOption,
   type PesertaBantuanRow,
   type PesertaFormInput,
   type SasaranOption,
@@ -420,22 +419,6 @@ export interface BantuanProgramPublik {
   asalDana: number | null;
 }
 
-export async function listBantuanProgramPublik(villageId: number): Promise<BantuanProgramPublik[]> {
-  const rows = await db
-    .select({
-      id: bantuanProgram.id,
-      nama: bantuanProgram.name,
-      slug: bantuanProgram.slug,
-      sasaran: bantuanProgram.sasaran,
-      asalDana: bantuanProgram.asalDana,
-    })
-    .from(bantuanProgram)
-    .where(eq(bantuanProgram.villageId, villageId))
-    .orderBy(asc(bantuanProgram.name));
-
-  return rows;
-}
-
 /** Ringkasan jumlah program dan peserta bantuan untuk statistik publik. */
 export async function getRingkasanBantuanPublik(
   villageId: number,
@@ -518,6 +501,9 @@ export async function listPesertaProgram(
     cardNumber: bantuanPeserta.cardNumber,
     cardName: bantuanPeserta.cardName,
     cardNationalId: bantuanPeserta.cardNationalId,
+    cardBirthPlace: bantuanPeserta.cardBirthPlace,
+    cardBirthDate: bantuanPeserta.cardBirthDate,
+    cardAddress: bantuanPeserta.cardAddress,
   };
 
   if (program.sasaran === SASARAN_KELUARGA) {
@@ -1148,12 +1134,3 @@ export async function deleteAllPesertaByProgram(
 }
 
 /** Penduduk desa untuk memilih peserta (identitas ringkas + NIK). */
-export async function listPendudukRingkas(villageId: number): Promise<BantuanReferenceOption[]> {
-  const rows = await db
-    .select({ id: residents.id, name: residents.name, nationalId: residents.nationalId })
-    .from(residents)
-    .where(eq(residents.villageId, villageId))
-    .orderBy(asc(residents.name));
-
-  return rows.map((row) => ({ id: row.id, label: row.name, detail: row.nationalId }));
-}

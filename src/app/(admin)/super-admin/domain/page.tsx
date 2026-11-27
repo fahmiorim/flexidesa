@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { ButtonLink } from "@/components/ui/button-link";
 import { daftarSemuaDomain } from "@/features/multi-desa/application/kelola-desa-use-cases";
 import { daftarPemeriksaanDomain } from "@/features/multi-desa/application/pemantauan-domain-use-cases";
 import { daftarDesaSuperAdmin } from "@/features/multi-desa/application/provisioning-use-cases";
@@ -175,7 +175,7 @@ export default async function SuperAdminDomainPage({ searchParams }: Props) {
           label="Cek DNS massal"
           labelPending="Memeriksa DNS..."
         />
-        <Link className="button button-primary" href="/super-admin/tenant/tambah">
+        <ButtonLink variant="primary" href="/super-admin/tenant/tambah">
           <svg
             aria-hidden="true"
             fill="none"
@@ -186,7 +186,7 @@ export default async function SuperAdminDomainPage({ searchParams }: Props) {
             <path d="M12 5v14M5 12h14" />
           </svg>
           Tambah Tenant
-        </Link>
+        </ButtonLink>
       </div>
 
       <PlatformCard flush>

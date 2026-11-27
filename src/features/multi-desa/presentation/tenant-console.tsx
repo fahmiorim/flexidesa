@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { StatusRetensi } from "@/features/multi-desa/domain/lifecycle-tenant";
 import {
   cocokStatusTenant,
@@ -252,23 +253,23 @@ export function TenantConsole({
         </select>
       </div>
 
-      <div className="tenant-table-scroll">
-        <table className="tenant-table tenant-table-list">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Desa</th>
-              <th scope="col">Domain</th>
-              <th scope="col">Kecamatan</th>
-              <th scope="col">Tema</th>
-              <th scope="col">Pengguna</th>
-              <th scope="col">Kuota media</th>
-              <th scope="col">Terdaftar</th>
-              <th scope="col">Status</th>
-              <th scope="col">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
+      <TableScroll className="tenant-table-scroll">
+        <Table className="tenant-table tenant-table-list">
+          <THead>
+            <Row>
+              <HeaderCell scope="col">#</HeaderCell>
+              <HeaderCell scope="col">Desa</HeaderCell>
+              <HeaderCell scope="col">Domain</HeaderCell>
+              <HeaderCell scope="col">Kecamatan</HeaderCell>
+              <HeaderCell scope="col">Tema</HeaderCell>
+              <HeaderCell scope="col">Pengguna</HeaderCell>
+              <HeaderCell scope="col">Kuota media</HeaderCell>
+              <HeaderCell scope="col">Terdaftar</HeaderCell>
+              <HeaderCell scope="col">Status</HeaderCell>
+              <HeaderCell scope="col">Aksi</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
             {terlihat.length > 0 ? (
               terlihat.map((item, index) => (
                 <TrTenant
@@ -284,17 +285,17 @@ export function TenantConsole({
                 />
               ))
             ) : (
-              <tr>
-                <td className="tenant-empty" colSpan={10}>
+              <Row>
+                <Cell className="tenant-empty" colSpan={10}>
                   {desa.length === 0
                     ? "Belum ada tenant desa yang terdaftar."
                     : "Tidak ada desa yang sesuai dengan pencarian atau filter."}
-                </td>
-              </tr>
+                </Cell>
+              </Row>
             )}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
 
       {filtered.length > 0 ? (
         <div className="tenant-pagination">

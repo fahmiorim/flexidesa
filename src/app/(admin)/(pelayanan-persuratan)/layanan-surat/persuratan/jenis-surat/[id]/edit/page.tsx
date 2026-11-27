@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
@@ -18,13 +17,6 @@ export default async function EditJenisSuratPage({ params }: { params: Promise<{
       <PageHeading
         judul={<>Kelola {jenis?.name}</>}
         deskripsi={<>Ubah template surat untuk penerbitan berikutnya.</>}
-        aksi={
-          <>
-            <Link href="/layanan-surat/persuratan/jenis-surat" className="button button-secondary">
-              ← Kembali
-            </Link>
-          </>
-        }
       />
       <JenisSuratForm
         jenis={jenis}

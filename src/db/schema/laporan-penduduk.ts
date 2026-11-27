@@ -8,11 +8,7 @@ import { villages } from "./village";
  *
  * Mengikuti `laporan_sinkronisasi` pada sistem rujukan (OpenSID) untuk tipe
  * `laporan_penduduk`: operator mengunggah dokumen PDF resmi per bulan dan
- * tahun, lalu mencatat tanggal pengirimannya ke OpenDK. Angka laporan
- * **tidak** diturunkan dari tabel ini.
- *
- * Kolom `kirim` sengaja dipertahankan agar kolom Tanggal Kirim OpenSID tetap
- * terjangkau; kolom ini terisi saat aksi kirim ke OpenDK tersedia.
+ * tahun. Angka laporan **tidak** diturunkan dari tabel ini.
  */
 export const laporanPenduduk = mysqlTable(
   "laporan_penduduk",
@@ -32,9 +28,6 @@ export const laporanPenduduk = mysqlTable(
     /** Jalur berkas di disk relatif terhadap `storage/laporan-penduduk`. */
     jalurFile: varchar("jalur_file", { length: 255 }).notNull(),
     ukuranFile: int("ukuran_file").notNull().default(0),
-
-    /** Tanggal dokumen dikirim ke OpenDK; kosong berarti belum dikirim. */
-    kirim: timestamp("kirim"),
 
     createdBy: varchar("created_by", { length: 36 }).references(() => users.id, {
       onDelete: "set null",

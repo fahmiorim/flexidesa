@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, count, desc, eq, gt, gte, isNull, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, gte, isNull } from "drizzle-orm";
 
 import { db } from "@/db";
 import {
@@ -177,20 +177,6 @@ export async function deleteBlockedIp(villageId: number, id: number): Promise<vo
   await db
     .delete(villageBlockedIps)
     .where(and(eq(villageBlockedIps.villageId, villageId), eq(villageBlockedIps.id, id)));
-}
-export async function isTenantIpBlocked(villageId: number, ipAddress: string): Promise<boolean> {
-  const [row] = await db
-    .select({ id: villageBlockedIps.id })
-    .from(villageBlockedIps)
-    .where(
-      and(
-        eq(villageBlockedIps.villageId, villageId),
-        eq(villageBlockedIps.ipAddress, ipAddress),
-        or(isNull(villageBlockedIps.expiresAt), gt(villageBlockedIps.expiresAt, new Date())),
-      ),
-    )
-    .limit(1);
-  return Boolean(row);
 }
 
 export async function assertPasswordNotReused(

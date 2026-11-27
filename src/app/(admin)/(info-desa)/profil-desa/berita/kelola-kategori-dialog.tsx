@@ -1,10 +1,19 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useActionState,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  useTransition,
+} from "react";
 import { createPortal } from "react-dom";
 
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import { createIdleActionState } from "@/lib/action-state";
 
@@ -84,12 +93,12 @@ function FormKategori({
       </div>
       <PesanDialog state={state} />
       <div className="platform-dialog-actions">
-        <button className="button button-secondary" onClick={onBatal} type="button">
+        <Button variant="secondary" onClick={onBatal} type="button">
           Kembali ke daftar
-        </button>
-        <button className="button button-primary" disabled={pending} type="submit">
-          {pending ? "Menyimpan..." : item ? "Simpan Perubahan" : "Simpan Kategori"}
-        </button>
+        </Button>
+        <Button loading={pending} type="submit" variant="primary">
+          {item ? "Simpan Perubahan" : "Simpan Kategori"}
+        </Button>
       </div>
     </form>
   );
@@ -115,8 +124,24 @@ export function KelolaKategoriBeritaDialog({
   tombolClassName?: string;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const router = useRouter();
   const id = useId();
   const [tampilan, setTampilan] = useState<Tampilan>({ jenis: "daftar" });
+  const [konfirmasiHapus, setKonfirmasiHapus] = useState<number | null>(null);
+  const [menghapus, mulaiHapus] = useTransition();
+
+  function hapusKategori(item: KategoriBeritaItem) {
+    const formData = new FormData();
+    formData.set("id", String(item.id));
+    mulaiHapus(async () => {
+      try {
+        await hapusKategoriBeritaAction(formData);
+      } finally {
+        setKonfirmasiHapus(null);
+        router.refresh();
+      }
+    });
+  }
   // Dialog dipindah ke `body` agar tampil sama di mana pun tombolnya dipasang.
   const terpasang = useSyncExternalStore(
     () => () => {},
@@ -183,73 +208,93 @@ export function KelolaKategoriBeritaDialog({
                   <div className="berita-kat-toolbar">
                     <span className="wilayah-count-pill">{kategori.length} kategori</span>
                     {bolehUbah ? (
-                      <button
-                        className="button button-primary"
+                      <Button
+                        variant="primary"
                         onClick={() => setTampilan({ jenis: "form", item: null })}
                         type="button"
                       >
                         ＋ Tambah Kategori
-                      </button>
+                      </Button>
                     ) : null}
                   </div>
 
                   {kategori.length ? (
-                    <div className="modul-table-wrap">
-                      <table className="modul-table pemerintah-table berita-tabel">
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Kategori</th>
-                            <th>Slug</th>
-                            <th>Berita</th>
-                            <th>Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                    <TableScroll className="modul-table-wrap">
+                      <Table className="modul-table pemerintah-table berita-tabel">
+                        <THead>
+                          <Row>
+                            <HeaderCell>No</HeaderCell>
+                            <HeaderCell>Kategori</HeaderCell>
+                            <HeaderCell>Slug</HeaderCell>
+                            <HeaderCell>Berita</HeaderCell>
+                            <HeaderCell>Aksi</HeaderCell>
+                          </Row>
+                        </THead>
+                        <TBody>
                           {kategori.map((item, index) => (
-                            <tr key={item.id}>
-                              <td>{index + 1}</td>
-                              <td>
+                            <Row key={item.id}>
+                              <Cell>{index + 1}</Cell>
+                              <Cell>
                                 <span className="berita-kategori">{item.nama}</span>
-                              </td>
-                              <td>
+                              </Cell>
+                              <Cell>
                                 <span className="berita-slug">/{item.slug}</span>
-                              </td>
-                              <td>
+                              </Cell>
+                              <Cell>
                                 <span className="berita-baca">{item.jumlahBerita} berita</span>
-                              </td>
-                              <td>
+                              </Cell>
+                              <Cell>
                                 <div className="pd-aparat-aksi">
                                   {bolehUbah ? (
-                                    <button
-                                      className="button button-ghost"
+                                    <Button
+                                      variant="ghost"
                                       onClick={() => setTampilan({ jenis: "form", item })}
                                       type="button"
                                     >
                                       Ubah
-                                    </button>
+                                    </Button>
                                   ) : null}
                                   {item.jumlahBerita ? (
                                     <small className="berita-kat-dipakai">Masih dipakai</small>
                                   ) : null}
                                   {bolehHapus && !item.jumlahBerita ? (
-                                    <form action={hapusKategoriBeritaAction}>
-                                      <input name="id" type="hidden" value={item.id} />
-                                      <ConfirmSubmit
-                                        className="button button-danger-ghost"
-                                        message={`Hapus kategori ${item.nama}?`}
+                                    konfirmasiHapus === item.id ? (
+                                      <span className="table-actions">
+                                        <Button
+                                          loading={menghapus}
+                                          onClick={() => hapusKategori(item)}
+                                          size="sm"
+                                          type="button"
+                                          variant="danger"
+                                        >
+                                          Hapus kategori
+                                        </Button>
+                                        <Button
+                                          onClick={() => setKonfirmasiHapus(null)}
+                                          size="sm"
+                                          type="button"
+                                          variant="secondary"
+                                        >
+                                          Batal
+                                        </Button>
+                                      </span>
+                                    ) : (
+                                      <Button
+                                        onClick={() => setKonfirmasiHapus(item.id)}
+                                        type="button"
+                                        variant="danger-ghost"
                                       >
                                         Hapus
-                                      </ConfirmSubmit>
-                                    </form>
+                                      </Button>
+                                    )
                                   ) : null}
                                 </div>
-                              </td>
-                            </tr>
+                              </Cell>
+                            </Row>
                           ))}
-                        </tbody>
-                      </table>
-                    </div>
+                        </TBody>
+                      </Table>
+                    </TableScroll>
                   ) : (
                     <div className="berita-kosong">
                       <span aria-hidden="true">▤</span>

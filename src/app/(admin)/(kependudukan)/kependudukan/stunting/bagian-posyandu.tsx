@@ -1,4 +1,7 @@
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { Posyandu } from "@/features/kependudukan/kesehatan/domain/kesehatan";
 
 import { hapusPosyanduAction, simpanPosyanduAction } from "./actions";
@@ -81,9 +84,9 @@ export function BagianPosyandu({
               </label>
             </div>
             <div className="penduduk-heading-actions">
-              <button className="button button-primary" type="submit">
+              <Button variant="primary" type="submit">
                 {diubah ? "Simpan Perubahan" : "Simpan Posyandu"}
-              </button>
+              </Button>
             </div>
           </form>
         </details>
@@ -95,56 +98,54 @@ export function BagianPosyandu({
           <p>Tambahkan posyandu sebelum mengisi pemantauan ibu hamil dan anak.</p>
         </div>
       ) : (
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>Aksi</th>
-                <th>Nama Posyandu</th>
-                <th>Alamat</th>
-                <th>Ketua</th>
-                <th>Bidan</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll>
+          <Table>
+            <THead>
+              <Row>
+                <HeaderCell>No.</HeaderCell>
+                <HeaderCell>Aksi</HeaderCell>
+                <HeaderCell>Nama Posyandu</HeaderCell>
+                <HeaderCell>Alamat</HeaderCell>
+                <HeaderCell>Ketua</HeaderCell>
+                <HeaderCell>Bidan</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {posyandu.map((row, index) => (
-                <tr key={row.id}>
-                  <td>{index + 1}</td>
-                  <td>
+                <Row key={row.id}>
+                  <Cell>{index + 1}</Cell>
+                  <Cell>
                     <div className={styles.rowActions}>
                       {bolehUbah ? (
-                        <a
-                          className="button button-ghost"
+                        <ButtonLink
+                          variant="ghost"
                           href={`/kependudukan/stunting?tab=posyandu&ubah=${row.id}`}
                         >
                           Ubah
-                        </a>
+                        </ButtonLink>
                       ) : null}
                       {bolehHapus ? (
-                        <form action={hapusPosyanduAction}>
-                          <input name="id" type="hidden" value={row.id} />
-                          <ConfirmSubmit
-                            className="button button-danger"
-                            message={`Hapus posyandu ${row.nama}?`}
-                          >
-                            Hapus
-                          </ConfirmSubmit>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusPosyanduAction}
+                          id={row.id}
+                          judul={`Hapus posyandu "${row.nama}"?`}
+                          keterangan="Posyandu akan dihapus permanen dari data kesehatan desa."
+                          labelAksi="Hapus posyandu"
+                        />
                       ) : null}
                     </div>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <strong>{row.nama}</strong>
-                  </td>
-                  <td>{row.alamat || "—"}</td>
-                  <td>{row.namaKetua || "—"}</td>
-                  <td>{row.namaBidan || "—"}</td>
-                </tr>
+                  </Cell>
+                  <Cell>{row.alamat || "—"}</Cell>
+                  <Cell>{row.namaKetua || "—"}</Cell>
+                  <Cell>{row.namaBidan || "—"}</Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       )}
     </section>
   );

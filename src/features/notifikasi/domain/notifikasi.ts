@@ -44,8 +44,6 @@ export const broadcastSchema = z.object({
     .max(1000, "Pesan maksimal 1000 karakter."),
 });
 
-export type BroadcastInput = z.infer<typeof broadcastSchema>;
-
 /** Status pengiriman satu baris bukti `notifikasi_terkirim`. */
 export type StatusPengiriman = "sukses" | "gagal" | "dilewati";
 

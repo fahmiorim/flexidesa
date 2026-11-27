@@ -11,22 +11,6 @@ export async function listAnalisisKategori(villageId: number) {
     .orderBy(analisisKategori.nama);
 }
 
-export async function createAnalisisKategori(data: typeof analisisKategori.$inferInsert) {
-  const result = await db.insert(analisisKategori).values(data).$returningId();
-  return result[0]?.id ?? 0;
-}
-
-export async function updateAnalisisKategori(
-  id: number,
-  villageId: number,
-  data: Partial<typeof analisisKategori.$inferInsert>,
-) {
-  await db
-    .update(analisisKategori)
-    .set(data)
-    .where(and(eq(analisisKategori.id, id), eq(analisisKategori.villageId, villageId)));
-}
-
 /**
  * Composite RESTRICT mencegah referensi lintas desa; lepaskan indikator
  * sewilayah secara atomik sebelum kategori dihapus.
@@ -48,22 +32,6 @@ export async function listAnalisisIndikator(villageId: number, kategoriId?: numb
     ? and(eq(analisisIndikator.villageId, villageId), eq(analisisIndikator.kategoriId, kategoriId))
     : eq(analisisIndikator.villageId, villageId);
   return db.select().from(analisisIndikator).where(where).orderBy(analisisIndikator.kode);
-}
-
-export async function createAnalisisIndikator(data: typeof analisisIndikator.$inferInsert) {
-  const result = await db.insert(analisisIndikator).values(data).$returningId();
-  return result[0]?.id ?? 0;
-}
-
-export async function updateAnalisisIndikator(
-  id: number,
-  villageId: number,
-  data: Partial<typeof analisisIndikator.$inferInsert>,
-) {
-  await db
-    .update(analisisIndikator)
-    .set(data)
-    .where(and(eq(analisisIndikator.id, id), eq(analisisIndikator.villageId, villageId)));
 }
 
 /**

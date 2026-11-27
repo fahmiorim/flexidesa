@@ -6,7 +6,7 @@ import { SARANA_KATEGORI } from "@/db/schema";
 import {
   hapusSaranaAdmin,
   simpanSaranaAdmin,
-} from "@/features/info-desa/publik/application/konten-admin";
+} from "@/features/program-data-desa/potensi-sarana/application/use-cases";
 
 const categories = new Set<string>(SARANA_KATEGORI);
 function value(form: FormData, key: string) {

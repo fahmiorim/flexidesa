@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   daftarFiturPaketPlatform,
   detailPaketPlatform,
@@ -79,9 +80,9 @@ export default async function SuperAdminDetailPaketPage({
     <>
       <PlatformPageHeader
         actions={
-          <Link className="button button-secondary" href="/super-admin/paket/tenant">
+          <ButtonLink variant="secondary" href="/super-admin/paket/tenant">
             Penetapan tenant
-          </Link>
+          </ButtonLink>
         }
         backHref="/super-admin/paket"
         backLabel="Daftar paket"
@@ -151,34 +152,36 @@ export default async function SuperAdminDetailPaketPage({
               title="Belum ada tenant"
             />
           ) : (
-            <div className="tenant-table-scroll">
-              <table className="tenant-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Tenant</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Versi paket</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableScroll className="tenant-table-scroll">
+              <Table className="tenant-table">
+                <THead>
+                  <Row>
+                    <HeaderCell scope="col">Tenant</HeaderCell>
+                    <HeaderCell scope="col">Status</HeaderCell>
+                    <HeaderCell scope="col">Versi paket</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
                   {tenants.map((tenant) => (
-                    <tr key={tenant.villageId}>
-                      <td>
+                    <Row key={tenant.villageId}>
+                      <Cell>
                         <strong>{tenant.name ?? `Desa #${tenant.villageId}`}</strong>
                         {tenant.code ? <div className="tenant-secondary">{tenant.code}</div> : null}
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <PlatformStatus
                           aktif={tenant.active}
                           label={tenant.active ? "Aktif" : "Nonaktif"}
                         />
-                      </td>
-                      <td>{tenant.planVersion ? `v${tenant.planVersion}` : "Tidak diketahui"}</td>
-                    </tr>
+                      </Cell>
+                      <Cell>
+                        {tenant.planVersion ? `v${tenant.planVersion}` : "Tidak diketahui"}
+                      </Cell>
+                    </Row>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TBody>
+              </Table>
+            </TableScroll>
           )}
         </PlatformCard>
 

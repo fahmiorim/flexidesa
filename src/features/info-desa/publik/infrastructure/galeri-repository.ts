@@ -302,28 +302,6 @@ export interface SliderInput {
   aktif: boolean;
 }
 
-export async function listSlider(
-  villageId: number,
-  includeInactive = false,
-): Promise<SliderRingkas[]> {
-  const kondisi = [eq(slider.villageId, villageId)];
-  if (!includeInactive) kondisi.push(eq(slider.aktif, true));
-
-  return db
-    .select({
-      id: slider.id,
-      gambar: slider.gambar,
-      judul: slider.judul,
-      keterangan: slider.keterangan,
-      tautan: slider.tautan,
-      urut: slider.urut,
-      aktif: slider.aktif,
-    })
-    .from(slider)
-    .where(and(...kondisi))
-    .orderBy(asc(slider.urut), asc(slider.id));
-}
-
 export async function createSlider(villageId: number, data: SliderInput): Promise<void> {
   await db.insert(slider).values({ villageId, ...data });
 }

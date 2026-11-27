@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-export const PESAN_WARGA_RESOURCE = "pesan-warga";
-
 /** Batas panjang satu pesan agar percakapan tetap terbaca. */
 export const PANJANG_MAKS_PESAN = 2000;
 
@@ -13,8 +11,6 @@ export const pesanWargaSchema = z.object({
     .min(1, "Pesan tidak boleh kosong.")
     .max(PANJANG_MAKS_PESAN, `Pesan maksimal ${PANJANG_MAKS_PESAN} karakter.`),
 });
-
-export type PesanWargaInput = z.infer<typeof pesanWargaSchema>;
 
 export const PENGIRIM_PESAN = ["warga", "operator"] as const;
 export type PengirimPesan = (typeof PENGIRIM_PESAN)[number];

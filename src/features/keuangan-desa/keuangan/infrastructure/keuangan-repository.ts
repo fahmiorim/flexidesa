@@ -8,7 +8,6 @@ import { keuangan, keuanganTemplate, keuanganTriwulan } from "@/db/schema";
 import {
   formatMoney,
   kodeLength,
-  parentKode,
   toMinor,
   type KeuanganBarisDTO,
 } from "@/features/keuangan-desa/keuangan/domain/keuangan";
@@ -33,15 +32,6 @@ export async function listTemplate(): Promise<TemplateRow[]> {
 }
 
 /** Semua leluhur sebuah kode, dari induk langsung hingga akar. */
-export function ancestorsOf(uuid: string): string[] {
-  const result: string[] = [];
-  let current = parentKode(uuid);
-  while (current) {
-    result.push(current);
-    current = parentKode(current);
-  }
-  return result;
-}
 
 // --- Baris anggaran per tahun ----------------------------------------------
 

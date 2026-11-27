@@ -1,12 +1,13 @@
+import { Button } from "@/components/ui/button";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { type getWebsiteContentData } from "@/features/info-desa/publik/application/website-admin";
 
-import {
-  hapusAgendaWebsiteAction,
-  tambahAgendaWebsiteAction,
-  ubahAgendaWebsiteAction,
-  ubahStatusAgendaWebsiteAction,
-} from "../actions";
-import { WebsiteSection } from "../website-admin-shell";
+import { hapusAgendaWebsiteAction, ubahStatusAgendaWebsiteAction } from "../actions";
+import { tambahAgendaFormAction, ubahAgendaFormAction } from "../form-actions";
 
 type DataKonten = Awaited<ReturnType<typeof getWebsiteContentData>>;
 
@@ -16,182 +17,168 @@ interface Props {
   formatTanggal: (value: Date | string | null) => string;
 }
 
+type AgendaRow = DataKonten["agenda"][number];
+
+function formAgenda(row: AgendaRow | null) {
+  return (
+    <div className="modul-form-grid">
+      {row ? <input name="id" type="hidden" value={row.id} /> : null}
+      <FormField
+        defaultValue={row?.judul ?? ""}
+        label="Nama kegiatan"
+        maxLength={200}
+        name="judulAgenda"
+        required
+      />
+      <FormField
+        defaultValue={row?.kategori ?? "umum"}
+        label="Kategori"
+        maxLength={50}
+        name="kategoriAgenda"
+      />
+      <FormField
+        defaultValue={row ? String(row.mulai).slice(0, 10) : ""}
+        label="Tanggal mulai"
+        name="mulaiAgenda"
+        required
+        type="date"
+      />
+      <FormField
+        defaultValue={row?.selesai ? String(row.selesai).slice(0, 10) : ""}
+        label="Tanggal selesai"
+        name="selesaiAgenda"
+        type="date"
+      />
+      <FormField defaultValue={row?.jamMulai ?? ""} label="Jam mulai" name="jamMulai" type="time" />
+      <FormField
+        defaultValue={row?.jamSelesai ?? ""}
+        label="Jam selesai"
+        name="jamSelesai"
+        type="time"
+      />
+      <FormField
+        defaultValue={row?.lokasi ?? ""}
+        label="Lokasi"
+        maxLength={200}
+        name="lokasiAgenda"
+      />
+      <FormField
+        containerClassName="form-field-full"
+        defaultValue={row?.deskripsi ?? ""}
+        kind="textarea"
+        label="Deskripsi"
+        name="deskripsiAgenda"
+        rows={3}
+      />
+      {row ? null : (
+        <div className="modul-form-checks form-field-full">
+          <label>
+            <input name="tayangAgenda" type="checkbox" /> Tampilkan di website publik
+          </label>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** Bagian agenda kegiatan Website. */
 export function BagianAgenda({ izin, agenda, formatTanggal }: Props) {
   return (
-    <WebsiteSection title="Agenda Kegiatan">
-      <div id="agenda" className="website-table-wrap">
-        <table className="website-table website-table-agenda">
-          <thead>
-            <tr>
-              <th>Kegiatan</th>
-              <th>Tanggal</th>
-              <th>Lokasi</th>
-              <th>Status</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {agenda.map((item) => (
-              <tr key={item.id}>
-                <td>
-                  <strong>{item.judul}</strong>
-                  <small>{item.kategori}</small>
-                </td>
-                <td>
-                  {formatTanggal(item.mulai)}
-                  {item.selesai && item.selesai !== item.mulai
-                    ? ` – ${formatTanggal(item.selesai)}`
-                    : ""}
-                </td>
-                <td>{item.lokasi ?? "—"}</td>
-                <td>
-                  <span
-                    className={item.tayang ? "website-status" : "website-status website-status-off"}
-                  >
-                    {item.tayang ? "Tayang" : "Disimpan"}
-                  </span>
-                </td>
-                <td>
-                  {(izin.agenda.ubah || izin.agenda.hapus) && (
-                    <div className="website-row-actions">
-                      {izin.agenda.ubah && (
-                        <details>
-                          <summary className="website-mini-button">Edit</summary>
-                          <form action={ubahAgendaWebsiteAction} className="website-inline-form">
+    <TableCard
+      title="Agenda Kegiatan"
+      description={`${agenda.length} agenda terdaftar.`}
+      actions={
+        izin.agenda.tambah ? (
+          <FormDialog
+            aksi={tambahAgendaFormAction}
+            deskripsi="Agenda yang ditayangkan akan muncul di halaman publik desa."
+            judul="Tambah agenda"
+            label="Tambah agenda"
+            labelSimpan="Simpan agenda"
+          >
+            {formAgenda(null)}
+          </FormDialog>
+        ) : undefined
+      }
+    >
+      <div className="website-table-wrap">
+        <TableScroll>
+          <Table className="website-table website-table-agenda">
+            <THead>
+              <Row>
+                <HeaderCell>Kegiatan</HeaderCell>
+                <HeaderCell>Tanggal</HeaderCell>
+                <HeaderCell>Lokasi</HeaderCell>
+                <HeaderCell>Status</HeaderCell>
+                <HeaderCell>Aksi</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
+              {agenda.map((item) => (
+                <Row key={item.id}>
+                  <Cell>
+                    <strong>{item.judul}</strong>
+                    <small>{item.kategori}</small>
+                  </Cell>
+                  <Cell>
+                    {formatTanggal(item.mulai)}
+                    {item.selesai && item.selesai !== item.mulai
+                      ? ` – ${formatTanggal(item.selesai)}`
+                      : ""}
+                  </Cell>
+                  <Cell>{item.lokasi ?? "—"}</Cell>
+                  <Cell>
+                    <span
+                      className={
+                        item.tayang ? "website-status" : "website-status website-status-off"
+                      }
+                    >
+                      {item.tayang ? "Tayang" : "Disimpan"}
+                    </span>
+                  </Cell>
+                  <Cell>
+                    {(izin.agenda.ubah || izin.agenda.hapus) && (
+                      <div className="website-row-actions">
+                        {izin.agenda.ubah && (
+                          <FormDialog
+                            aksi={ubahAgendaFormAction}
+                            deskripsi={`Ubah agenda "${item.judul}".`}
+                            judul="Ubah agenda"
+                            label="Ubah"
+                            labelSimpan="Simpan perubahan"
+                            varian="secondary"
+                          >
+                            {formAgenda(item)}
+                          </FormDialog>
+                        )}
+                        {izin.agenda.ubah && (
+                          <form action={ubahStatusAgendaWebsiteAction}>
                             <input type="hidden" name="id" value={item.id} />
-                            <label>
-                              Nama kegiatan
-                              <input
-                                name="judulAgenda"
-                                defaultValue={item.judul}
-                                required
-                                maxLength={200}
-                              />
-                            </label>
-                            <label>
-                              Kategori
-                              <input name="kategoriAgenda" defaultValue={item.kategori} />
-                            </label>
-                            <label>
-                              Tanggal mulai
-                              <input
-                                type="date"
-                                name="mulaiAgenda"
-                                defaultValue={String(item.mulai).slice(0, 10)}
-                                required
-                              />
-                            </label>
-                            <label>
-                              Tanggal selesai
-                              <input
-                                type="date"
-                                name="selesaiAgenda"
-                                defaultValue={item.selesai ? String(item.selesai).slice(0, 10) : ""}
-                              />
-                            </label>
-                            <label>
-                              Jam mulai
-                              <input
-                                type="time"
-                                name="jamMulai"
-                                defaultValue={item.jamMulai ?? ""}
-                              />
-                            </label>
-                            <label>
-                              Jam selesai
-                              <input
-                                type="time"
-                                name="jamSelesai"
-                                defaultValue={item.jamSelesai ?? ""}
-                              />
-                            </label>
-                            <label>
-                              Lokasi
-                              <input name="lokasiAgenda" defaultValue={item.lokasi ?? ""} />
-                            </label>
-                            <label>
-                              Deskripsi
-                              <textarea
-                                name="deskripsiAgenda"
-                                defaultValue={item.deskripsi ?? ""}
-                              />
-                            </label>
-                            <button className="website-mini-button" type="submit">
-                              Simpan Perubahan
-                            </button>
+                            <input type="hidden" name="tayang" value={String(!item.tayang)} />
+                            <Button size="sm" type="submit" variant="secondary">
+                              {item.tayang ? "Sembunyikan" : "Tayangkan"}
+                            </Button>
                           </form>
-                        </details>
-                      )}
-                      {izin.agenda.ubah && (
-                        <form action={ubahStatusAgendaWebsiteAction}>
-                          <input type="hidden" name="id" value={item.id} />
-                          <input type="hidden" name="tayang" value={String(!item.tayang)} />
-                          <button className="website-mini-button" type="submit">
-                            {item.tayang ? "Sembunyikan" : "Tayangkan"}
-                          </button>
-                        </form>
-                      )}
-                      {izin.agenda.hapus && (
-                        <form action={hapusAgendaWebsiteAction}>
-                          <input type="hidden" name="id" value={item.id} />
-                          <button className="website-mini-button is-danger" type="submit">
-                            Hapus
-                          </button>
-                        </form>
-                      )}
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                        )}
+                        {izin.agenda.hapus && (
+                          <DialogHapusForm
+                            aksi={hapusAgendaWebsiteAction}
+                            id={item.id}
+                            judul={`Hapus agenda "${item.judul}"?`}
+                            keterangan="Agenda kegiatan akan dihapus permanen dari website desa."
+                            labelAksi="Hapus agenda"
+                          />
+                        )}
+                      </div>
+                    )}
+                  </Cell>
+                </Row>
+              ))}
+            </TBody>
+          </Table>
+        </TableScroll>
         {agenda.length === 0 ? <p className="modul-empty">Belum ada agenda kegiatan.</p> : null}
       </div>
-      {izin.agenda.tambah && (
-        <form action={tambahAgendaWebsiteAction} className="website-inline-form">
-          <strong>＋ Tambah Agenda</strong>
-          <div className="website-form-grid">
-            <label>
-              Nama Kegiatan *<input name="judulAgenda" required maxLength={200} />
-            </label>
-            <label>
-              Kategori
-              <input name="kategoriAgenda" maxLength={50} defaultValue="umum" />
-            </label>
-            <label>
-              Tanggal Mulai *<input name="mulaiAgenda" type="date" required />
-            </label>
-            <label>
-              Tanggal Selesai
-              <input name="selesaiAgenda" type="date" />
-            </label>
-            <label>
-              Jam Mulai
-              <input name="jamMulai" type="time" />
-            </label>
-            <label>
-              Jam Selesai
-              <input name="jamSelesai" type="time" />
-            </label>
-            <label>
-              Lokasi
-              <input name="lokasiAgenda" maxLength={200} />
-            </label>
-            <label className="span-two">
-              Deskripsi
-              <textarea name="deskripsiAgenda" rows={3} />
-            </label>
-            <label className="website-checkbox">
-              <input name="tayangAgenda" type="checkbox" /> Tampilkan di website publik
-            </label>
-          </div>
-          <button className="website-button website-button-primary" type="submit">
-            Simpan Agenda
-          </button>
-        </form>
-      )}
-    </WebsiteSection>
+    </TableCard>
   );
 }

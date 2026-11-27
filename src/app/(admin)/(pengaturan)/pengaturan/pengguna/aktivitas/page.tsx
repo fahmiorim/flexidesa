@@ -1,6 +1,10 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { labelAktivitas } from "@/features/beranda/dashboard/domain/aktivitas";
 import { getAuditLogPageData } from "@/features/pengaturan/audit/application/audit-use-cases";
 
@@ -28,20 +32,12 @@ export default async function AktivitasPage({
         deskripsi={<>Jejak aktivitas dan audit data desa.</>}
         aksi={
           <>
-            <a className="button button-secondary" href="/api/pengaturan/pengguna/aktivitas/ekspor">
+            <ButtonLink variant="secondary" href="/api/pengaturan/pengguna/aktivitas/ekspor">
               Unduh CSV
-            </a>
+            </ButtonLink>
           </>
         }
       />
-      <nav className={styles.tabs}>
-        <Link href="/pengaturan/pengguna">Pengguna</Link>
-        <Link href="/pengaturan/grup-akses">Peran & Hak Akses</Link>
-        <Link aria-current="page" href="/pengaturan/pengguna/aktivitas">
-          Aktivitas Pengguna
-        </Link>
-        <Link href="/pengaturan/pengguna/keamanan">Pengaturan Keamanan</Link>
-      </nav>
       <div className={styles.stats}>
         <article>
           <span>Total Aktivitas</span>
@@ -72,78 +68,79 @@ export default async function AktivitasPage({
           <strong>{(data.stats["pengguna.delete"] ?? 0).toLocaleString("id-ID")}</strong>
         </article>
       </div>
-      <section className={styles.card}>
-        <div className={styles.summary}>
-          <b>{data.total.toLocaleString("id-ID")} aktivitas tercatat</b>
-          <span>
-            Halaman {data.page} dari {data.pageCount}
-          </span>
-        </div>
-        <form className={styles.search}>
-          <input
-            name="q"
-            defaultValue={params.q ?? ""}
-            placeholder="Cari pengguna, aktivitas, atau modul..."
-          />
-          <select name="event" defaultValue={params.event ?? ""}>
-            <option value="">Semua Aktivitas</option>
-            <option value="auth.login.success">Login</option>
-            <option value="auth.login.failure">Gagal Login</option>
-            <option value="pengguna.create">Tambah Pengguna</option>
-            <option value="pengguna.update">Ubah Pengguna</option>
-            <option value="pengguna.delete">Hapus Pengguna</option>
-            <option value="grup-akses.permission">Ubah Hak Akses</option>
-          </select>
-          <select name="days" defaultValue={String(days)}>
-            <option value="7">7 Hari Terakhir</option>
-            <option value="30">30 Hari Terakhir</option>
-            <option value="90">90 Hari Terakhir</option>
-          </select>
-          <button type="submit">Filter</button>
-        </form>
-        <div className={styles.tableWrap}>
-          <table>
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>Waktu</th>
-                <th>Pengguna</th>
-                <th>Aktivitas</th>
-                <th>Modul</th>
-                <th>Detail</th>
-                <th>IP Address</th>
-                <th>Perangkat</th>
-              </tr>
-            </thead>
-            <tbody>
+      <TableCard
+        description={`${data.total.toLocaleString("id-ID")} aktivitas tercatat · halaman ${data.page} dari ${data.pageCount}`}
+        filter={
+          <form className={styles.search}>
+            <input
+              name="q"
+              defaultValue={params.q ?? ""}
+              placeholder="Cari pengguna, aktivitas, atau modul..."
+            />
+            <select name="event" defaultValue={params.event ?? ""}>
+              <option value="">Semua Aktivitas</option>
+              <option value="auth.login.success">Login</option>
+              <option value="auth.login.failure">Gagal Login</option>
+              <option value="pengguna.create">Tambah Pengguna</option>
+              <option value="pengguna.update">Ubah Pengguna</option>
+              <option value="pengguna.delete">Hapus Pengguna</option>
+              <option value="grup-akses.permission">Ubah Hak Akses</option>
+            </select>
+            <select name="days" defaultValue={String(days)}>
+              <option value="7">7 Hari Terakhir</option>
+              <option value="30">30 Hari Terakhir</option>
+              <option value="90">90 Hari Terakhir</option>
+            </select>
+            <Button variant="secondary" type="submit">
+              Filter
+            </Button>
+          </form>
+        }
+        title="Jejak Aktivitas"
+      >
+        <TableScroll className={styles.tableWrap}>
+          <Table>
+            <THead>
+              <Row>
+                <HeaderCell>No.</HeaderCell>
+                <HeaderCell>Waktu</HeaderCell>
+                <HeaderCell>Pengguna</HeaderCell>
+                <HeaderCell>Aktivitas</HeaderCell>
+                <HeaderCell>Modul</HeaderCell>
+                <HeaderCell>Detail</HeaderCell>
+                <HeaderCell>IP Address</HeaderCell>
+                <HeaderCell>Perangkat</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {data.rows.map((row, index) => (
-                <tr key={row.id}>
-                  <td>{(page - 1) * data.pageSize + index + 1}</td>
-                  <td>
+                <Row key={row.id}>
+                  <Cell>{(page - 1) * data.pageSize + index + 1}</Cell>
+                  <Cell>
                     {new Intl.DateTimeFormat("id-ID", {
                       dateStyle: "medium",
                       timeStyle: "short",
                     }).format(row.createdAt)}
-                  </td>
-                  <td>{row.actorName ?? "Sistem"}</td>
-                  <td>
+                  </Cell>
+                  <Cell>{row.actorName ?? "Sistem"}</Cell>
+                  <Cell>
                     <span className={styles.event}>{labelAktivitas(row.event)}</span>
-                  </td>
-                  <td>{row.resource}</td>
-                  <td>{row.details ?? row.resourceId ?? "—"}</td>
-                  <td>{row.ipAddress ?? "—"}</td>
-                  <td>{row.userAgent?.slice(0, 80) ?? "—"}</td>
-                </tr>
+                  </Cell>
+                  <Cell>{row.resource}</Cell>
+                  <Cell>{row.details ?? row.resourceId ?? "—"}</Cell>
+                  <Cell>{row.ipAddress ?? "—"}</Cell>
+                  <Cell>{row.userAgent?.slice(0, 80) ?? "—"}</Cell>
+                </Row>
               ))}
               {data.rows.length === 0 ? (
-                <tr>
-                  <td colSpan={8}>Belum ada aktivitas yang sesuai.</td>
-                </tr>
+                <Row>
+                  <Cell colSpan={8}>Belum ada aktivitas yang sesuai.</Cell>
+                </Row>
               ) : null}
-            </tbody>
-          </table>
-        </div>
-        <footer>
+            </TBody>
+          </Table>
+        </TableScroll>
+        <footer className={styles.summary}>
           <span>
             Menampilkan {data.rows.length} dari {data.total} aktivitas
           </span>
@@ -164,7 +161,7 @@ export default async function AktivitasPage({
             ) : null}
           </div>
         </footer>
-      </section>
+      </TableCard>
     </main>
   );
 }

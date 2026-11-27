@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useActionState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import {
   JABATAN_KELOMPOK,
   jabatanLabel,
@@ -126,12 +128,12 @@ export function FormAnggotaKelompok({
             {labelKembali}
           </Link>
         ) : null}
-        <Link className="button button-secondary" href={`/kependudukan/kelompok/${kelompokId}`}>
+        <ButtonLink variant="secondary" href={`/kependudukan/kelompok/${kelompokId}`}>
           Batal
-        </Link>
-        <button className="button button-primary" disabled={pending} type="submit">
+        </ButtonLink>
+        <Button variant="primary" disabled={pending} type="submit">
           {pending ? "Menyimpan…" : "Simpan Anggota"}
-        </button>
+        </Button>
       </div>
     </form>
   );

@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { formatMoney, toMinor } from "./keuangan";
+
 /**
  * Jurnal & saldo bank pembukuan kas desa.
  *
@@ -66,7 +68,92 @@ export const jurnalFormSchema = z
     path: ["debet"],
   });
 
-export type JurnalInput = z.infer<typeof jurnalFormSchema>;
+/** Satu baris jurnal seperti yang ditampilkan halaman penatausahaan. */
+export interface JurnalBaris {
+  id: number;
+  tahun: number;
+  tanggal: string;
+  kodeRekening: string;
+  uraian: string;
+  debet: string;
+  kredit: string;
+  sumber: string;
+  referensi: string | null;
+}
+
+export interface RingkasanJurnal {
+  totalDebet: string;
+  totalKredit: string;
+  saldo: string;
+  jumlah: number;
+}
+
+/** Total debet, kredit, dan saldo seluruh baris jurnal. */
+export function hitungRingkasanJurnal(rows: readonly JurnalBaris[]): RingkasanJurnal {
+  let debet = 0n;
+  let kredit = 0n;
+  for (const row of rows) {
+    debet += toMinor(row.debet);
+    kredit += toMinor(row.kredit);
+  }
+  return {
+    totalDebet: formatMoney(debet),
+    totalKredit: formatMoney(kredit),
+    saldo: formatMoney(debet - kredit),
+    jumlah: rows.length,
+  };
+}
+
+/** Baris buku kas umum: jurnal ditambah saldo berjalan setelah mutasi. */
+export interface BukuKasBaris extends JurnalBaris {
+  saldo: string;
+}
+
+export interface BukuKasUmum {
+  baris: BukuKasBaris[];
+  totalDebet: string;
+  totalKredit: string;
+  saldoAwal: string;
+  saldoAkhir: string;
+}
+
+/**
+ * Susun buku kas umum: urut tanggal lalu id, dengan saldo berjalan.
+ *
+ * Saldo awal menjadi titik mulai; setiap baris menambah debet dan mengurangi
+ * kredit. Nilai dihitung dalam sen agar tidak ada pembulatan pecahan.
+ */
+export function susunBukuKasUmum(rows: readonly JurnalBaris[], saldoAwal: string): BukuKasUmum {
+  const urut = [...rows].sort((a, b) =>
+    a.tanggal === b.tanggal ? a.id - b.id : a.tanggal.localeCompare(b.tanggal),
+  );
+
+  let saldo = toMinor(saldoAwal);
+  let debet = 0n;
+  let kredit = 0n;
+
+  const baris = urut.map((row) => {
+    const d = toMinor(row.debet);
+    const k = toMinor(row.kredit);
+    debet += d;
+    kredit += k;
+    saldo += d - k;
+    return { ...row, saldo: formatMoney(saldo) };
+  });
+
+  return {
+    baris,
+    totalDebet: formatMoney(debet),
+    totalKredit: formatMoney(kredit),
+    saldoAwal: formatMoney(toMinor(saldoAwal)),
+    saldoAkhir: formatMoney(saldo),
+  };
+}
+
+/** Saldo awal sebuah tahun = jumlah saldo awal seluruh rekening bank. */
+export function totalSaldoAwal(rekening: readonly { saldoAwal: string }[]): string {
+  return formatMoney(rekening.reduce((total, row) => total + toMinor(row.saldoAwal), 0n));
+}
 
 /** Input saldo awal satu rekening bank pada satu tahun anggaran. */
 export const saldoBankFormSchema = z.object({
@@ -83,5 +170,3 @@ export const saldoBankFormSchema = z.object({
     .max(100, "Nama bank maksimal 100 karakter."),
   saldoAwal: nilaiSchema("saldo awal"),
 });
-
-export type SaldoBankInput = z.infer<typeof saldoBankFormSchema>;

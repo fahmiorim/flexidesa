@@ -25,7 +25,6 @@ const SEPARATOR = CSV_SEPARATOR;
 export const MAKS_BARIS_IMPOR = 2000;
 
 /** Batas ukuran teks CSV yang diterima Server Action (2 MB). */
-export const MAKS_UKURAN_CSV = 2 * 1024 * 1024;
 
 /** Kolom identitas tetap di awal berkas. */
 export const KOLOM_AWAL = ["Nama", "NIK", "Tanggal"] as const;

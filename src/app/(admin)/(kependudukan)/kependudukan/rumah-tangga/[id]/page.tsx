@@ -9,7 +9,11 @@ import {
   ubahLevelAnggotaAction,
 } from "@/app/(admin)/(kependudukan)/kependudukan/rumah-tangga/actions";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   getRumahTanggaDetail,
   getRumahTanggaReference,
@@ -77,31 +81,28 @@ export default async function DetailRumahTanggaPage({
         aksi={
           <>
             <div className="page-heading-actions">
-              <Link
-                className="button button-secondary"
+              <ButtonLink
+                variant="secondary"
                 href={`/kependudukan/rumah-tangga/${id}/cetak`}
                 target="_blank"
               >
                 Cetak Kartu
-              </Link>
+              </ButtonLink>
               {bolehUbah ? (
-                <Link
-                  className="button button-secondary"
-                  href={`/kependudukan/rumah-tangga/${id}/ubah`}
-                >
+                <ButtonLink variant="secondary" href={`/kependudukan/rumah-tangga/${id}/ubah`}>
                   Ubah Data
-                </Link>
+                </ButtonLink>
               ) : null}
               {bolehHapus ? (
-                <form action={hapusRumahTanggaAction}>
-                  <input name="id" type="hidden" value={id} />
-                  <ConfirmSubmit
-                    className="button button-danger"
-                    message="Hapus Rumah Tangga ini? Semua anggota akan dilepas dari RTM, tetapi data penduduk tetap ada."
-                  >
-                    Hapus RTM
-                  </ConfirmSubmit>
-                </form>
+                <DialogHapusForm
+                  aksi={hapusRumahTanggaAction}
+                  id={id}
+                  judul={`Hapus Rumah Tangga ${detail.rumahTangga.number}?`}
+                  keterangan="Semua anggota akan dilepas dari RTM, tetapi data penduduk tetap tersimpan."
+                  label="Hapus RTM"
+                  labelAksi="Hapus RTM"
+                  varian="danger"
+                />
               ) : null}
             </div>
           </>
@@ -216,13 +217,13 @@ export default async function DetailRumahTanggaPage({
             <option value="hidup">Hidup</option>
             <option value="tidak">Tidak Hidup</option>
           </select>
-          <button className="button button-secondary" type="submit">
+          <Button variant="secondary" type="submit">
             Terapkan
-          </button>
+          </Button>
           {filterAnggota.sex || filterAnggota.status ? (
-            <Link className="button button-secondary" href={`/kependudukan/rumah-tangga/${id}`}>
+            <ButtonLink variant="secondary" href={`/kependudukan/rumah-tangga/${id}`}>
               Reset
-            </Link>
+            </ButtonLink>
           ) : null}
         </form>
 
@@ -239,39 +240,39 @@ export default async function DetailRumahTanggaPage({
           </div>
         ) : (
           <form action={lepasAnggotaMassalAction.bind(null, id)}>
-            <div className="table-scroll">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    {bolehHapus ? <th>Lepas</th> : null}
-                    <th>No.</th>
-                    <th>NIK</th>
-                    <th>Nama</th>
-                    <th>Tingkat</th>
-                    <th>Jenis Kelamin</th>
-                    <th>Status</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableScroll>
+              <Table>
+                <THead>
+                  <Row>
+                    {bolehHapus ? <HeaderCell>Lepas</HeaderCell> : null}
+                    <HeaderCell>No.</HeaderCell>
+                    <HeaderCell>NIK</HeaderCell>
+                    <HeaderCell>Nama</HeaderCell>
+                    <HeaderCell>Tingkat</HeaderCell>
+                    <HeaderCell>Jenis Kelamin</HeaderCell>
+                    <HeaderCell>Status</HeaderCell>
+                    <HeaderCell>Aksi</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
                   {members.map((member, index) => (
-                    <tr key={member.id}>
+                    <Row key={member.id}>
                       {bolehHapus ? (
-                        <td>
+                        <Cell>
                           <input
                             aria-label={`Pilih ${member.name}`}
                             name="idCb"
                             type="checkbox"
                             value={member.id}
                           />
-                        </td>
+                        </Cell>
                       ) : null}
-                      <td>{index + 1}</td>
-                      <td>{member.nationalId ?? "—"}</td>
-                      <td>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>{member.nationalId ?? "—"}</Cell>
+                      <Cell>
                         <strong>{member.name}</strong>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span
                           className={
                             member.level === RTM_LEVEL_KEPALA
@@ -281,10 +282,10 @@ export default async function DetailRumahTanggaPage({
                         >
                           {rtmLevelLabel(member.level)}
                         </span>
-                      </td>
-                      <td>{RTM_GENDER_LABELS[member.gender]}</td>
-                      <td>{rtmLifeStatusLabel(member.lifeStatus)}</td>
-                      <td>
+                      </Cell>
+                      <Cell>{RTM_GENDER_LABELS[member.gender]}</Cell>
+                      <Cell>{rtmLifeStatusLabel(member.lifeStatus)}</Cell>
+                      <Cell>
                         {bolehKelolaAnggota || bolehHapus ? (
                           <div className={styles.memberActions}>
                             {bolehKelolaAnggota ? (
@@ -302,16 +303,16 @@ export default async function DetailRumahTanggaPage({
                                   <option value={RTM_LEVEL_KEPALA}>Kepala</option>
                                   <option value={RTM_LEVEL_ANGGOTA}>Anggota</option>
                                 </select>
-                                <button className="button button-ghost" type="submit">
+                                <Button variant="ghost" type="submit">
                                   Simpan
-                                </button>
+                                </Button>
                               </form>
                             ) : null}
                             {bolehHapus ? (
                               <form action={lepasAnggotaAction.bind(null, id)}>
                                 <input name="residentId" type="hidden" value={member.id} />
                                 <ConfirmSubmit
-                                  className="button button-danger"
+                                  variant="danger"
                                   message={`Lepas ${member.name} dari rumah tangga ini?`}
                                 >
                                   Lepas
@@ -322,16 +323,16 @@ export default async function DetailRumahTanggaPage({
                         ) : (
                           "—"
                         )}
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TBody>
+              </Table>
+            </TableScroll>
             {bolehHapus ? (
               <div className={styles.toolbar}>
                 <ConfirmSubmit
-                  className="button button-danger"
+                  variant="danger"
                   message="Lepas anggota yang dicentang dari rumah tangga ini? Data penduduk tetap ada."
                 >
                   Lepas Anggota Terpilih
@@ -353,34 +354,34 @@ export default async function DetailRumahTanggaPage({
             <p>RTM ini belum terdaftar sebagai peserta program bantuan apa pun.</p>
           </div>
         ) : (
-          <div className="table-scroll">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>No.</th>
-                  <th>Program</th>
-                  <th>Masa Aktif</th>
-                  <th>Asal Dana</th>
-                  <th>No. Kartu</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
+                  <HeaderCell>No.</HeaderCell>
+                  <HeaderCell>Program</HeaderCell>
+                  <HeaderCell>Masa Aktif</HeaderCell>
+                  <HeaderCell>Asal Dana</HeaderCell>
+                  <HeaderCell>No. Kartu</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {detail.programBantuan.map((program, index) => (
-                  <tr key={program.id}>
-                    <td>{index + 1}</td>
-                    <td>
+                  <Row key={program.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       <strong>{program.name}</strong>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {program.startDate ?? "—"} s.d. {program.endDate ?? "—"}
-                    </td>
-                    <td>{asalDanaLabel(program.asalDana)}</td>
-                    <td>{program.cardNumber ?? "—"}</td>
-                  </tr>
+                    </Cell>
+                    <Cell>{asalDanaLabel(program.asalDana)}</Cell>
+                    <Cell>{program.cardNumber ?? "—"}</Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
       </section>
     </div>

@@ -7,7 +7,11 @@ import {
   hapusTerdataMassalAction,
 } from "@/app/(admin)/(kependudukan)/kependudukan/penduduk/suplemen/actions";
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { HapusTerpilih } from "@/components/ui/hapus-terpilih";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   filterTerdataDariQuery,
   getRincianSuplemenData,
@@ -18,7 +22,6 @@ import {
   labelKolomIsian,
   SUPLEMEN_RESOURCE,
 } from "@/features/kependudukan/penduduk/domain/suplemen";
-import { HapusMassalTerdata } from "@/features/kependudukan/penduduk/presentation/hapus-massal-terdata";
 import { PilihSemuaTerdata } from "@/features/kependudukan/penduduk/presentation/pilih-semua-terdata";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { verifySession } from "@/lib/dal";
@@ -120,49 +123,52 @@ export default async function RincianSuplemenPage({
               <details className={styles.split}>
                 <summary className="button button-primary">+ Tambah</summary>
                 <div className={styles.splitPanel}>
-                  <Link
-                    className="button button-primary"
+                  <ButtonLink
+                    variant="primary"
                     href={`/kependudukan/penduduk/suplemen/${id}/terdata/baru?aksi=1`}
                   >
                     Tambah Satu Data Warga
-                  </Link>
-                  <Link
-                    className="button button-secondary"
+                  </ButtonLink>
+                  <ButtonLink
+                    variant="secondary"
                     href={`/kependudukan/penduduk/suplemen/${id}/terdata/baru?aksi=2`}
                   >
                     Tambah Beberapa Data Warga
-                  </Link>
+                  </ButtonLink>
                 </div>
               </details>
             ) : null}
 
             {bolehHapus ? (
-              <HapusMassalTerdata aksi={hapusTerdataMassalAction} suplemenId={id} />
+              <HapusTerpilih
+                aksi={hapusTerdataMassalAction}
+                hidden={{ suplemenId: id }}
+                judul="Hapus data terdata terpilih?"
+                label="Hapus"
+                namaField="idTerdata"
+              />
             ) : null}
 
-            <Link
-              className="button button-secondary"
+            <ButtonLink
+              variant="secondary"
               href={denganQuery(`/kependudukan/penduduk/suplemen/${id}/cetak`)}
               rel="noopener noreferrer"
               target="_blank"
             >
               Cetak
-            </Link>
-            <Link
-              className="button button-secondary"
+            </ButtonLink>
+            <ButtonLink
+              variant="secondary"
               href={denganQuery(`/kependudukan/penduduk/suplemen/${id}/cetak/unduh`)}
             >
               Unduh
-            </Link>
-            <Link
-              className="button button-secondary"
-              href={`/kependudukan/penduduk/suplemen/${id}/ekspor`}
-            >
+            </ButtonLink>
+            <ButtonLink variant="secondary" href={`/kependudukan/penduduk/suplemen/${id}/ekspor`}>
               Ekspor
-            </Link>
-            <Link className="button button-secondary" href="/kependudukan/penduduk/suplemen">
+            </ButtonLink>
+            <ButtonLink variant="secondary" href="/kependudukan/penduduk/suplemen">
               Kembali
-            </Link>
+            </ButtonLink>
           </div>
         </div>
 
@@ -220,15 +226,12 @@ export default async function RincianSuplemenPage({
             </select>
           </label>
           <div className="penduduk-filter-aksi">
-            <button className="button button-primary" type="submit">
+            <Button variant="primary" type="submit">
               Terapkan
-            </button>
-            <Link
-              className="button button-secondary"
-              href={`/kependudukan/penduduk/suplemen/${id}`}
-            >
+            </Button>
+            <ButtonLink variant="secondary" href={`/kependudukan/penduduk/suplemen/${id}`}>
               Bersihkan
-            </Link>
+            </ButtonLink>
           </div>
         </form>
 
@@ -239,28 +242,30 @@ export default async function RincianSuplemenPage({
               : "Belum ada warga atau keluarga yang terdata pada suplemen ini."}
           </p>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th scope="col">{bolehHapus ? <PilihSemuaTerdata /> : null}</th>
-                  <th scope="col">No</th>
-                  <th scope="col">Aksi</th>
-                  <th scope="col">{sasaranPenduduk ? "No." : "NIK"} KK</th>
-                  <th scope="col">{sasaranPenduduk ? "NIK Penduduk" : "No. KK"}</th>
-                  <th scope="col">{sasaranPenduduk ? "Nama Penduduk" : "Kepala Keluarga"}</th>
-                  <th scope="col">Tempat Lahir</th>
-                  <th scope="col">Tanggal Lahir</th>
-                  <th scope="col">Jenis Kelamin</th>
-                  <th scope="col">Alamat</th>
-                  <th scope="col">Keterangan</th>
-                  {tampilkanFormIsian ? <th scope="col">Data Form Isian</th> : null}
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">{bolehHapus ? <PilihSemuaTerdata /> : null}</HeaderCell>
+                  <HeaderCell scope="col">No</HeaderCell>
+                  <HeaderCell scope="col">Aksi</HeaderCell>
+                  <HeaderCell scope="col">{sasaranPenduduk ? "No." : "NIK"} KK</HeaderCell>
+                  <HeaderCell scope="col">{sasaranPenduduk ? "NIK Penduduk" : "No. KK"}</HeaderCell>
+                  <HeaderCell scope="col">
+                    {sasaranPenduduk ? "Nama Penduduk" : "Kepala Keluarga"}
+                  </HeaderCell>
+                  <HeaderCell scope="col">Tempat Lahir</HeaderCell>
+                  <HeaderCell scope="col">Tanggal Lahir</HeaderCell>
+                  <HeaderCell scope="col">Jenis Kelamin</HeaderCell>
+                  <HeaderCell scope="col">Alamat</HeaderCell>
+                  <HeaderCell scope="col">Keterangan</HeaderCell>
+                  {tampilkanFormIsian ? <HeaderCell scope="col">Data Form Isian</HeaderCell> : null}
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row, indeks) => (
-                  <tr key={row.id}>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>
                       {bolehHapus ? (
                         <input
                           aria-label={`Pilih ${row.nama ?? row.label}`}
@@ -269,58 +274,55 @@ export default async function RincianSuplemenPage({
                           value={row.id}
                         />
                       ) : null}
-                    </td>
-                    <td className="modul-angka">{indeks + 1}</td>
-                    <td>
+                    </Cell>
+                    <Cell className="modul-angka">{indeks + 1}</Cell>
+                    <Cell>
                       <div className={styles.aksiBaris}>
                         {bolehUbah ? (
-                          <Link
-                            className="button button-secondary"
+                          <ButtonLink
+                            variant="secondary"
                             href={`/kependudukan/penduduk/suplemen/${id}/terdata/${row.id}/ubah`}
                           >
                             Ubah
-                          </Link>
+                          </ButtonLink>
                         ) : null}
                         {bolehHapus ? (
-                          <form action={hapusTerdataAction}>
-                            <input name="suplemenId" type="hidden" value={id} />
-                            <input name="terdataId" type="hidden" value={row.id} />
-                            <ConfirmSubmit
-                              className="button button-danger"
-                              message={`Hapus data terdata "${row.nama ?? row.label}"?`}
-                            >
-                              Hapus
-                            </ConfirmSubmit>
-                          </form>
+                          <DialogHapusForm
+                            aksi={hapusTerdataAction}
+                            hidden={{ suplemenId: id, terdataId: row.id }}
+                            judul={`Hapus data terdata "${row.nama ?? row.label}"?`}
+                            keterangan="Data peserta suplemen ini akan dihapus permanen."
+                            labelAksi="Hapus data"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                    <td className="modul-mono">
+                    </Cell>
+                    <Cell className="modul-mono">
                       {sasaranPenduduk ? (row.nomorKk ?? "—") : (row.nik ?? "—")}
-                    </td>
-                    <td className="modul-mono">
+                    </Cell>
+                    <Cell className="modul-mono">
                       {sasaranPenduduk ? (row.nik ?? "—") : (row.nomorKk ?? "—")}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {row.nama ?? (
                         <span className="modul-muted">
                           {sasaranPenduduk ? "Penduduk tidak tersedia" : "KK tidak tersedia"}
                         </span>
                       )}
-                    </td>
-                    <td>{row.tempatLahir ?? "—"}</td>
-                    <td>{formatTanggal(row.tanggalLahir)}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.tempatLahir ?? "—"}</Cell>
+                    <Cell>{formatTanggal(row.tanggalLahir)}</Cell>
+                    <Cell>
                       {row.gender === "male"
                         ? "Laki-laki"
                         : row.gender === "female"
                           ? "Perempuan"
                           : "—"}
-                    </td>
-                    <td>{row.alamat ?? "—"}</td>
-                    <td>{row.keterangan?.trim() || "—"}</td>
+                    </Cell>
+                    <Cell>{row.alamat ?? "—"}</Cell>
+                    <Cell>{row.keterangan?.trim() || "—"}</Cell>
                     {tampilkanFormIsian ? (
-                      <td>
+                      <Cell>
                         {Object.keys(row.isian).length > 0 ? (
                           <details className={styles.isianDetail}>
                             <summary>Selengkapnya</summary>
@@ -336,13 +338,13 @@ export default async function RincianSuplemenPage({
                         ) : (
                           <span className="modul-muted">—</span>
                         )}
-                      </td>
+                      </Cell>
                     ) : null}
-                  </tr>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
 
         <p className="suplemen-kembali suplemen-kembali-bawah">

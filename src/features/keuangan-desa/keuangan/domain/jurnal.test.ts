@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { jurnalFormSchema, saldoBankFormSchema } from "./jurnal";
+import {
+  hitungRingkasanJurnal,
+  jurnalFormSchema,
+  saldoBankFormSchema,
+  susunBukuKasUmum,
+  totalSaldoAwal,
+  type JurnalBaris,
+} from "./jurnal";
 
 function jurnalIsian(overrides: Record<string, unknown> = {}) {
   return {
@@ -144,5 +151,69 @@ describe("saldoBankFormSchema", () => {
     });
 
     expect(parsed.success).toBe(false);
+  });
+});
+
+function barisJurnal(overrides: Partial<JurnalBaris> = {}): JurnalBaris {
+  return {
+    id: 1,
+    tahun: 2026,
+    tanggal: "2026-01-05",
+    kodeRekening: "4.1.1.01",
+    uraian: "Penerimaan",
+    debet: "0.00",
+    kredit: "0.00",
+    sumber: "manual",
+    referensi: null,
+    ...overrides,
+  };
+}
+
+describe("ringkasan jurnal", () => {
+  it("menjumlahkan debet dan kredit lalu menghitung saldo", () => {
+    const ringkasan = hitungRingkasanJurnal([
+      barisJurnal({ id: 1, debet: "1000000.00" }),
+      barisJurnal({ id: 2, kredit: "250000.50" }),
+    ]);
+
+    expect(ringkasan.totalDebet).toBe("1000000.00");
+    expect(ringkasan.totalKredit).toBe("250000.50");
+    expect(ringkasan.saldo).toBe("749999.50");
+    expect(ringkasan.jumlah).toBe(2);
+  });
+});
+
+describe("buku kas umum", () => {
+  it("menghitung saldo berjalan dari saldo awal, urut tanggal lalu id", () => {
+    const buku = susunBukuKasUmum(
+      [
+        barisJurnal({ id: 2, tanggal: "2026-02-01", kredit: "200000.00" }),
+        barisJurnal({ id: 1, tanggal: "2026-01-05", debet: "500000.00" }),
+      ],
+      "100000.00",
+    );
+
+    expect(buku.baris.map((row) => row.id)).toEqual([1, 2]);
+    expect(buku.baris.map((row) => row.saldo)).toEqual(["600000.00", "400000.00"]);
+    expect(buku.totalDebet).toBe("500000.00");
+    expect(buku.totalKredit).toBe("200000.00");
+    expect(buku.saldoAwal).toBe("100000.00");
+    expect(buku.saldoAkhir).toBe("400000.00");
+  });
+
+  it("mengizinkan saldo negatif dan buku kosong", () => {
+    const kosong = susunBukuKasUmum([], "0.00");
+    expect(kosong.baris).toEqual([]);
+    expect(kosong.saldoAkhir).toBe("0.00");
+
+    const negatif = susunBukuKasUmum([barisJurnal({ kredit: "50000.00" })], "0.00");
+    expect(negatif.saldoAkhir).toBe("-50000.00");
+  });
+
+  it("menjumlahkan saldo awal seluruh rekening", () => {
+    expect(totalSaldoAwal([{ saldoAwal: "100000.00" }, { saldoAwal: "250000.50" }])).toBe(
+      "350000.50",
+    );
+    expect(totalSaldoAwal([])).toBe("0.00");
   });
 });

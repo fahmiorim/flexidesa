@@ -3,11 +3,30 @@ import { describe, expect, it, vi } from "vitest";
 
 import { PublicSiteFooter, PublicSiteHeader } from "./public-site-layout";
 
+const mocks = vi.hoisted(() => ({
+  menu: vi.fn(async () => [] as unknown[]),
+  tema: vi.fn(async (): Promise<unknown> => null),
+}));
+
 // Header membaca menu tenant; unit test tidak membuka koneksi database.
 vi.mock("@/features/info-desa/publik/application/website-admin", () => ({
-  muatMenuPublik: vi.fn(async () => []),
-  muatTemaPublik: vi.fn(async () => null),
+  muatMenuPublik: mocks.menu,
+  muatTemaPublik: mocks.tema,
 }));
+
+const temaPublik = (layout: "klasik" | "modern" | "ringkas") => ({
+  primary: "#075cf0",
+  secondary: "#0d2136",
+  accent: "#7a20f0",
+  background: "#f1f6ff",
+  surface: "#ffffff",
+  text: "#101b4b",
+  fontHeading: "sans" as const,
+  logoTampil: true,
+  radius: "15px",
+  style: "terang" as const,
+  layout,
+});
 
 const desa = {
   id: 7,
@@ -41,6 +60,28 @@ describe("public shared site layout", () => {
     expect(markup).toContain('href="/layanan/surat"');
     expect(markup).toContain('aria-current="page"');
     expect(markup).toContain('href="/masuk"');
+  });
+
+  it("menerapkan varian susunan template pada header", async () => {
+    mocks.tema.mockResolvedValueOnce(temaPublik("modern"));
+    const markup = renderToStaticMarkup(
+      await PublicSiteHeader({ desa, location: "Sei Balai, Batu Bara", logoUrl: null }),
+    );
+    expect(markup).toContain('data-varian="modern"');
+
+    mocks.tema.mockResolvedValueOnce(temaPublik("ringkas"));
+    const ringkas = renderToStaticMarkup(
+      await PublicSiteHeader({ desa, location: "Sei Balai, Batu Bara", logoUrl: null }),
+    );
+    expect(ringkas).toContain('data-varian="ringkas"');
+  });
+
+  it("memakai varian klasik bila tenant belum punya tema", async () => {
+    mocks.tema.mockResolvedValueOnce(null);
+    const markup = renderToStaticMarkup(
+      await PublicSiteHeader({ desa, location: "Sei Balai, Batu Bara", logoUrl: null }),
+    );
+    expect(markup).toContain('data-varian="klasik"');
   });
 
   it("renders the village identity, contact channels, and shared footer navigation", async () => {

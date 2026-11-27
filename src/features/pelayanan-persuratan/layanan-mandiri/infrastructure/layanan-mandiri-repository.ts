@@ -21,14 +21,6 @@ import {
 import { parseSyaratIds } from "@/features/pelayanan-persuratan/surat/domain/isian";
 import { conflict, notFound } from "@/lib/errors";
 
-export async function listSuratMandiri(villageId: number) {
-  return db
-    .select()
-    .from(letterTypes)
-    .where(and(eq(letterTypes.villageId, villageId), eq(letterTypes.isActive, true)))
-    .orderBy(asc(letterTypes.sortOrder));
-}
-
 /**
  * Jenis surat aktif + syarat nyata (bukan `[]`).
  *

@@ -1,6 +1,12 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getSuratDinasData } from "@/features/pelayanan-persuratan/surat/application/surat-dinas-use-cases";
 
 import { hapusSuratDinasAction } from "./actions";
@@ -17,52 +23,58 @@ export default async function SuratDinasPage({
   const { rows, canCreate, canUpdate, canDelete } = await getSuratDinasData(q);
   return (
     <div className="modul-page">
-      <PageHeading
-        judul={<>Surat Dinas</>}
-        deskripsi={<>Kelola surat dinas perangkat desa.</>}
-        aksi={
-          <>
-            {canCreate ? (
-              <Link
-                className="button button-primary"
-                href="/layanan-surat/persuratan/surat-dinas/baru"
-              >
-                ＋ Buat Surat Dinas
-              </Link>
-            ) : null}
-          </>
-        }
-      />
+      <PageHeading judul={<>Surat Dinas</>} deskripsi={<>Kelola surat dinas perangkat desa.</>} />
       {params.berhasil ? (
         <div className="alert alert-info">Perubahan data surat dinas berhasil.</div>
       ) : null}
-      <section className="modul-card">
-        <form method="get" className="modul-filter-row">
-          <input name="q" defaultValue={q} placeholder="Cari nomor, perihal, penerima…" />
-          <button className="button button-secondary">Cari</button>
-        </form>
-        <div className="modul-scroll">
-          <table className="modul-table">
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Nomor Surat</th>
-                <th>Perihal</th>
-                <th>Penerima</th>
-                <th>Klasifikasi</th>
-                <th>Arsip</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
+      <TableCard
+        title="Daftar Surat Dinas"
+        description={`${rows.length.toLocaleString("id-ID")} surat tercatat`}
+        actions={
+          canCreate ? (
+            <ButtonLink size="sm" href="/layanan-surat/persuratan/surat-dinas/baru">
+              ＋ Buat Surat Dinas
+            </ButtonLink>
+          ) : null
+        }
+        filter={
+          <form method="get" className="modul-filter-row">
+            <FormField
+              label="Cari surat"
+              name="q"
+              type="search"
+              defaultValue={q}
+              placeholder="Cari nomor, perihal, penerima…"
+            />
+            <Button variant="secondary" type="submit">
+              Cari
+            </Button>
+          </form>
+        }
+        footer={rows.length === 0 ? <p className="modul-muted">Belum ada surat dinas.</p> : null}
+      >
+        <TableScroll className="modul-scroll">
+          <Table className="modul-table">
+            <THead>
+              <Row>
+                <HeaderCell>Tanggal</HeaderCell>
+                <HeaderCell>Nomor Surat</HeaderCell>
+                <HeaderCell>Perihal</HeaderCell>
+                <HeaderCell>Penerima</HeaderCell>
+                <HeaderCell>Klasifikasi</HeaderCell>
+                <HeaderCell>Arsip</HeaderCell>
+                <HeaderCell>Aksi</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {rows.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.letterDate}</td>
-                  <td className="modul-mono">{row.letterNumber}</td>
-                  <td>{row.subject}</td>
-                  <td>{row.recipient ?? "—"}</td>
-                  <td>{row.classificationName ?? "—"}</td>
-                  <td>
+                <Row key={row.id}>
+                  <Cell>{row.letterDate}</Cell>
+                  <Cell className="modul-mono">{row.letterNumber}</Cell>
+                  <Cell>{row.subject}</Cell>
+                  <Cell>{row.recipient ?? "—"}</Cell>
+                  <Cell>{row.classificationName ?? "—"}</Cell>
+                  <Cell>
                     {row.archiveFile ? (
                       <Link
                         className="table-action-link"
@@ -74,34 +86,34 @@ export default async function SuratDinasPage({
                     ) : (
                       (row.archiveLocation ?? "—")
                     )}
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <div style={{ display: "flex", gap: 8 }}>
                       {canUpdate ? (
-                        <Link
-                          className="button button-secondary"
+                        <ButtonLink
+                          variant="secondary"
                           href={`/layanan-surat/persuratan/surat-dinas/${row.id}/edit`}
                         >
                           Ubah
-                        </Link>
+                        </ButtonLink>
                       ) : null}
                       {canDelete ? (
-                        <form action={hapusSuratDinasAction}>
-                          <input type="hidden" name="id" value={row.id} />
-                          <button className="button button-danger-ghost" type="submit">
-                            Hapus
-                          </button>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusSuratDinasAction}
+                          id={row.id}
+                          judul={`Hapus surat dinas ${row.letterNumber}?`}
+                          keterangan={`Surat ${row.subject} beserta lampirannya akan dihapus permanen.`}
+                          labelAksi="Hapus surat"
+                        />
                       ) : null}
                     </div>
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
-        {rows.length === 0 ? <p className="modul-empty">Belum ada surat dinas.</p> : null}
-      </section>
+            </TBody>
+          </Table>
+        </TableScroll>
+      </TableCard>
     </div>
   );
 }

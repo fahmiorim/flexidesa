@@ -60,11 +60,4 @@ export async function ambilTemaAktifDenganOpsi(villageId: number) {
   return row;
 }
 
-export async function ubahOpsiTema(villageId: number, id: number, opsi: string) {
-  await db
-    .update(theme)
-    .set({ opsi })
-    .where(and(eq(theme.villageId, villageId), eq(theme.id, id)));
-}
-
 /* ------------------------------------------------------- halaman statis */

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ButtonLink } from "@/components/ui/button-link";
 import { TombolCetak } from "@/components/ui/tombol-cetak";
 import { getIdentitas } from "@/features/info-desa/desa/application/get-identitas";
 import {
@@ -42,9 +42,9 @@ export default async function CetakAnggotaKelompokPage({
   return (
     <div className={styles.printPage}>
       <div className={styles.printActions}>
-        <Link className="button button-secondary" href={`/kependudukan/kelompok/${id}`}>
+        <ButtonLink variant="secondary" href={`/kependudukan/kelompok/${id}`}>
           ← Kembali
-        </Link>
+        </ButtonLink>
         <TombolCetak />
       </div>
 

@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 
 import styles from "@/app/(admin)/(keuangan-desa)/keuangan/keuangan.module.css";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
 import { getPembangunanDetail } from "@/features/pembangunan-aset/pembangunan/application/use-cases";
 import {
   STATUS_PEMBANGUNAN,
@@ -41,9 +43,9 @@ export default async function DetailKegiatanPage({ params }: { params: Promise<{
             <h2>Ubah Data Kegiatan</h2>
             <p>Perubahan akan ikut diperbarui pada halaman publik pembangunan desa.</p>
           </div>
-          <button className={styles.primaryButton} type="submit">
+          <Button className={styles.primaryButton} variant="primary" type="submit">
             Simpan Perubahan
-          </button>
+          </Button>
         </div>
         <div className={styles.projectForm}>
           <label>
@@ -178,13 +180,15 @@ export default async function DetailKegiatanPage({ params }: { params: Promise<{
                   <strong>{x.judul || "Dokumentasi kegiatan"}</strong>
                   <p>{x.keterangan || "Tanpa keterangan"}</p>
                 </div>
-                <form action={hapusDokumentasiKegiatanAction}>
-                  <input type="hidden" name="id" value={x.id} />
-                  <input type="hidden" name="proyekId" value={p.id} />
-                  <button className={styles.textButton} type="submit">
-                    Hapus foto
-                  </button>
-                </form>
+                <DialogHapusForm
+                  aksi={hapusDokumentasiKegiatanAction}
+                  id={x.id}
+                  hidden={{ proyekId: p.id }}
+                  judul={`Hapus foto "${x.judul || "dokumentasi kegiatan"}"?`}
+                  keterangan="Foto dokumentasi beserta berkasnya akan dihapus permanen."
+                  labelAksi="Hapus foto"
+                  varian="danger-ghost"
+                />
               </article>
             ))}
           </div>
@@ -210,9 +214,9 @@ export default async function DetailKegiatanPage({ params }: { params: Promise<{
             Keterangan
             <textarea name="keterangan" rows={2} />
           </label>
-          <button className={styles.primaryButton} type="submit">
+          <Button className={styles.primaryButton} variant="primary" type="submit">
             Unggah Dokumentasi
-          </button>
+          </Button>
         </form>
       </section>
     </main>

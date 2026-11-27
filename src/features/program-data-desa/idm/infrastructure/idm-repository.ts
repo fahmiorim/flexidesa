@@ -133,17 +133,6 @@ export async function upsertSdgs(data: typeof idmSdgs.$inferInsert) {
  * Memakai upsert dan hanya memperbarui skor, sehingga catatan manual yang
  * sudah ada tidak terhapus bila API mengirim data sebagian.
  */
-export async function simpanSdgsTahun(
-  villageId: number,
-  tahun: number,
-  rows: Array<{ goal: number; skor: number }>,
-) {
-  if (!rows.length) return;
-  await db
-    .insert(idmSdgs)
-    .values(rows.map((row) => ({ ...row, villageId, tahun, keterangan: null })))
-    .onDuplicateKeyUpdate({ set: { skor: sql`values(skor)` } });
-}
 
 export async function deleteSdgs(villageId: number, tahun: number, goal: number) {
   await db

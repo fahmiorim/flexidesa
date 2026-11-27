@@ -2,7 +2,7 @@ import "server-only";
 
 import { randomInt, randomUUID } from "node:crypto";
 import { hashPassword } from "better-auth/crypto";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import { db } from "@/db";
 import { accounts, families, regions, residents, users } from "@/db/schema";
@@ -36,70 +36,10 @@ export async function findResidentForAccount(
 }
 
 /** Apakah username/NIK sudah dipakai akun mana pun (staf atau warga). */
-export async function usernameExists(username: string): Promise<boolean> {
-  const [row] = await db
-    .select({ id: users.id })
-    .from(users)
-    .where(eq(users.username, username))
-    .limit(1);
-  return Boolean(row);
-}
 
 /** Akun warga milik satu penduduk (unik), atau `null`. */
-export async function findWargaAccount(
-  villageId: number,
-  residentId: number,
-): Promise<WargaAccountSummary | null> {
-  const [row] = await db
-    .select({
-      userId: users.id,
-      username: users.username,
-      active: users.active,
-      mustChangePin: users.mustChangePin,
-    })
-    .from(users)
-    .where(and(eq(users.villageId, villageId), eq(users.residentId, residentId)))
-    .limit(1);
-
-  if (!row) return null;
-  return {
-    userId: row.userId,
-    username: row.username ?? "",
-    active: row.active,
-    mustChangePin: row.mustChangePin,
-  };
-}
 
 /** Peta `residentId → akun` untuk baris tabel penduduk yang sedang tampil. */
-export async function listWargaAccountsByResidentIds(
-  villageId: number,
-  residentIds: readonly number[],
-): Promise<Map<number, WargaAccountSummary>> {
-  if (residentIds.length === 0) return new Map();
-
-  const rows = await db
-    .select({
-      userId: users.id,
-      residentId: users.residentId,
-      username: users.username,
-      active: users.active,
-      mustChangePin: users.mustChangePin,
-    })
-    .from(users)
-    .where(and(eq(users.villageId, villageId), inArray(users.residentId, [...residentIds])));
-
-  const result = new Map<number, WargaAccountSummary>();
-  for (const row of rows) {
-    if (row.residentId === null) continue;
-    result.set(row.residentId, {
-      userId: row.userId,
-      username: row.username ?? "",
-      active: row.active,
-      mustChangePin: row.mustChangePin,
-    });
-  }
-  return result;
-}
 
 /** PIN sementara 6 digit; hindari PIN berulang/berurutan yang sangat lemah. */
 export function generatePin(): string {

@@ -15,42 +15,18 @@ import {
   type RekapKategoriSkor,
   type SkorResponden,
 } from "@/features/layanan-warga/analisis/domain/skor";
-import {
-  parsePilihanForm,
-  parseSkorPilihanForm,
-  rekapSoal,
-  serializePilihan,
-  serializeSkorPilihan,
-  validasiJawaban,
-  type RekapSoal,
-  type RespondenInput,
-  type SoalInput,
-  type SurveyInput,
-} from "@/features/layanan-warga/survey/domain/survey";
+import { validasiJawaban } from "@/features/layanan-warga/survey/domain/survey";
 import {
   buildSurveyCsv,
-  parseSurveyCsv,
   surveyCsvFilename,
   type KesalahanImporSurvei,
 } from "@/features/layanan-warga/survey/domain/survey-csv";
 import {
-  deleteResponden,
-  deleteSoal,
-  deleteSurvey,
-  getResponden,
-  getSoal,
   getSurvey,
   insertResponden,
-  insertSoal,
-  insertSurvey,
   listJawaban,
-  listJawabanResponden,
   listResponden,
   listSoal,
-  listSurvey,
-  nextUrutanSoal,
-  updateSoal,
-  updateSurvey,
 } from "@/features/layanan-warga/survey/infrastructure/survey-repository";
 import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { requirePermission } from "@/lib/dal";
@@ -72,11 +48,6 @@ async function pastikanSurvei(villageId: number, surveyId: number) {
 }
 
 /** Daftar seluruh survei desa (aktif maupun nonaktif). */
-export async function listSurveyData() {
-  const user = await requirePermission(RESOURCES.analisisSurvei, "read");
-  const villageId = await resolveVillageId(user);
-  return listSurvey(villageId);
-}
 
 /**
  * Detail survei: soal, responden, dan rekap per soal.
@@ -84,141 +55,14 @@ export async function listSurveyData() {
  * Mengembalikan `null` bila survei bukan milik desa sesi, agar halaman dapat
  * memanggil `notFound()`.
  */
-export async function getSurveyDetailData(surveyId: number) {
-  const user = await requirePermission(RESOURCES.analisisSurvei, "read");
-  const villageId = await resolveVillageId(user);
-
-  const survei = await getSurvey(villageId, surveyId);
-  if (!survei) return null;
-
-  const [soal, responden, jawaban, indikator] = await Promise.all([
-    listSoal(surveyId),
-    listResponden(surveyId),
-    listJawaban(surveyId),
-    listAnalisisIndikator(villageId),
-  ]);
-
-  const jawabanPerSoal = new Map<number, string[]>();
-  for (const item of jawaban) {
-    const list = jawabanPerSoal.get(item.soalId) ?? [];
-    list.push(item.jawaban);
-    jawabanPerSoal.set(item.soalId, list);
-  }
-
-  const rekap: RekapSoal[] = soal.map((item) => rekapSoal(item, jawabanPerSoal.get(item.id) ?? []));
-
-  return {
-    survei,
-    soal,
-    responden,
-    rekap,
-    indikator: indikator.map((item) => ({ id: item.id, nama: item.nama, kode: item.kode })),
-    urutanBerikutnya: await nextUrutanSoal(surveyId),
-  };
-}
 
 /** Tambah/ubah survei. */
-export async function simpanSurveyData(
-  id: number | null,
-  input: SurveyInput,
-): Promise<{ id: number }> {
-  const user = await requirePermission(RESOURCES.analisisSurvei, "update");
-  const villageId = await resolveVillageId(user);
-
-  const values = {
-    judul: input.judul,
-    deskripsi: input.deskripsi?.trim() ? input.deskripsi.trim() : null,
-    sasaran: input.sasaran?.trim() ? input.sasaran.trim() : null,
-    mulai: input.mulai?.trim() ? input.mulai.trim() : null,
-    selesai: input.selesai?.trim() ? input.selesai.trim() : null,
-    aktif: input.aktif,
-  };
-
-  if (id === null) {
-    const baru = await insertSurvey(villageId, values);
-    return { id: baru };
-  }
-
-  await pastikanSurvei(villageId, id);
-  await updateSurvey(villageId, id, values);
-  return { id };
-}
 
 /** Hapus survei beserta soal, responden, dan jawabannya (cascade). */
-export async function hapusSurveyData(id: number): Promise<void> {
-  const user = await requirePermission(RESOURCES.analisisSurvei, "delete");
-  const villageId = await resolveVillageId(user);
-
-  await pastikanSurvei(villageId, id);
-  await deleteSurvey(villageId, id);
-}
 
 /** Tambah/ubah soal pada survei. */
-export async function simpanSoalData(
-  id: number | null,
-  input: SoalInput,
-): Promise<{ id: number; surveyId: number }> {
-  const user = await requirePermission(RESOURCES.analisisSurvei, "update");
-  const villageId = await resolveVillageId(user);
-
-  await pastikanSurvei(villageId, input.surveyId);
-
-  if (id !== null) {
-    const soal = await getSoal(input.surveyId, id);
-    if (!soal) throw notFound("Pertanyaan tidak ditemukan.");
-  }
-
-  const pilihan = input.tipe === "choice" ? parsePilihanForm(input.pilihan ?? "") : [];
-
-  if (input.indikatorId !== null) {
-    const indikator = await listAnalisisIndikator(villageId);
-    if (!indikator.some((item) => item.id === input.indikatorId)) {
-      throw validationError("Indikator analisis tidak ditemukan.", {
-        indikatorId: ["Pilih indikator yang terdaftar di desa ini."],
-      });
-    }
-  }
-
-  // Tanpa peta skor eksplisit, pilihan pertama bernilai tertinggi (5) dan
-  // menurun satu poin per pilihan berikutnya.
-  const skorPilihan = parseSkorPilihanForm(input.skorPilihan ?? "", pilihan);
-  if (pilihan.length > 0 && Object.keys(skorPilihan).length === 0) {
-    pilihan.forEach((label, index) => {
-      skorPilihan[label] = Math.max(0, 5 - index);
-    });
-  }
-
-  const values = {
-    pertanyaan: input.pertanyaan,
-    tipe: input.tipe,
-    pilihan: serializePilihan(pilihan),
-    bobot: input.bobot,
-    skorPilihan: serializeSkorPilihan(skorPilihan),
-    indikatorId: input.indikatorId,
-    urutan: input.urutan,
-  };
-
-  if (id === null) {
-    const baru = await insertSoal(villageId, input.surveyId, values);
-    return { id: baru, surveyId: input.surveyId };
-  }
-
-  await updateSoal(input.surveyId, id, values);
-  return { id, surveyId: input.surveyId };
-}
 
 /** Hapus soal (jawaban terkait ikut terhapus). */
-export async function hapusSoalData(
-  surveyId: number,
-  soalId: number,
-): Promise<{ surveyId: number }> {
-  const user = await requirePermission(RESOURCES.analisisSurvei, "delete");
-  const villageId = await resolveVillageId(user);
-
-  await pastikanSurvei(villageId, surveyId);
-  await deleteSoal(surveyId, soalId);
-  return { surveyId };
-}
 
 /**
  * Simpan responden beserta jawabannya.
@@ -227,55 +71,8 @@ export async function hapusSoalData(
  * tersimpan pada soal (bukan nilai kiriman klien), dan jawaban angka harus
  * berupa angka.
  */
-export async function simpanRespondenData(
-  input: RespondenInput,
-  jawaban: Readonly<Record<string, string>>,
-): Promise<{ id: number; surveyId: number }> {
-  const user = await requirePermission(RESOURCES.analisisSurvei, "update");
-  const villageId = await resolveVillageId(user);
-
-  await pastikanSurvei(villageId, input.surveyId);
-
-  const soal = await listSoal(input.surveyId);
-  if (soal.length === 0) {
-    throw validationError("Tambahkan pertanyaan sebelum mengisi responden.");
-  }
-
-  const errors = validasiJawaban(soal, jawaban);
-  if (Object.keys(errors).length > 0) {
-    throw validationError(
-      "Lengkapi jawaban responden.",
-      Object.fromEntries(
-        Object.entries(errors).map(([soalId, pesan]) => [`jawaban.${soalId}`, [pesan]]),
-      ),
-    );
-  }
-
-  const id = await insertResponden(
-    villageId,
-    input.surveyId,
-    { nama: input.nama, nik: input.nik },
-    soal.map((item) => ({
-      soalId: item.id,
-      jawaban: (jawaban[String(item.id)] ?? "").trim(),
-    })),
-  );
-
-  return { id, surveyId: input.surveyId };
-}
 
 /** Hapus responden beserta jawabannya. */
-export async function hapusRespondenData(
-  surveyId: number,
-  respondenId: number,
-): Promise<{ surveyId: number }> {
-  const user = await requirePermission(RESOURCES.analisisSurvei, "delete");
-  const villageId = await resolveVillageId(user);
-
-  await pastikanSurvei(villageId, surveyId);
-  await deleteResponden(surveyId, respondenId);
-  return { surveyId };
-}
 
 /** Hasil impor CSV respons survei. */
 export interface HasilImporSurvei {
@@ -318,47 +115,6 @@ export async function exportSurveyCsvData(
  * membatalkan baris lain sehingga operator dapat memperbaiki lalu mengulang.
  * Tanggal pada berkas diabaikan — waktu dibuat server.
  */
-export async function importSurveyCsvData(
-  surveyId: number,
-  csv: string,
-): Promise<HasilImporSurvei> {
-  const user = await requirePermission(RESOURCES.analisisSurvei, "update");
-  const villageId = await resolveVillageId(user);
-
-  await pastikanSurvei(villageId, surveyId);
-
-  const soal = await listSoal(surveyId);
-  if (soal.length === 0) {
-    throw validationError("Tambahkan pertanyaan sebelum mengimpor respons.");
-  }
-
-  const hasil = parseSurveyCsv(csv, soal);
-  if (hasil.baris.length === 0 && hasil.kesalahan.length === 0) {
-    throw validationError("Berkas tidak memuat baris data.");
-  }
-
-  const kesalahan = [...hasil.kesalahan];
-  let diimpor = 0;
-
-  for (const baris of hasil.baris) {
-    try {
-      await insertResponden(
-        villageId,
-        surveyId,
-        { nama: baris.nama, nik: baris.nik },
-        soal.map((item) => ({
-          soalId: item.id,
-          jawaban: baris.jawaban[String(item.id)] ?? "",
-        })),
-      );
-      diimpor += 1;
-    } catch {
-      kesalahan.push({ baris: baris.baris, pesan: "Gagal menyimpan baris ini." });
-    }
-  }
-
-  return { surveyId, diimpor, ditolak: kesalahan.length, kesalahan };
-}
 
 /**
  * Simpan respons dari halaman publik.
@@ -510,27 +266,3 @@ export async function getLaporanSkorData(surveyId: number): Promise<LaporanSkorD
 }
 
 /** Rincian jawaban satu responden untuk dialog. */
-export async function getRespondenDetailData(surveyId: number, respondenId: number) {
-  const user = await requirePermission(RESOURCES.analisisSurvei, "read");
-  const villageId = await resolveVillageId(user);
-
-  await pastikanSurvei(villageId, surveyId);
-
-  const responden = await getResponden(surveyId, respondenId);
-  if (!responden) throw notFound("Responden tidak ditemukan.");
-
-  const [soal, jawaban] = await Promise.all([
-    listSoal(surveyId),
-    listJawabanResponden(surveyId, respondenId),
-  ]);
-
-  return {
-    responden,
-    jawaban: soal.map((item) => ({
-      soalId: item.id,
-      pertanyaan: item.pertanyaan,
-      tipe: item.tipe,
-      jawaban: jawaban.get(item.id) ?? "",
-    })),
-  };
-}

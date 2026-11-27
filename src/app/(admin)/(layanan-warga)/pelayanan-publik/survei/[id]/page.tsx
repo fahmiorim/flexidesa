@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { TableCard } from "@/components/ui/table-card";
 import { getSurveiDetailData } from "@/features/layanan-warga/pelayanan/application/survei-use-cases";
 
-import { hapusSoalSurveiAction, simpanSoalSurveiAction } from "../actions";
+import { hapusSoalSurveiAction } from "../actions";
+import { simpanSoalSurveiFormAction } from "./form-actions";
 
 function pilihanText(value: string | null, skor: string | null) {
   if (!value) return "";
@@ -29,6 +34,56 @@ function pilihanText(value: string | null, skor: string | null) {
 }
 export const metadata: Metadata = { title: "Detail Survei" };
 
+type SoalRow = Awaited<ReturnType<typeof getSurveiDetailData>>["questions"][number];
+
+function formSoal(soal: SoalRow | null, surveyId: number) {
+  return (
+    <div className="modul-form-grid">
+      <input name="surveyId" type="hidden" value={surveyId} />
+      {soal ? <input name="questionId" type="hidden" value={soal.id} /> : null}
+      <FormField
+        containerClassName="form-field-full"
+        defaultValue={soal?.pertanyaan ?? ""}
+        kind="textarea"
+        label="Pertanyaan"
+        maxLength={2000}
+        minLength={3}
+        name="pertanyaan"
+        required
+        rows={3}
+      />
+      <FormField
+        defaultValue={soal?.tipe ?? "text"}
+        kind="select"
+        label="Tipe jawaban"
+        name="tipe"
+        options={[
+          { value: "text", label: "Teks" },
+          { value: "number", label: "Angka" },
+          { value: "choice", label: "Pilihan ganda" },
+        ]}
+      />
+      <FormField
+        defaultValue={String(soal?.bobot ?? 1)}
+        label="Bobot (1–100)"
+        max={100}
+        min={1}
+        name="bobot"
+        type="number"
+      />
+      <FormField
+        containerClassName="form-field-full"
+        defaultValue={soal ? pilihanText(soal.pilihan, soal.skorPilihan) : ""}
+        helpText="Satu opsi per baris, format Label|Skor (contoh: Puas|5)."
+        kind="textarea"
+        label="Opsi pilihan dan skor"
+        name="pilihan"
+        rows={4}
+      />
+    </div>
+  );
+}
+
 export default async function Page({
   params,
   searchParams,
@@ -50,23 +105,17 @@ export default async function Page({
         aksi={
           <>
             <div className="page-heading-actions">
-              <Link className="button button-secondary" href="/pelayanan-publik/survei">
+              <ButtonLink variant="secondary" href="/pelayanan-publik/survei">
                 Kembali
-              </Link>
+              </ButtonLink>
               {data.canUpdate ? (
-                <Link
-                  className="button button-secondary"
-                  href={"/pelayanan-publik/survei/" + id + "/edit"}
-                >
+                <ButtonLink variant="secondary" href={"/pelayanan-publik/survei/" + id + "/edit"}>
                   Ubah Survei
-                </Link>
+                </ButtonLink>
               ) : null}
-              <Link
-                className="button button-primary"
-                href={"/pelayanan-publik/survei/" + id + "/hasil"}
-              >
+              <ButtonLink variant="primary" href={"/pelayanan-publik/survei/" + id + "/hasil"}>
                 Lihat Hasil & IKM
-              </Link>
+              </ButtonLink>
             </div>
           </>
         }
@@ -101,8 +150,27 @@ export default async function Page({
           <small>{data.row.sasaran ?? "Semua masyarakat"}</small>
         </article>
       </div>
-      <section className="modul-card">
-        <h2>Daftar Pertanyaan</h2>
+      <TableCard
+        actions={
+          data.canUpdate ? (
+            <FormDialog
+              aksi={simpanSoalSurveiFormAction}
+              deskripsi="Pertanyaan baru muncul di urutan terakhir formulir survei."
+              judul="Tambah pertanyaan"
+              label="+ Tambah Pertanyaan"
+              labelSimpan="Simpan pertanyaan"
+            >
+              {formSoal(null, id)}
+            </FormDialog>
+          ) : null
+        }
+        description={
+          data.questions.length
+            ? `${data.questions.length} pertanyaan · ${data.totalResponden} responden`
+            : "Belum ada pertanyaan untuk survei ini."
+        }
+        title="Daftar Pertanyaan"
+      >
         {data.questions.length ? (
           data.questions.map((q) => (
             <article className="survey-question" key={q.id}>
@@ -123,75 +191,32 @@ export default async function Page({
                 </p>
               </div>
               {data.canUpdate ? (
-                <form action={simpanSoalSurveiAction} className="survey-question-edit">
-                  <input type="hidden" name="surveyId" value={id} />
-                  <input type="hidden" name="questionId" value={q.id} />
-                  <input
-                    name="pertanyaan"
-                    aria-label="Pertanyaan"
-                    defaultValue={q.pertanyaan}
-                    required
-                  />
-                  <select name="tipe" defaultValue={q.tipe ?? "text"}>
-                    <option value="text">Teks</option>
-                    <option value="number">Angka</option>
-                    <option value="choice">Pilihan</option>
-                  </select>
-                  <textarea
-                    name="pilihan"
-                    aria-label="Pilihan jawaban"
-                    rows={2}
-                    defaultValue={pilihanText(q.pilihan, q.skorPilihan)}
-                    placeholder="Satu opsi per baris: Puas|5"
-                  />
-                  <input type="number" name="bobot" min="1" max="100" defaultValue={q.bobot} />
-                  <button className="button button-secondary">Simpan</button>
-                </form>
+                <FormDialog
+                  aksi={simpanSoalSurveiFormAction}
+                  deskripsi={`Ubah pertanyaan nomor ${q.urutan ?? 0}.`}
+                  judul="Ubah pertanyaan"
+                  label="Ubah"
+                  labelSimpan="Simpan perubahan"
+                  varian="secondary"
+                >
+                  {formSoal(q, id)}
+                </FormDialog>
               ) : null}
               {data.canDelete ? (
-                <form action={hapusSoalSurveiAction}>
-                  <input type="hidden" name="surveyId" value={id} />
-                  <input type="hidden" name="questionId" value={q.id} />
-                  <button className="button button-danger-ghost">Hapus</button>
-                </form>
+                <DialogHapusForm
+                  aksi={hapusSoalSurveiAction}
+                  hidden={{ surveyId: id, questionId: q.id }}
+                  judul={`Hapus pertanyaan "${q.pertanyaan}"?`}
+                  keterangan="Pertanyaan dan jawaban responden yang terkait akan dihapus permanen."
+                  labelAksi="Hapus pertanyaan"
+                />
               ) : null}
             </article>
           ))
         ) : (
           <p className="modul-empty">Belum ada pertanyaan untuk survei ini.</p>
         )}
-      </section>
-      {data.canUpdate ? (
-        <section className="modul-card">
-          <h2>Tambah Pertanyaan</h2>
-          <form action={simpanSoalSurveiAction} className="modul-form-grid">
-            <input type="hidden" name="surveyId" value={id} />
-            <label className="modul-field" style={{ gridColumn: "1 / -1" }}>
-              <span>Pertanyaan *</span>
-              <textarea name="pertanyaan" rows={3} minLength={3} maxLength={2000} required />
-            </label>
-            <label className="modul-field">
-              <span>Tipe jawaban</span>
-              <select name="tipe">
-                <option value="text">Teks</option>
-                <option value="number">Angka</option>
-                <option value="choice">Pilihan ganda</option>
-              </select>
-            </label>
-            <label className="modul-field">
-              <span>Bobot (1–100)</span>
-              <input type="number" name="bobot" min="1" max="100" defaultValue="1" />
-            </label>
-            <label className="modul-field" style={{ gridColumn: "1 / -1" }}>
-              <span>Opsi pilihan dan skor (Label|Skor 0–5, satu per baris)</span>
-              <textarea name="pilihan" rows={4} />
-            </label>
-            <div>
-              <button className="button button-primary">Tambah Pertanyaan</button>
-            </div>
-          </form>
-        </section>
-      ) : null}
+      </TableCard>
     </div>
   );
 }

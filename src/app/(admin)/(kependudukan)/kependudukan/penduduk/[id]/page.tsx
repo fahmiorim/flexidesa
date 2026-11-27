@@ -5,7 +5,9 @@ import { notFound } from "next/navigation";
 import { kembalikanStatusAction } from "@/app/(admin)/(kependudukan)/kependudukan/mutasi-penduduk/actions";
 import { hapusPendudukAction } from "@/app/(admin)/(kependudukan)/kependudukan/penduduk/actions";
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
 import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
 import { formatWilayahLabel } from "@/features/info-desa/wilayah/domain/wilayah";
 import { getPendudukDetailData } from "@/features/kependudukan/penduduk/application/use-cases";
 import {
@@ -112,25 +114,22 @@ export default async function PendudukDetailPage({ params }: { params: Promise<{
                 {LIFE_STATUS_LABELS[penduduk.lifeStatus]}
               </span>
               {bolehUbah ? (
-                <Link
-                  className="button button-primary"
-                  href={`/kependudukan/penduduk/${penduduk.id}/ubah`}
-                >
+                <ButtonLink variant="primary" href={`/kependudukan/penduduk/${penduduk.id}/ubah`}>
                   Ubah Data
-                </Link>
+                </ButtonLink>
               ) : null}
               {bolehUbah && penduduk.lifeStatus === "alive" ? (
-                <Link
-                  className="button button-secondary"
+                <ButtonLink
+                  variant="secondary"
                   href={`/kependudukan/penduduk/${penduduk.id}/mutasi`}
                 >
                   Mutasi
-                </Link>
+                </ButtonLink>
               ) : null}
               {bolehUbah && penduduk.lifeStatus !== "alive" ? (
                 <form action={kembalikanStatusAction.bind(null, penduduk.id)}>
                   <ConfirmSubmit
-                    className="button button-secondary"
+                    variant="secondary"
                     message="Kembalikan status penduduk ini menjadi Hidup? Perubahan ini akan mempengaruhi laporan penduduk bulanan."
                   >
                     Kembalikan Status
@@ -138,15 +137,14 @@ export default async function PendudukDetailPage({ params }: { params: Promise<{
                 </form>
               ) : null}
               {bolehHapus ? (
-                <form action={hapusPendudukAction}>
-                  <input type="hidden" name="id" value={penduduk.id} />
-                  <ConfirmSubmit
-                    className="button button-secondary"
-                    message="Hapus data penduduk ini? Riwayat anggota keluarga tetap tersimpan."
-                  >
-                    Hapus Data
-                  </ConfirmSubmit>
-                </form>
+                <DialogHapusForm
+                  aksi={hapusPendudukAction}
+                  id={penduduk.id}
+                  judul={`Hapus data ${penduduk.name}?`}
+                  keterangan="Data penduduk dihapus permanen; riwayat anggota keluarga tetap tersimpan."
+                  label="Hapus Data"
+                  labelAksi="Hapus penduduk"
+                />
               ) : null}
             </div>
           </>

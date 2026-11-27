@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 
+import { Button } from "@/components/ui/button";
 import { createIdleActionState } from "@/lib/action-state";
 
 import { sinkronkanIdmAction } from "./actions";
@@ -21,9 +22,9 @@ export function SinkronIdmForm({ tahun }: { tahun: number }) {
   return (
     <form action={formAction} className="sd-sinkron">
       <input name="tahun" type="hidden" value={tahun} />
-      <button className="button button-primary" disabled={pending} type="submit">
+      <Button variant="primary" disabled={pending} type="submit">
         {pending ? "Menyinkronkan…" : "Sinkronkan IDM"}
-      </button>
+      </Button>
       {state.status === "idle" ? null : (
         <p
           className={

@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 /** Masa berlaku kode verifikasi kontak. */
-export const MASA_BERLAKU_KODE_MS = 10 * 60 * 1000;
 export const PANJANG_KODE = 6;
 
 /** Normalkan nomor HP Indonesia ke format 62xxxxxxxxxx. */
@@ -42,15 +41,3 @@ export const verifikasiKontakSchema = z.object({
         : { target: normalisasiNomorHp(value), kanal: "whatsapp" as const },
     ),
 });
-
-export const kodeVerifikasiSchema = z
-  .string()
-  .trim()
-  .regex(new RegExp(`^\\d{${PANJANG_KODE}}$`), `Kode harus ${PANJANG_KODE} digit angka.`);
-
-export interface StatusVerifikasiKontak {
-  target: string | null;
-  terverifikasi: boolean;
-  kedaluwarsa: Date | null;
-  kanal?: "whatsapp" | "email";
-}

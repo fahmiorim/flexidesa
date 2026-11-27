@@ -1,6 +1,6 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import type { survey } from "@/db/schema";
 
 import { simpanSurveiAction } from "./actions";
@@ -14,9 +14,9 @@ export function SurveiForm({ row }: { row?: SurveyRow | null }) {
         deskripsi={<>Atur periode, sasaran, dan status survei kepuasan masyarakat.</>}
         aksi={
           <>
-            <Link className="button button-secondary" href="/pelayanan-publik/survei">
+            <ButtonLink variant="secondary" href="/pelayanan-publik/survei">
               Kembali
-            </Link>
+            </ButtonLink>
           </>
         }
       />
@@ -67,7 +67,7 @@ export function SurveiForm({ row }: { row?: SurveyRow | null }) {
             </span>
           </label>
           <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end" }}>
-            <button className="button button-primary">Simpan Survei</button>
+            <Button variant="primary">Simpan Survei</Button>
           </div>
         </form>
       </section>

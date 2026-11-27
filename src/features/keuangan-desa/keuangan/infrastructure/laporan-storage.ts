@@ -17,10 +17,6 @@ import path from "node:path";
 
 const AKAR_PENYIMPANAN = path.join(process.cwd(), "storage", "keuangan-laporan");
 
-export function akarPenyimpananLaporan(): string {
-  return AKAR_PENYIMPANAN;
-}
-
 /**
  * Susun jalur relatif untuk berkas laporan baru.
  *

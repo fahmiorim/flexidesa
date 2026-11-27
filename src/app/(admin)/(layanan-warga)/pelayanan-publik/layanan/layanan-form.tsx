@@ -1,6 +1,6 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import type { LayananPublik } from "@/db/schema";
 
 import { simpanLayananAction } from "./actions";
@@ -13,9 +13,9 @@ export function LayananForm({ row }: { row?: LayananPublik | null }) {
         deskripsi={<>Atur informasi dan persyaratan layanan yang tersedia bagi masyarakat.</>}
         aksi={
           <>
-            <Link className="button button-secondary" href="/pelayanan-publik/layanan">
+            <ButtonLink variant="secondary" href="/pelayanan-publik/layanan">
               Kembali
-            </Link>
+            </ButtonLink>
           </>
         }
       />
@@ -91,7 +91,7 @@ export function LayananForm({ row }: { row?: LayananPublik | null }) {
             />
           </label>
           <div style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end" }}>
-            <button className="button button-primary">Simpan Layanan</button>
+            <Button variant="primary">Simpan Layanan</Button>
           </div>
         </form>
       </section>

@@ -1,6 +1,9 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   getPengajuanDetailData,
   getPengajuanPageData,
@@ -55,12 +58,12 @@ export default async function Page({
         deskripsi={<>Proses pengajuan layanan masyarakat.</>}
         aksi={
           <>
-            <a
-              className="button button-primary"
+            <ButtonLink
+              variant="primary"
               href={"/pelayanan-publik/pengajuan/ekspor" + (exportQuery ? "?" + exportQuery : "")}
             >
               ↓ Ekspor CSV
-            </a>
+            </ButtonLink>
           </>
         }
       />
@@ -83,115 +86,114 @@ export default async function Page({
           </article>
         ))}
       </div>
-      <nav className="quick-actions" aria-label="Filter status pengajuan">
-        <Link
-          className={"button " + (!status ? "button-primary" : "button-secondary")}
-          href="/pelayanan-publik/pengajuan"
-        >
+      <nav aria-label="Filter status pengajuan" className="quick-actions">
+        <ButtonLink variant={!status ? "primary" : "secondary"} href="/pelayanan-publik/pengajuan">
           Semua Pengajuan
-        </Link>
+        </ButtonLink>
         {Object.entries(labels).map(([key, label]) => (
-          <Link
+          <ButtonLink
             key={key}
-            className={"button " + (status === key ? "button-primary" : "button-secondary")}
+            variant={status === key ? "primary" : "secondary"}
             href={"/pelayanan-publik/pengajuan?status=" + key}
           >
             {label}
-          </Link>
+          </ButtonLink>
         ))}
       </nav>
       <div className="request-workspace">
-        <section className="modul-card">
-          <div className="page-heading">
-            <div>
-              <h2>Antrean Pengajuan</h2>
-              <p>Pilih satu pengajuan untuk melihat ringkasan di panel detail.</p>
+        <TableCard
+          description="Pilih satu pengajuan untuk melihat ringkasan di panel detail."
+          filter={
+            <form method="get" className="modul-filter-row">
+              <FormField
+                defaultValue={q}
+                label="Cari nomor tiket, nama, atau NIK"
+                name="q"
+                placeholder="Cari pengajuan…"
+              />
+              <FormField
+                defaultValue={status ?? ""}
+                kind="select"
+                label="Status"
+                name="status"
+                options={[
+                  { value: "", label: "Semua status" },
+                  ...Object.entries(labels).map(([v, l]) => ({ value: v, label: l })),
+                ]}
+              />
+              <input name="page" type="hidden" value="1" />
+              <Button variant="primary">Filter</Button>
+            </form>
+          }
+          footer={
+            <div className="table-pagination">
+              <span>
+                Menampilkan {d.total === 0 ? 0 : (d.page - 1) * d.pageSize + 1}–
+                {Math.min(d.page * d.pageSize, d.total)} dari {d.total} pengajuan
+              </span>
+              <div className="page-actions">
+                <ButtonLink
+                  aria-disabled={d.page <= 1}
+                  variant="secondary"
+                  href={query(Math.max(1, d.page - 1), selectedId || undefined)}
+                >
+                  Sebelumnya
+                </ButtonLink>
+                <span>
+                  Halaman {d.page} / {d.totalPages}
+                </span>
+                <ButtonLink
+                  aria-disabled={d.page >= d.totalPages}
+                  variant="secondary"
+                  href={query(Math.min(d.totalPages, d.page + 1), selectedId || undefined)}
+                >
+                  Berikutnya
+                </ButtonLink>
+              </div>
             </div>
-          </div>
-          <form method="get" className="modul-filter-row">
-            <label>
-              <span>Cari nomor tiket, nama, atau NIK</span>
-              <input name="q" defaultValue={q} placeholder="Cari pengajuan…" />
-            </label>
-            <label>
-              <span>Status</span>
-              <select name="status" defaultValue={status ?? ""}>
-                <option value="">Semua status</option>
-                {Object.entries(labels).map(([v, l]) => (
-                  <option key={v} value={v}>
-                    {l}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <input type="hidden" name="page" value="1" />
-            <button className="button button-primary">Filter</button>
-          </form>
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>No. Tiket</th>
-                  <th>Pemohon</th>
-                  <th>Layanan</th>
-                  <th>Tanggal</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          }
+          title="Antrean Pengajuan"
+        >
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>No. Tiket</HeaderCell>
+                  <HeaderCell>Pemohon</HeaderCell>
+                  <HeaderCell>Layanan</HeaderCell>
+                  <HeaderCell>Tanggal</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {d.rows.map((r) => (
-                  <tr key={r.id}>
-                    <td>
+                  <Row key={r.id}>
+                    <Cell>
                       <strong>{r.nomorTiket}</strong>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {r.namaPemohon}
                       <br />
                       <small>{r.nik ?? "NIK tidak dicantumkan"}</small>
-                    </td>
-                    <td>{r.namaLayanan ?? "Layanan dihapus"}</td>
-                    <td>{r.createdAt?.toLocaleDateString("id-ID") ?? "—"}</td>
-                    <td>{labels[r.status] ?? r.status}</td>
-                    <td>
-                      <Link className="button button-secondary" href={query(d.page, r.id)}>
+                    </Cell>
+                    <Cell>{r.namaLayanan ?? "Layanan dihapus"}</Cell>
+                    <Cell>{r.createdAt?.toLocaleDateString("id-ID") ?? "—"}</Cell>
+                    <Cell>{labels[r.status] ?? r.status}</Cell>
+                    <Cell>
+                      <ButtonLink variant="secondary" href={query(d.page, r.id)}>
                         Pilih
-                      </Link>
-                    </td>
-                  </tr>
+                      </ButtonLink>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
           {d.rows.length === 0 ? (
             <p className="modul-empty">Tidak ada pengajuan yang sesuai dengan filter.</p>
           ) : null}
-          <div className="table-pagination">
-            <span>
-              Menampilkan {d.total === 0 ? 0 : (d.page - 1) * d.pageSize + 1}–
-              {Math.min(d.page * d.pageSize, d.total)} dari {d.total} pengajuan
-            </span>
-            <div className="page-actions">
-              <Link
-                aria-disabled={d.page <= 1}
-                className="button button-secondary"
-                href={query(Math.max(1, d.page - 1), selectedId || undefined)}
-              >
-                Sebelumnya
-              </Link>
-              <span>
-                Halaman {d.page} / {d.totalPages}
-              </span>
-              <Link
-                aria-disabled={d.page >= d.totalPages}
-                className="button button-secondary"
-                href={query(Math.min(d.totalPages, d.page + 1), selectedId || undefined)}
-              >
-                Berikutnya
-              </Link>
-            </div>
-          </div>
-        </section>
+        </TableCard>
         <aside className="modul-card request-detail-panel">
           {selected ? (
             <>
@@ -230,12 +232,12 @@ export default async function Page({
                   <p>{selected.request.catatanPetugas ?? "Belum ada catatan."}</p>
                 </div>
               </div>
-              <Link
-                className="button button-primary"
+              <ButtonLink
+                variant="primary"
                 href={"/pelayanan-publik/pengajuan/" + selected.request.id}
               >
                 Buka Detail & Proses →
-              </Link>
+              </ButtonLink>
             </>
           ) : (
             <div className="modul-empty">

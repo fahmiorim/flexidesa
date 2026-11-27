@@ -1,3 +1,4 @@
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   INDIKATOR_ANAK_KEYS,
   INDIKATOR_IBU_HAMIL_KEYS,
@@ -23,65 +24,65 @@ export function SkorcardKonvergensi({ skorcard }: { skorcard: SkorcardKonvergens
         </p>
       </header>
 
-      <div className="table-scroll">
-        <table className="data-table">
+      <TableScroll>
+        <Table>
           <caption className={styles.matrixCaption}>
             Tabel 1. Jumlah sasaran 1.000 HPK (ibu hamil dan anak 0-23 bulan)
           </caption>
-          <thead>
-            <tr>
-              <th>Sasaran</th>
-              <th>Jumlah</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Total rumah tangga sasaran</td>
-              <td>{angka.format(skorcard.jumlahTotalRt)}</td>
-            </tr>
-            <tr>
-              <td>Ibu hamil</td>
-              <td>{angka.format(skorcard.ibuHamilTotal)}</td>
-            </tr>
-            <tr>
-              <td>Ibu hamil KEK/risti</td>
-              <td>{angka.format(skorcard.jumlahKekRisti)}</td>
-            </tr>
-            <tr>
-              <td>Anak 0-23 bulan</td>
-              <td>{angka.format(skorcard.bulananAnakTotal)}</td>
-            </tr>
-            <tr>
-              <td>Anak gizi kurang/buruk/stunting</td>
-              <td>{angka.format(skorcard.jumlahGiziBukanNormal)}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          <THead>
+            <Row>
+              <HeaderCell>Sasaran</HeaderCell>
+              <HeaderCell>Jumlah</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
+            <Row>
+              <Cell>Total rumah tangga sasaran</Cell>
+              <Cell>{angka.format(skorcard.jumlahTotalRt)}</Cell>
+            </Row>
+            <Row>
+              <Cell>Ibu hamil</Cell>
+              <Cell>{angka.format(skorcard.ibuHamilTotal)}</Cell>
+            </Row>
+            <Row>
+              <Cell>Ibu hamil KEK/risti</Cell>
+              <Cell>{angka.format(skorcard.jumlahKekRisti)}</Cell>
+            </Row>
+            <Row>
+              <Cell>Anak 0-23 bulan</Cell>
+              <Cell>{angka.format(skorcard.bulananAnakTotal)}</Cell>
+            </Row>
+            <Row>
+              <Cell>Anak gizi kurang/buruk/stunting</Cell>
+              <Cell>{angka.format(skorcard.jumlahGiziBukanNormal)}</Cell>
+            </Row>
+          </TBody>
+        </Table>
+      </TableScroll>
 
-      <div className="table-scroll">
-        <table className="data-table">
+      <TableScroll>
+        <Table>
           <caption className={styles.matrixCaption}>
             Tabel 2. Hasil pengukuran tikar pertumbuhan (deteksi dini stunting)
           </caption>
-          <thead>
-            <tr>
-              <th>Total anak</th>
-              <th>Hijau (normal)</th>
-              <th>Kuning (risiko stunting)</th>
-              <th>Merah (terindikasi stunting)</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{angka.format(skorcard.bulananAnakTotal)}</td>
-              <td>{angka.format(skorcard.tikar.H)}</td>
-              <td>{angka.format(skorcard.tikar.K)}</td>
-              <td>{angka.format(skorcard.tikar.M)}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+          <THead>
+            <Row>
+              <HeaderCell>Total anak</HeaderCell>
+              <HeaderCell>Hijau (normal)</HeaderCell>
+              <HeaderCell>Kuning (risiko stunting)</HeaderCell>
+              <HeaderCell>Merah (terindikasi stunting)</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
+            <Row>
+              <Cell>{angka.format(skorcard.bulananAnakTotal)}</Cell>
+              <Cell>{angka.format(skorcard.tikar.H)}</Cell>
+              <Cell>{angka.format(skorcard.tikar.K)}</Cell>
+              <Cell>{angka.format(skorcard.tikar.M)}</Cell>
+            </Row>
+          </TBody>
+        </Table>
+      </TableScroll>
 
       <div className={styles.rekapGrid}>
         <article className={styles.rekapCard}>

@@ -42,13 +42,6 @@ export default async function GrupAksesPage({
       <PageHeading
         judul={<>Hak Akses &amp; Permission</>}
         deskripsi={<>Atur role desa dan izin baca, tulis, serta kelola untuk setiap modul.</>}
-        aksi={
-          <>
-            {data.canCreate ? (
-              <DialogRole aksi={buatRoleAction} label="+ Tambah Grup" varian="primary" />
-            ) : null}
-          </>
-        }
       />
 
       <div className="pengguna-kpi-grid">
@@ -89,23 +82,6 @@ export default async function GrupAksesPage({
         </article>
       </div>
 
-      <nav aria-label="Bagian manajemen pengguna" className="pengguna-tabs">
-        <Link className="pengguna-tab" href="/pengaturan/pengguna">
-          Pengguna
-        </Link>
-        <Link aria-current="page" className="pengguna-tab" href="/pengaturan/grup-akses">
-          Peran &amp; Hak Akses
-        </Link>
-        {data.canAudit ? (
-          <Link className="pengguna-tab" href="/pengaturan/pengguna/aktivitas">
-            Aktivitas Pengguna
-          </Link>
-        ) : null}
-        <Link className="pengguna-tab" href="/pengaturan/pengguna/keamanan">
-          Pengaturan Keamanan
-        </Link>
-      </nav>
-
       <div className="pengguna-role-layout">
         <section className="platform-card pengguna-card">
           <div className="pengguna-card-head">
@@ -113,6 +89,9 @@ export default async function GrupAksesPage({
               <h2>Daftar Role</h2>
               <p>Jumlah anggota dihitung dari pengguna aktif dan nonaktif.</p>
             </div>
+            {data.canCreate ? (
+              <DialogRole aksi={buatRoleAction} label="+ Tambah Grup" varian="primary" />
+            ) : null}
           </div>
           <ul className="pengguna-role-daftar">
             {data.roles.length === 0 ? (

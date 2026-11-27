@@ -1,5 +1,3 @@
-import type { z } from "zod";
-
 import {
   FIELD_PENDUDUK_LUAR,
   FORMAT_TANGGAL_SURAT,
@@ -37,8 +35,6 @@ export const skemaPengaturanSurat = pengaturanSchema.pick({
   suratLogoLebar: true,
   suratLogoPosisi: true,
 });
-
-export type PengaturanSuratPatch = z.infer<typeof skemaPengaturanSurat>;
 
 /** Label isian penduduk luar pada formulir surat. */
 export const LABEL_FIELD_PENDUDUK_LUAR: Readonly<Record<FieldPendudukLuar, string>> = {

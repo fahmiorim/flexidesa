@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getSuratFormOptions } from "@/features/pelayanan-persuratan/surat/application/daftar-surat";
 import { parseIsianFields } from "@/features/pelayanan-persuratan/surat/domain/isian";
 import { todayIsoDate } from "@/lib/forms";
@@ -34,13 +34,6 @@ export default async function BuatSuratPage({ searchParams }: { searchParams: Se
       <PageHeading
         judul={<>Buat Surat Baru</>}
         deskripsi={<>Buat konsep surat berdasarkan jenis layanan dan data penduduk desa.</>}
-        aksi={
-          <>
-            <Link href="/layanan-surat/persuratan/surat" className="button button-secondary">
-              ← Kembali ke daftar
-            </Link>
-          </>
-        }
       />
 
       {query.error ? (
@@ -55,9 +48,9 @@ export default async function BuatSuratPage({ searchParams }: { searchParams: Se
           <p className="modul-muted">
             Aktifkan atau buat jenis surat terlebih dahulu sebelum membuat surat baru.
           </p>
-          <Link href="/layanan-surat/persuratan/surat" className="button button-secondary">
+          <ButtonLink variant="secondary" href="/layanan-surat/persuratan/surat">
             Kembali ke Administrasi Surat
-          </Link>
+          </ButtonLink>
         </section>
       ) : (
         <SuratForm

@@ -13,7 +13,6 @@ import {
   insertLaporanPenduduk,
   listLaporanPenduduk,
   listTahunLaporanPenduduk,
-  setKirimLaporanPenduduk,
   updateLaporanPenduduk,
 } from "@/features/kependudukan/statistik/infrastructure/laporan-penduduk-repository";
 import {
@@ -193,22 +192,4 @@ export async function deleteLaporanPendudukBanyakUseCase(ids: number[]) {
 /** Hapus satu arsip beserta berkasnya. */
 export async function deleteLaporanPendudukUseCase(id: number) {
   return deleteLaporanPendudukBanyakUseCase([id]);
-}
-
-/**
- * Tandai arsip sebagai sudah dikirim ke OpenDK.
- *
- * OpenSID mengisi kolom `kirim` setelah server OpenDK menerima laporan. FlexiDesa
- * belum memiliki integrasi OpenDK, jadi aksi ini hanya dipakai bila integrasi
- * tersebut tersedia; UI menampilkan tombol Kirim dalam keadaan non-aktif.
- */
-export async function tandaiKirimLaporanPenduduk(ids: number[], kirim: Date | null) {
-  const user = await requirePermission(LAPORAN_PENDUDUK_RESOURCE, "update");
-  const villageId = await resolveVillageId(user);
-
-  const unik = [...new Set(ids)].filter((id) => Number.isInteger(id) && id > 0);
-  if (unik.length === 0) throw validationError("Pilih laporan yang akan ditandai terkirim.");
-
-  await setKirimLaporanPenduduk(villageId, unik, kirim);
-  return { jumlah: unik.length };
 }

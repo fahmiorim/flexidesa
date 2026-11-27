@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import type { RumahTanggaFormInput } from "@/features/kependudukan/rumah-tangga/domain/rumah-tangga";
 import { GalatField, PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
@@ -140,12 +141,12 @@ export function FormRumahTangga({
       ) : null}
 
       <div className="penduduk-heading-actions">
-        <Link className="button button-secondary" href={kembaliHref}>
+        <ButtonLink variant="secondary" href={kembaliHref}>
           Batal
-        </Link>
-        <button className="button button-primary" disabled={pending} type="submit">
+        </ButtonLink>
+        <Button variant="primary" disabled={pending} type="submit">
           {pending ? "Menyimpan…" : awal === undefined ? "Simpan Rumah Tangga" : "Simpan Perubahan"}
-        </button>
+        </Button>
       </div>
     </form>
   );

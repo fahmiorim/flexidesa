@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { buatSlug } from "@/features/info-desa/publik/domain/slug";
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import {
   isBlankSelection,
   optionalDigits,
@@ -17,8 +16,6 @@ import {
  * `perangkat_desa` adalah aparatur yang menjabat. Keduanya milik satu desa.
  * Domain ini murni; unggah foto dan sanitasi dilakukan application layer.
  */
-
-export const PERANGKAT_DESA_RESOURCE = RESOURCES.perangkatDesa;
 
 export const STATUS_PERANGKAT = ["aktif", "nonaktif"] as const;
 export type StatusPerangkat = (typeof STATUS_PERANGKAT)[number];
@@ -50,10 +47,6 @@ export function labelStatusPerangkat(nilai: string): string {
 export const PERIODE_JABATAN = ["aktif"] as const;
 export type PeriodeJabatan = (typeof PERIODE_JABATAN)[number];
 
-export const PERIODE_JABATAN_LABELS: Readonly<Record<PeriodeJabatan, string>> = {
-  aktif: "Aktif",
-};
-
 /** Skema form jabatan. */
 export const jabatanFormSchema = z.object({
   nama: z.string().trim().min(1, "Nama jabatan wajib diisi.").max(100, "Maksimal 100 karakter."),
@@ -64,8 +57,6 @@ export const jabatanFormSchema = z.object({
     .max(999, "Urutan maksimal 999.")
     .default(0),
 });
-
-export type JabatanFormInput = z.infer<typeof jabatanFormSchema>;
 
 /** Jenis kelamin dari select: sentinel kosong → `null`. */
 const optionalJenisKelamin = z.preprocess(
@@ -95,8 +86,6 @@ export const perangkatFormSchema = z.object({
     .default(0),
 });
 
-export type PerangkatFormInput = z.infer<typeof perangkatFormSchema>;
-
 /**
  * Slug jabatan dari nama; tidak pernah kosong.
  *
@@ -109,19 +98,8 @@ export function slugJabatan(nama: string): string {
 }
 
 /** Baris jabatan pada halaman admin. */
-export interface JabatanAdminRow {
-  id: number;
-  nama: string;
-  slug: string;
-  urut: number;
-  jumlahPerangkat: number;
-}
 
 /** Pilihan jabatan untuk form perangkat. */
-export interface JabatanOption {
-  id: number;
-  nama: string;
-}
 
 /** Data perangkat untuk daftar dan form ubah. */
 export interface PerangkatAdmin {

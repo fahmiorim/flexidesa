@@ -5,50 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1795650850915,
+      "when": 1795702000000,
       "tag": "0000_baseline",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1795653520889,
-      "tag": "0001_pindah_lembaga_ke_lembaga_desa",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1795656000000,
-      "tag": "0002_slug_profil_desa",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1795696880225,
-      "tag": "0003_bored_chronomancer",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "5",
-      "when": 1795697919559,
-      "tag": "0004_magical_skreet",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "5",
-      "when": 1795698504301,
-      "tag": "0005_aromatic_miss_america",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "5",
-      "when": 1795700000000,
-      "tag": "0006_rbac_batas_tenant_dan_slug_global",
       "breakpoints": true
     }
   ]

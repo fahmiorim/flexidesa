@@ -1,16 +1,22 @@
 import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   aksesGaleriAdmin,
   detailAlbumGaleriAdmin,
 } from "@/features/info-desa/publik/application/konten-admin";
 
-import { hapusFoto, jadikanSampul, unggahFoto } from "../actions";
+import { hapusFoto, jadikanSampul } from "../actions";
 import { DialogFoto } from "../dialog-foto";
+import { unggahFotoFormAction } from "./form-actions";
 
 export const metadata = { title: "Kelola Foto Galeri" };
 
@@ -97,67 +103,64 @@ export default async function KelolaFotoGaleriPage({
         </article>
       </section>
 
-      <section aria-label="Unggah foto" className="pd-panel">
-        <div className="pd-panel-kepala">
-          <div>
-            <h2>Unggah Foto</h2>
-            <p>Maks. 20 berkas, JPG/PNG/WEBP/GIF/SVG ≤ 5 MB.</p>
-          </div>
-          {album.aktif ? (
-            <Link className="wilayah-tool" href={`/galeri/${encodeURIComponent(album.slug)}`}>
-              ↗ Buka di Website
-            </Link>
-          ) : null}
-        </div>
-        <form action={unggahFoto} className="galeri-video-form">
-          <input type="hidden" name="albumId" value={album.id} />
-          <label>
-            Berkas gambar
-            <input name="gambar" type="file" accept="image/*" multiple required />
-          </label>
-          <button type="submit">Unggah Foto</button>
-        </form>
-      </section>
-
-      <section aria-label="Daftar foto" className="pd-panel" id="daftar-foto">
-        <div className="pd-panel-kepala">
-          <div>
-            <h2>Daftar Foto</h2>
-            <p>
-              {angka(fotoAktif)} aktif · {angka(fotoSlider)} slider beranda.
-            </p>
-          </div>
-          <div className="wilayah-toolbar">
-            <span className="wilayah-count-pill">{angka(fotos.length)} foto</span>
-            <Link className="wilayah-tool" href="/profil-desa/galeri">
+      <TableCard
+        actions={
+          <>
+            {album.aktif ? (
+              <ButtonLink variant="secondary" href={`/galeri/${encodeURIComponent(album.slug)}`}>
+                ↗ Buka di Website
+              </ButtonLink>
+            ) : null}
+            <ButtonLink variant="secondary" href="/profil-desa/galeri">
               ← Semua Album
-            </Link>
-          </div>
-        </div>
-
+            </ButtonLink>
+            <FormDialog
+              aksi={unggahFotoFormAction}
+              deskripsi="Maksimal 20 berkas, JPG/PNG/WEBP/GIF/SVG ≤ 5 MB per berkas."
+              judul="Unggah foto"
+              label="+ Unggah Foto"
+              labelSimpan="Unggah"
+            >
+              <input name="albumId" type="hidden" value={album.id} />
+              <FormField
+                accept="image/*"
+                containerClassName="form-field-full"
+                helpText="Pilih beberapa berkas sekaligus bila perlu."
+                label="Berkas gambar"
+                multiple
+                name="gambar"
+                required
+                type="file"
+              />
+            </FormDialog>
+          </>
+        }
+        description={`${angka(fotoAktif)} aktif · ${angka(fotoSlider)} slider beranda · ${angka(fotos.length)} foto`}
+        title="Daftar Foto"
+      >
         {fotos.length ? (
-          <div className="modul-table-wrap">
-            <table className="modul-table pemerintah-table berita-tabel">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Foto</th>
-                  <th>Judul</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-table-wrap">
+            <Table className="modul-table pemerintah-table berita-tabel">
+              <THead>
+                <Row>
+                  <HeaderCell>No</HeaderCell>
+                  <HeaderCell>Foto</HeaderCell>
+                  <HeaderCell>Judul</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {fotos.map((foto, index) => {
                   const gambar = urlGambar(foto.gambar);
                   const isSampul = album.sampul === foto.gambar;
                   return (
-                    <tr
+                    <Row
                       className={foto.aktif ? undefined : "pemerintah-row-nonaktif"}
                       key={foto.id}
                     >
-                      <td>{index + 1}</td>
-                      <td>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>
                         <div className="berita-sel">
                           <span aria-hidden className="berita-thumb">
                             {gambar ? (
@@ -178,60 +181,58 @@ export default async function KelolaFotoGaleriPage({
                             </div>
                           </div>
                         </div>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <strong className="berita-sel-judul">
                           {foto.judul ?? "(tanpa judul)"}
                         </strong>
                         {foto.keterangan ? (
                           <small className="berita-baca">{foto.keterangan}</small>
                         ) : null}
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span className={`berita-status ${foto.aktif ? "is-tayang" : "is-draft"}`}>
                           <i aria-hidden="true" />
                           {foto.aktif ? "Aktif" : "Nonaktif"}
                         </span>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <div className="pd-aparat-aksi">
                           {akses.bolehUbah ? <DialogFoto item={foto} /> : null}
                           {akses.bolehUbah && !isSampul ? (
                             <form action={jadikanSampul}>
                               <input name="albumId" type="hidden" value={album.id} />
                               <input name="fotoId" type="hidden" value={foto.id} />
-                              <button className="button button-ghost" type="submit">
+                              <Button variant="ghost" type="submit">
                                 Jadikan Sampul
-                              </button>
+                              </Button>
                             </form>
                           ) : null}
                           {akses.bolehHapus ? (
-                            <form action={hapusFoto}>
-                              <input name="fotoId" type="hidden" value={foto.id} />
-                              <ConfirmSubmit
-                                className="button button-danger-ghost"
-                                message={`Hapus foto "${foto.judul ?? "tanpa judul"}"?`}
-                              >
-                                Hapus
-                              </ConfirmSubmit>
-                            </form>
+                            <DialogHapusForm
+                              aksi={hapusFoto}
+                              hidden={{ fotoId: foto.id }}
+                              judul={`Hapus foto "${foto.judul ?? "tanpa judul"}"?`}
+                              keterangan="Foto beserta berkas gambarnya akan dihapus permanen."
+                              labelAksi="Hapus foto"
+                            />
                           ) : null}
                         </div>
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <div className="berita-kosong">
             <span aria-hidden="true">▣</span>
             <strong>Belum ada foto</strong>
-            <p>Unggah foto pertama lewat formulir di atas.</p>
+            <p>Unggah foto pertama lewat tombol “Unggah Foto” di atas.</p>
           </div>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

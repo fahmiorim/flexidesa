@@ -24,16 +24,6 @@ export const KUNCI_ISIAN_PENGIKUT = "__pengikut";
 export const KUNCI_ISIAN_LUAR = "__luar";
 
 /** Baris penduduk luar desa yang diisi manual pada formulir surat. */
-export const PENDDUDUK_LUAR_FIELDS = [
-  "nama",
-  "nik",
-  "jenisKelamin",
-  "tempatLahir",
-  "tanggalLahir",
-  "pekerjaan",
-  "alamat",
-  "keterangan",
-] as const;
 
 export const pendudukLuarSchema = z.object({
   nama: z.string().trim().min(1, "Nama penduduk luar wajib diisi.").max(100),

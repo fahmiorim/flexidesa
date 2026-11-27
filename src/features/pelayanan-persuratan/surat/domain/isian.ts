@@ -12,18 +12,8 @@ import { SURAT_PLACEHOLDERS } from "./surat";
  */
 
 /** Awalan nama field isian pada formulir surat (`isian.<kode>`). */
-export const ISIAN_FIELD_PREFIX = "isian.";
 export const ISIAN_TIPES = ["text", "textarea", "number", "date", "select", "checkbox"] as const;
 export type IsianTipe = (typeof ISIAN_TIPES)[number];
-
-export const ISIAN_TIPE_LABELS: Readonly<Record<IsianTipe, string>> = {
-  text: "Teks pendek",
-  textarea: "Teks panjang",
-  number: "Angka",
-  date: "Tanggal",
-  select: "Pilihan",
-  checkbox: "Centang",
-};
 
 const kodeIsianSchema = z
   .string()

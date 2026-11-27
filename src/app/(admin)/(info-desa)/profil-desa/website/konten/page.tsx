@@ -43,42 +43,21 @@ export default async function WebsiteContentPage() {
         {izin.galeri.baca && <WebsiteMetric label="Album galeri" value={album.length} />}
         {izin.slider.baca && <WebsiteMetric label="Slider beranda" value={slider.length} />}
       </div>
-      <nav className="website-settings-tabs website-content-tabs">
-        {izin.berita.baca && (
-          <a className="is-active" href="#berita">
-            Berita
-          </a>
-        )}
-        {izin.berita.baca && <a href="#pengumuman">Pengumuman</a>}
-        {izin.agenda.baca && <a href="#agenda">Agenda</a>}
-        {izin.galeri.baca && <a href="#galeri">Galeri</a>}
-        {izin.slider.baca && <a href="#slider">Slider</a>}
-      </nav>
-      <div className="website-content-layout">
-        {(izin.berita.baca || izin.agenda.baca) && (
-          <div className="website-content-primary">
-            {izin.berita.baca && (
-              <BagianBerita
-                izin={izin}
-                berita={berita}
-                categories={categories}
-                tayang={tayang}
-                draft={draft}
-                formatTanggal={formatTanggal}
-              />
-            )}
-            {izin.agenda.baca && (
-              <BagianAgenda izin={izin} agenda={agenda} formatTanggal={formatTanggal} />
-            )}
-          </div>
-        )}
-        {(izin.galeri.baca || izin.slider.baca) && (
-          <aside className="website-content-aside">
-            {izin.galeri.baca && <BagianGaleri izin={izin} album={album} photos={photos} />}
-            {izin.slider.baca && <BagianSlider izin={izin} slider={slider} />}
-          </aside>
-        )}
-      </div>
+      {izin.berita.baca && (
+        <BagianBerita
+          izin={izin}
+          berita={berita}
+          categories={categories}
+          tayang={tayang}
+          draft={draft}
+          formatTanggal={formatTanggal}
+        />
+      )}
+      {izin.agenda.baca && (
+        <BagianAgenda izin={izin} agenda={agenda} formatTanggal={formatTanggal} />
+      )}
+      {izin.galeri.baca && <BagianGaleri izin={izin} album={album} photos={photos} />}
+      {izin.slider.baca && <BagianSlider izin={izin} slider={slider} />}
     </WebsiteAdminShell>
   );
 }

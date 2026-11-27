@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-export const LAPAK_RESOURCE = "lapak";
-
 export const lapakFormSchema = z.object({
   nama: z.string().trim().min(1, "Nama wajib diisi").max(200),
   pemilik: z
@@ -26,8 +24,7 @@ export const lapakFormSchema = z.object({
     .optional(),
 });
 
-export type LapakFormInput = z.input<typeof lapakFormSchema>;
-export type LapakFormValues = z.infer<typeof lapakFormSchema>;
+export type LapakFormInput = z.infer<typeof lapakFormSchema>;
 
 /** Form lapak warga; pemilik diisi dari sesi, bukan input. */
 export const lapakWargaSchema = z.object({
@@ -36,16 +33,3 @@ export const lapakWargaSchema = z.object({
   alamat: z.string().trim().max(500).optional().default(""),
   keterangan: z.string().trim().max(1000).optional().default(""),
 });
-
-export type LapakWargaInput = z.infer<typeof lapakWargaSchema>;
-
-export interface LapakDTO {
-  id: number;
-  villageId: number;
-  residentId: number | null;
-  nama: string;
-  pemilik: string | null;
-  kategori: string | null;
-  alamat: string | null;
-  keterangan: string | null;
-}

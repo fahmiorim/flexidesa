@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
 import { listRentangUmurUseCase } from "@/features/kependudukan/statistik/application/rentang-umur-use-cases";
 import { BATAS_UMUR_MAKSIMAL } from "@/features/kependudukan/statistik/domain/rentang-umur";
@@ -47,12 +49,12 @@ export default async function PengaturanRentangUmurPage({
         aksi={
           <>
             <div className="penduduk-heading-actions">
-              <Link className="button button-secondary" href={kembali}>
+              <ButtonLink variant="secondary" href={kembali}>
                 Kembali ke Statistik
-              </Link>
-              <a className="button button-primary" href="/statistik/rentang-umur/ekspor">
+              </ButtonLink>
+              <ButtonLink variant="primary" href="/statistik/rentang-umur/ekspor">
                 Unduh CSV
-              </a>
+              </ButtonLink>
             </div>
           </>
         }
@@ -106,9 +108,9 @@ export default async function PengaturanRentangUmurPage({
               />
             </label>
             <div className="data-custom-actions">
-              <button className="button button-primary" type="submit">
+              <Button variant="primary" type="submit">
                 Tambah Rentang
-              </button>
+              </Button>
             </div>
           </form>
         ) : (
@@ -131,28 +133,28 @@ export default async function PengaturanRentangUmurPage({
             </p>
           </div>
         ) : (
-          <div className="table-scroll">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>No.</th>
-                  <th>Rentang</th>
-                  <th>Dari</th>
-                  <th>Sampai</th>
-                  {bolehUbah || bolehHapus ? <th>Aksi</th> : null}
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
+                  <HeaderCell>No.</HeaderCell>
+                  <HeaderCell>Rentang</HeaderCell>
+                  <HeaderCell>Dari</HeaderCell>
+                  <HeaderCell>Sampai</HeaderCell>
+                  {bolehUbah || bolehHapus ? <HeaderCell>Aksi</HeaderCell> : null}
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row, index) => (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       <strong>{row.nama}</strong>
-                    </td>
-                    <td>{row.dari}</td>
-                    <td>{row.sampai === null ? "Tanpa batas" : row.sampai}</td>
+                    </Cell>
+                    <Cell>{row.dari}</Cell>
+                    <Cell>{row.sampai === null ? "Tanpa batas" : row.sampai}</Cell>
                     {bolehUbah || bolehHapus ? (
-                      <td>
+                      <Cell>
                         <div className="pemerintahan-row-actions">
                           {bolehUbah ? (
                             <details className="pemerintahan-row-edit">
@@ -183,35 +185,30 @@ export default async function PengaturanRentangUmurPage({
                                     type="number"
                                   />
                                 </label>
-                                <button className="button button-primary" type="submit">
+                                <Button variant="primary" type="submit">
                                   Simpan
-                                </button>
+                                </Button>
                               </form>
                             </details>
                           ) : null}
 
                           {bolehHapus ? (
-                            <>
-                              <ConfirmSubmit
-                                className="button button-danger"
-                                form={`hapus-rentang-${row.id}`}
-                                message={`Hapus rentang ${row.nama}?`}
-                              >
-                                Hapus
-                              </ConfirmSubmit>
-                              <form action={hapusRentangUmurAction} id={`hapus-rentang-${row.id}`}>
-                                <input name="id" type="hidden" value={row.id} />
-                              </form>
-                            </>
+                            <DialogHapusForm
+                              aksi={hapusRentangUmurAction}
+                              id={row.id}
+                              judul={`Hapus rentang ${row.nama}?`}
+                              keterangan="Kategori rentang umur akan dihapus permanen dari statistik kependudukan."
+                              labelAksi="Hapus rentang"
+                            />
                           ) : null}
                         </div>
-                      </td>
+                      </Cell>
                     ) : null}
-                  </tr>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
       </section>
 

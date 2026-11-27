@@ -1,6 +1,7 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   getLaporanTriwulan,
   listKeuangan,
@@ -36,16 +37,6 @@ export default async function RealisasiPage({ searchParams }: Props) {
         judul={<>Realisasi Anggaran</>}
         deskripsi={<>Catat dan pantau realisasi pendapatan serta belanja terhadap APBDes.</>}
       />
-      <nav className={styles.tabs}>
-        <Link href="/keuangan">Dashboard</Link>
-        <Link href="/keuangan/apbdes">APBDes</Link>
-        <Link className={styles.activeTab} href="/keuangan/realisasi">
-          Realisasi Anggaran
-        </Link>
-        <Link href="/keuangan/kegiatan">Kegiatan &amp; Pembangunan</Link>
-        <Link href="/keuangan/laporan">Laporan Keuangan</Link>
-        <Link href="/keuangan/dokumen">Dokumen &amp; Peraturan</Link>
-      </nav>
       <section className={styles.metrics}>
         <article className={styles.metricPrimary}>
           <span>Total Pagu {data.tahun}</span>
@@ -92,17 +83,16 @@ export default async function RealisasiPage({ searchParams }: Props) {
         </article>
       </section>
       <form method="get" className={styles.filterForm}>
-        <label htmlFor="tahun-realisasi">Tahun anggaran</label>
-        <select id="tahun-realisasi" name="tahun" defaultValue={data.tahun}>
-          {data.tersedia.map((y) => (
-            <option key={y} value={y}>
-              {y}
-            </option>
-          ))}
-        </select>
-        <button className={styles.primaryButton} type="submit">
+        <FormField
+          defaultValue={String(data.tahun)}
+          kind="select"
+          label="Tahun anggaran"
+          name="tahun"
+          options={data.tersedia.map((y) => ({ value: String(y), label: String(y) }))}
+        />
+        <Button type="submit" variant="secondary">
           Tampilkan
-        </button>
+        </Button>
       </form>
       <form action={simpanRealisasiKeuanganAction} className={styles.panel}>
         <input type="hidden" name="tahun" value={data.tahun} />
@@ -111,30 +101,28 @@ export default async function RealisasiPage({ searchParams }: Props) {
             <h2>Input Realisasi Tahun {data.tahun}</h2>
             <p>Isi realisasi rekening kegiatan. Akun induk dihitung otomatis dari rincian.</p>
           </div>
-          <button className={styles.primaryButton} type="submit">
-            Simpan Realisasi
-          </button>
+          <Button type="submit">Simpan Realisasi</Button>
         </div>
-        <div className={styles.tableWrap}>
-          <table className={styles.dataTable}>
-            <thead>
-              <tr>
-                <th>Kode</th>
-                <th>Uraian</th>
-                <th className={styles.number}>Pagu (Rp)</th>
-                <th className={styles.number}>Realisasi (Rp)</th>
-                <th>Serapan</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll className={styles.tableWrap}>
+          <Table className={styles.dataTable}>
+            <THead>
+              <Row>
+                <HeaderCell>Kode</HeaderCell>
+                <HeaderCell>Uraian</HeaderCell>
+                <HeaderCell className={styles.number}>Pagu (Rp)</HeaderCell>
+                <HeaderCell className={styles.number}>Realisasi (Rp)</HeaderCell>
+                <HeaderCell>Serapan</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {rows.map((row) => (
-                <tr key={row.templateUuid}>
-                  <td>
+                <Row key={row.templateUuid}>
+                  <Cell>
                     <b>{row.templateUuid}</b>
-                  </td>
-                  <td>{row.uraian}</td>
-                  <td className={styles.number}>{formatRupiah(row.anggaran)}</td>
-                  <td className={styles.number}>
+                  </Cell>
+                  <Cell>{row.uraian}</Cell>
+                  <Cell className={styles.number}>{formatRupiah(row.anggaran)}</Cell>
+                  <Cell className={styles.number}>
                     <input
                       className={styles.moneyInput}
                       type="number"
@@ -144,8 +132,8 @@ export default async function RealisasiPage({ searchParams }: Props) {
                       defaultValue={Number(row.realisasi)}
                       aria-label={"Realisasi " + row.uraian}
                     />
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <div className={styles.progress}>
                       <i
                         style={{
@@ -153,12 +141,12 @@ export default async function RealisasiPage({ searchParams }: Props) {
                         }}
                       />
                     </div>
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       </form>
       <form action={simpanRealisasiTriwulanAction} className={styles.panel}>
         <input type="hidden" name="tahun" value={triwulan.tahun} />
@@ -167,29 +155,27 @@ export default async function RealisasiPage({ searchParams }: Props) {
             <h2>Realisasi Belanja per Triwulan</h2>
             <p>Masukkan realisasi per bidang sesuai data pelaksanaan dan SPJ.</p>
           </div>
-          <button className={styles.primaryButton} type="submit">
-            Simpan Triwulan
-          </button>
+          <Button type="submit">Simpan Triwulan</Button>
         </div>
-        <div className={styles.tableWrap}>
-          <table className={styles.dataTable}>
-            <thead>
-              <tr>
-                <th>Bidang</th>
-                <th className={styles.number}>TW I</th>
-                <th className={styles.number}>TW II</th>
-                <th className={styles.number}>TW III</th>
-                <th className={styles.number}>TW IV</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll className={styles.tableWrap}>
+          <Table className={styles.dataTable}>
+            <THead>
+              <Row>
+                <HeaderCell>Bidang</HeaderCell>
+                <HeaderCell className={styles.number}>TW I</HeaderCell>
+                <HeaderCell className={styles.number}>TW II</HeaderCell>
+                <HeaderCell className={styles.number}>TW III</HeaderCell>
+                <HeaderCell className={styles.number}>TW IV</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {triwulan.baris.map((row) => (
-                <tr key={row.kode}>
-                  <td>
+                <Row key={row.kode}>
+                  <Cell>
                     <b>{row.kode}</b> {row.uraian}
-                  </td>
+                  </Cell>
                   {(["tw1", "tw2", "tw3", "tw4"] as const).map((key) => (
-                    <td className={styles.number} key={key}>
+                    <Cell className={styles.number} key={key}>
                       <input
                         className={styles.moneyInput}
                         type="number"
@@ -199,13 +185,13 @@ export default async function RealisasiPage({ searchParams }: Props) {
                         defaultValue={Number(row[key])}
                         aria-label={key + " " + row.uraian}
                       />
-                    </td>
+                    </Cell>
                   ))}
-                </tr>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       </form>
     </main>
   );

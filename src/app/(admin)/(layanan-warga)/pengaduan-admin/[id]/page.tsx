@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
 import { getPengaduanDetailData } from "@/features/layanan-warga/pengaduan/application/use-cases";
 import { labelStatus, STATUS_PENGADUAN } from "@/features/layanan-warga/pengaduan/domain/pengaduan";
 
@@ -40,9 +42,9 @@ export default async function DetailPengaduanPage({
         }
         aksi={
           <>
-            <Link className="button button-secondary" href="/pengaduan-admin">
+            <ButtonLink variant="secondary" href="/pengaduan-admin">
               Kembali ke daftar
-            </Link>
+            </ButtonLink>
           </>
         }
       />
@@ -67,9 +69,9 @@ export default async function DetailPengaduanPage({
           <p style={{ whiteSpace: "pre-wrap" }}>{row.isi}</p>
           {row.lampiran ? (
             <p>
-              <a className="button button-secondary" href={`/pengaduan-admin/${row.id}/lampiran`}>
+              <ButtonLink variant="secondary" href={`/pengaduan-admin/${row.id}/lampiran`}>
                 Unduh lampiran bukti
-              </a>
+              </ButtonLink>
             </p>
           ) : (
             <p className="modul-muted">Tidak ada lampiran.</p>
@@ -137,21 +139,20 @@ export default async function DetailPengaduanPage({
               <small>Nama pelapor akan disamarkan pada halaman publik.</small>
             </label>
             <div className="modul-form-actions">
-              <button className="button button-primary" type="submit">
+              <Button variant="primary" type="submit">
                 Simpan Tanggapan
-              </button>
+              </Button>
             </div>
           </form>
           <hr />
-          <form action={hapusPengaduanAction}>
-            <input type="hidden" name="id" value={row.id} />
-            <button className="button button-danger-ghost" type="submit">
-              Hapus Pengaduan
-            </button>
-            <p className="modul-muted">
-              Penghapusan menghapus data pengaduan dan lampiran yang tersimpan.
-            </p>
-          </form>
+          <DialogHapusForm
+            aksi={hapusPengaduanAction}
+            id={row.id}
+            judul={`Hapus pengaduan "${row.judul}"?`}
+            keterangan="Data pengaduan, tanggapan, dan lampiran yang tersimpan akan dihapus permanen."
+            labelAksi="Hapus pengaduan"
+            varian="danger"
+          />
         </section>
       </div>
     </div>

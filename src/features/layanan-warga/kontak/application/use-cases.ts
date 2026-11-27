@@ -2,58 +2,36 @@ import "server-only";
 
 import { getIdentitas } from "@/features/info-desa/desa/application/get-identitas";
 import {
-  GRUP_KONTAK_RESOURCE,
-  KONTAK_RESOURCE,
   type KontakGrupInput,
   type KontakInput,
 } from "@/features/layanan-warga/kontak/domain/kontak";
 import {
-  buildGrupKontakCsv,
   buildKontakCsv,
-  grupKontakFilename,
   kontakFilename,
-  type AnggotaGrupEksporRow,
   type KontakEksporRow,
 } from "@/features/layanan-warga/kontak/domain/kontak-berkas";
 import {
   addAnggotaGrup,
   createKontak,
   createKontakGrup,
-  deleteKontak,
-  deleteKontakGrup,
   findKontak,
   findKontakGrup,
-  listAnggotaGrupDetail,
   listKontak,
-  listKontakGrup,
-  removeAnggotaGrup,
   residentExists,
   updateKontak,
   updateKontakGrup,
 } from "@/features/layanan-warga/kontak/infrastructure/kontak-repository";
-import { requirePermission } from "@/lib/dal";
 import { notFound, validationError } from "@/lib/errors";
 
 /** Data halaman grup kontak beserta opsi kontak; izin baca grup kontak diperiksa di sini. */
-export async function muatGrupKontakData(villageId: number) {
-  await requirePermission(GRUP_KONTAK_RESOURCE, "read");
-  return Promise.all([listKontakGrup(villageId), listKontak(villageId)]);
-}
 
 /** Daftar kontak untuk halaman admin; izin baca kontak diperiksa di sini. */
-export async function daftarKontakData(villageId: number) {
-  await requirePermission(KONTAK_RESOURCE, "read");
-  return listKontak(villageId);
-}
 
 /**
  * Catatan: modul ini sengaja **tidak** mengekspor alias repository langsung.
  * Semua jalur tulis wajib lewat use case di bawah, sehingga validasi tenant
  * (penduduk, kontak, grup) tidak dapat dilewati oleh pemanggil baru.
  */
-export async function listKontakUseCase(villageId: number) {
-  return listKontak(villageId);
-}
 
 /**
  * Pastikan penduduk yang ditautkan benar-benar milik desa aktif.
@@ -135,14 +113,6 @@ export async function updateKontakUseCase(villageId: number, input: KontakInput)
   await updateKontak(input.id, villageId, perubahanKontak(input));
 }
 
-export async function deleteKontakUseCase(villageId: number, id: number) {
-  await deleteKontak(id, villageId);
-}
-
-export async function listKontakGrupUseCase(villageId: number) {
-  return listKontakGrup(villageId);
-}
-
 export async function createKontakGrupUseCase(villageId: number, input: KontakGrupInput) {
   // `id` tidak diteruskan: primary key dibuat database, `villageId` dari server.
   return createKontakGrup({
@@ -167,14 +137,6 @@ export async function updateKontakGrupUseCase(villageId: number, input: KontakGr
   });
 }
 
-export async function deleteKontakGrupUseCase(villageId: number, id: number) {
-  await deleteKontakGrup(id, villageId);
-}
-
-export async function listAnggotaGrupUseCase(villageId: number, grupId: number) {
-  return listAnggotaGrupDetail(villageId, grupId);
-}
-
 export async function addAnggotaGrupUseCase(
   villageId: number,
   grupId: number,
@@ -196,10 +158,6 @@ export async function addAnggotaGrupUseCase(
     kontakId: input.kontakId,
     peran: input.peran,
   });
-}
-
-export async function removeAnggotaGrupUseCase(villageId: number, id: number) {
-  await removeAnggotaGrup(id, villageId);
 }
 
 /** Ekspor seluruh direktori kontak desa sebagai CSV. */
@@ -227,53 +185,5 @@ export async function exportKontakUseCase(
 }
 
 /** Ekspor anggota sebuah grup kontak sebagai CSV. */
-export async function exportGrupKontakUseCase(
-  villageId: number,
-  grupId: number,
-): Promise<{ csv: string; filename: string } | null> {
-  const [rows, desa, grup] = await Promise.all([
-    listAnggotaGrupDetail(villageId, grupId),
-    getIdentitas(),
-    listKontakGrup(villageId),
-  ]);
-
-  const matched = grup.find((g) => g.id === grupId);
-  if (!matched) return null;
-
-  const data: AnggotaGrupEksporRow[] = rows.map((row) => ({
-    id: row.id,
-    namaKontak: row.nama,
-    peran: null,
-    keterangan: null,
-  }));
-
-  return {
-    csv: buildGrupKontakCsv({
-      namaDesa: desa?.namaDesa ?? null,
-      namaGrup: matched.namaGrup,
-      rows: data,
-    }),
-    filename: grupKontakFilename(matched.namaGrup),
-  };
-}
 
 /** Konversi baris repository ke bentuk UI (tanpa kolom internal). */
-export function toKontakRow(row: {
-  id: number;
-  nama: string;
-  telepon: string | null;
-  email: string | null;
-  telegram: string | null;
-  hubungWarga: string | null;
-  keterangan: string | null;
-}) {
-  return {
-    id: row.id,
-    nama: row.nama,
-    telepon: row.telepon,
-    email: row.email,
-    telegram: row.telegram,
-    hubungWarga: row.hubungWarga,
-    keterangan: row.keterangan,
-  };
-}

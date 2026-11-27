@@ -8,14 +8,12 @@ import {
   dptFilename,
   dptRekapFilename,
   hitungRekapDpt,
-  keDptPublik,
   type DptFilter,
   type DptReferenceData,
   type DptRekap,
   type ElectionDTO,
   type ElectionFormInput,
   type ListDptParams,
-  type ListDptPublikResult,
   type ListDptResult,
 } from "@/features/kependudukan/penduduk/domain/dpt";
 import { PENDUDUK_RESOURCE } from "@/features/kependudukan/penduduk/domain/penduduk";
@@ -119,20 +117,6 @@ export async function deleteElection(id: number): Promise<void> {
  * dipetakan ke DTO publik, dan pencarian hanya mencocokkan nama sehingga NIK
  * tidak bisa dipakai untuk menebak apakah seseorang terdaftar.
  */
-export async function getDptPublik(
-  villageId: number,
-  params: ListDptParams,
-): Promise<{ election: ElectionDTO | null; result: ListDptPublikResult }> {
-  const [election, result] = await Promise.all([
-    getActiveElection(villageId),
-    listDpt(villageId, params, { cariNamaSaja: true }),
-  ]);
-
-  return {
-    election,
-    result: { ...result, rows: result.rows.map(keDptPublik) },
-  };
-}
 
 /** Daftar DPT dengan filter + pagination. */
 export async function getDpt(params: ListDptParams): Promise<ListDptResult> {

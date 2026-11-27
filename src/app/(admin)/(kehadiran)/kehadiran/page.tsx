@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { getDashboardAbsensiData } from "@/features/kehadiran/kepegawaian/application/absensi";
 
 import styles from "./absensi-kepegawaian.module.css";
@@ -226,21 +227,21 @@ export default async function DashboardAbsensiPage() {
             </div>
             <Link href="/kehadiran/absensi">Lihat Semua →</Link>
           </div>
-          <div className={styles["ak-table-wrap"]}>
-            <table className={styles["ak-table"]}>
-              <thead>
-                <tr>
-                  <th>Nama</th>
-                  <th>Jabatan</th>
-                  <th>Masuk</th>
-                  <th>Pulang</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className={styles["ak-table-wrap"]}>
+            <Table className={styles["ak-table"]}>
+              <THead>
+                <Row>
+                  <HeaderCell>Nama</HeaderCell>
+                  <HeaderCell>Jabatan</HeaderCell>
+                  <HeaderCell>Masuk</HeaderCell>
+                  <HeaderCell>Pulang</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {data.todayRows.slice(0, 5).map((row, i) => (
-                  <tr key={i}>
-                    <td>
+                  <Row key={i}>
+                    <Cell>
                       <span className={styles["ak-person"]}>
                         <span>
                           {mediaUrl(row.foto, data.villageId) ? (
@@ -262,20 +263,20 @@ export default async function DashboardAbsensiPage() {
                         </span>
                         <b>{row.pegawai}</b>
                       </span>
-                    </td>
-                    <td>{row.jabatan ?? "—"}</td>
-                    <td>{row.jamMasuk ?? "—"}</td>
-                    <td>{row.jamKeluar ?? "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.jabatan ?? "—"}</Cell>
+                    <Cell>{row.jamMasuk ?? "—"}</Cell>
+                    <Cell>{row.jamKeluar ?? "—"}</Cell>
+                    <Cell>
                       <span className={`${styles["ak-badge"]} ${styles[row.status] ?? ""}`}>
                         {statusLabel[row.status] ?? row.status}
                       </span>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
           <div className={styles["ak-actions"]}>
             <Link className={styles["ak-button"]} href="/kehadiran/absensi">
               Lihat Rekap Absensi

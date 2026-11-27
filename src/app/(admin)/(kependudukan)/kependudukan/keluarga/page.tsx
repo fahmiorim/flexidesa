@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
-import { StatIcon } from "@/components/ui/stat-icon";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { StatCard, StatGrid } from "@/components/ui/stat-card";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   getKeluargaReference,
   getRingkasanKeluarga,
@@ -170,168 +174,197 @@ export default async function KeluargaPage({
         </div>
       ) : null}
 
-      <div className="penduduk-kpi-grid">
-        <article className="penduduk-kpi" data-tone="ungu">
-          <StatIcon>
-            <path d="M4 20V9.5L12 4l8 5.5V20" />
-            <path d="M9 20v-6h6v6" />
-          </StatIcon>
-          <div>
-            <span>Total Kartu Keluarga</span>
-            <strong>{number.format(ringkasan.total)}</strong>
-            <small>Terdaftar di desa ini</small>
-          </div>
-        </article>
-        <article className="penduduk-kpi" data-tone="biru">
-          <StatIcon>
-            <circle cx="9" cy="8" r="3.2" />
-            <path d="M2.8 20a6.2 6.2 0 0 1 12.4 0" />
-            <path d="M16.4 5.6a3.2 3.2 0 0 1 0 6.4" />
-          </StatIcon>
-          <div>
-            <span>KK Aktif</span>
-            <strong>{number.format(ringkasan.active)}</strong>
-            <small>
-              {persenBagian(ringkasan.active, ringkasan.total)}% memiliki kepala keluarga hidup
-            </small>
-            <div className="penduduk-kpi-meter" aria-hidden="true">
-              <span style={{ width: `${persenBagian(ringkasan.active, ringkasan.total)}%` }} />
-            </div>
-          </div>
-        </article>
-        <article className="penduduk-kpi" data-tone="oranye">
-          <StatIcon>
-            <path d="M12 3v18M3 12h18" />
-            <circle cx="12" cy="12" r="8.5" />
-          </StatIcon>
-          <div>
-            <span>KK Sementara</span>
-            <strong>{number.format(ringkasan.temporary)}</strong>
-            <small>Nomor menunggu KK permanen</small>
-          </div>
-        </article>
-        <article className="penduduk-kpi" data-tone="ungu">
-          <StatIcon>
-            <circle cx="12" cy="7.5" r="3.5" />
-            <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
-          </StatIcon>
-          <div>
-            <span>Anggota Hidup</span>
-            <strong>{number.format(ringkasan.members)}</strong>
-            <small>Seluruh anggota dari semua KK</small>
-          </div>
-        </article>
-      </div>
+      <StatGrid columns={4}>
+        <StatCard
+          icon={
+            <svg
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.7}
+              viewBox="0 0 24 24"
+            >
+              <path d="M4 20V9.5L12 4l8 5.5V20" />
+              <path d="M9 20v-6h6v6" />
+            </svg>
+          }
+          label="Total Kartu Keluarga"
+          note="Terdaftar di desa ini"
+          utama
+          value={number.format(ringkasan.total)}
+        />
+        <StatCard
+          icon={
+            <svg
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.7}
+              viewBox="0 0 24 24"
+            >
+              <circle cx="9" cy="8" r="3.2" />
+              <path d="M2.8 20a6.2 6.2 0 0 1 12.4 0" />
+              <path d="M16.4 5.6a3.2 3.2 0 0 1 0 6.4" />
+            </svg>
+          }
+          label="KK Aktif"
+          note={`${persenBagian(ringkasan.active, ringkasan.total)}% memiliki kepala keluarga hidup`}
+          progress={persenBagian(ringkasan.active, ringkasan.total)}
+          tone="biru"
+          value={number.format(ringkasan.active)}
+        />
+        <StatCard
+          icon={
+            <svg
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.7}
+              viewBox="0 0 24 24"
+            >
+              <path d="M12 3v18M3 12h18" />
+              <circle cx="12" cy="12" r="8.5" />
+            </svg>
+          }
+          label="KK Sementara"
+          note="Nomor menunggu KK permanen"
+          tone="oranye"
+          value={number.format(ringkasan.temporary)}
+        />
+        <StatCard
+          icon={
+            <svg
+              fill="none"
+              stroke="currentColor"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.7}
+              viewBox="0 0 24 24"
+            >
+              <circle cx="12" cy="7.5" r="3.5" />
+              <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
+            </svg>
+          }
+          label="Anggota Hidup"
+          note="Seluruh anggota dari semua KK"
+          value={number.format(ringkasan.members)}
+        />
+      </StatGrid>
 
-      <section className="platform-card penduduk-card keluarga-card">
-        <div className="penduduk-card-head">
-          <div>
-            <h2>Daftar Kartu Keluarga</h2>
-            <p>
-              {number.format(result.total)} KK
-              {filterSuffix ? " sesuai filter" : " terdaftar"} · menampilkan {mulai}–{akhir}
-            </p>
-          </div>
-          {filterSuffix ? (
+      <TableCard
+        actions={
+          filterSuffix ? (
             <Link className="penduduk-reset" href="/kependudukan/keluarga">
               Reset semua filter
             </Link>
-          ) : null}
-        </div>
-
-        <form className="penduduk-filter keluarga-filter" method="get">
-          <label className="penduduk-search keluarga-search">
-            <span>Cari KK</span>
-            <input
-              defaultValue={q}
-              name="q"
-              placeholder="Nomor KK, kepala keluarga, NIK, atau alamat"
-              type="search"
-            />
-          </label>
-          <label>
-            <span>Status KK</span>
-            <select defaultValue={status} name="status">
-              {KELUARGA_STATUS_FILTERS.map((value) => (
-                <option key={value} value={value}>
-                  {KELUARGA_STATUS_LABELS[value]}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span>Wilayah</span>
-            <select defaultValue={regionId === null ? "" : String(regionId)} name="regionId">
-              <option value="">Semua wilayah</option>
-              {reference.regions.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <details className="keluarga-filter-menu" open={filterLanjutanAktif > 0}>
-            <summary className="keluarga-filter-toggle">
-              <span>Filter lainnya</span>
-              {filterLanjutanAktif > 0 ? (
-                <span className="keluarga-filter-count">{filterLanjutanAktif}</span>
-              ) : null}
-            </summary>
-            <div className="keluarga-filter-panel">
-              <div className="keluarga-filter-panel-head">
-                <strong>Filter lainnya</strong>
-                <span>Gunakan hanya bila perlu.</span>
+          ) : null
+        }
+        className="penduduk-card keluarga-card"
+        description={`${number.format(result.total)} KK${
+          filterSuffix ? " sesuai filter" : " terdaftar"
+        } · menampilkan ${mulai}–${akhir}`}
+        filter={
+          <form className="penduduk-filter keluarga-filter" method="get">
+            <label className="penduduk-search keluarga-search">
+              <span>Cari KK</span>
+              <input
+                defaultValue={q}
+                name="q"
+                placeholder="Nomor KK, kepala keluarga, NIK, atau alamat"
+                type="search"
+              />
+            </label>
+            <label>
+              <span>Status KK</span>
+              <select defaultValue={status} name="status">
+                {KELUARGA_STATUS_FILTERS.map((value) => (
+                  <option key={value} value={value}>
+                    {KELUARGA_STATUS_LABELS[value]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Wilayah</span>
+              <select defaultValue={regionId === null ? "" : String(regionId)} name="regionId">
+                <option value="">Semua wilayah</option>
+                {reference.regions.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <details className="keluarga-filter-menu" open={filterLanjutanAktif > 0}>
+              <summary className="keluarga-filter-toggle">
+                <span>Filter lainnya</span>
+                {filterLanjutanAktif > 0 ? (
+                  <span className="keluarga-filter-count">{filterLanjutanAktif}</span>
+                ) : null}
+              </summary>
+              <div className="keluarga-filter-panel">
+                <div className="keluarga-filter-panel-head">
+                  <strong>Filter lainnya</strong>
+                  <span>Gunakan hanya bila perlu.</span>
+                </div>
+                <div className="keluarga-filter-panel-grid">
+                  <label>
+                    <span>Kepala keluarga</span>
+                    <select defaultValue={gender} name="gender">
+                      <option value="all">Semua jenis kelamin</option>
+                      <option value="male">Laki-laki</option>
+                      <option value="female">Perempuan</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Program bantuan</span>
+                    <select
+                      defaultValue={programId === null ? "" : String(programId)}
+                      name="program"
+                    >
+                      <option value="">Semua program</option>
+                      {reference.bantuanPrograms.map((program) => (
+                        <option key={program.id} value={program.id}>
+                          {program.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="keluarga-filter-numbers">
+                    <span>Kumpulan nomor KK</span>
+                    <input
+                      defaultValue={numbersRaw}
+                      name="numbers"
+                      placeholder="Pisahkan dengan koma"
+                    />
+                  </label>
+                  <label className="keluarga-filter-check">
+                    <input
+                      defaultChecked={temporaryOnly}
+                      name="temporary"
+                      type="checkbox"
+                      value="1"
+                    />
+                    <span>Hanya KK sementara</span>
+                  </label>
+                </div>
               </div>
-              <div className="keluarga-filter-panel-grid">
-                <label>
-                  <span>Kepala keluarga</span>
-                  <select defaultValue={gender} name="gender">
-                    <option value="all">Semua jenis kelamin</option>
-                    <option value="male">Laki-laki</option>
-                    <option value="female">Perempuan</option>
-                  </select>
-                </label>
-                <label>
-                  <span>Program bantuan</span>
-                  <select defaultValue={programId === null ? "" : String(programId)} name="program">
-                    <option value="">Semua program</option>
-                    {reference.bantuanPrograms.map((program) => (
-                      <option key={program.id} value={program.id}>
-                        {program.label}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label className="keluarga-filter-numbers">
-                  <span>Kumpulan nomor KK</span>
-                  <input
-                    defaultValue={numbersRaw}
-                    name="numbers"
-                    placeholder="Pisahkan dengan koma"
-                  />
-                </label>
-                <label className="keluarga-filter-check">
-                  <input
-                    defaultChecked={temporaryOnly}
-                    name="temporary"
-                    type="checkbox"
-                    value="1"
-                  />
-                  <span>Hanya KK sementara</span>
-                </label>
-              </div>
+            </details>
+            <div className="penduduk-filter-aksi keluarga-filter-aksi">
+              <Button variant="primary" type="submit">
+                Terapkan
+              </Button>
+              <ButtonLink variant="secondary" href="/kependudukan/keluarga">
+                Bersihkan
+              </ButtonLink>
             </div>
-          </details>
-          <div className="penduduk-filter-aksi keluarga-filter-aksi">
-            <button className="button button-primary" type="submit">
-              Terapkan
-            </button>
-            <Link className="button button-secondary" href="/kependudukan/keluarga">
-              Bersihkan
-            </Link>
-          </div>
-        </form>
-
+          </form>
+        }
+        title="Daftar Kartu Keluarga"
+      >
         <ToolbarAksiKeluarga
           adaData={result.rows.length > 0}
           bolehHapus={bolehHapus}
@@ -345,24 +378,24 @@ export default async function KeluargaPage({
         />
 
         {result.rows.length ? (
-          <div className="modul-scroll">
-            <table className="modul-table penduduk-table keluarga-table">
-              <thead>
-                <tr>
-                  <th className="keluarga-check-cell" scope="col">
+          <TableScroll>
+            <Table className="penduduk-table keluarga-table">
+              <THead>
+                <Row>
+                  <HeaderCell className="keluarga-check-cell" scope="col">
                     <PilihSemuaKeluarga />
-                  </th>
-                  <th scope="col">No</th>
-                  <th scope="col">Kartu Keluarga</th>
-                  <th scope="col">Kepala Keluarga</th>
-                  <th scope="col">Anggota</th>
-                  <th scope="col">Domisili</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Cetak</th>
-                  <th scope="col">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+                  </HeaderCell>
+                  <HeaderCell scope="col">No</HeaderCell>
+                  <HeaderCell scope="col">Kartu Keluarga</HeaderCell>
+                  <HeaderCell scope="col">Kepala Keluarga</HeaderCell>
+                  <HeaderCell scope="col">Anggota</HeaderCell>
+                  <HeaderCell scope="col">Domisili</HeaderCell>
+                  <HeaderCell scope="col">Status</HeaderCell>
+                  <HeaderCell scope="col">Cetak</HeaderCell>
+                  <HeaderCell scope="col">Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {result.rows.map((row, index) => {
                   const avatar = inisial(row.headName ?? "KK");
                   const statusKepala = row.headLifeStatus
@@ -374,17 +407,17 @@ export default async function KeluargaPage({
                       : "oranye"
                     : "netral";
                   return (
-                    <tr key={row.id}>
-                      <td className="keluarga-check-cell">
+                    <Row key={row.id}>
+                      <Cell className="keluarga-check-cell">
                         <input
                           aria-label={`Pilih KK ${row.number}`}
                           name="familyIds"
                           type="checkbox"
                           value={row.id}
                         />
-                      </td>
-                      <td className="penduduk-nomor">{mulai + index}</td>
-                      <td>
+                      </Cell>
+                      <Cell className="penduduk-nomor">{mulai + index}</Cell>
+                      <Cell>
                         <div className="keluarga-number-cell">
                           <span className="keluarga-kk-number">{row.number}</span>
                           {row.temporary ? (
@@ -398,8 +431,8 @@ export default async function KeluargaPage({
                               : "Tanggal daftar —"}
                           </small>
                         </div>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <div className="penduduk-identitas">
                           <span
                             aria-hidden="true"
@@ -430,20 +463,20 @@ export default async function KeluargaPage({
                             ) : null}
                           </div>
                         </div>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span className="keluarga-member-count">
                           {number.format(row.memberCount)}
                         </span>
                         <small className="modul-muted"> orang</small>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <div className="keluarga-domisili">
                           <span>{row.address ?? "Alamat belum diisi"}</span>
                           <small>{row.regionLabel ?? "Wilayah belum ditentukan"}</small>
                         </div>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span className="beranda-chip" data-tone={toneKepala}>
                           {statusKepala}
                         </span>
@@ -452,8 +485,8 @@ export default async function KeluargaPage({
                             {GENDER_LABELS[row.headGender]}
                           </small>
                         ) : null}
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         {row.cardPrintedAt ? (
                           <span>{formatTanggalKeluarga(row.cardPrintedAt)}</span>
                         ) : (
@@ -461,8 +494,8 @@ export default async function KeluargaPage({
                             Belum dicetak
                           </span>
                         )}
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <div className="keluarga-row-actions">
                           <Link className="penduduk-aksi" href={`/kependudukan/keluarga/${row.id}`}>
                             Detail
@@ -494,13 +527,13 @@ export default async function KeluargaPage({
                             </Link>
                           ) : null}
                         </div>
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <p className="modul-empty">
             {filterSuffix
@@ -518,11 +551,20 @@ export default async function KeluargaPage({
           {result.pageCount > 1 ? (
             <nav aria-label="Navigasi halaman Kartu Keluarga" className="penduduk-pagination">
               {result.page > 1 ? (
-                <Link className="penduduk-page-arrow" href={pageHref(result.page - 1)}>
+                <Link
+                  aria-label="Halaman sebelumnya"
+                  className="penduduk-page-arrow"
+                  href={pageHref(result.page - 1)}
+                >
                   ‹
                 </Link>
               ) : (
-                <span aria-disabled="true" className="penduduk-page-arrow" data-disabled="true">
+                <span
+                  aria-disabled="true"
+                  aria-label="Halaman sebelumnya"
+                  className="penduduk-page-arrow"
+                  data-disabled="true"
+                >
                   ‹
                 </span>
               )}
@@ -537,18 +579,27 @@ export default async function KeluargaPage({
                 </Link>
               ))}
               {result.page < result.pageCount ? (
-                <Link className="penduduk-page-arrow" href={pageHref(result.page + 1)}>
+                <Link
+                  aria-label="Halaman berikutnya"
+                  className="penduduk-page-arrow"
+                  href={pageHref(result.page + 1)}
+                >
                   ›
                 </Link>
               ) : (
-                <span aria-disabled="true" className="penduduk-page-arrow" data-disabled="true">
+                <span
+                  aria-disabled="true"
+                  aria-label="Halaman berikutnya"
+                  className="penduduk-page-arrow"
+                  data-disabled="true"
+                >
                   ›
                 </span>
               )}
             </nav>
           ) : null}
         </div>
-      </section>
+      </TableCard>
     </div>
   );
 }

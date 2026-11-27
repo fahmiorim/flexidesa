@@ -1,4 +1,7 @@
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   STATUS_GIZI_ANAK,
   STATUS_TIKAR_ANAK,
@@ -123,9 +126,9 @@ export function BagianAnak({
             ))}
           </select>
         </label>
-        <button className="button button-secondary" type="submit">
+        <Button variant="secondary" type="submit">
           Terapkan
-        </button>
+        </Button>
       </form>
 
       {bolehUbah ? (
@@ -286,9 +289,9 @@ export function BagianAnak({
             </fieldset>
 
             <div className="penduduk-heading-actions">
-              <button className="button button-primary" type="submit">
+              <Button variant="primary" type="submit">
                 {diubah ? "Simpan Perubahan" : "Simpan Pemantauan"}
-              </button>
+              </Button>
             </div>
           </form>
         </details>
@@ -300,97 +303,95 @@ export function BagianAnak({
           <p>Pastikan posyandu dan KIA sudah diisi sebelum menambah pemantauan anak.</p>
         </div>
       ) : (
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th rowSpan={2}>No.</th>
-                <th rowSpan={2}>Aksi</th>
-                <th rowSpan={2}>No KIA</th>
-                <th rowSpan={2}>Nama Anak</th>
-                <th rowSpan={2}>Jenis Kelamin</th>
-                <th rowSpan={2}>Tanggal Lahir</th>
-                <th rowSpan={2}>Posyandu</th>
-                <th rowSpan={2}>Tanggal Periksa</th>
-                <th rowSpan={2}>Status Gizi</th>
-                <th rowSpan={2}>BB (kg)</th>
-                <th rowSpan={2}>TB (cm)</th>
-                <th rowSpan={2}>Keterangan</th>
-                <th colSpan={2}>Umur dan Status Tikar</th>
-                <th colSpan={11}>Indikator Layanan</th>
-              </tr>
-              <tr>
-                <th>Umur (Bulan)</th>
-                <th>Hasil (M/K/H)</th>
+        <TableScroll>
+          <Table>
+            <THead>
+              <Row>
+                <HeaderCell rowSpan={2}>No.</HeaderCell>
+                <HeaderCell rowSpan={2}>Aksi</HeaderCell>
+                <HeaderCell rowSpan={2}>No KIA</HeaderCell>
+                <HeaderCell rowSpan={2}>Nama Anak</HeaderCell>
+                <HeaderCell rowSpan={2}>Jenis Kelamin</HeaderCell>
+                <HeaderCell rowSpan={2}>Tanggal Lahir</HeaderCell>
+                <HeaderCell rowSpan={2}>Posyandu</HeaderCell>
+                <HeaderCell rowSpan={2}>Tanggal Periksa</HeaderCell>
+                <HeaderCell rowSpan={2}>Status Gizi</HeaderCell>
+                <HeaderCell rowSpan={2}>BB (kg)</HeaderCell>
+                <HeaderCell rowSpan={2}>TB (cm)</HeaderCell>
+                <HeaderCell rowSpan={2}>Keterangan</HeaderCell>
+                <HeaderCell colSpan={2}>Umur dan Status Tikar</HeaderCell>
+                <HeaderCell colSpan={11}>Indikator Layanan</HeaderCell>
+              </Row>
+              <Row>
+                <HeaderCell>Umur (Bulan)</HeaderCell>
+                <HeaderCell>Hasil (M/K/H)</HeaderCell>
                 {INDIKATOR.map((item) => (
-                  <th key={item.key}>{item.label}</th>
+                  <HeaderCell key={item.key}>{item.label}</HeaderCell>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
+              </Row>
+            </THead>
+            <TBody>
               {baris.map((row, index) => {
                 const kia = kiaNama.get(row.kiaId);
                 const anakRow = kia?.anakId == null ? undefined : anakDari.get(kia.anakId);
                 const tikar = labelTikar(row.statusTikar);
                 return (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       <div className={styles.rowActions}>
                         {bolehUbah ? (
-                          <a
-                            className="button button-ghost"
+                          <ButtonLink
+                            variant="ghost"
                             href={`/kependudukan/stunting?tab=anak&ubah=${row.id}`}
                           >
                             Ubah
-                          </a>
+                          </ButtonLink>
                         ) : null}
                         {bolehHapus ? (
-                          <form action={hapusAnakAction}>
-                            <input name="id" type="hidden" value={row.id} />
-                            <ConfirmSubmit
-                              className="button button-danger"
-                              message="Hapus data pemantauan anak ini?"
-                            >
-                              Hapus
-                            </ConfirmSubmit>
-                          </form>
+                          <DialogHapusForm
+                            aksi={hapusAnakAction}
+                            id={row.id}
+                            judul="Hapus data pemantauan anak ini?"
+                            keterangan="Data pemantauan anak akan dihapus permanen."
+                            labelAksi="Hapus data"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                    <td>{kia?.noKia ?? "—"}</td>
-                    <td>{anakRow?.name ?? "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{kia?.noKia ?? "—"}</Cell>
+                    <Cell>{anakRow?.name ?? "—"}</Cell>
+                    <Cell>
                       {anakRow === undefined
                         ? "—"
                         : anakRow.gender === "male"
                           ? "Laki-laki"
                           : "Perempuan"}
-                    </td>
-                    <td>{formatTanggalLahir(anakRow?.birthDate)}</td>
-                    <td>{posyanduNama.get(row.posyanduId) ?? "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{formatTanggalLahir(anakRow?.birthDate)}</Cell>
+                    <Cell>{posyanduNama.get(row.posyanduId) ?? "—"}</Cell>
+                    <Cell>
                       {formatTanggal(tanggalPeriksaEfektif(row.tanggalPeriksa, row.createdAt))}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {STATUS_GIZI_ANAK.find((item) => item.value === row.statusGizi)?.label ?? "—"}
-                    </td>
-                    <td>{row.beratBadan ?? "—"}</td>
-                    <td>{row.tinggiBadan ?? "—"}</td>
-                    <td>{row.keterangan || "—"}</td>
-                    <td>{row.umurBulan}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.beratBadan ?? "—"}</Cell>
+                    <Cell>{row.tinggiBadan ?? "—"}</Cell>
+                    <Cell>{row.keterangan || "—"}</Cell>
+                    <Cell>{row.umurBulan}</Cell>
+                    <Cell>
                       <span className={`${styles.badge} ${tikar.kelas}`}>{tikar.label}</span>
-                    </td>
+                    </Cell>
                     {INDIKATOR.map((item) => (
-                      <td key={item.key}>{row[item.key] ? "Ya" : "Tidak"}</td>
+                      <Cell key={item.key}>{row[item.key] ? "Ya" : "Tidak"}</Cell>
                     ))}
-                  </tr>
+                  </Row>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       )}
     </section>
   );

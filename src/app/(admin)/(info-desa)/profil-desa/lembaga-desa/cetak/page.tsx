@@ -1,6 +1,5 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
 import { JudulCetak, KopCetak, TandaTanganCetak } from "@/components/ui/cetak-dokumen";
 import { TombolCetak } from "@/components/ui/tombol-cetak";
 import { getLembagaCetakData } from "@/features/info-desa/pemerintahan/application/lembaga";
@@ -49,35 +48,29 @@ export default async function CetakLembagaDesaPage() {
         aksi={
           <>
             <div className={styles.actions}>
-              <Link className="button button-secondary" href="/profil-desa/lembaga-desa">
+              <ButtonLink variant="secondary" href="/profil-desa/lembaga-desa">
                 <Ikon>
                   <path d="M19 12H5" />
                   <path d="m12 19-7-7 7-7" />
                 </Ikon>
                 Kembali
-              </Link>
-              <Link
-                className="button button-secondary"
-                href="/profil-desa/lembaga-desa/cetak/ekspor-xlsx"
-              >
+              </ButtonLink>
+              <ButtonLink variant="secondary" href="/profil-desa/lembaga-desa/cetak/ekspor-xlsx">
                 <Ikon>
                   <path d="M14 3v5h5" />
                   <path d="M19 8v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5Z" />
                   <path d="m9 13 6 5m0-5-6 5" />
                 </Ikon>
                 Unduh XLSX
-              </Link>
-              <Link
-                className="button button-secondary"
-                href="/profil-desa/lembaga-desa/cetak/ekspor-pdf"
-              >
+              </ButtonLink>
+              <ButtonLink variant="secondary" href="/profil-desa/lembaga-desa/cetak/ekspor-pdf">
                 <Ikon>
                   <path d="M14 3v5h5" />
                   <path d="M19 8v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5Z" />
                   <path d="M9 15h6M9 11h3" />
                 </Ikon>
                 Unduh PDF
-              </Link>
+              </ButtonLink>
               <TombolCetak />
             </div>
           </>

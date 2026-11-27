@@ -1,9 +1,5 @@
 import { z } from "zod";
 
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
-
-export const ANALISIS_RESOURCE = RESOURCES.analisis;
-
 export const kategoriAnalisisSchema = z.object({
   nama: z.string().trim().min(1, "Nama wajib diisi").max(100),
   keterangan: z
@@ -30,24 +26,3 @@ export const indikatorAnalisisSchema = z.object({
     .nullable()
     .optional(),
 });
-
-export type KategoriAnalisisInput = z.input<typeof kategoriAnalisisSchema>;
-export type IndikatorAnalisisInput = z.input<typeof indikatorAnalisisSchema>;
-
-export interface AnalisisKategoriDTO {
-  id: number;
-  villageId: number;
-  nama: string;
-  keterangan: string | null;
-}
-
-export interface AnalisisIndikatorDTO {
-  id: number;
-  villageId: number;
-  kategoriId: number | null;
-  kode: string;
-  nama: string;
-  /** Bobot indikator untuk perhitungan skor (1–100). */
-  bobot: number;
-  keterangan: string | null;
-}

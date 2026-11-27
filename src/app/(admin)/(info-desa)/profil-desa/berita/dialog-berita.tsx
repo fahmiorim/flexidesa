@@ -89,7 +89,7 @@ export function DialogBerita({
       aksi={simpanBeritaFormAction}
       deskripsi={item ? "Perbarui berita." : "Simpan sebagai draft atau langsung tayang."}
       judul={item ? `Ubah Berita: ${item.judul}` : "Tulis Berita"}
-      kelasTombol={item ? "button button-ghost" : "button button-primary"}
+      varian={item ? "ghost" : "primary"}
       label={item ? "Ubah" : "＋ Tulis Berita"}
       labelSimpan={item ? "Simpan Perubahan" : "Simpan Berita"}
     >

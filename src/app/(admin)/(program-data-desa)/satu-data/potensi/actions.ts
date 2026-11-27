@@ -5,7 +5,8 @@ import { revalidatePath } from "next/cache";
 import {
   hapusPotensiAdmin,
   simpanPotensiAdmin,
-} from "@/features/info-desa/publik/application/konten-admin";
+} from "@/features/program-data-desa/potensi-sarana/application/use-cases";
+import { validationError } from "@/lib/errors";
 
 const categories = new Set([
   "pertanian",
@@ -63,7 +64,7 @@ export async function simpanPotensi(form: FormData) {
   const aktif = value(form, "aktif") === "on";
   const indikator = metrics(value(form, "indikator"));
   if (!categories.has(kategori) || !judul || !slug)
-    throw new Error("Kategori, judul, dan slug wajib diisi dengan benar.");
+    throw validationError("Kategori, judul, dan slug wajib diisi dengan benar.");
   await simpanPotensiAdmin({
     id,
     kategori,

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getLaporanBulanan } from "@/features/kependudukan/laporan-bulanan/application/laporan-bulanan-use-cases";
 import {
   NAMA_BULAN,
@@ -50,12 +52,12 @@ export default async function LaporanBulananPage({
         aksi={
           <>
             <div className="penduduk-heading-actions">
-              <a className="button button-secondary" href={eksporHref}>
+              <ButtonLink variant="secondary" href={eksporHref}>
                 Unduh CSV
-              </a>
-              <a className="button button-primary" href={cetakHref}>
+              </ButtonLink>
+              <ButtonLink variant="primary" href={cetakHref}>
                 Cetak
-              </a>
+              </ButtonLink>
             </div>
           </>
         }
@@ -90,9 +92,9 @@ export default async function LaporanBulananPage({
             </select>
           </label>
           <div className="data-custom-actions">
-            <button className="button button-primary" type="submit">
+            <Button variant="primary" type="submit">
               Tampilkan
-            </button>
+            </Button>
           </div>
         </form>
       </section>

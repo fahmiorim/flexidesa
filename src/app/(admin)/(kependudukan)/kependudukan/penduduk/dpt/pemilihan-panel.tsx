@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useActionState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { ElectionDTO } from "@/features/kependudukan/penduduk/domain/dpt";
 import { createIdleActionState } from "@/lib/action-state";
 
@@ -93,9 +96,9 @@ export function PanelPemilihan({
             />
           </label>
           <div className="dpt-election-actions">
-            <button className="button button-primary" disabled={pending} type="submit">
+            <Button variant="primary" disabled={pending} type="submit">
               {pending ? "Menyimpan..." : edit ? "Simpan Perubahan" : "Simpan Pemilihan"}
-            </button>
+            </Button>
             {state.status === "success" ? (
               <p className="dpt-form-success">{state.message}</p>
             ) : null}
@@ -110,32 +113,32 @@ export function PanelPemilihan({
           pemilih dapat dihitung.
         </p>
       ) : (
-        <div className="modul-scroll">
-          <table className="modul-table dpt-election-table">
-            <thead>
-              <tr>
-                <th scope="col">Pemilihan</th>
-                <th scope="col">Tanggal</th>
-                <th scope="col">Status</th>
-                <th scope="col">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll>
+          <Table className="dpt-election-table">
+            <THead>
+              <Row>
+                <HeaderCell scope="col">Pemilihan</HeaderCell>
+                <HeaderCell scope="col">Tanggal</HeaderCell>
+                <HeaderCell scope="col">Status</HeaderCell>
+                <HeaderCell scope="col">Aksi</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {elections.map((item) => (
-                <tr key={item.id}>
-                  <td>
+                <Row key={item.id}>
+                  <Cell>
                     <strong>{item.judul}</strong>
                     {item.keterangan ? (
                       <span className="modul-muted">{item.keterangan}</span>
                     ) : null}
-                  </td>
-                  <td>{item.tanggal}</td>
-                  <td>
+                  </Cell>
+                  <Cell>{item.tanggal}</Cell>
+                  <Cell>
                     <span className="beranda-chip" data-tone={tone(item.status)}>
                       {STATUS_LABELS[item.status]}
                     </span>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <div className="dpt-election-row-actions">
                       {bolehUbah ? (
                         <Link
@@ -146,27 +149,21 @@ export function PanelPemilihan({
                         </Link>
                       ) : null}
                       {bolehHapus ? (
-                        <form
-                          action={hapusPemilihanAction}
-                          onSubmit={(event) => {
-                            if (!window.confirm(`Hapus pemilihan "${item.judul}"?`)) {
-                              event.preventDefault();
-                            }
-                          }}
-                        >
-                          <input name="id" type="hidden" value={item.id} />
-                          <button className="dpt-link-danger" type="submit">
-                            Hapus
-                          </button>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusPemilihanAction}
+                          id={item.id}
+                          judul={`Hapus pemilihan "${item.judul}"?`}
+                          keterangan="Pemilihan dan data calon pemilihnya akan dihapus permanen."
+                          labelAksi="Hapus pemilihan"
+                        />
                       ) : null}
                     </div>
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       )}
     </section>
   );

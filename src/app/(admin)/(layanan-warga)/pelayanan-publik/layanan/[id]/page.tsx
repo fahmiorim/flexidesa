@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getLayananDetailData } from "@/features/layanan-warga/pelayanan/application/layanan-use-cases";
 
 export const metadata: Metadata = { title: "Detail Layanan" };
@@ -20,16 +20,13 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         deskripsi={<>Detail konfigurasi layanan masyarakat.</>}
         aksi={
           <>
-            <div style={{ display: "flex", gap: 8 }}>
-              <Link className="button button-secondary" href="/pelayanan-publik/layanan">
+            <div className="table-actions">
+              <ButtonLink variant="secondary" href="/pelayanan-publik/layanan">
                 Kembali
-              </Link>
-              <Link
-                className="button button-primary"
-                href={"/pelayanan-publik/layanan/" + r.id + "/edit"}
-              >
+              </ButtonLink>
+              <ButtonLink variant="primary" href={"/pelayanan-publik/layanan/" + r.id + "/edit"}>
                 Ubah Layanan
-              </Link>
+              </ButtonLink>
             </div>
           </>
         }

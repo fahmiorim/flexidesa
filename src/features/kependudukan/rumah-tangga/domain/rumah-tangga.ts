@@ -196,11 +196,6 @@ export interface RumahTanggaReferenceData {
 export const RTM_BDT_FILTERS = ["ada", "tidak"] as const;
 export type RtmBdtFilter = (typeof RTM_BDT_FILTERS)[number];
 
-export const RTM_BDT_LABELS: Readonly<Record<RtmBdtFilter, string>> = {
-  ada: "Punya BDT",
-  tidak: "Tanpa BDT",
-};
-
 /**
  * Status RTM menurut kondisi kepala rumah tangga (paritas OpenSID).
  *
@@ -230,11 +225,6 @@ export const RTM_SEX_LABELS: Readonly<Record<RtmSexFilter, string>> = {
 /** Pilihan penyaringan status DTKS. */
 export const RTM_DTKS_FILTERS = ["terdaftar", "belum"] as const;
 export type RtmDtksFilter = (typeof RTM_DTKS_FILTERS)[number];
-
-export const RTM_DTKS_LABELS: Readonly<Record<RtmDtksFilter, string>> = {
-  terdaftar: "Terdaftar DTKS",
-  belum: "Belum Terdaftar DTKS",
-};
 
 export interface RtmFilter {
   search: string;

@@ -1,6 +1,6 @@
 import { selCsv } from "@/lib/spreadsheet";
 
-import { formatAnggaran, statusPembangunanLabel, type PembangunanProyekDTO } from "./pembangunan";
+import { statusPembangunanLabel, type PembangunanProyekDTO } from "./pembangunan";
 
 /**
  * Buku pembangunan desa.
@@ -177,6 +177,3 @@ export function buildBukuPembangunanCsv(baris: readonly BukuPembangunanBaris[]):
 }
 
 /** Anggaran dalam format rupiah untuk tampilan cetak. */
-export function anggaranTampil(nilai: number): string {
-  return formatAnggaran(String(nilai));
-}

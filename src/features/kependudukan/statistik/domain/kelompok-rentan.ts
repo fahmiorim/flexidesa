@@ -60,11 +60,6 @@ export interface BarisKelompokRentan extends AngkaKelompokRentan {
   tidakCacat: number;
 }
 
-export interface LaporanKelompokRentan {
-  rows: BarisKelompokRentan[];
-  total: BarisKelompokRentan;
-}
-
 /** Total penduduk pada satu baris (laki-laki + perempuan). */
 export function totalPendudukBaris(baris: AngkaKelompokRentan): number {
   return baris.lakiLaki + baris.perempuan;

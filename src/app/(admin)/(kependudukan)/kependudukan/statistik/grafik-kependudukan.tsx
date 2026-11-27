@@ -92,7 +92,10 @@ export function GrafikKependudukan({
             <div className={styles.barRow} key={row.label} role="listitem">
               <span title={row.label}>{row.label}</span>
               <div className={styles.barTrack}>
-                <i className={styles.barFill} style={{ width: `${(row.jumlah / max) * 100}%` }} />
+                <i
+                  className={styles.barFill}
+                  style={{ transform: `scaleX(${max > 0 ? row.jumlah / max : 0})` }}
+                />
               </div>
               <strong>{angka.format(row.jumlah)}</strong>
             </div>

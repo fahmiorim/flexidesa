@@ -8,8 +8,8 @@ import { requirePermission } from "@/lib/dal";
 import { env } from "@/lib/env";
 import { notFound, validationError } from "@/lib/errors";
 
-import { cariPlugin, envBelumSiap, PLUGIN_MANIFEST, type PluginManifest } from "../domain/plugin";
-import { listStatusPlugin, simpanStatusPlugin } from "../infrastructure/plugin-repository";
+import { cariPlugin, envBelumSiap, type PluginManifest } from "../domain/plugin";
+import { simpanStatusPlugin } from "../infrastructure/plugin-repository";
 
 export interface PluginView extends PluginManifest {
   aktif: boolean;
@@ -17,18 +17,6 @@ export interface PluginView extends PluginManifest {
 }
 
 /** Daftar plugin manifest + status aktif + environment yang belum siap. */
-export async function daftarPluginAdmin(): Promise<PluginView[]> {
-  const user = await requirePermission(RESOURCES.plugin, "read");
-  const villageId = await resolveVillageId(user);
-  const status = await listStatusPlugin(villageId);
-  const envSaatIni = env as unknown as Record<string, string | undefined>;
-
-  return PLUGIN_MANIFEST.map((plugin) => ({
-    ...plugin,
-    aktif: status.get(plugin.slug) ?? false,
-    envKurang: envBelumSiap(plugin, envSaatIni),
-  }));
-}
 
 /**
  * Aktifkan/nonaktifkan plugin.

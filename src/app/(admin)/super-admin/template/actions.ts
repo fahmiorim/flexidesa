@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import {
   buatTemplateWebsiteBaru,
   distribusikanVersiTemplateWebsite,
+  gantiTemplateDesa,
   ubahStatusTemplateWebsiteData,
   ubahTemplateWebsiteData,
 } from "@/features/multi-desa/application/template-website-use-cases";
@@ -32,6 +33,10 @@ function tokenDari(formData: FormData): TokenTemplate {
     fontHeading: String(formData.get("fontHeading") ?? "") as TokenTemplate["fontHeading"],
     radius: String(formData.get("radius") ?? "") as TokenTemplate["radius"],
     style: String(formData.get("style") ?? "") as TokenTemplate["style"],
+    layout: String(formData.get("layout") ?? "klasik") as TokenTemplate["layout"],
+    judulHero: String(formData.get("judulHero") ?? "").trim(),
+    subHero: String(formData.get("subHero") ?? "").trim(),
+    taglineFooter: String(formData.get("taglineFooter") ?? "").trim(),
   };
 }
 
@@ -90,6 +95,25 @@ export async function ubahTemplateAction(
       hasil.versiBaru ? "Template dan versi baru disimpan." : "Perubahan template disimpan.",
       { id, versiBaru: hasil.versiBaru },
     );
+  } catch (error) {
+    return toErrorState(error);
+  }
+}
+
+export async function gantiTemplateDesaAction(
+  _state: ActionState<{ jumlah: number }>,
+  formData: FormData,
+): Promise<ActionState<{ jumlah: number }>> {
+  try {
+    const id = Number(formData.get("id"));
+    const hasil = await gantiTemplateDesa({
+      villageId: formData.get("villageId"),
+      templateId: id,
+    });
+    revalidatePath(HALAMAN);
+    revalidatePath(`/super-admin/template/${id}`);
+    revalidatePath("/super-admin/template/penggunaan");
+    return successState(`Template diterapkan ke desa #${hasil.villageId}.`, { jumlah: 1 });
   } catch (error) {
     return toErrorState(error);
   }

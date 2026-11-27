@@ -1,10 +1,6 @@
 import "server-only";
 
-import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
-import {
-  hashVerificationToken,
-  type SuratDetail,
-} from "@/features/pelayanan-persuratan/surat/domain/surat";
+import { hashVerificationToken } from "@/features/pelayanan-persuratan/surat/domain/surat";
 import { findSuratByTokenHash } from "@/features/pelayanan-persuratan/surat/infrastructure/surat-repository";
 
 /**
@@ -24,19 +20,3 @@ export async function cariSuratEksternal(villageId: number, token: string) {
  * sebagai hash SHA-256 — bukan PK numerik — sehingga surat tidak dapat ditebak
  * dan tidak pernah bocor lintas desa.
  */
-export async function verifikasiSuratPublik(token: string): Promise<{
-  desa: Awaited<ReturnType<typeof getIdentitasFromRequest>>;
-  surat: SuratDetail | null;
-}> {
-  const desa = await getIdentitasFromRequest();
-
-  // Token yang tidak berbentuk hex 64 char pasti tidak sah; lewati query.
-  if (!/^[0-9a-f]{64}$/i.test(token)) {
-    return { desa, surat: null };
-  }
-
-  const tokenHash = await hashVerificationToken(token.toLowerCase());
-  const surat = await findSuratByTokenHash(desa.id, tokenHash);
-
-  return { desa, surat };
-}

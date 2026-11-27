@@ -1,10 +1,19 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useActionState,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  useTransition,
+} from "react";
 import { createPortal } from "react-dom";
 
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { hapusMasterLembagaAction } from "@/features/info-desa/pemerintahan/presentation/actions";
 import { simpanMasterLembagaFormAction } from "@/features/info-desa/pemerintahan/presentation/form-actions";
 import { PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
@@ -76,12 +85,12 @@ function FormKategori({
       {isiKategori(item)}
       <PesanDialog state={state} />
       <div className="platform-dialog-actions">
-        <button className="button button-secondary" onClick={onBatal} type="button">
+        <Button onClick={onBatal} type="button" variant="secondary">
           Kembali ke daftar
-        </button>
-        <button className="button button-primary" disabled={pending} type="submit">
-          {pending ? "Menyimpan..." : item ? "Simpan Perubahan" : "Simpan Kategori"}
-        </button>
+        </Button>
+        <Button loading={pending} type="submit" variant="primary">
+          {item ? "Simpan Perubahan" : "Simpan Kategori"}
+        </Button>
       </div>
     </form>
   );
@@ -107,8 +116,25 @@ export function KelolaKategoriDialog({
   tombolClassName?: string;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const router = useRouter();
   const id = useId();
   const [tampilan, setTampilan] = useState<Tampilan>({ jenis: "daftar" });
+  const [konfirmasiHapus, setKonfirmasiHapus] = useState<number | null>(null);
+  const [menghapus, mulaiHapus] = useTransition();
+
+  function hapusKategori(item: KategoriKelolaItem) {
+    const formData = new FormData();
+    formData.set("id", String(item.id));
+    mulaiHapus(async () => {
+      try {
+        await hapusMasterLembagaAction(formData);
+      } finally {
+        setKonfirmasiHapus(null);
+        router.refresh();
+      }
+    });
+  }
+
   // Dialog dipindah ke `body` agar tampil sama di mana pun tombolnya dipasang.
   const terpasang = useSyncExternalStore(
     () => () => {},
@@ -186,29 +212,29 @@ export function KelolaKategoriDialog({
                   </div>
 
                   {kategori.length ? (
-                    <div className="modul-table-wrap">
-                      <table className="modul-table jabatan-table">
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Kategori</th>
-                            <th>Deskripsi</th>
-                            <th>Lembaga</th>
-                            <th>Urutan</th>
-                            <th>Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                    <TableScroll className="modul-table-wrap">
+                      <Table className="modul-table jabatan-table">
+                        <THead>
+                          <Row>
+                            <HeaderCell>No</HeaderCell>
+                            <HeaderCell>Kategori</HeaderCell>
+                            <HeaderCell>Deskripsi</HeaderCell>
+                            <HeaderCell>Lembaga</HeaderCell>
+                            <HeaderCell>Urutan</HeaderCell>
+                            <HeaderCell>Aksi</HeaderCell>
+                          </Row>
+                        </THead>
+                        <TBody>
                           {kategori.map((item, index) => (
-                            <tr key={item.id}>
-                              <td>{index + 1}</td>
-                              <td>
+                            <Row key={item.id}>
+                              <Cell>{index + 1}</Cell>
+                              <Cell>
                                 <strong>{item.nama}</strong>
-                              </td>
-                              <td>{item.deskripsi ?? "—"}</td>
-                              <td>{item.jumlahLembaga} lembaga</td>
-                              <td>{item.urut}</td>
-                              <td>
+                              </Cell>
+                              <Cell>{item.deskripsi ?? "—"}</Cell>
+                              <Cell>{item.jumlahLembaga} lembaga</Cell>
+                              <Cell>{item.urut}</Cell>
+                              <Cell>
                                 <div className="pemerintahan-row-actions">
                                   {bolehUbah ? (
                                     <button
@@ -221,23 +247,43 @@ export function KelolaKategoriDialog({
                                   ) : null}
                                   {item.jumlahLembaga ? <small>Masih dipakai</small> : null}
                                   {bolehHapus && !item.jumlahLembaga ? (
-                                    <form action={hapusMasterLembagaAction}>
-                                      <input name="id" type="hidden" value={item.id} />
-                                      <ConfirmSubmit
-                                        className="button button-danger-ghost"
-                                        message={`Hapus kategori ${item.nama}?`}
+                                    konfirmasiHapus === item.id ? (
+                                      <span className="table-actions">
+                                        <Button
+                                          loading={menghapus}
+                                          onClick={() => hapusKategori(item)}
+                                          size="sm"
+                                          type="button"
+                                          variant="danger"
+                                        >
+                                          Hapus kategori
+                                        </Button>
+                                        <Button
+                                          onClick={() => setKonfirmasiHapus(null)}
+                                          size="sm"
+                                          type="button"
+                                          variant="secondary"
+                                        >
+                                          Batal
+                                        </Button>
+                                      </span>
+                                    ) : (
+                                      <Button
+                                        onClick={() => setKonfirmasiHapus(item.id)}
+                                        type="button"
+                                        variant="danger-ghost"
                                       >
                                         Hapus
-                                      </ConfirmSubmit>
-                                    </form>
+                                      </Button>
+                                    )
                                   ) : null}
                                 </div>
-                              </td>
-                            </tr>
+                              </Cell>
+                            </Row>
                           ))}
-                        </tbody>
-                      </table>
-                    </div>
+                        </TBody>
+                      </Table>
+                    </TableScroll>
                   ) : (
                     <p className="modul-empty">
                       Belum ada kategori. Tambahkan kategori pertama agar lembaga dapat didata.

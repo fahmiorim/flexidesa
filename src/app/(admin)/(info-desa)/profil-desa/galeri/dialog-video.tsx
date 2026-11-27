@@ -18,7 +18,7 @@ export function DialogVideo() {
       aksi={simpanVideoFormAction}
       deskripsi="Simpan tautan YouTube/Vimeo."
       judul="Tambah Video"
-      kelasTombol="button button-primary"
+      varian="primary"
       label="＋ Tambah Video"
       labelSimpan="Simpan Video"
     >

@@ -5,8 +5,8 @@ import { z } from "zod";
  *
  * Mengikuti menu OpenSID `laporan_penduduk` (controller mewarisi
  * `Laporan_apbdes`, penyimpanan `laporan_sinkronisasi`): arsip dokumen PDF
- * resmi per **bulan** dan tahun yang diunggah operator, lalu dicatat tanggal
- * pengirimannya ke OpenDK. Angka laporan tidak diturunkan dari dokumen ini.
+ * resmi per **bulan** dan tahun yang diunggah operator. Angka laporan tidak
+ * diturunkan dari dokumen ini.
  */
 
 /** Bulan 1–12 dengan label Indonesia, sama dengan `bulan()` OpenSID. */
@@ -63,8 +63,6 @@ export interface LaporanPendudukRow {
   bulan: number;
   bulanLabel: string;
   namaFile: string;
-  /** Tanggal kirim ke OpenDK (ISO), `null` bila belum dikirim. */
-  kirim: string | null;
   /** Tanggal unggah/ubah terakhir (ISO); ditampilkan sebagai "Tanggal Upload". */
   diunggahPada: string;
 }

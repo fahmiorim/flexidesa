@@ -21,6 +21,8 @@ export const RUTE_ADMIN_TERSEDIA: readonly string[] = [
   "/pelayanan-publik/layanan",
   "/pelayanan-publik/pengajuan",
   "/pelayanan-publik/survei",
+  "/pelayanan-publik/lapak",
+  "/pelayanan-publik/lapak/[id]",
   "/kependudukan/penduduk",
   "/kependudukan/penduduk/suplemen",
   "/kependudukan/penduduk/suplemen/baru",
@@ -90,6 +92,12 @@ export const RUTE_ADMIN_TERSEDIA: readonly string[] = [
   "/keuangan/realisasi",
   "/keuangan/kegiatan",
   "/keuangan/kegiatan/[id]",
+  "/keuangan/pendapatan",
+  "/keuangan/belanja",
+  "/keuangan/pembiayaan",
+  "/keuangan/penatausahaan",
+  "/keuangan/buku-kas-umum",
+  "/pembangunan/buku",
   "/keuangan/laporan",
   "/keuangan/dokumen",
   "/inventaris",
@@ -105,10 +113,14 @@ export const RUTE_ADMIN_TERSEDIA: readonly string[] = [
   "/profil-desa/galeri",
   "/satu-data/potensi",
   "/satu-data/sarana-prasarana",
+  "/satu-data/bantuan",
+  "/satu-data/bantuan/[id]",
+  "/satu-data/statistik-program",
   "/profil-desa/website",
   "/profil-desa/website/pengaturan",
   "/profil-desa/website/halaman",
   "/profil-desa/website/konten",
+  "/profil-desa/website/agenda",
   "/profil-desa/dokumen",
   "/profil-desa/pemerintah-desa",
   "/profil-desa/lembaga-desa",
@@ -121,6 +133,8 @@ export const RUTE_ADMIN_TERSEDIA: readonly string[] = [
   "/segera/statistik-kependudukan",
   "/profil-desa/wilayah-administratif",
   "/pemetaan/peta",
+  "/pemetaan/data-pertanahan",
+  "/pemetaan/peta-penduduk",
   "/profil-desa/identitas-desa",
   "/kependudukan/stunting",
   "/pengaturan/desa",
@@ -146,7 +160,6 @@ export const RUTE_ADMIN_TERSEDIA: readonly string[] = [
  * memisahkan "belum selesai" dari "tautan mati": template tenant boleh
  * menunjuk rute di sini, sedangkan `ruteTersedia` tetap mengembalikan false.
  */
-export const RUTE_ADMIN_SEGERA: readonly string[] = ["/pembangunan"];
 
 /**
  * Modul yang dihentikan dan tidak boleh tampil di sidebar.

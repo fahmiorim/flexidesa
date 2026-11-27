@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { DialogHapus } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { PenggunaDTO, RoleOption } from "@/features/pengaturan/pengguna/domain/pengguna";
 import type { ActionState } from "@/lib/action-state";
 
@@ -115,36 +116,36 @@ export function PenggunaConsole({ rows, roles, currentUserId, canUpdate, canDele
         </select>
       </div>
 
-      <div className="tenant-table-scroll">
-        <table className="tenant-table pengguna-table">
-          <thead>
-            <tr>
-              <th scope="col">No.</th>
-              <th scope="col">Pengguna</th>
-              <th scope="col">Username</th>
-              <th scope="col">Role / Hak Akses</th>
-              <th scope="col">Kontak</th>
-              <th scope="col">Status</th>
-              <th scope="col">Terakhir Login</th>
-              <th scope="col">
+      <TableScroll className="tenant-table-scroll">
+        <Table className="tenant-table pengguna-table">
+          <THead>
+            <Row>
+              <HeaderCell scope="col">No.</HeaderCell>
+              <HeaderCell scope="col">Pengguna</HeaderCell>
+              <HeaderCell scope="col">Username</HeaderCell>
+              <HeaderCell scope="col">Role / Hak Akses</HeaderCell>
+              <HeaderCell scope="col">Kontak</HeaderCell>
+              <HeaderCell scope="col">Status</HeaderCell>
+              <HeaderCell scope="col">Terakhir Login</HeaderCell>
+              <HeaderCell scope="col">
                 <span className="sr-only">Aksi</span>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
+              </HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
             {baris.length === 0 ? (
-              <tr>
-                <td className="pengguna-kosong" colSpan={8}>
+              <Row>
+                <Cell className="pengguna-kosong" colSpan={8}>
                   Tidak ada pengguna yang cocok dengan filter.
-                </td>
-              </tr>
+                </Cell>
+              </Row>
             ) : (
               baris.map((row, index) => {
                 const diriSendiri = row.id === currentUserId;
                 return (
-                  <tr key={row.id}>
-                    <td className="pengguna-nomor">{mulai + index + 1}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell className="pengguna-nomor">{mulai + index + 1}</Cell>
+                    <Cell>
                       <span className="pengguna-identitas">
                         <span aria-hidden="true" className="pengguna-avatar">
                           {inisial(row.name)}
@@ -154,22 +155,22 @@ export function PenggunaConsole({ rows, roles, currentUserId, canUpdate, canDele
                           {diriSendiri ? <span className="tenant-secondary">Akun Anda</span> : null}
                         </span>
                       </span>
-                    </td>
-                    <td className="pengguna-mono">@{row.username || "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell className="pengguna-mono">@{row.username || "—"}</Cell>
+                    <Cell>
                       <span className="pengguna-role">{row.roleName ?? "Tanpa role"}</span>
-                    </td>
-                    <td className="pengguna-email">{row.email}</td>
-                    <td>
+                    </Cell>
+                    <Cell className="pengguna-email">{row.email}</Cell>
+                    <Cell>
                       <span className={`tenant-status ${row.active ? "is-active" : "is-inactive"}`}>
                         <span aria-hidden="true" />
                         {row.active ? "Aktif" : "Nonaktif"}
                       </span>
-                    </td>
-                    <td className="pengguna-waktu">
+                    </Cell>
+                    <Cell className="pengguna-waktu">
                       {row.lastLoginAt ? FORMAT_WAKTU.format(row.lastLoginAt) : "Belum pernah"}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <div className="pengguna-aksi">
                         {canUpdate ? (
                           <DialogPengguna
@@ -189,14 +190,14 @@ export function PenggunaConsole({ rows, roles, currentUserId, canUpdate, canDele
                           />
                         ) : null}
                       </div>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 );
               })
             )}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
 
       <div className="pengguna-footer">
         <span className="tenant-result-count">

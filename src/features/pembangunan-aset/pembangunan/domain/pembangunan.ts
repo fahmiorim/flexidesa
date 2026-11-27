@@ -38,8 +38,6 @@ export const SUMBER_DANA_PEMBANGUNAN = [
   "Lainnya",
 ] as const;
 
-export type SumberDanaPembangunan = (typeof SUMBER_DANA_PEMBANGUNAN)[number];
-
 export function sumberDanaLabel(value: string | null): string {
   return value && value.trim() !== "" ? value : "-";
 }

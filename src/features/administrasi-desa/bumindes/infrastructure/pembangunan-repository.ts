@@ -82,15 +82,6 @@ export async function listBumindesKader(villageId: number) {
     .orderBy(asc(bumindesKader.nama), asc(bumindesKader.id));
 }
 
-export async function getBumindesKader(villageId: number, id: number) {
-  const [row] = await db
-    .select()
-    .from(bumindesKader)
-    .where(and(eq(bumindesKader.villageId, villageId), eq(bumindesKader.id, id)))
-    .limit(1);
-  return row ?? null;
-}
-
 export async function insertBumindesKader(villageId: number, values: KaderValues) {
   const [row] = await db
     .insert(bumindesKader)

@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useId, useRef, useState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { imporPendudukAction } from "@/features/kependudukan/penduduk/application/penduduk-import-use-cases";
 import { PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import { createIdleActionState } from "@/lib/action-state";
@@ -26,9 +27,9 @@ function IsiDialogImpor({ onSelesai }: { onSelesai: () => void }) {
           {state.message}
         </p>
         <div className="platform-dialog-actions">
-          <button className="button button-primary" onClick={onSelesai} type="button">
+          <Button variant="primary" onClick={onSelesai} type="button">
             Selesai
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -52,9 +53,9 @@ function IsiDialogImpor({ onSelesai }: { onSelesai: () => void }) {
             Unduh template berisi kolom ekspor OpenSID dan sheet Contoh yang bisa disalin.
           </span>
         </div>
-        <Link className="button button-secondary" href="/kependudukan/penduduk/impor/template">
+        <ButtonLink variant="secondary" href="/kependudukan/penduduk/impor/template">
           Unduh contoh format
-        </Link>
+        </ButtonLink>
       </div>
 
       <PesanDialog state={state} />
@@ -73,12 +74,12 @@ function IsiDialogImpor({ onSelesai }: { onSelesai: () => void }) {
       ) : null}
 
       <div className="platform-dialog-actions">
-        <button className="button button-secondary" onClick={onSelesai} type="button">
+        <Button variant="secondary" onClick={onSelesai} type="button">
           Batal
-        </button>
-        <button className="button button-primary" disabled={pending} type="submit">
+        </Button>
+        <Button variant="primary" disabled={pending} type="submit">
           {pending ? "Mengimpor..." : "Impor Penduduk"}
-        </button>
+        </Button>
       </div>
     </form>
   );
@@ -100,13 +101,9 @@ export function DialogImporPenduduk() {
 
   return (
     <>
-      <button
-        className="button button-secondary"
-        onClick={() => dialogRef.current?.showModal()}
-        type="button"
-      >
+      <Button variant="secondary" onClick={() => dialogRef.current?.showModal()} type="button">
         Impor Berkas
-      </button>
+      </Button>
 
       <dialog
         aria-labelledby={`${id}-judul`}

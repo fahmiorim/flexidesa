@@ -35,9 +35,6 @@ export async function ambilMenuSidebar(user: CurrentUser): Promise<PreferensiSid
 }
 
 /** Varian untuk layout: hanya struktur menu yang sudah dipersonalisasi. */
-export async function getMenuSidebarForUser(user: CurrentUser): Promise<MenuNode[]> {
-  return (await ambilMenuSidebar(user)).menu;
-}
 
 /** Simpan urutan menu tingkat atas; daftar kosong mengembalikan ke bawaan. */
 export async function simpanUrutanMenuSidebar(input: readonly string[]): Promise<string[]> {

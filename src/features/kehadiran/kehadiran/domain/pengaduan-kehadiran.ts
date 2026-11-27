@@ -23,8 +23,6 @@ export const pengaduanKehadiranFormSchema = z.object({
     .transform((value) => (value === "" ? null : value)),
 });
 
-export type PengaduanKehadiranInput = z.infer<typeof pengaduanKehadiranFormSchema>;
-
 /** Satu baris pengaduan untuk UI. */
 export interface PengaduanKehadiranRow {
   id: number;

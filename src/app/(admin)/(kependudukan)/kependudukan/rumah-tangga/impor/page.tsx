@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
 import { RUMAH_TANGGA_RESOURCE } from "@/features/kependudukan/rumah-tangga/domain/rumah-tangga";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { verifySession } from "@/lib/dal";
@@ -27,12 +28,9 @@ export default async function ImporRumahTanggaPage() {
         aksi={
           <>
             <div className="page-heading-actions">
-              <Link
-                className="button button-secondary"
-                href="/kependudukan/rumah-tangga/impor/template"
-              >
+              <ButtonLink variant="secondary" href="/kependudukan/rumah-tangga/impor/template">
                 Unduh Template CSV
-              </Link>
+              </ButtonLink>
             </div>
           </>
         }

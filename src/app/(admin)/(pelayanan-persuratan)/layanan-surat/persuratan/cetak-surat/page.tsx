@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getCetakSuratData } from "@/features/pelayanan-persuratan/surat/application/cetak-surat-use-cases";
 import { cariCetakSurat } from "@/features/pelayanan-persuratan/surat/domain/cetak-surat";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
@@ -26,67 +31,32 @@ export default async function CetakSuratPage({ searchParams }: { searchParams: S
       <PageHeading
         judul={<>Cetak Surat</>}
         deskripsi={<>Pilih jenis surat, isi datanya, lalu cetak PDF.</>}
-        aksi={
-          <>
-            <div className="page-heading-actions">
-              <Link href="/layanan-surat/persuratan/surat" className="button button-secondary">
-                Daftar Surat
-              </Link>
-              <Link href="/layanan-surat/persuratan/surat/baru" className="button button-primary">
-                ＋ Buat Surat Baru
-              </Link>
-            </div>
-          </>
-        }
       />
 
-      <section className="platform-card data-panel">
-        <header>
-          <h2>Cari Jenis Surat</h2>
-          <p>
-            {data.jumlahJenis.toLocaleString("id-ID")} jenis surat aktif ·{" "}
-            {data.jumlahSurat.toLocaleString("id-ID")} surat pernah dibuat.
-          </p>
-        </header>
-
-        <form className="data-custom-filter" method="get">
-          <label className="form-field">
-            <span className="form-label">Nama, kode, klasifikasi, atau lampiran surat</span>
-            <input
-              className="form-input"
+      <TableCard
+        title="Katalog Surat"
+        description={`${data.jumlahJenis.toLocaleString("id-ID")} jenis surat aktif · ${data.jumlahSurat.toLocaleString("id-ID")} surat pernah dibuat · ${rows.length} ditampilkan`}
+        filter={
+          <form className="modul-filter-row" method="get">
+            <FormField
+              label="Nama, kode, klasifikasi, atau lampiran surat"
+              name="q"
+              type="search"
               defaultValue={kataKunci}
               maxLength={100}
-              name="q"
               placeholder="Contoh: keterangan usaha"
-              type="search"
             />
-          </label>
-          <div className="data-custom-actions">
-            <button className="button button-primary" type="submit">
+            <Button variant="primary" type="submit">
               Cari
-            </button>
+            </Button>
             {kataKunci ? (
-              <Link
-                className="button button-secondary"
-                href="/layanan-surat/persuratan/cetak-surat"
-              >
+              <ButtonLink variant="secondary" href="/layanan-surat/persuratan/cetak-surat">
                 Atur Ulang
-              </Link>
+              </ButtonLink>
             ) : null}
-          </div>
-        </form>
-      </section>
-
-      <section className="platform-card data-panel">
-        <header>
-          <h2>Katalog Surat</h2>
-          <p>
-            {rows.length === 0
-              ? "Tidak ada jenis surat yang cocok."
-              : `${rows.length} jenis surat ditampilkan.`}
-          </p>
-        </header>
-
+          </form>
+        }
+      >
         {rows.length === 0 ? (
           <div className="modul-empty">
             <strong>Belum ada jenis surat aktif.</strong>
@@ -97,25 +67,25 @@ export default async function CetakSuratPage({ searchParams }: { searchParams: S
             </p>
           </div>
         ) : (
-          <div className="table-scroll">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th scope="col">No.</th>
-                  <th scope="col">Nama Surat</th>
-                  <th scope="col">Kode / Klasifikasi</th>
-                  <th scope="col">Persyaratan</th>
-                  <th scope="col">Lampiran</th>
-                  <th scope="col">Tercetak</th>
-                  <th scope="col">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">No.</HeaderCell>
+                  <HeaderCell scope="col">Nama Surat</HeaderCell>
+                  <HeaderCell scope="col">Kode / Klasifikasi</HeaderCell>
+                  <HeaderCell scope="col">Persyaratan</HeaderCell>
+                  <HeaderCell scope="col">Lampiran</HeaderCell>
+                  <HeaderCell scope="col">Tercetak</HeaderCell>
+                  <HeaderCell scope="col">Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row, index) => (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>{row.name}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>{row.name}</Cell>
+                    <Cell>
                       {row.code}
                       {row.classificationName ? (
                         <>
@@ -123,9 +93,9 @@ export default async function CetakSuratPage({ searchParams }: { searchParams: S
                           <small>{row.classificationName}</small>
                         </>
                       ) : null}
-                    </td>
-                    <td>{row.jumlahSyarat === 0 ? "-" : `${row.jumlahSyarat} dokumen`}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.jumlahSyarat === 0 ? "-" : `${row.jumlahSyarat} dokumen`}</Cell>
+                    <Cell>
                       {row.lampiran.length === 0 ? (
                         "-"
                       ) : (
@@ -135,27 +105,27 @@ export default async function CetakSuratPage({ searchParams }: { searchParams: S
                           ))}
                         </ul>
                       )}
-                    </td>
-                    <td>{row.tercetak.toLocaleString("id-ID")}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.tercetak.toLocaleString("id-ID")}</Cell>
+                    <Cell>
                       {bolehBuat ? (
-                        <Link
-                          className="button button-primary"
+                        <ButtonLink
+                          variant="primary"
                           href={`/layanan-surat/persuratan/surat/baru?jenis=${row.id}`}
                         >
                           Buat Surat
-                        </Link>
+                        </ButtonLink>
                       ) : (
                         <span className="form-help">Hanya dapat dilihat</span>
                       )}
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

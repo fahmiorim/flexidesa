@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FieldShell, FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
+import { getJamKerjaData } from "@/features/kehadiran/kehadiran/application/jam-kerja-use-cases";
 import {
-  getJamKerjaData,
-  getJamKerjaUntukUbah,
-} from "@/features/kehadiran/kehadiran/application/jam-kerja-use-cases";
-import { JAM_KERJA_RESOURCE } from "@/features/kehadiran/kehadiran/domain/jam-kerja";
+  JAM_KERJA_RESOURCE,
+  KETERANGAN_JAM_KERJA_MAKS,
+  type JamKerjaRow,
+} from "@/features/kehadiran/kehadiran/domain/jam-kerja";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { verifySession } from "@/lib/dal";
 
-import { simpanJamKerjaAction } from "./actions";
-import { FormJamKerja } from "./form-jam-kerja";
+import { simpanJamKerjaFormAction } from "./form-actions";
 
 export const metadata: Metadata = { title: "Jam Kerja" };
 
@@ -24,6 +27,48 @@ function nilaiTunggal(nilai: string | string[] | undefined): string {
   return nilai ?? "";
 }
 
+function formJamKerja(row: JamKerjaRow) {
+  return (
+    <div className="modul-form-grid">
+      <input name="id" type="hidden" value={row.id} />
+      <FormField
+        defaultValue={row.jamMasuk}
+        label="Jam masuk"
+        name="jamMasuk"
+        required
+        type="time"
+      />
+      <FormField
+        defaultValue={row.jamKeluar}
+        helpText="Jam keluar tidak boleh lebih kecil dari jam masuk."
+        label="Jam keluar"
+        name="jamKeluar"
+        required
+        type="time"
+      />
+      <FieldShell label="Status">
+        <div className="form-check-inline" role="radiogroup" aria-label="Status hari">
+          <label>
+            <input defaultChecked={row.status} name="status" type="radio" value="1" /> Hari Kerja
+          </label>
+          <label>
+            <input defaultChecked={!row.status} name="status" type="radio" value="0" /> Hari Libur
+          </label>
+        </div>
+      </FieldShell>
+      <FormField
+        defaultValue={row.keterangan ?? ""}
+        kind="textarea"
+        label="Keterangan"
+        maxLength={KETERANGAN_JAM_KERJA_MAKS}
+        name="keterangan"
+        placeholder="Keterangan (opsional)"
+        rows={3}
+      />
+    </div>
+  );
+}
+
 export default async function JamKerjaPage({
   searchParams,
 }: {
@@ -33,11 +78,6 @@ export default async function JamKerjaPage({
   const rows = await getJamKerjaData();
 
   const bolehUbah = hasPermission(user.permissions, JAM_KERJA_RESOURCE, "update");
-
-  const idUbah = bolehUbah ? Number(nilaiTunggal(params.ubah)) : 0;
-  const sedangDiubah =
-    Number.isSafeInteger(idUbah) && idUbah > 0 ? await getJamKerjaUntukUbah(idUbah) : null;
-
   const pesanStatus = PESAN_STATUS[nilaiTunggal(params.status)];
 
   return (
@@ -45,78 +85,70 @@ export default async function JamKerjaPage({
       <PageHeading judul={<>Jam Kerja</>} deskripsi={<>Jadwal jam kerja perangkat desa.</>} />
 
       {pesanStatus ? (
-        <p className="form-help" role="status">
+        <p className="alert alert-info" role="status">
           {pesanStatus}
         </p>
       ) : null}
 
-      {sedangDiubah ? (
-        <section className="platform-card data-panel">
-          <header>
-            <h2>Ubah Jam Kerja — {sedangDiubah.namaHari}</h2>
-            <p>Jam keluar tidak boleh lebih kecil dari jam masuk.</p>
-          </header>
-          <FormJamKerja aksi={simpanJamKerjaAction} awal={sedangDiubah} />
-        </section>
-      ) : null}
-
-      <section className="platform-card data-panel">
-        <header>
-          <h2>Daftar Jam Kerja</h2>
-          <p>
-            {rows.length === 0
-              ? "Belum ada jam kerja yang tercatat."
-              : `${rows.length} hari dalam seminggu.`}
-          </p>
-        </header>
-
+      <TableCard
+        title="Daftar Jam Kerja"
+        description={
+          rows.length === 0
+            ? "Belum ada jam kerja yang tercatat."
+            : `${rows.length} hari dalam seminggu.`
+        }
+      >
         {rows.length === 0 ? (
           <div className="modul-empty">
             <strong>Belum ada jam kerja.</strong>
             <p>Jadwal bawaan akan dibuat otomatis saat halaman ini pertama kali dibuka.</p>
           </div>
         ) : (
-          <div className="table-scroll">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th scope="col">No.</th>
-                  <th scope="col">Hari</th>
-                  <th scope="col">Jam Masuk</th>
-                  <th scope="col">Jam Keluar</th>
-                  <th scope="col">Keterangan</th>
-                  <th scope="col">Status</th>
-                  {bolehUbah ? <th scope="col">Aksi</th> : null}
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">No.</HeaderCell>
+                  <HeaderCell scope="col">Hari</HeaderCell>
+                  <HeaderCell scope="col">Jam Masuk</HeaderCell>
+                  <HeaderCell scope="col">Jam Keluar</HeaderCell>
+                  <HeaderCell scope="col">Keterangan</HeaderCell>
+                  <HeaderCell scope="col">Status</HeaderCell>
+                  {bolehUbah ? <HeaderCell scope="col">Aksi</HeaderCell> : null}
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row, index) => (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>{row.namaHari}</td>
-                    <td>{row.jamMasuk}</td>
-                    <td>{row.jamKeluar}</td>
-                    <td>{row.keterangan ?? "-"}</td>
-                    <td>{row.status ? "Hari Kerja" : "Hari Libur"}</td>
+                  <Row key={row.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>{row.namaHari}</Cell>
+                    <Cell>{row.jamMasuk}</Cell>
+                    <Cell>{row.jamKeluar}</Cell>
+                    <Cell>{row.keterangan ?? "-"}</Cell>
+                    <Cell>{row.status ? "Hari Kerja" : "Hari Libur"}</Cell>
                     {bolehUbah ? (
-                      <td>
-                        <div className="penduduk-heading-actions">
-                          <Link
-                            className="button button-ghost"
-                            href={`/kehadiran/jam-kerja?ubah=${row.id}`}
+                      <Cell>
+                        <div className="table-actions">
+                          <FormDialog
+                            aksi={simpanJamKerjaFormAction}
+                            deskripsi={`Ubah jam kerja hari ${row.namaHari}.`}
+                            judul="Ubah jam kerja"
+                            label="Ubah"
+                            labelSimpan="Simpan perubahan"
+                            varian="secondary"
                           >
-                            Ubah
-                          </Link>
+                            {formJamKerja(row)}
+                          </FormDialog>
                         </div>
-                      </td>
+                      </Cell>
                     ) : null}
-                  </tr>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

@@ -1,8 +1,12 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
 import { FormDialog } from "@/components/ui/form-dialog";
+import { HapusTerpilih } from "@/components/ui/hapus-terpilih";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getPerangkatDesaData } from "@/features/info-desa/pemerintahan/application/perangkat";
 import {
   isJenisJabatan,
@@ -354,17 +358,9 @@ export default async function PerangkatDesaPage() {
         deskripsi={<>Kelola aparat, jabatan, dan bagan organisasi desa.</>}
       />
 
-      <section className="pd-panel" id="daftar-perangkat">
-        <div className="pd-panel-kepala">
-          <div>
-            <h2>Daftar Perangkat Desa</h2>
-            <p>
-              {semuaRows.length > 0
-                ? `${activeRows.length} aparat aktif · ${semuaRows.length - activeRows.length} nonaktif.`
-                : "Belum ada aparat terdaftar. Tambahkan aparat pertama lewat tombol di samping."}
-            </p>
-          </div>
-          <div className="wilayah-toolbar">
+      <TableCard
+        actions={
+          <>
             <div className="wilayah-toolbar-grup">
               <KelolaJabatanDialog
                 bolehHapus={akses.hapus}
@@ -383,14 +379,11 @@ export default async function PerangkatDesaPage() {
               </Link>
             </div>
             {akses.hapus && semuaRows.length > 0 ? (
-              <form id="hapus-perangkat-massal" action={hapusPerangkatMassalAction}>
-                <ConfirmSubmit
-                  className="button button-danger-ghost"
-                  message="Hapus semua aparat yang dicentang? Tindakan ini permanen."
-                >
-                  Hapus terpilih
-                </ConfirmSubmit>
-              </form>
+              <HapusTerpilih
+                aksi={hapusPerangkatMassalAction}
+                judul="Hapus aparat terpilih?"
+                namaField="ids"
+              />
             ) : null}
             {akses.ubah ? (
               <FormDialog
@@ -403,42 +396,47 @@ export default async function PerangkatDesaPage() {
                 {isiFormPerangkat(null)}
               </FormDialog>
             ) : null}
-          </div>
-        </div>
-
+          </>
+        }
+        description={
+          semuaRows.length > 0
+            ? `${activeRows.length} aparat aktif · ${semuaRows.length - activeRows.length} nonaktif.`
+            : "Belum ada aparat terdaftar. Tambahkan aparat pertama lewat tombol di samping."
+        }
+        title="Daftar Perangkat Desa"
+      >
         {rows.length ? (
-          <div className="modul-table-wrap">
-            <table className="modul-table pemerintah-table">
-              <thead>
-                <tr>
-                  {akses.hapus ? <th aria-label="Pilih" /> : null}
-                  <th>No</th>
-                  <th>Nama</th>
-                  <th>Jabatan</th>
-                  <th>Periode</th>
-                  <th>Kontak</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-table-wrap">
+            <Table className="modul-table pemerintah-table">
+              <THead>
+                <Row>
+                  {akses.hapus ? <HeaderCell aria-label="Pilih" /> : null}
+                  <HeaderCell>No</HeaderCell>
+                  <HeaderCell>Nama</HeaderCell>
+                  <HeaderCell>Jabatan</HeaderCell>
+                  <HeaderCell>Periode</HeaderCell>
+                  <HeaderCell>Kontak</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row, index) => (
-                  <tr
+                  <Row
                     className={row.status === "aktif" ? undefined : "pemerintah-row-nonaktif"}
                     key={row.id}
                   >
                     {akses.hapus ? (
-                      <td>
+                      <Cell>
                         <input
                           aria-label={`Pilih ${row.nama}`}
-                          form="hapus-perangkat-massal"
                           name="ids"
                           type="checkbox"
                           value={row.id}
                         />
-                      </td>
+                      </Cell>
                     ) : null}
-                    <td>{index + 1}</td>
-                    <td>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       <div className="pemerintah-nama">
                         <span aria-hidden className="pd-aparat-avatar">
                           {inisial(row.nama)}
@@ -471,18 +469,18 @@ export default async function PerangkatDesaPage() {
                           </span>
                         </div>
                       </div>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <strong className="pemerintah-jabatan">
                         {row.jabatan ?? "Belum ditentukan"}
                       </strong>
                       <small className="pemerintah-jenis-jabatan">
                         {labelJenis(row.jenisJabatan)}
                       </small>
-                    </td>
-                    <td>{row.periode || "—"}</td>
-                    <td>{row.telepon ?? row.email ?? "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.periode || "—"}</Cell>
+                    <Cell>{row.telepon ?? row.email ?? "—"}</Cell>
+                    <Cell>
                       <div className="pd-aparat-aksi">
                         {akses.ubah ? (
                           <FormDialog
@@ -512,19 +510,19 @@ export default async function PerangkatDesaPage() {
                                       type="hidden"
                                       value={row.status === "aktif" ? "nonaktif" : "aktif"}
                                     />
-                                    <button className="button button-ghost" type="submit">
+                                    <Button variant="ghost" type="submit">
                                       {row.status === "aktif"
                                         ? "Nonaktifkan aparat"
                                         : "Aktifkan aparat"}
-                                    </button>
+                                    </Button>
                                   </form>
                                   {row.ttdAn || row.ttdUb ? (
                                     <form action={tetapkanPenandatanganAction}>
                                       <input name="id" type="hidden" value={row.id} />
                                       <input name="jenis" type="hidden" value="" />
-                                      <button className="button button-ghost" type="submit">
+                                      <Button variant="ghost" type="submit">
                                         Lepas penandatangan
-                                      </button>
+                                      </Button>
                                     </form>
                                   ) : (
                                     <>
@@ -532,9 +530,9 @@ export default async function PerangkatDesaPage() {
                                         <form action={tetapkanPenandatanganAction}>
                                           <input name="id" type="hidden" value={row.id} />
                                           <input name="jenis" type="hidden" value="an" />
-                                          <button className="button button-ghost" type="submit">
+                                          <Button variant="ghost" type="submit">
                                             Jadikan penandatangan a.n
-                                          </button>
+                                          </Button>
                                         </form>
                                       ) : null}
                                       {(row.jenisJabatan ?? "lainnya") === "lainnya" &&
@@ -542,9 +540,9 @@ export default async function PerangkatDesaPage() {
                                         <form action={tetapkanPenandatanganAction}>
                                           <input name="id" type="hidden" value={row.id} />
                                           <input name="jenis" type="hidden" value="ub" />
-                                          <button className="button button-ghost" type="submit">
+                                          <Button variant="ghost" type="submit">
                                             Jadikan penandatangan u.b
-                                          </button>
+                                          </Button>
                                         </form>
                                       ) : null}
                                     </>
@@ -552,30 +550,29 @@ export default async function PerangkatDesaPage() {
                                 </>
                               ) : null}
                               {akses.hapus ? (
-                                <form action={hapusPerangkatAction}>
-                                  <input name="id" type="hidden" value={row.id} />
-                                  <ConfirmSubmit
-                                    className="button button-danger-ghost"
-                                    message={`Hapus ${row.nama} dari perangkat desa?`}
-                                  >
-                                    Hapus aparat
-                                  </ConfirmSubmit>
-                                </form>
+                                <DialogHapusForm
+                                  aksi={hapusPerangkatAction}
+                                  id={row.id}
+                                  judul={`Hapus ${row.nama} dari perangkat desa?`}
+                                  keterangan="Data aparat beserta riwayat jabatannya akan dihapus permanen."
+                                  label="Hapus aparat"
+                                  labelAksi="Hapus aparat"
+                                />
                               ) : null}
                             </div>
                           </details>
                         ) : null}
                       </div>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <p className="modul-empty">Belum ada aparat terdaftar.</p>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

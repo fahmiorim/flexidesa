@@ -1,7 +1,9 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   aksesDokumenAdmin,
   listDokumenAdminData,
@@ -80,38 +82,34 @@ export default async function DokumenAdminPage() {
         </article>
       </section>
 
-      <section aria-label="Daftar dokumen" className="pd-panel" id="daftar-dokumen">
-        <div className="pd-panel-kepala">
-          <div>
-            <h2>Daftar Dokumen</h2>
-            <p>
-              {angka(publik)} publik · {angka(rows.length - publik)} nonaktif.
-            </p>
-          </div>
-          <div className="wilayah-toolbar">
+      <TableCard
+        actions={
+          <>
             <span className="wilayah-count-pill">{angka(rows.length)} dokumen</span>
             {akses.bolehTambah ? <DialogDokumen /> : null}
-          </div>
-        </div>
-
+          </>
+        }
+        description={`${angka(publik)} publik · ${angka(rows.length - publik)} nonaktif`}
+        title="Daftar Dokumen"
+      >
         {rows.length ? (
-          <div className="modul-table-wrap">
-            <table className="modul-table pemerintah-table berita-tabel">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Dokumen</th>
-                  <th>Kategori</th>
-                  <th>Nomor / Tahun</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-table-wrap">
+            <Table className="modul-table pemerintah-table berita-tabel">
+              <THead>
+                <Row>
+                  <HeaderCell>No</HeaderCell>
+                  <HeaderCell>Dokumen</HeaderCell>
+                  <HeaderCell>Kategori</HeaderCell>
+                  <HeaderCell>Nomor / Tahun</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row, index) => (
-                  <tr className={row.aktif ? undefined : "pemerintah-row-nonaktif"} key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>
+                  <Row className={row.aktif ? undefined : "pemerintah-row-nonaktif"} key={row.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       <div className="berita-sel">
                         <span aria-hidden className="berita-thumb">
                           ▤
@@ -129,35 +127,31 @@ export default async function DokumenAdminPage() {
                           ) : null}
                         </div>
                       </div>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <span className="berita-kategori">{labelKategori(row.kategori)}</span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <span className="berita-tanggal">
                         {row.nomor ?? "—"} / {row.tahun ?? "—"}
                       </span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <span className={`berita-status ${row.aktif ? "is-tayang" : "is-draft"}`}>
                         <i aria-hidden="true" />
                         {row.aktif ? "Publik" : "Nonaktif"}
                       </span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <div className="pd-aparat-aksi">
                         {row.berkas ? (
-                          <Link
-                            className="button button-ghost"
-                            href={urlBerkas(row.berkas)}
-                            target="_blank"
-                          >
+                          <ButtonLink variant="ghost" href={urlBerkas(row.berkas)} target="_blank">
                             Lihat
-                          </Link>
+                          </ButtonLink>
                         ) : row.tautan ? (
-                          <Link className="button button-ghost" href={row.tautan} target="_blank">
+                          <ButtonLink variant="ghost" href={row.tautan} target="_blank">
                             Lihat
-                          </Link>
+                          </ButtonLink>
                         ) : null}
                         {akses.bolehUbah ? <DialogDokumen item={row} /> : null}
                         {akses.bolehUbah ? (
@@ -168,29 +162,27 @@ export default async function DokumenAdminPage() {
                               type="hidden"
                               value={row.aktif ? "false" : "true"}
                             />
-                            <button className="button button-ghost" type="submit">
+                            <Button variant="ghost" type="submit">
                               {row.aktif ? "Sembunyikan" : "Publikasikan"}
-                            </button>
+                            </Button>
                           </form>
                         ) : null}
                         {akses.bolehHapus ? (
-                          <form action={hapusDokumenAction}>
-                            <input name="dokumenId" type="hidden" value={row.id} />
-                            <ConfirmSubmit
-                              className="button button-danger-ghost"
-                              message={`Hapus dokumen "${row.nama}"?`}
-                            >
-                              Hapus
-                            </ConfirmSubmit>
-                          </form>
+                          <DialogHapusForm
+                            aksi={hapusDokumenAction}
+                            hidden={{ dokumenId: row.id }}
+                            judul={`Hapus dokumen "${row.nama}"?`}
+                            keterangan="Dokumen beserta berkasnya akan dihapus permanen."
+                            labelAksi="Hapus dokumen"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <div className="berita-kosong">
             <span aria-hidden="true">▤</span>
@@ -198,7 +190,7 @@ export default async function DokumenAdminPage() {
             <p>Klik &ldquo;Tambah Dokumen&rdquo; untuk menambah dokumen pertama.</p>
           </div>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

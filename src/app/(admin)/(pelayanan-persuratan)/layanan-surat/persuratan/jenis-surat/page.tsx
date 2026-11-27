@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
+import { StatCard, StatGrid } from "@/components/ui/stat-card";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getMasterJenisSuratData } from "@/features/pelayanan-persuratan/surat/application/jenis-surat-use-cases";
 import {
   parseIsianFields,
@@ -38,177 +44,147 @@ export default async function JenisSuratPage({ searchParams }: { searchParams: S
       <PageHeading
         judul={<>Pengaturan Surat</>}
         deskripsi={<>Kelola katalog dan template surat desa.</>}
-        aksi={
+      />
+      <StatGrid columns={4}>
+        <StatCard
+          icon="▤"
+          label="Total Jenis Surat"
+          utama
+          note="Katalog desa"
+          value={jenis.length}
+        />
+        <StatCard icon="✓" label="Aktif" note="Tersedia di formulir" tone="hijau" value={active} />
+        <StatCard
+          icon="▧"
+          label="Klasifikasi"
+          note="Kategori surat"
+          tone="biru"
+          value={klasifikasi.length}
+        />
+        <StatCard
+          icon="☷"
+          label="Persyaratan"
+          note="Dokumen pendukung"
+          tone="oranye"
+          value={syarat.length}
+        />
+      </StatGrid>
+      <TableCard
+        title="Katalog jenis surat"
+        description={`${filtered.length} dari ${jenis.length} jenis surat ditampilkan`}
+        actions={
           <>
-            <div className="page-heading-actions">
-              <Link href="/layanan-surat/persuratan/surat" className="button button-secondary">
-                Kembali ke Pengelolaan Surat
-              </Link>
-              <Link href="/layanan-surat/persuratan/master" className="button button-secondary">
-                Master Klasifikasi & Persyaratan
-              </Link>
-              <Link
-                href="/layanan-surat/persuratan/jenis-surat/pengaturan"
-                className="button button-secondary"
-              >
-                ⚙ Pengaturan Global
-              </Link>
-              {canCreate ? (
-                <Link
-                  href="/layanan-surat/persuratan/jenis-surat/baru"
-                  className="button button-primary"
-                >
-                  ＋ Tambah Jenis Surat
-                </Link>
-              ) : null}
-            </div>
+            <ButtonLink size="sm" variant="secondary" href="/layanan-surat/persuratan/master">
+              Master Klasifikasi
+            </ButtonLink>
+            <ButtonLink
+              size="sm"
+              variant="secondary"
+              href="/layanan-surat/persuratan/jenis-surat/pengaturan"
+            >
+              Pengaturan Global
+            </ButtonLink>
+            {canCreate ? (
+              <ButtonLink size="sm" href="/layanan-surat/persuratan/jenis-surat/baru">
+                ＋ Tambah Jenis Surat
+              </ButtonLink>
+            ) : null}
           </>
         }
-      />
-      <div className="beranda-kpi-grid">
-        <article className="beranda-card beranda-kpi" data-tone="ungu">
-          <span className="beranda-kpi-icon">▤</span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Total Jenis Surat</span>
-            <strong className="beranda-kpi-value">{jenis.length}</strong>
-            <span className="beranda-chip" data-tone="ungu">
-              Katalog desa
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="hijau">
-          <span className="beranda-kpi-icon">✓</span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Aktif</span>
-            <strong className="beranda-kpi-value">{active}</strong>
-            <span className="beranda-chip" data-tone="hijau">
-              Tersedia di formulir
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="biru">
-          <span className="beranda-kpi-icon">▧</span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Klasifikasi</span>
-            <strong className="beranda-kpi-value">{klasifikasi.length}</strong>
-            <span className="beranda-chip" data-tone="biru">
-              Kategori surat
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="jingga">
-          <span className="beranda-kpi-icon">☷</span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Persyaratan</span>
-            <strong className="beranda-kpi-value">{syarat.length}</strong>
-            <span className="beranda-chip" data-tone="netral">
-              Dokumen pendukung
-            </span>
-          </div>
-        </article>
-      </div>
-      <section className="modul-card">
-        <div className="beranda-card-head">
-          <div>
-            <h2 className="beranda-card-title">Katalog jenis surat</h2>
-            <p className="modul-muted">
-              {filtered.length} dari {jenis.length} jenis surat ditampilkan
-            </p>
-          </div>
-        </div>
-        <form
-          method="get"
-          action="/layanan-surat/persuratan/jenis-surat"
-          className="modul-filter-row"
-        >
-          <label>
-            Kata kunci
-            <input
-              type="search"
+        filter={
+          <form
+            method="get"
+            action="/layanan-surat/persuratan/jenis-surat"
+            className="modul-filter-row"
+          >
+            <FormField
+              label="Kata kunci"
               name="q"
+              type="search"
               defaultValue={params.q ?? ""}
               placeholder="Cari kode atau nama surat..."
             />
-          </label>
-          <label>
-            Status
-            <select name="status" defaultValue={params.status ?? ""}>
-              <option value="">Semua</option>
-              <option value="aktif">Aktif</option>
-              <option value="nonaktif">Nonaktif</option>
-            </select>
-          </label>
-          <button className="button button-primary" type="submit">
-            Cari
-          </button>
-          <Link href="/layanan-surat/persuratan/jenis-surat" className="button button-secondary">
-            Reset
-          </Link>
-        </form>
+            <FormField
+              label="Status"
+              kind="select"
+              name="status"
+              defaultValue={params.status ?? ""}
+              options={[
+                { value: "", label: "Semua" },
+                { value: "aktif", label: "Aktif" },
+                { value: "nonaktif", label: "Nonaktif" },
+              ]}
+            />
+            <Button variant="primary" type="submit">
+              Cari
+            </Button>
+            <ButtonLink variant="secondary" href="/layanan-surat/persuratan/jenis-surat">
+              Reset
+            </ButtonLink>
+          </form>
+        }
+      >
         {filtered.length === 0 ? (
           <div className="modul-empty">
             <strong>Jenis surat belum tersedia</strong>
             <p className="modul-muted">Tambahkan jenis surat pertama atau ubah filter pencarian.</p>
             {canCreate ? (
-              <Link
-                href="/layanan-surat/persuratan/jenis-surat/baru"
-                className="button button-primary"
-              >
+              <ButtonLink variant="primary" href="/layanan-surat/persuratan/jenis-surat/baru">
                 Tambah Jenis Surat
-              </Link>
+              </ButtonLink>
             ) : null}
           </div>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>Kode</th>
-                  <th>Nama jenis surat</th>
-                  <th>Klasifikasi</th>
-                  <th>Lampiran</th>
-                  <th>Konfigurasi</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>Kode</HeaderCell>
+                  <HeaderCell>Nama jenis surat</HeaderCell>
+                  <HeaderCell>Klasifikasi</HeaderCell>
+                  <HeaderCell>Lampiran</HeaderCell>
+                  <HeaderCell>Konfigurasi</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {filtered.map((item) => {
                   const fields = parseIsianFields(item.formIsian).length;
                   const requirements = parseSyaratIds(item.syaratSurat).length;
                   return (
-                    <tr key={item.id}>
-                      <td className="modul-mono">{item.code}</td>
-                      <td>
+                    <Row key={item.id}>
+                      <Cell className="modul-mono">{item.code}</Cell>
+                      <Cell>
                         <strong>{item.name}</strong>
                         <span className="modul-muted">
                           Masa berlaku:{" "}
                           {labelMasaBerlaku(item.validityMonths, item.satuanMasaBerlaku)}
                         </span>
-                      </td>
-                      <td>{item.classificationName ?? "—"}</td>
-                      <td>
+                      </Cell>
+                      <Cell>{item.classificationName ?? "—"}</Cell>
+                      <Cell>
                         {parseDaftarLampiran(item.lampiran).length === 0
                           ? "—"
                           : parseDaftarLampiran(item.lampiran).join(", ")}
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span className="beranda-chip" data-tone="ungu">
                           {fields} isian dinamis
                         </span>
                         <span className="beranda-chip" data-tone="netral">
                           {requirements} persyaratan
                         </span>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span
                           className="beranda-chip"
                           data-tone={item.isActive ? "hijau" : "netral"}
                         >
                           {item.isActive ? "Aktif" : "Nonaktif"}
                         </span>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         {canUpdate ? (
                           <Link
                             href={`/layanan-surat/persuratan/jenis-surat/${item.id}/edit`}
@@ -219,15 +195,15 @@ export default async function JenisSuratPage({ searchParams }: { searchParams: S
                         ) : (
                           <span className="modul-muted">Tidak ada izin ubah</span>
                         )}
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
-      </section>
+      </TableCard>
       <section className="modul-card">
         <div className="beranda-card-head">
           <div>

@@ -1,6 +1,7 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { listKeuangan } from "@/features/keuangan-desa/keuangan/application/keuangan-use-cases";
 import {
   formatMoney,
@@ -36,16 +37,6 @@ export default async function ApbdesPage({ searchParams }: Props) {
         judul={<>APBDes</>}
         deskripsi={<>Kelola Anggaran Pendapatan dan Belanja Desa per tahun anggaran.</>}
       />
-      <nav className={styles.tabs}>
-        <Link href="/keuangan">Dashboard</Link>
-        <Link className={styles.activeTab} href="/keuangan/apbdes">
-          APBDes
-        </Link>
-        <Link href="/keuangan/realisasi">Realisasi Anggaran</Link>
-        <Link href="/keuangan/kegiatan">Kegiatan &amp; Pembangunan</Link>
-        <Link href="/keuangan/laporan">Laporan Keuangan</Link>
-        <Link href="/keuangan/dokumen">Dokumen &amp; Peraturan</Link>
-      </nav>
       <section className={styles.metrics}>
         <article className={styles.metricPrimary}>
           <span>Total APBDes {data.tahun}</span>
@@ -74,17 +65,16 @@ export default async function ApbdesPage({ searchParams }: Props) {
         </article>
       </section>
       <form method="get" className={styles.filterForm}>
-        <label htmlFor="tahun-apbdes">Tahun anggaran</label>
-        <select id="tahun-apbdes" name="tahun" defaultValue={data.tahun}>
-          {data.tersedia.map((y) => (
-            <option key={y} value={y}>
-              {y}
-            </option>
-          ))}
-        </select>
-        <button className={styles.primaryButton} type="submit">
+        <FormField
+          defaultValue={String(data.tahun)}
+          kind="select"
+          label="Tahun anggaran"
+          name="tahun"
+          options={data.tersedia.map((y) => ({ value: String(y), label: String(y) }))}
+        />
+        <Button type="submit" variant="secondary">
           Tampilkan
-        </button>
+        </Button>
       </form>
       <form action={simpanPaguApbdesAction} className={styles.panel}>
         <input type="hidden" name="tahun" value={data.tahun} />
@@ -95,29 +85,27 @@ export default async function ApbdesPage({ searchParams }: Props) {
               Isi pagu pada rekening yang dapat diinput. Nilai induk dihitung otomatis dari rincian.
             </p>
           </div>
-          <button className={styles.primaryButton} type="submit">
-            Simpan APBDes
-          </button>
+          <Button type="submit">Simpan APBDes</Button>
         </div>
-        <div className={styles.tableWrap}>
-          <table className={styles.dataTable}>
-            <thead>
-              <tr>
-                <th>Kode</th>
-                <th>Uraian</th>
-                <th className={styles.number}>Pagu Anggaran (Rp)</th>
-                <th className={styles.number}>Realisasi Saat Ini (Rp)</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll className={styles.tableWrap}>
+          <Table className={styles.dataTable}>
+            <THead>
+              <Row>
+                <HeaderCell>Kode</HeaderCell>
+                <HeaderCell>Uraian</HeaderCell>
+                <HeaderCell className={styles.number}>Pagu Anggaran (Rp)</HeaderCell>
+                <HeaderCell className={styles.number}>Realisasi Saat Ini (Rp)</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {data.rows
                 .filter((row) => !["1", "2", "3", "7"].includes(row.templateUuid))
                 .map((row) => (
-                  <tr key={row.templateUuid}>
-                    <td>
+                  <Row key={row.templateUuid}>
+                    <Cell>
                       <b>{row.templateUuid}</b>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <span
                         className={
                           kodeDepth(row.templateUuid) === 1 ? styles.accountStrong : undefined
@@ -126,8 +114,8 @@ export default async function ApbdesPage({ searchParams }: Props) {
                       >
                         {row.uraian}
                       </span>
-                    </td>
-                    <td className={styles.number}>
+                    </Cell>
+                    <Cell className={styles.number}>
                       {isInputRow(row.templateUuid) ? (
                         <input
                           className={styles.moneyInput}
@@ -141,18 +129,16 @@ export default async function ApbdesPage({ searchParams }: Props) {
                       ) : (
                         formatRupiah(row.anggaran)
                       )}
-                    </td>
-                    <td className={styles.number}>{formatRupiah(row.realisasi)}</td>
-                  </tr>
+                    </Cell>
+                    <Cell className={styles.number}>{formatRupiah(row.realisasi)}</Cell>
+                  </Row>
                 ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
         <div className={styles.formFooter}>
           <span>Perubahan pagu tidak menghapus nilai realisasi yang sudah tercatat.</span>
-          <button className={styles.primaryButton} type="submit">
-            Simpan Perubahan
-          </button>
+          <Button type="submit">Simpan Perubahan</Button>
         </div>
       </form>
     </main>

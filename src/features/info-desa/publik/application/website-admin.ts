@@ -232,6 +232,8 @@ export async function muatTemaPublik(villageId: number) {
       brandingRaw && typeof brandingRaw === "object" && !Array.isArray(brandingRaw)
         ? (brandingRaw as Record<string, unknown>)
         : {};
+    const layout: "klasik" | "modern" | "ringkas" =
+      token.layout === "modern" || token.layout === "ringkas" ? token.layout : "klasik";
     const color = (key: string, fallback: string, brandingKey?: string) => {
       const value =
         brandingKey && typeof branding[brandingKey] === "string"
@@ -239,6 +241,8 @@ export async function muatTemaPublik(villageId: number) {
           : token[key];
       return typeof value === "string" && /^#[0-9a-fA-F]{6}$/.test(value) ? value : fallback;
     };
+    const teks = (key: string) =>
+      typeof token[key] === "string" ? (token[key] as string).trim() : "";
     return {
       primary: color("primary", "#075cf0", "warnaUtama"),
       secondary: color("secondary", "#0d2136"),
@@ -246,6 +250,9 @@ export async function muatTemaPublik(villageId: number) {
       background: color("background", "#f1f6ff"),
       surface: color("surface", "#ffffff"),
       text: color("text", "#101b4b"),
+      judulHero: teks("judulHero"),
+      subHero: teks("subHero"),
+      taglineFooter: teks("taglineFooter"),
       fontHeading:
         branding.font === "serif"
           ? "serif"
@@ -257,6 +264,8 @@ export async function muatTemaPublik(villageId: number) {
       logoTampil: typeof branding.logoTampil === "boolean" ? branding.logoTampil : true,
       radius: token.radius === "kecil" ? "10px" : token.radius === "besar" ? "22px" : "15px",
       style: token.style === "gelap" ? "gelap" : "terang",
+      // Varian susunan desain: menentukan komposisi header dan hero beranda.
+      layout,
       templateName: active.nama,
     };
   } catch {

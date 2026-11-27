@@ -61,6 +61,10 @@ function parseTokens(value: string): TokenTemplate {
       fontHeading: "sans",
       radius: "sedang",
       style: "terang",
+      layout: "klasik",
+      judulHero: "",
+      subHero: "",
+      taglineFooter: "",
     };
   }
 }
@@ -184,6 +188,78 @@ export async function listPenggunaanTemplateWebsite(
     .innerJoin(villages, eq(theme.villageId, villages.id))
     .where(and(eq(theme.slug, template.slug), eq(theme.aktif, true)))
     .orderBy(asc(villages.name));
+}
+
+export interface DesaUntukTemplateRow {
+  id: number;
+  namaDesa: string | null;
+}
+
+/** Semua desa (tenant) untuk form ganti template dari Super Admin. */
+export async function listDesaUntukTemplate(): Promise<DesaUntukTemplateRow[]> {
+  return db
+    .select({ id: villages.id, namaDesa: villages.name })
+    .from(villages)
+    .orderBy(asc(villages.name));
+}
+
+/**
+ * Terapkan template terbit sebagai tema aktif satu desa.
+ *
+ * Satu-satunya sumber kebenaran tema publik adalah baris `theme` aktif per
+ * `village_id`; menonaktifkan yang lama lalu mengaktifkan template baru
+ * membuat situs desa langsung memakai token template tersebut.
+ */
+export async function terapkanTemplateKeDesaRepo(
+  villageId: number,
+  template: { slug: string; nama: string; versi: string; tokens: TokenTemplate },
+): Promise<void> {
+  const options = { templateSlug: template.slug, templateTokens: template.tokens };
+  const bacaObjek = (value: string | null | undefined): Record<string, unknown> => {
+    try {
+      const parsed: unknown = JSON.parse(value ?? "");
+      return parsed && typeof parsed === "object" && !Array.isArray(parsed)
+        ? (parsed as Record<string, unknown>)
+        : {};
+    } catch {
+      return {};
+    }
+  };
+  await db.transaction(async (tx) => {
+    const [currentActive] = await tx
+      .select({ opsi: theme.opsi })
+      .from(theme)
+      .where(and(eq(theme.villageId, villageId), eq(theme.aktif, true)))
+      .limit(1);
+    await tx.update(theme).set({ aktif: false }).where(eq(theme.villageId, villageId));
+    const [same] = await tx
+      .select({ id: theme.id, opsi: theme.opsi })
+      .from(theme)
+      .where(and(eq(theme.villageId, villageId), eq(theme.slug, template.slug)))
+      .limit(1);
+    if (same) {
+      const previous = bacaObjek(currentActive?.opsi ?? same.opsi);
+      await tx
+        .update(theme)
+        .set({
+          nama: template.nama,
+          versi: template.versi,
+          aktif: true,
+          opsi: JSON.stringify({ ...previous, ...options }),
+        })
+        .where(and(eq(theme.villageId, villageId), eq(theme.id, same.id)));
+    } else {
+      const previous = bacaObjek(currentActive?.opsi ?? null);
+      await tx.insert(theme).values({
+        villageId,
+        slug: template.slug,
+        nama: template.nama,
+        versi: template.versi,
+        aktif: true,
+        opsi: JSON.stringify({ ...previous, ...options }),
+      });
+    }
+  });
 }
 
 export async function slugTemplateDipakai(slug: string): Promise<boolean> {

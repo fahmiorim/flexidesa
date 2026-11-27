@@ -3,14 +3,19 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 
-const SISI = 400;
+const SISI_MAKS = 400;
 
 /**
- * Input foto aparat dengan pemotongan persegi di browser.
+ * Input foto aparat dengan pengecilan di browser.
  *
- * OpenSID memakai cropper sehingga foto pamong tersimpan persegi. Di sini
- * gambar dipotong tengah menjadi 400 × 400 sebelum dikirim, sehingga server
- * tetap menerima satu berkas gambar biasa tanpa dependensi pemrosesan gambar.
+ * Foto diperkecil hingga sisi terpanjang 400 px dengan rasio aspek tetap, jadi
+ * tidak ada bagian gambar yang terpotong (foto pamong sering berformat potret).
+ * Server tetap menerima satu berkas gambar biasa tanpa dependensi pemrosesan
+ * gambar.
+ *
+ * Hasilnya disimpan sebagai PNG bila gambar sumber punya area transparan. JPEG
+ * tidak mendukung kanal alfa, sehingga mengompres foto transparan ke JPEG akan
+ * mengubah latar transparan menjadi hitam pekat.
  */
 export function FotoPerangkatInput({
   nama = "fotoFile",
@@ -31,30 +36,40 @@ export function FotoPerangkatInput({
     setGalat("");
     try {
       const bitmap = await createImageBitmap(berkas);
-      const sisi = Math.min(bitmap.width, bitmap.height);
+      // Rasio aspek dipertahankan: mengecilkan sisi terpanjang ke 400 px tidak
+      // memotong bagian foto, berbeda dengan pemotongan tengah persegi.
+      const skala = Math.min(1, SISI_MAKS / Math.max(bitmap.width, bitmap.height));
+      const lebar = Math.max(1, Math.round(bitmap.width * skala));
+      const tinggi = Math.max(1, Math.round(bitmap.height * skala));
       const kanvas = document.createElement("canvas");
-      kanvas.width = SISI;
-      kanvas.height = SISI;
+      kanvas.width = lebar;
+      kanvas.height = tinggi;
       const konteks = kanvas.getContext("2d");
       if (!konteks) throw new Error("Kanvas tidak tersedia.");
-      konteks.drawImage(
-        bitmap,
-        (bitmap.width - sisi) / 2,
-        (bitmap.height - sisi) / 2,
-        sisi,
-        sisi,
-        0,
-        0,
-        SISI,
-        SISI,
-      );
+      konteks.drawImage(bitmap, 0, 0, lebar, tinggi);
+      // Pertahankan transparansi: JPEG membuang kanal alfa dan menggantinya
+      // dengan hitam, sehingga foto berlatarbelakang transparan tampil hitam.
+      const piksel = konteks.getImageData(0, 0, lebar, tinggi).data;
+      let transparan = false;
+      for (let i = 3; i < piksel.length; i += 4) {
+        if (piksel[i]! < 255) {
+          transparan = true;
+          break;
+        }
+      }
+      const mime = transparan ? "image/png" : "image/jpeg";
+      const ekstensi = transparan ? "png" : "jpg";
       const blob = await new Promise<Blob | null>((selesai) =>
-        kanvas.toBlob(selesai, "image/jpeg", 0.9),
+        transparan ? kanvas.toBlob(selesai, mime) : kanvas.toBlob(selesai, mime, 0.9),
       );
       if (!blob) throw new Error("Gagal memproses gambar.");
-      const hasil = new File([blob], `${berkas.name.replace(/\.[^.]+$/, "") || "foto"}.jpg`, {
-        type: "image/jpeg",
-      });
+      const hasil = new File(
+        [blob],
+        `${berkas.name.replace(/\.[^.]+$/, "") || "foto"}.${ekstensi}`,
+        {
+          type: mime,
+        },
+      );
       const transfer = new DataTransfer();
       transfer.items.add(hasil);
       if (inputRef.current) inputRef.current.files = transfer.files;
@@ -85,7 +100,7 @@ export function FotoPerangkatInput({
         accept="image/jpeg,image/png,image/webp"
         onChange={(event) => void pilihBerkas(event)}
       />
-      <small>Foto dipotong tengah menjadi persegi 400 × 400, maks. 5 MB.</small>
+      <small>Foto diperkecil hingga sisi terpanjang 400 px tanpa dipotong, maks. 5 MB.</small>
       {galat ? <small role="alert">{galat}</small> : null}
     </label>
   );

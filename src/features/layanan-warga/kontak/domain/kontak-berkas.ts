@@ -6,7 +6,6 @@
  */
 
 import { toCsv } from "@/lib/csv";
-import type { KolomImpor } from "@/lib/spreadsheet";
 
 /** Satu baris kontak untuk ekspor/laporan. */
 export interface KontakEksporRow {
@@ -40,26 +39,8 @@ export type KunciImporKontak =
  * Impor kontak mendukung opsi penautan ke penduduk via `residentId` (NIK) atau
  * `nama` (fuzzy match). Kolom lain disimpan langsung.
  */
-export const KOLOM_IMPOR_KONTAK: readonly KolomImpor<KunciImporKontak>[] = [
-  { kunci: "nama", label: "Nama", alias: ["name", "nama kontak"], wajib: true },
-  { kunci: "telepon", label: "Telepon", alias: ["telepon", "hp", "phone"] },
-  { kunci: "email", label: "Email", alias: ["email", "e-mail"] },
-  { kunci: "telegram", label: "Telegram", alias: ["tg", "telegram"] },
-  { kunci: "hubungWarga", label: "Hubung Warga", alias: ["hubung", "hubung warga", "wa"] },
-  { kunci: "keterangan", label: "Keterangan", alias: ["keterangan", "catatan"] },
-  { kunci: "residentId", label: "NIK / ID Penduduk", alias: ["nik", "resident id", "id penduduk"] },
-];
 
 /** Satu baris impor kontak yang sudah tervalidasi bentuknya. */
-export interface BarisImporKontak {
-  nama: string;
-  telepon: string;
-  email: string;
-  telegram: string;
-  hubungWarga: string;
-  keterangan: string;
-  residentId: string;
-}
 
 export function templateImporKontak(): string {
   return (

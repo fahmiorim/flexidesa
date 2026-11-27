@@ -36,7 +36,7 @@ export function DialogDokumen({ item = null }: { item?: DokumenDialogItem | null
       aksi={simpanDokumenFormAction}
       deskripsi={item ? "Perbarui dokumen." : "Unggah berkas atau isi tautan."}
       judul={item ? `Ubah Dokumen: ${item.nama}` : "Tambah Dokumen"}
-      kelasTombol={item ? "button button-ghost" : "button button-primary"}
+      varian={item ? "ghost" : "primary"}
       label={item ? "Ubah" : "＋ Tambah Dokumen"}
       labelSimpan={item ? "Simpan Perubahan" : "Simpan Dokumen"}
     >

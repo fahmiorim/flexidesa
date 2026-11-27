@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { buatKeluargaAction } from "@/app/(admin)/(kependudukan)/kependudukan/keluarga/actions";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getKeluargaFormReference } from "@/features/kependudukan/keluarga/application/use-cases";
 import { KELUARGA_WELFARE_CLASSES } from "@/features/kependudukan/keluarga/domain/keluarga";
 
@@ -136,12 +138,12 @@ export default async function KeluargaBaruPage() {
           </label>
 
           <div className="penduduk-heading-actions">
-            <Link className="button button-secondary" href="/kependudukan/keluarga">
+            <ButtonLink variant="secondary" href="/kependudukan/keluarga">
               Batal
-            </Link>
-            <button className="button button-primary" type="submit">
+            </ButtonLink>
+            <Button variant="primary" type="submit">
               Simpan KK
-            </button>
+            </Button>
           </div>
         </form>
       </section>

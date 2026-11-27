@@ -37,8 +37,6 @@ export const dokumenWargaSchema = z.object({
     .max(200, "Nama maksimal 200 karakter."),
 });
 
-export type DokumenWargaInput = z.infer<typeof dokumenWargaSchema>;
-
 export type SumberDokumen = "warga" | "operator";
 
 export interface DokumenWargaDTO {

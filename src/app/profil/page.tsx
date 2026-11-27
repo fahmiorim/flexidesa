@@ -8,11 +8,13 @@ import {
   daftarAlbumGaleri,
   daftarFotoAlbum,
   daftarPerangkatPublik,
-  daftarPotensiDesa,
-  daftarSaranaPrasarana,
   daftarSliderBeranda,
   profilDesaPublik,
 } from "@/features/info-desa/publik/application/konten-publik";
+import {
+  daftarPotensiDesa,
+  daftarSaranaPrasarana,
+} from "@/features/program-data-desa/potensi-sarana/application/kontrak";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./profil.module.css";

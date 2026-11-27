@@ -50,7 +50,7 @@ function daftarBerkasApplication(direktori: string): string[] {
   });
 }
 
-/** Nama subfitur pemilik berkas: segmen antara `features/` dan `application/`. */
+/** Jalur pemilik berkas: segmen antara `features/` dan `application/` (path penuh). */
 function fiturPemilik(relatif: string): string[] {
   const segmen = relatif.split("/");
   const mulai = segmen.indexOf("features") + 1;
@@ -58,9 +58,36 @@ function fiturPemilik(relatif: string): string[] {
   return segmen.slice(mulai, akhir);
 }
 
+/** Path pemilik penuh, mis. `pengaturan/pengguna`; pembanding harus penuh. */
+function pemilikPenuh(sumber: string): string {
+  return fiturPemilik(sumber).join("/");
+}
+
+/**
+ * Pemilik sumber dari specifier impor: segmen antara `features/` dan
+ * `infrastructure/`. Bila impor berbentuk `@/features/<…>/infrastructure/…`,
+ * seluruh segmen sebelum `infrastructure` adalah path pemilik sumber.
+ */
+function pemilikSumberDariSpecifier(awalan: string): string {
+  return awalan;
+}
+
+/**
+ * Aturan milik bersama: sebuah impor infrastructure adalah milik sendiri bila
+ * path sumbernya persis sama dengan path pemilik berkas — bukan sekadar nama
+ * segmen terakhir. Ini menutup lubang nama bertabrakan (`pengaturan/pengguna`
+ * vs `pengaturan/pengaturan`) yang lolos karena guard hanya membandingkan
+ * nama fitur terakhir.
+ */
+function milikSendiri(sumber: string, awalan: string): boolean {
+  const sumberPenuh = pemilikSumberDariSpecifier(awalan);
+  if (!sumberPenuh) return false;
+  if (sumberPenuh === pemilikPenuh(sumber)) return true;
+  return false;
+}
+
 /** Impor `infrastructure` fitur lain yang bukan modul shared. */
 function imporLintasFitur(relatif: string, isi: string): string[] {
-  const pemilik = fiturPemilik(relatif);
   const hasil: string[] = [];
 
   for (const baris of isi.split("\n")) {
@@ -71,9 +98,11 @@ function imporLintasFitur(relatif: string, isi: string): string[] {
     const awalan = cocok[1];
     if (!spesifikasi || !awalan) continue;
 
-    // Fitur sumber adalah segmen terakhir sebelum `/infrastructure/`.
-    const fiturSumber = awalan.split("/").at(-1);
-    if (!fiturSumber || FITUR_SHARED.has(fiturSumber) || pemilik.includes(fiturSumber)) continue;
+    // Fitur sumber adalah path penuh sebelum `/infrastructure/`.
+    // Baris yang bertabrakan nama segmen terakhir tidak dianggap milik sendiri.
+    const fiturSumber = pemilikSumberDariSpecifier(awalan);
+    const namaSumber = fiturSumber.split("/").at(-1);
+    if (!namaSumber || FITUR_SHARED.has(namaSumber) || milikSendiri(relatif, awalan)) continue;
     hasil.push(spesifikasi);
   }
 
@@ -106,6 +135,33 @@ describe("batas impor antarfitur lapisan application", () => {
     }
 
     expect(baru).toEqual([]);
+  });
+
+  it("mendeteksi impor antar-sibling dengan nama yang bertabrakan", () => {
+    // `pengaturan/pengguna` mengimpor infrastructure `pengaturan/pengaturan`:
+    // nama segmen terakhir keduanya rapor berbeda — pengguna vs pengaturan —
+    // tetapi kasus sebenarnya yang berbahaya adalah ketika segmen terakhir
+    // sumber sama dengan segmen pemilik di path lain, mis. pemilik
+    // `info-desa/publik` mengimpor `pengaturan/pengaturan/infrastructure`
+    // yang segmen terakhirnya sama dengan segmen pemilik `beranda/pengaturan`.
+    const pemilikBertabrakan = "src/features/beranda/pengaturan/application/minta.ts";
+    const isiBertabrakan =
+      'import { x } from "@/features/pengaturan/pengaturan/infrastructure/repo";';
+    expect(imporLintasFitur(pemilikBertabrakan, isiBertabrakan)).toEqual([
+      "@/features/pengaturan/pengaturan/infrastructure/repo",
+    ]);
+  });
+
+  it("tidak menandai impor infrastructure milik sendiri (path penuh sama)", () => {
+    const pemilikSendiri = "src/features/pengaturan/pengaturan/application/use-cases.ts";
+    const isiSendiri = 'import { x } from "@/features/pengaturan/pengaturan/infrastructure/repo";';
+    expect(imporLintasFitur(pemilikSendiri, isiSendiri)).toEqual([]);
+  });
+
+  it("tidak menandai impor dari modul shared", () => {
+    const pemilik = "src/features/program-data-desa/bantuan/application/use-cases.ts";
+    const isi = 'import { x } from "@/features/media/infrastructure/storage";';
+    expect(imporLintasFitur(pemilik, isi)).toEqual([]);
   });
 
   it("tidak menyimpan entri utang yang sudah tidak dipakai", () => {

@@ -56,20 +56,10 @@ import {
 } from "@/features/info-desa/publik/infrastructure/galeri-admin-repository";
 import {
   hapusVideoGaleriAdmin as hapusVideoGaleriRepo,
-  listAlbumGaleri,
   listVideoGaleriAdmin as listVideoGaleriRepo,
   simpanMetadataAlbumAdmin as simpanMetadataAlbumRepo,
   tambahVideoGaleriAdmin as tambahVideoGaleriRepo,
-  type AlbumRingkas,
 } from "@/features/info-desa/publik/infrastructure/galeri-repository";
-import {
-  hapusPotensiAdmin as hapusPotensiRepo,
-  hapusSaranaAdmin as hapusSaranaRepo,
-  simpanPotensiAdmin as simpanPotensiRepo,
-  simpanSaranaAdmin as simpanSaranaRepo,
-  type PotensiAdminInput,
-  type SaranaAdminInput,
-} from "@/features/info-desa/publik/infrastructure/potensi-sarana-repository";
 import type { BerkasUnggahan } from "@/features/media/domain/media";
 import { hapusMedia } from "@/features/media/infrastructure/media-storage";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
@@ -282,12 +272,6 @@ export async function hapusKategoriBeritaAdmin(id: number) {
     );
   }
   await hapusKategoriBerita(villageId, id);
-}
-
-export async function listGaleriAdminData(): Promise<AlbumRingkas[]> {
-  const user = await requirePermission(RESOURCES.galeri, "read");
-  const villageId = await resolveVillageId(user);
-  return listAlbumGaleri(villageId);
 }
 
 export async function listVideoGaleriAdminData() {
@@ -701,51 +685,4 @@ export async function hapusDokumenAdmin(id: number) {
   if (!current) throw new Error("Dokumen tidak ditemukan pada desa ini.");
   await deleteDokumenPublik(villageId, id);
   if (current.berkas) await hapusMedia(current.berkas);
-}
-
-/** Hak kelola potensi untuk halaman admin; menentukan tombol yang tampil. */
-export async function aksesPotensiAdmin() {
-  const user = await requirePermission(RESOURCES.potensi, "read");
-  return {
-    bolehTambah: hasPermission(user.permissions, RESOURCES.potensi, "create"),
-    bolehUbah: hasPermission(user.permissions, RESOURCES.potensi, "update"),
-    bolehHapus: hasPermission(user.permissions, RESOURCES.potensi, "delete"),
-  };
-}
-
-/** Hak kelola sarana/prasarana untuk halaman admin; menentukan tombol yang tampil. */
-export async function aksesSaranaAdmin() {
-  const user = await requirePermission(RESOURCES.saranaPrasarana, "read");
-  return {
-    bolehTambah: hasPermission(user.permissions, RESOURCES.saranaPrasarana, "create"),
-    bolehUbah: hasPermission(user.permissions, RESOURCES.saranaPrasarana, "update"),
-    bolehHapus: hasPermission(user.permissions, RESOURCES.saranaPrasarana, "delete"),
-  };
-}
-
-export async function simpanPotensiAdmin(data: PotensiAdminInput) {
-  const user = await requirePermission(RESOURCES.potensi, data.id > 0 ? "update" : "create");
-  const villageId = await resolveVillageId(user);
-  return simpanPotensiRepo(villageId, data);
-}
-
-export async function hapusPotensiAdmin(id: number) {
-  const user = await requirePermission(RESOURCES.potensi, "delete");
-  const villageId = await resolveVillageId(user);
-  return hapusPotensiRepo(villageId, id);
-}
-
-export async function simpanSaranaAdmin(data: SaranaAdminInput) {
-  const user = await requirePermission(
-    RESOURCES.saranaPrasarana,
-    data.id > 0 ? "update" : "create",
-  );
-  const villageId = await resolveVillageId(user);
-  return simpanSaranaRepo(villageId, data);
-}
-
-export async function hapusSaranaAdmin(id: number) {
-  const user = await requirePermission(RESOURCES.saranaPrasarana, "delete");
-  const villageId = await resolveVillageId(user);
-  return hapusSaranaRepo(villageId, id);
 }

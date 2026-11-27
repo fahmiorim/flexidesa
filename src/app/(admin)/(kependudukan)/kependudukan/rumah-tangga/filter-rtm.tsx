@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import {
   RTM_SEX_FILTERS,
   RTM_SEX_LABELS,
@@ -62,13 +62,13 @@ export function FilterRtm({
           </option>
         ))}
       </select>
-      <button className="button button-primary" type="submit">
+      <Button variant="primary" type="submit">
         Terapkan
-      </button>
+      </Button>
       {hasFilter ? (
-        <Link className="button button-secondary" href={resetHref}>
+        <ButtonLink variant="secondary" href={resetHref}>
           Reset
-        </Link>
+        </ButtonLink>
       ) : null}
     </form>
   );

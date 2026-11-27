@@ -60,7 +60,6 @@ export function lampiranWajib(jenis: string): boolean {
 }
 
 export const STATUS_PENGAJUAN = ["menunggu", "disetujui", "ditolak"] as const;
-export type StatusPengajuan = (typeof STATUS_PENGAJUAN)[number];
 
 const STATUS_LABEL: Readonly<Record<string, string>> = {
   menunggu: "Menunggu",
@@ -104,9 +103,6 @@ export const pengajuanIzinFormSchema = z
     message: "Tanggal selesai tidak boleh lebih awal dari tanggal mulai.",
     path: ["selesai"],
   });
-
-export type PengajuanIzinFormInput = z.input<typeof pengajuanIzinFormSchema>;
-export type PengajuanIzinFormValues = z.infer<typeof pengajuanIzinFormSchema>;
 
 /**
  * Aturan lampiran: wajib untuk sakit, opsional untuk jenis lain.

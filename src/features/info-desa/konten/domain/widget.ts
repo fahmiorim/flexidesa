@@ -1,19 +1,8 @@
 import { z } from "zod";
 
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
-
 /** Widget blok samping beranda/laman. */
-export const WIDGET_RESOURCE = RESOURCES.widget;
 
 /** Jenis widget yang didukung skema basis data. */
-export const WIDGET_JENIS_LABELS: Record<number, string> = {
-  1: "Teks bebas",
-  2: "Galeri",
-  3: "Statistik penduduk",
-  4: "Media sosial",
-  5: "Dokumen",
-  6: "Menu",
-};
 
 /** Baris widget yang aman dikirim ke komponen klien. */
 export interface WidgetRow {
@@ -60,5 +49,3 @@ export const widgetFormSchema = z
     path: ["pengaturan"],
     message: "Pengaturan harus berupa JSON yang valid.",
   });
-
-export type WidgetFormInput = z.infer<typeof widgetFormSchema>;

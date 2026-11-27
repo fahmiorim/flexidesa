@@ -19,6 +19,3 @@ export const pesanEmailMasukSchema = z.object({
 export function normalisasiEmail(value: string): string {
   return value.trim().toLowerCase();
 }
-
-export type BalasPesanInput = z.infer<typeof balasPesanSchema>;
-export type PesanEmailMasukInput = z.infer<typeof pesanEmailMasukSchema>;

@@ -51,9 +51,6 @@ import { conflict, notFound } from "@/lib/errors";
  */
 
 /** Detail biodata penduduk; izin baca diperiksa halaman pemanggil (sesi sudah diverifikasi). */
-export async function getPendudukDetail(villageId: number, id: number) {
-  return getPendudukDetailById(villageId, id);
-}
 
 export interface ListPendudukParams {
   /** Filter lanjutan daftar penduduk (lihat `parseFilterPenduduk`). */
@@ -163,12 +160,6 @@ export async function cariPendudukByNikData(nik: string) {
 }
 
 /** Data referensi untuk mengisi formulir (butuh izin baca modul penduduk). */
-export async function getPendudukReference(): Promise<PendudukReferenceData> {
-  const user = await requirePermission(PENDUDUK_RESOURCE, "read");
-  const villageId = await resolveVillageId(user);
-
-  return getPendudukReferenceData(villageId);
-}
 
 export interface PendudukFormData {
   references: PendudukReferenceData;

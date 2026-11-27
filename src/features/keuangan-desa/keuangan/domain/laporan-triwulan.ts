@@ -120,5 +120,3 @@ export const triwulanBarisFormSchema = z.object({
   tw3: nilaiTriwulan,
   tw4: nilaiTriwulan,
 });
-
-export type TriwulanBarisFormInput = z.infer<typeof triwulanBarisFormSchema>;

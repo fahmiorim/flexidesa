@@ -194,7 +194,7 @@ export async function unggahDokumenPegawaiAction(fd: FormData) {
     throw new Error("Pilih berkas dokumen terlebih dahulu.");
   if (!["application/pdf", "image/jpeg", "image/png", "image/webp"].includes(file.type))
     throw new Error("Dokumen harus berupa PDF, JPG, PNG, atau WEBP.");
-  const user = await requirePermission("kepegawaian", "update");
+  const user = await requirePermission("data-pegawai", "update");
   const villageId = await resolveVillageId(user);
   const berkas = await simpanBerkasMedia(
     villageId,

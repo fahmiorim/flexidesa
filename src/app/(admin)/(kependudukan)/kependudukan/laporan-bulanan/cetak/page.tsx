@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { TombolCetak } from "@/components/ui/tombol-cetak";
 import {
   getLaporanBulanan,
@@ -87,20 +89,16 @@ export default async function CetakLaporanBulananPage({
             </select>
           </label>
           <div className="data-custom-actions">
-            <button
-              className="button button-secondary"
-              disabled={pamong.length === 0}
-              type="submit"
-            >
+            <Button variant="secondary" disabled={pamong.length === 0} type="submit">
               Terapkan
-            </button>
+            </Button>
             <TombolCetak />
-            <a
-              className="button button-secondary"
+            <ButtonLink
+              variant="secondary"
               href={`/kependudukan/laporan-bulanan?tahun=${periode.tahun}&bulan=${periode.bulan}`}
             >
               Kembali
-            </a>
+            </ButtonLink>
           </div>
         </form>
       </section>

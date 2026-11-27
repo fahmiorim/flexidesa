@@ -12,17 +12,14 @@ const navigation = [
 ];
 
 describe("PublicShell", () => {
-  it("renders the page-supplied navigation in order with the village identity and footer", () => {
+  it("renders the page-supplied navigation in order with the village identity and footer", async () => {
     const markup = renderToStaticMarkup(
-      createElement(
-        PublicShell,
-        {
-          villageName: "Desa Contoh",
-          brandLabel: "Dokumen & Informasi Publik",
-          navigation,
-        },
-        createElement("section", null, "Isi halaman"),
-      ),
+      await PublicShell({
+        villageName: "Desa Contoh",
+        brandLabel: "Dokumen & Informasi Publik",
+        navigation,
+        children: createElement("section", null, "Isi halaman"),
+      }),
     );
 
     expect(markup).toContain('aria-label="Navigasi utama"');
@@ -44,9 +41,9 @@ describe("PublicShell", () => {
     expect(markup).toContain("Isi halaman");
   });
 
-  it("renders data-driven external links as plain anchors", () => {
+  it("renders data-driven external links as plain anchors", async () => {
     const markup = renderToStaticMarkup(
-      createElement(PublicShell, {
+      await PublicShell({
         villageName: "Desa Contoh",
         brandLabel: "Informasi Publik",
         navigation: [
@@ -60,9 +57,9 @@ describe("PublicShell", () => {
     expect(markup).toContain("Kanal Desa");
   });
 
-  it("omits the brand mark for pages that do not render it today", () => {
+  it("omits the brand mark for pages that do not render it today", async () => {
     const markup = renderToStaticMarkup(
-      createElement(PublicShell, {
+      await PublicShell({
         villageName: "Desa Contoh",
         brandLabel: "Transparansi Anggaran",
         navigation: [{ href: "/", label: "Beranda" }],

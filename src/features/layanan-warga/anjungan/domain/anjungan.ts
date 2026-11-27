@@ -24,9 +24,6 @@ export const anjunganFormSchema = z.object({
   status: z.enum(["aktif", "nonaktif", "perbaikan"]).default("aktif"),
 });
 
-export type AnjunganFormInput = z.input<typeof anjunganFormSchema>;
-export type AnjunganFormValues = z.infer<typeof anjunganFormSchema>;
-
 export interface AnjunganDTO {
   id: number;
   villageId: number;

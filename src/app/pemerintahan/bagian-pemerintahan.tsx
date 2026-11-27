@@ -1,12 +1,10 @@
 import Image from "next/image";
 
-import type { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import type { daftarLembagaPublik } from "@/features/info-desa/pemerintahan/application/publik";
 import type { daftarPerangkatPublik } from "@/features/info-desa/publik/application/konten-publik";
 
 import styles from "./pemerintahan.module.css";
 
-export type DesaPemerintahan = Awaited<ReturnType<typeof getIdentitasFromRequest>>;
 export type PerangkatPemerintahan = Awaited<ReturnType<typeof daftarPerangkatPublik>>[number];
 export type LembagaPemerintahan = Awaited<ReturnType<typeof daftarLembagaPublik>>[number];
 

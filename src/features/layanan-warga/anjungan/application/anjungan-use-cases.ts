@@ -4,25 +4,13 @@ import { randomUUID } from "node:crypto";
 import { z } from "zod";
 
 import { requirePermission } from "@/lib/dal";
-import { AppError } from "@/lib/errors";
 
 import { ANJUNGAN_RESOURCE, anjunganFormSchema } from "../domain/anjungan";
 import {
   createAnjungan,
-  deleteAnjungan,
   listAnjungan,
   updateAnjungan,
 } from "../infrastructure/anjungan-repository";
-
-export async function daftarAnjungan(villageId: number, aktifOnly = false) {
-  await requirePermission(ANJUNGAN_RESOURCE, "read");
-  const rows = await listAnjungan(villageId, aktifOnly);
-  return rows.map((row) => ({ ...row, aktif: row.aktif ?? 1, urutan: row.urutan ?? 0 }));
-}
-
-export async function daftarAnjunganPublik(villageId: number) {
-  return listAnjungan(villageId, true);
-}
 
 /**
  * Mencari perangkat kiosk berdasarkan UUID yang disimpan di browser kiosk.
@@ -75,10 +63,4 @@ export async function ubahAnjungan(villageId: number, id: number, input: unknown
     permohonanSuratTanpaAkun: parsed.permohonanSuratTanpaAkun ?? 0,
     status: parsed.status ?? "aktif",
   });
-}
-
-export async function hapusAnjungan(villageId: number, id: number) {
-  await requirePermission(ANJUNGAN_RESOURCE, "delete");
-  if (!id || id < 1) throw new AppError("NOT_FOUND", "ID tidak valid.");
-  await deleteAnjungan(id, villageId);
 }

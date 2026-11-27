@@ -65,7 +65,6 @@ export const faqSchema = z.array(
     a: z.string().trim().min(5).max(2000),
   }),
 );
-export type Faq = z.infer<typeof faqSchema>;
 
 /**
  * Baca nilai FAQ tersimpan; kembali ke bawaan bila belum pernah diisi atau

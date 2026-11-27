@@ -2,7 +2,6 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 
 /** Cookie sesi guest kiosk; HttpOnly, dibatasi jalur `/desa/anjungan`. */
-export const KIOSK_GUEST_COOKIE = "kiosk_guest";
 /** Sesi guest berumur pendek karena dipakai bergantian di layar kiosk. */
 export const KIOSK_GUEST_TTL_MS = 30 * 60 * 1000;
 
@@ -20,8 +19,6 @@ export const kioskGuestSchema = z.object({
     .trim()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Tanggal lahir wajib diisi."),
 });
-
-export type KioskGuestInput = z.infer<typeof kioskGuestSchema>;
 
 export interface KioskGuestSession {
   residentId: number;

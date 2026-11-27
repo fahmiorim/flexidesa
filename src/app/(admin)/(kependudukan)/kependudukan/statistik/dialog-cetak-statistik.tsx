@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import type { PejabatPenandatanganStatistik } from "@/features/kependudukan/statistik/domain/statistik-kependudukan";
 
 import styles from "./statistik-kependudukan.module.css";
@@ -69,12 +70,12 @@ export function DialogCetakStatistik({
   return (
     <>
       <div className={styles.tableActions}>
-        <button className="button button-secondary" type="button" onClick={() => buka("cetak")}>
+        <Button variant="secondary" type="button" onClick={() => buka("cetak")}>
           Cetak
-        </button>
-        <button className="button button-primary" type="button" onClick={() => buka("pdf")}>
+        </Button>
+        <Button variant="primary" type="button" onClick={() => buka("pdf")}>
           Unduh PDF
-        </button>
+        </Button>
       </div>
 
       {mode ? (
@@ -121,16 +122,12 @@ export function DialogCetakStatistik({
                 </p>
               ) : null}
               <div className={styles.dialogActions}>
-                <button
-                  className="button button-secondary"
-                  type="button"
-                  onClick={() => setMode(null)}
-                >
+                <Button variant="secondary" type="button" onClick={() => setMode(null)}>
                   Batal
-                </button>
-                <button className="button button-primary" type="submit">
+                </Button>
+                <Button variant="primary" type="submit">
                   {mode === "pdf" ? "Unduh PDF" : "Cetak"}
-                </button>
+                </Button>
               </div>
             </form>
           </div>

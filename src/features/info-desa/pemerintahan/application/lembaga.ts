@@ -76,17 +76,6 @@ export async function getLembagaDesaData() {
 
 /** Data halaman pengelolaan kategori (master) lembaga beserta jumlah pemakaian. */
 
-export async function getMasterLembagaData() {
-  const user = await requirePermission("lembaga-desa", "read");
-  const villageId = await resolveVillageId(user);
-  const [rows, lembaga] = await Promise.all([listMasterLembaga(villageId), listLembaga(villageId)]);
-  const akses = {
-    ubah: hasPermission(user.permissions, "lembaga-desa", "update"),
-    hapus: hasPermission(user.permissions, "lembaga-desa", "delete"),
-  };
-  return { rows, lembaga, akses };
-}
-
 /**
  * Identitas desa dan Sekretaris Desa untuk kop serta blok tanda tangan
  * dokumen cetak modul pemerintahan.

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { JenisDomain } from "@/features/multi-desa/domain/jenis-domain";
 import {
   LABEL_STATUS_DNS,
@@ -232,34 +233,34 @@ export function DomainConsole({
         </button>
       </div>
 
-      <div className="tenant-table-scroll">
-        <table className="tenant-table tenant-table-list domain-table">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Nama Desa / Tenant</th>
-              <th scope="col">Alamat Domain</th>
-              <th scope="col">Jenis</th>
-              <th scope="col">Status DNS</th>
-              <th scope="col">Status SSL</th>
-              <th scope="col">Masa Berlaku SSL</th>
-              <th scope="col">Domain Utama</th>
-              <th scope="col">Status</th>
-              <th scope="col">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
+      <TableScroll className="tenant-table-scroll">
+        <Table className="tenant-table tenant-table-list domain-table">
+          <THead>
+            <Row>
+              <HeaderCell scope="col">#</HeaderCell>
+              <HeaderCell scope="col">Nama Desa / Tenant</HeaderCell>
+              <HeaderCell scope="col">Alamat Domain</HeaderCell>
+              <HeaderCell scope="col">Jenis</HeaderCell>
+              <HeaderCell scope="col">Status DNS</HeaderCell>
+              <HeaderCell scope="col">Status SSL</HeaderCell>
+              <HeaderCell scope="col">Masa Berlaku SSL</HeaderCell>
+              <HeaderCell scope="col">Domain Utama</HeaderCell>
+              <HeaderCell scope="col">Status</HeaderCell>
+              <HeaderCell scope="col">Aksi</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
             {terlihat.length > 0 ? (
               terlihat.map((item, index) => (
-                <tr key={item.id}>
-                  <td className="tenant-row-number">{mulai + index + 1}</td>
-                  <td className="tenant-cell-name">
+                <Row key={item.id}>
+                  <Cell className="tenant-row-number">{mulai + index + 1}</Cell>
+                  <Cell className="tenant-cell-name">
                     <strong>{item.villageName}</strong>
                     <span className="tenant-secondary">
                       {item.villageSlug ? `Slug: ${item.villageSlug}` : "Slug belum diisi"}
                     </span>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <div className="domain-host">
                       <a href={`https://${item.domain}`} rel="noreferrer" target="_blank">
                         {item.domain}
@@ -284,8 +285,8 @@ export function DomainConsole({
                         </svg>
                       </a>
                     </div>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <span
                       className={
                         item.jenis === "subdomain"
@@ -295,8 +296,8 @@ export function DomainConsole({
                     >
                       {item.jenis === "subdomain" ? "Subdomain" : "Custom"}
                     </span>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <span
                       className={`domain-check ${kelasStatusDns(item.dns.status)}`}
                       title={
@@ -307,8 +308,8 @@ export function DomainConsole({
                       <span aria-hidden="true" />
                       {LABEL_STATUS_DNS[item.dns.status]}
                     </span>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <span
                       className={`domain-check ${kelasStatusSsl(item.ssl.status)}`}
                       title={
@@ -319,8 +320,8 @@ export function DomainConsole({
                       <span aria-hidden="true" />
                       {LABEL_STATUS_SSL[item.ssl.status]}
                     </span>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     {item.ssl.validTo ? (
                       <>
                         <span>{tanggal.format(new Date(item.ssl.validTo))}</span>
@@ -333,13 +334,13 @@ export function DomainConsole({
                           : "Tidak terbaca"}
                       </span>
                     )}
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <span className={item.isPrimary ? "domain-kind is-primary" : "domain-kind"}>
                       {item.isPrimary ? "Utama" : "Alias"}
                     </span>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <span
                       className={
                         item.villageActive ? "tenant-status is-active" : "tenant-status is-inactive"
@@ -348,8 +349,8 @@ export function DomainConsole({
                       <span aria-hidden="true" />
                       {item.villageActive ? "Aktif" : "Nonaktif"}
                     </span>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <Link
                       aria-label={`Detail domain ${item.domain}`}
                       className="button button-secondary tenant-row-action"
@@ -367,21 +368,21 @@ export function DomainConsole({
                       </svg>
                       Kelola
                     </Link>
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ))
             ) : (
-              <tr>
-                <td className="tenant-empty" colSpan={10}>
+              <Row>
+                <Cell className="tenant-empty" colSpan={10}>
                   {rows.length === 0
                     ? "Belum ada domain terdaftar."
                     : "Tidak ada domain yang sesuai dengan pencarian atau filter."}
-                </td>
-              </tr>
+                </Cell>
+              </Row>
             )}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
 
       {filtered.length > 0 ? (
         <div className="tenant-pagination">

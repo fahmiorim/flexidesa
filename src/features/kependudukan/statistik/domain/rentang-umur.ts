@@ -1,14 +1,11 @@
 import { z } from "zod";
 
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
-
 /**
  * Slug resource RBAC untuk pengaturan rentang umur.
  *
  * Memakai resource Penduduk karena modul `laporan-penduduk` sudah dihapus
  * beserta menunya; izin tetap mengikuti akses data kependudukan.
  */
-export const RENTANG_UMUR_RESOURCE = RESOURCES.penduduk;
 
 /** Skema validasi input rentang umur. */
 export const rentangUmurFormSchema = z.object({

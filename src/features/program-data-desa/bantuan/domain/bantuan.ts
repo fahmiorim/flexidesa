@@ -101,12 +101,6 @@ export function asalDanaLabel(asalDana: number | null): string {
 /** Status masa aktif program (dihitung, bukan disimpan). */
 export type StatusMasaAktif = "belum" | "aktif" | "selesai";
 
-export const STATUS_MASA_AKTIF_LABELS: Readonly<Record<StatusMasaAktif, string>> = {
-  belum: "Belum dimulai",
-  aktif: "Aktif",
-  selesai: "Selesai",
-};
-
 /** Tanggal ISO (`YYYY-MM-DD`) → angka hari; `null` bila kosong/tidak valid. */
 function toDayNumber(value: string | null): number | null {
   if (!value) return null;
@@ -230,6 +224,9 @@ export interface PesertaBantuanRow {
   cardNumber: string | null;
   cardName: string | null;
   cardNationalId: string | null;
+  cardBirthPlace: string | null;
+  cardBirthDate: string | null;
+  cardAddress: string | null;
 }
 
 /** Pilihan sasaran yang belum menjadi peserta sebuah program. */

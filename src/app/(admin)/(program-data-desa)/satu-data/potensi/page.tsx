@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
-import { aksesPotensiAdmin } from "@/features/info-desa/publik/application/konten-admin";
-import { daftarPotensiDesa } from "@/features/info-desa/publik/application/konten-publik";
 import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
+import { daftarPotensiDesa } from "@/features/program-data-desa/potensi-sarana/application/kontrak";
+import { aksesPotensiAdmin } from "@/features/program-data-desa/potensi-sarana/application/use-cases";
 import { requirePermission } from "@/lib/dal";
 
-import { hapusPotensi, simpanPotensi } from "./actions";
+import { hapusPotensi } from "./actions";
+import { simpanPotensiFormAction } from "./form-actions";
 
 export const metadata: Metadata = { title: "Potensi Desa" };
+
 const categories = [
   ["pertanian", "Pertanian"],
   ["perkebunan", "Perkebunan"],
@@ -19,6 +26,90 @@ const categories = [
   ["wisata", "Wisata Desa"],
 ] as const;
 
+type PotensiRow = Awaited<ReturnType<typeof daftarPotensiDesa>>[number];
+
+function formPotensi(row: PotensiRow | null) {
+  return (
+    <div className="modul-form-grid">
+      {row ? <input name="id" type="hidden" value={row.id} /> : null}
+      <FormField
+        defaultValue={row?.kategori ?? "pertanian"}
+        kind="select"
+        label="Kategori"
+        name="kategori"
+        options={categories.map(([value, label]) => ({ value, label }))}
+        required
+      />
+      <FormField
+        defaultValue={row?.judul ?? ""}
+        label="Nama potensi"
+        maxLength={160}
+        name="judul"
+        placeholder="Contoh: Pertanian Padi"
+        required
+      />
+      <FormField
+        defaultValue={row?.slug ?? ""}
+        helpText="Kosongkan untuk dibuat otomatis dari nama potensi."
+        label="Slug"
+        maxLength={170}
+        name="slug"
+      />
+      <FormField
+        defaultValue={row?.ringkasan ?? ""}
+        kind="textarea"
+        label="Ringkasan"
+        maxLength={500}
+        name="ringkasan"
+        rows={2}
+      />
+      <FormField
+        containerClassName="form-field-full"
+        defaultValue={row?.deskripsi ?? ""}
+        kind="textarea"
+        label="Deskripsi"
+        maxLength={10000}
+        name="deskripsi"
+        rows={4}
+      />
+      <FormField
+        defaultValue={row?.gambar ?? ""}
+        label="Path gambar media"
+        maxLength={255}
+        name="gambar"
+        placeholder="Folder/file-gambar.jpg"
+      />
+      <FormField defaultValue={row?.lokasi ?? ""} label="Lokasi" maxLength={200} name="lokasi" />
+      <FormField
+        defaultValue={row?.kontak ?? ""}
+        label="Kontak pengelola"
+        maxLength={150}
+        name="kontak"
+      />
+      <FormField
+        containerClassName="form-field-full"
+        defaultValue={(row?.indikator ?? []).map((m) => `${m.label} | ${m.nilai}`).join("\n")}
+        helpText="Satu indikator per baris, format: Label | Nilai."
+        kind="textarea"
+        label="Indikator"
+        name="indikator"
+        placeholder={"Luas lahan | 250 Ha\nProduktivitas | 6,5 Ton/Ha"}
+        rows={3}
+      />
+      <div className="modul-form-checks form-field-full">
+        <label>
+          <input defaultChecked={row?.unggulan ?? false} name="unggulan" type="checkbox" />{" "}
+          Tampilkan sebagai potensi unggulan
+        </label>
+        <label>
+          <input defaultChecked={row?.aktif ?? false} name="aktif" type="checkbox" /> Publikasikan
+          di website
+        </label>
+      </div>
+    </div>
+  );
+}
+
 export default async function PotensiAdminPage() {
   const user = await requirePermission(RESOURCES.potensi, "read");
   const villageId = await resolveVillageId(user);
@@ -26,196 +117,100 @@ export default async function PotensiAdminPage() {
     daftarPotensiDesa(villageId, true),
     aksesPotensiAdmin(),
   ]);
+
   return (
     <div className="modul-page">
       <PageHeading
         judul={<>Potensi Desa</>}
         deskripsi={<>Kelola potensi unggulan desa untuk website.</>}
       />
-      {akses.bolehTambah ? (
-        <section className="modul-card">
-          <h2>Tambah potensi baru</h2>
-          <form action={simpanPotensi} className="potensi-admin-form">
-            <label>
-              Kategori
-              <select name="kategori" required defaultValue="pertanian">
-                {categories.map(([id, label]) => (
-                  <option key={id} value={id}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Nama potensi
-              <input name="judul" required maxLength={160} placeholder="Contoh: Pertanian Padi" />
-            </label>
-            <label>
-              Slug (opsional)
-              <input name="slug" maxLength={170} placeholder="Dibuat otomatis dari nama potensi" />
-            </label>
-            <label>
-              Ringkasan
-              <textarea name="ringkasan" rows={2} maxLength={500} />
-            </label>
-            <label>
-              Deskripsi
-              <textarea name="deskripsi" rows={4} maxLength={10000} />
-            </label>
-            <label>
-              Path gambar media
-              <input name="gambar" maxLength={255} placeholder="Folder/file-gambar.jpg" />
-            </label>
-            <label>
-              Lokasi
-              <input name="lokasi" maxLength={200} />
-            </label>
-            <label>
-              Kontak pengelola
-              <input name="kontak" maxLength={150} />
-            </label>
-            <label>
-              Indikator (satu per baris: Label | Nilai)
-              <textarea
-                name="indikator"
-                rows={3}
-                placeholder={"Luas lahan | 250 Ha\nProduktivitas | 6,5 Ton/Ha"}
-              />
-            </label>
-            <div className="potensi-checks">
-              <label>
-                <input type="checkbox" name="unggulan" /> Tampilkan sebagai potensi unggulan
-              </label>
-              <label>
-                <input type="checkbox" name="aktif" /> Publikasikan di website
-              </label>
-            </div>
-            <button type="submit">Simpan Potensi</button>
-          </form>
-        </section>
-      ) : null}
-      <section className="modul-card">
-        <h2>Daftar potensi ({rows.length})</h2>
+      <TableCard
+        title={`Daftar potensi (${rows.length})`}
+        description="Potensi unggulan dan data pendukung yang tampil di halaman profil desa."
+        actions={
+          akses.bolehTambah ? (
+            <FormDialog
+              aksi={simpanPotensiFormAction}
+              deskripsi="Lengkapi data potensi lalu simpan untuk menambahkannya ke daftar."
+              judul="Tambah potensi"
+              label="Tambah potensi"
+              labelSimpan="Simpan potensi"
+            >
+              {formPotensi(null)}
+            </FormDialog>
+          ) : null
+        }
+      >
         {rows.length ? (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>Potensi</th>
-                  <th>Kategori</th>
-                  <th>Indikator</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>Potensi</HeaderCell>
+                  <HeaderCell>Kategori</HeaderCell>
+                  <HeaderCell>Indikator</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row) => (
-                  <tr key={row.id}>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>
                       <strong>{row.judul}</strong>
                       <br />
                       <small>{row.slug}</small>
-                    </td>
-                    <td>{categories.find(([id]) => id === row.kategori)?.[1] ?? row.kategori}</td>
-                    <td>{row.indikator.map((m) => m.label + ": " + m.nilai).join(" · ") || "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>
+                      {categories.find(([id]) => id === row.kategori)?.[1] ?? row.kategori}
+                    </Cell>
+                    <Cell>
+                      {row.indikator.map((m) => m.label + ": " + m.nilai).join(" · ") || "—"}
+                    </Cell>
+                    <Cell>
                       {row.aktif ? "Dipublikasikan" : "Draft"}
                       {row.unggulan ? " · Unggulan" : ""}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {akses.bolehUbah || akses.bolehHapus ? (
-                        <details>
-                          <summary>Edit</summary>
+                        <div className="table-actions">
                           {akses.bolehUbah ? (
-                            <form action={simpanPotensi} className="potensi-admin-form">
-                              <input type="hidden" name="id" value={row.id} />
-                              <label>
-                                Kategori
-                                <select name="kategori" defaultValue={row.kategori}>
-                                  {categories.map(([id, label]) => (
-                                    <option key={id} value={id}>
-                                      {label}
-                                    </option>
-                                  ))}
-                                </select>
-                              </label>
-                              <label>
-                                Nama potensi
-                                <input name="judul" defaultValue={row.judul} required />
-                              </label>
-                              <label>
-                                Slug
-                                <input name="slug" defaultValue={row.slug} />
-                              </label>
-                              <label>
-                                Ringkasan
-                                <textarea name="ringkasan" defaultValue={row.ringkasan ?? ""} />
-                              </label>
-                              <label>
-                                Deskripsi
-                                <textarea name="deskripsi" defaultValue={row.deskripsi ?? ""} />
-                              </label>
-                              <label>
-                                Path gambar
-                                <input name="gambar" defaultValue={row.gambar ?? ""} />
-                              </label>
-                              <label>
-                                Lokasi
-                                <input name="lokasi" defaultValue={row.lokasi ?? ""} />
-                              </label>
-                              <label>
-                                Kontak
-                                <input name="kontak" defaultValue={row.kontak ?? ""} />
-                              </label>
-                              <label>
-                                Indikator
-                                <textarea
-                                  name="indikator"
-                                  defaultValue={row.indikator
-                                    .map((m) => m.label + " | " + m.nilai)
-                                    .join("\n")}
-                                />
-                              </label>
-                              <div className="potensi-checks">
-                                <label>
-                                  <input
-                                    type="checkbox"
-                                    name="unggulan"
-                                    defaultChecked={row.unggulan}
-                                  />{" "}
-                                  Unggulan
-                                </label>
-                                <label>
-                                  <input type="checkbox" name="aktif" defaultChecked={row.aktif} />{" "}
-                                  Publikasikan
-                                </label>
-                              </div>
-                              <button type="submit">Simpan Perubahan</button>
-                            </form>
+                            <FormDialog
+                              aksi={simpanPotensiFormAction}
+                              deskripsi={`Ubah data potensi ${row.judul}.`}
+                              judul="Ubah potensi"
+                              label="Ubah"
+                              labelSimpan="Simpan perubahan"
+                              varian="secondary"
+                            >
+                              {formPotensi(row)}
+                            </FormDialog>
                           ) : null}
                           {akses.bolehHapus ? (
-                            <form action={hapusPotensi}>
-                              <input type="hidden" name="id" value={row.id} />
-                              <button type="submit">Hapus Potensi</button>
-                            </form>
+                            <DialogHapusForm
+                              aksi={hapusPotensi}
+                              id={row.id}
+                              judul={`Hapus potensi "${row.judul}"?`}
+                              keterangan="Data potensi, indikator, dan gambarnya akan dihapus permanen dari website desa."
+                              labelAksi="Hapus potensi"
+                            />
                           ) : null}
-                        </details>
+                        </div>
                       ) : (
                         "—"
                       )}
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <p className="modul-empty">
-            Belum ada data potensi. Tambahkan data menggunakan formulir di atas.
+            Belum ada data potensi. Tambahkan potensi pertama lewat tombol Tambah potensi.
           </p>
         )}
-      </section>
-      <style>{`.potensi-admin-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.potensi-admin-form label{display:grid;gap:5px;font-size:13px;font-weight:700}.potensi-admin-form input,.potensi-admin-form select,.potensi-admin-form textarea{width:100%;padding:9px;border:1px solid #d7dfed;border-radius:8px;font:inherit}.potensi-admin-form button,.modul-card details button{justify-self:start;padding:9px 15px;border:0;border-radius:8px;background:#6423e8;color:white;font-weight:800}.potensi-checks{display:flex;gap:18px;align-items:center}.potensi-checks label{display:flex;align-items:center;gap:6px}.potensi-checks input{width:auto}.potensi-admin-form>button{grid-column:1/-1}@media(max-width:700px){.potensi-admin-form{grid-template-columns:1fr}}`}</style>
+      </TableCard>
     </div>
   );
 }

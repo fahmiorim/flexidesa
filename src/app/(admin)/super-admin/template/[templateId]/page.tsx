@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { ambilTemplateWebsite } from "@/features/multi-desa/application/template-website-use-cases";
+import { ButtonLink } from "@/components/ui/button-link";
+import {
+  ambilTemplateWebsite,
+  daftarDesaUntukTemplate,
+} from "@/features/multi-desa/application/template-website-use-cases";
 import {
   LABEL_KATEGORI_TEMPLATE,
   LABEL_STATUS_TEMPLATE,
@@ -11,6 +15,7 @@ import {
 import {
   AksiStatusTemplate,
   FormDistribusiTemplate,
+  FormGantiTemplateDesa,
 } from "@/features/multi-desa/presentation/aksi-template";
 import { FormTemplate } from "@/features/multi-desa/presentation/form-template";
 import {
@@ -21,7 +26,12 @@ import {
 import { TemplatePreview } from "@/features/multi-desa/presentation/template-preview";
 
 import { pastikanSuperAdmin } from "../../guard";
-import { distribusiTemplateAction, ubahStatusTemplateAction, ubahTemplateAction } from "../actions";
+import {
+  distribusiTemplateAction,
+  gantiTemplateDesaAction,
+  ubahStatusTemplateAction,
+  ubahTemplateAction,
+} from "../actions";
 
 export const metadata: Metadata = {
   title: "Detail Template",
@@ -52,7 +62,11 @@ export default async function SuperAdminDetailTemplatePage({ params, searchParam
   const id = Number.parseInt(templateId, 10);
   if (!Number.isSafeInteger(id) || id <= 0) notFound();
 
-  const [detail, query] = await Promise.all([ambilTemplateWebsite(id), searchParams]);
+  const [detail, query, desa] = await Promise.all([
+    ambilTemplateWebsite(id),
+    searchParams,
+    daftarDesaUntukTemplate().catch(() => null),
+  ]);
   if (!detail) notFound();
 
   const { template, versi, penggunaan } = detail;
@@ -71,15 +85,15 @@ export default async function SuperAdminDetailTemplatePage({ params, searchParam
       <PlatformPageHeader
         actions={
           <div className="platform-row-actions">
-            <Link className="button button-secondary" href="/super-admin/template">
+            <ButtonLink variant="secondary" href="/super-admin/template">
               Katalog
-            </Link>
-            <Link
-              className="button button-secondary"
+            </ButtonLink>
+            <ButtonLink
+              variant="secondary"
               href={`/super-admin/template/penggunaan?template=${template.id}`}
             >
               Penggunaan
-            </Link>
+            </ButtonLink>
             <AksiStatusTemplate
               aksi={ubahStatusTemplateAction}
               id={template.id}
@@ -243,6 +257,14 @@ export default async function SuperAdminDetailTemplatePage({ params, searchParam
               penggunaan={penggunaanTampil}
               versi={template.version}
             />
+          </PlatformCard>
+
+          <PlatformCard description="Ganti tema aktif satu desa." title="Ganti template desa">
+            {desa ? (
+              <FormGantiTemplateDesa aksi={gantiTemplateDesaAction} desa={desa} id={template.id} />
+            ) : (
+              <p className="form-help">Daftar desa belum tersedia.</p>
+            )}
           </PlatformCard>
 
           <PlatformCard

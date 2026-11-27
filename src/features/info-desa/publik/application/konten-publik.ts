@@ -13,12 +13,7 @@ import {
   listKategoriBerita,
   tambahHitBerita,
 } from "@/features/info-desa/publik/infrastructure/berita-repository";
-import {
-  getHalamanBySlug,
-  listDokumenPublik,
-  listSlugBerita,
-  listSlugHalaman,
-} from "@/features/info-desa/publik/infrastructure/dokumen-repository";
+import { listDokumenPublik } from "@/features/info-desa/publik/infrastructure/dokumen-repository";
 import {
   getAlbumBySlug,
   listAlbumGaleri,
@@ -27,16 +22,11 @@ import {
   listVideoGaleriPublik,
 } from "@/features/info-desa/publik/infrastructure/galeri-repository";
 import {
-  listPotensiDesa,
-  listSaranaPrasarana,
-} from "@/features/info-desa/publik/infrastructure/potensi-sarana-repository";
-import {
   getPengaturanKontakMentah,
   getProfilDesa,
   listLayananDesaPublik,
   listPerangkatDesa,
 } from "@/features/info-desa/publik/infrastructure/profil-publik-repository";
-import { listWidget } from "@/features/info-desa/publik/infrastructure/tampilan-repository";
 import { bacaNilaiPengaturan } from "@/features/pengaturan/pengaturan/application/kontrak";
 
 /**
@@ -95,36 +85,12 @@ export async function daftarPerangkatPublik(villageId: number) {
   return listPerangkatDesa(villageId);
 }
 
-export async function halamanStatisPublik(villageId: number, slug: string) {
-  return getHalamanBySlug(villageId, slug);
-}
-
 export async function daftarSliderBeranda(villageId: number) {
   return listSliderBeranda(villageId);
 }
 
-export async function daftarWidgetPublik(villageId: number) {
-  return listWidget(villageId);
-}
-
-export async function daftarSlugBerita(villageId: number) {
-  return listSlugBerita(villageId);
-}
-
-export async function daftarSlugHalaman(villageId: number) {
-  return listSlugHalaman(villageId);
-}
-
 export async function daftarVideoGaleriPublik(villageId: number, limit = 8) {
   return listVideoGaleriPublik(villageId, limit);
-}
-
-export async function daftarPotensiDesa(villageId: number, includeInactive = false) {
-  return listPotensiDesa(villageId, includeInactive);
-}
-
-export async function daftarSaranaPrasarana(villageId: number, includeInactive = false) {
-  return listSaranaPrasarana(villageId, includeInactive);
 }
 
 /** FAQ kontak publik per desa; kembali ke bawaan bila belum pernah diisi. */

@@ -1,3 +1,6 @@
+import { Button } from "@/components/ui/button";
+import { StatCard, StatGrid } from "@/components/ui/stat-card";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   BULAN_PAUD,
   KATEGORI_USIA_PAUD,
@@ -97,71 +100,64 @@ export function BagianRekapPaud({
             ))}
           </select>
         </label>
-        <button className="button button-secondary" type="submit">
+        <Button variant="secondary" type="submit">
           Terapkan
-        </button>
+        </Button>
       </form>
 
-      <section aria-label="Ringkasan sasaran PAUD" className="data-kependudukan-kpis">
-        <article className="data-kpi data-kpi-primary">
-          <span>Total Anak PAUD</span>
-          <strong>{angka.format(baris.length)}</strong>
-          <small>Sasaran terdaftar</small>
-        </article>
-        <article className="data-kpi">
-          <span>Usia 2 - &lt; 3 Tahun</span>
-          <strong>{angka.format(kategori(1))}</strong>
-          <small>Parenting</small>
-        </article>
-        <article className="data-kpi">
-          <span>Usia 3 - 6 Tahun</span>
-          <strong>{angka.format(kategori(2))}</strong>
-          <small>Kelas PAUD</small>
-        </article>
-        <article className="data-kpi">
-          <span>Laki-laki / Perempuan</span>
-          <strong>
-            {angka.format(lakiLaki)} / {angka.format(baris.length - lakiLaki)}
-          </strong>
-          <small>Berdasarkan data penduduk</small>
-        </article>
-      </section>
+      <StatGrid ariaLabel="Ringkasan sasaran PAUD" columns={4}>
+        <StatCard
+          label="Total Anak PAUD"
+          note="Sasaran terdaftar"
+          utama
+          value={angka.format(baris.length)}
+        />
+        <StatCard label="Usia 2 - < 3 Tahun" note="Parenting" value={angka.format(kategori(1))} />
+        <StatCard label="Usia 3 - 6 Tahun" note="Kelas PAUD" value={angka.format(kategori(2))} />
+        <StatCard
+          label="Laki-laki / Perempuan"
+          note="Berdasarkan data penduduk"
+          value={`${angka.format(lakiLaki)} / ${angka.format(baris.length - lakiLaki)}`}
+        />
+      </StatGrid>
 
-      <div className="table-scroll">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th rowSpan={2}>No.</th>
-              <th rowSpan={2}>No KIA</th>
-              <th rowSpan={2}>Nama Anak</th>
-              <th rowSpan={2}>Jenis Kelamin</th>
-              <th colSpan={2}>Kategori Usia PAUD</th>
-              <th colSpan={bulanTerpilih.length}>Status Kehadiran Layanan PAUD per Bulan</th>
-            </tr>
-            <tr>
-              <th>2 - &lt; 3 Tahun</th>
-              <th>3 - 6 Tahun</th>
+      <TableScroll>
+        <Table>
+          <THead>
+            <Row>
+              <HeaderCell rowSpan={2}>No.</HeaderCell>
+              <HeaderCell rowSpan={2}>No KIA</HeaderCell>
+              <HeaderCell rowSpan={2}>Nama Anak</HeaderCell>
+              <HeaderCell rowSpan={2}>Jenis Kelamin</HeaderCell>
+              <HeaderCell colSpan={2}>Kategori Usia PAUD</HeaderCell>
+              <HeaderCell colSpan={bulanTerpilih.length}>
+                Status Kehadiran Layanan PAUD per Bulan
+              </HeaderCell>
+            </Row>
+            <Row>
+              <HeaderCell>2 - &lt; 3 Tahun</HeaderCell>
+              <HeaderCell>3 - 6 Tahun</HeaderCell>
               {bulanTerpilih.map((item) => (
-                <th key={item.nama}>{NAMA_BULAN[item.nomor - 1]}</th>
+                <HeaderCell key={item.nama}>{NAMA_BULAN[item.nomor - 1]}</HeaderCell>
               ))}
-            </tr>
-          </thead>
-          <tbody>
+            </Row>
+          </THead>
+          <TBody>
             {baris.length === 0 ? (
-              <tr>
-                <td colSpan={bulanTerpilih.length + 6}>
+              <Row>
+                <Cell colSpan={bulanTerpilih.length + 6}>
                   Belum ada data kehadiran PAUD untuk periode yang dipilih.
-                </td>
-              </tr>
+                </Cell>
+              </Row>
             ) : (
               baris.map((item, index) => (
-                <tr key={item.row.id}>
-                  <td>{index + 1}</td>
-                  <td>{item.kia?.noKia ?? "—"}</td>
-                  <td>{item.anak?.name ?? "—"}</td>
-                  <td>{labelGender(item.anak?.gender)}</td>
-                  <td>{item.row.kategoriUsia === 1 ? "v" : "-"}</td>
-                  <td>{item.row.kategoriUsia === 2 ? "v" : "-"}</td>
+                <Row key={item.row.id}>
+                  <Cell>{index + 1}</Cell>
+                  <Cell>{item.kia?.noKia ?? "—"}</Cell>
+                  <Cell>{item.anak?.name ?? "—"}</Cell>
+                  <Cell>{labelGender(item.anak?.gender)}</Cell>
+                  <Cell>{item.row.kategoriUsia === 1 ? "v" : "-"}</Cell>
+                  <Cell>{item.row.kategoriUsia === 2 ? "v" : "-"}</Cell>
                   {bulanTerpilih.map((bulan) => {
                     const status = item.row[bulan.nama];
                     const tanda = status === 2 ? "v" : status === 1 ? "-" : "x";
@@ -172,47 +168,47 @@ export function BagianRekapPaud({
                           ? styles.badgeKuning
                           : styles.badgeMerah;
                     return (
-                      <td key={bulan.nama}>
+                      <Cell key={bulan.nama}>
                         <span className={`${styles.badge} ${kelas}`}>{tanda}</span>
-                      </td>
+                      </Cell>
                     );
                   })}
-                </tr>
+                </Row>
               ))
             )}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
 
-      <div className="table-scroll">
-        <table className="data-table">
+      <TableScroll>
+        <Table>
           <caption style={{ captionSide: "top", textAlign: "left", padding: "0.75rem 0" }}>
             Ringkasan kehadiran PAUD per bulan
           </caption>
-          <thead>
-            <tr>
-              <th>Bulan</th>
-              <th>Hadir</th>
-              <th>Tidak Hadir</th>
-              <th>Belum</th>
-              <th>Persentase Hadir</th>
-            </tr>
-          </thead>
-          <tbody>
+          <THead>
+            <Row>
+              <HeaderCell>Bulan</HeaderCell>
+              <HeaderCell>Hadir</HeaderCell>
+              <HeaderCell>Tidak Hadir</HeaderCell>
+              <HeaderCell>Belum</HeaderCell>
+              <HeaderCell>Persentase Hadir</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
             {statistik.map((item) => (
-              <tr key={item.nama}>
-                <td>
+              <Row key={item.nama}>
+                <Cell>
                   <strong>{item.nama}</strong>
-                </td>
-                <td>{angka.format(item.hadir)}</td>
-                <td>{angka.format(item.tidakHadir)}</td>
-                <td>{angka.format(item.belum)}</td>
-                <td>{angka.format(item.persentase)}%</td>
-              </tr>
+                </Cell>
+                <Cell>{angka.format(item.hadir)}</Cell>
+                <Cell>{angka.format(item.tidakHadir)}</Cell>
+                <Cell>{angka.format(item.belum)}</Cell>
+                <Cell>{angka.format(item.persentase)}%</Cell>
+              </Row>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
 
       <div className={styles.panduanAksi}>
         <DialogPanduan
@@ -228,28 +224,32 @@ export function BagianRekapPaud({
 
             <section>
               <h3>Jadwal, frekuensi, dan target</h3>
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>Kategori</th>
-                    <th>Layanan</th>
-                    <th>Frekuensi</th>
-                    <th>Durasi</th>
-                    <th>Target bulanan</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {KATEGORI_USIA_PAUD.map((item) => (
-                    <tr key={item.value}>
-                      <td>{item.label}</td>
-                      <td>{item.value === 1 ? "Parenting orang tua" : "Kelas PAUD"}</td>
-                      <td>{item.value === 1 ? "1x per bulan" : "2x per bulan"}</td>
-                      <td>{item.value === 1 ? "2-3 jam" : "3-4 jam"}</td>
-                      <td>{item.value === 1 ? "Min. 80% kehadiran" : "Min. 85% kehadiran"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <TableScroll>
+                <Table>
+                  <THead>
+                    <Row>
+                      <HeaderCell>Kategori</HeaderCell>
+                      <HeaderCell>Layanan</HeaderCell>
+                      <HeaderCell>Frekuensi</HeaderCell>
+                      <HeaderCell>Durasi</HeaderCell>
+                      <HeaderCell>Target bulanan</HeaderCell>
+                    </Row>
+                  </THead>
+                  <TBody>
+                    {KATEGORI_USIA_PAUD.map((item) => (
+                      <Row key={item.value}>
+                        <Cell>{item.label}</Cell>
+                        <Cell>{item.value === 1 ? "Parenting orang tua" : "Kelas PAUD"}</Cell>
+                        <Cell>{item.value === 1 ? "1x per bulan" : "2x per bulan"}</Cell>
+                        <Cell>{item.value === 1 ? "2-3 jam" : "3-4 jam"}</Cell>
+                        <Cell>
+                          {item.value === 1 ? "Min. 80% kehadiran" : "Min. 85% kehadiran"}
+                        </Cell>
+                      </Row>
+                    ))}
+                  </TBody>
+                </Table>
+              </TableScroll>
             </section>
 
             <section>

@@ -17,6 +17,7 @@ const token = {
   fontHeading: "serif",
   radius: "sedang",
   style: "terang",
+  layout: "klasik",
 } as const;
 
 const dasar = {
@@ -34,6 +35,25 @@ describe("websiteTemplateInputSchema", () => {
     const hasil = websiteTemplateInputSchema.parse(dasar);
     expect(hasil.slug).toBe("esensi-baru");
     expect(hasil.tokens.primary).toBe("#2563eb");
+  });
+
+  it("memakai susunan klasik bila token lama belum memuat layout", () => {
+    const { layout: _abaikan, ...tanpaLayout } = token;
+    const hasil = websiteTemplateInputSchema.parse({ ...dasar, tokens: tanpaLayout });
+    expect(hasil.tokens.layout).toBe("klasik");
+  });
+
+  it("menerima varian susunan dan menolak nilai di luar daftar", () => {
+    expect(
+      websiteTemplateInputSchema.parse({ ...dasar, tokens: { ...token, layout: "modern" } }).tokens
+        .layout,
+    ).toBe("modern");
+
+    const salah = websiteTemplateInputSchema.safeParse({
+      ...dasar,
+      tokens: { ...token, layout: "kolom" },
+    });
+    expect(salah.success).toBe(false);
   });
 
   it("menolak slug yang tidak stabil dan warna bukan heksadesimal", () => {

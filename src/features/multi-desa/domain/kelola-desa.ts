@@ -28,8 +28,6 @@ export const domainDesaSchema = z.object({
     ),
 });
 
-export type DomainDesaInput = z.infer<typeof domainDesaSchema>;
-
 /** Kuota media desa; kosong berarti tanpa batas (`null`). */
 export const kuotaMediaSchema = z.object({
   kuotaMediaMb: z.preprocess(
@@ -42,8 +40,6 @@ export const kuotaMediaSchema = z.object({
       .nullable(),
   ),
 });
-
-export type KuotaMediaInput = z.infer<typeof kuotaMediaSchema>;
 
 /** Status operasional desa. */
 export const statusDesaSchema = z.object({

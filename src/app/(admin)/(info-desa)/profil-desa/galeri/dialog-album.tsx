@@ -29,7 +29,7 @@ export function DialogAlbum({ item = null }: { item?: AlbumDialogItem | null }) 
       aksi={simpanAlbumFormAction}
       deskripsi={item ? "Perbarui album." : "Album baru langsung dapat diisi foto."}
       judul={item ? `Ubah Album: ${item.nama}` : "Tambah Album"}
-      kelasTombol={item ? "button button-ghost" : "button button-primary"}
+      varian={item ? "ghost" : "primary"}
       label={item ? "Ubah" : "＋ Tambah Album"}
       labelSimpan={item ? "Simpan Perubahan" : "Simpan Album"}
     >

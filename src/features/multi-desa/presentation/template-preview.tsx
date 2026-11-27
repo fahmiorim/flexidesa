@@ -25,6 +25,7 @@ export function TemplateThumb({
       aria-hidden="true"
       className="template-thumb"
       data-font={tokens.fontHeading}
+      data-layout={tokens.layout}
       data-radius={tokens.radius}
       data-style={tokens.style}
       style={gaya}
@@ -78,6 +79,7 @@ export function TemplatePreview({
     <div
       className={`template-preview${compact ? " is-compact" : ""}`}
       data-font={tokens.fontHeading}
+      data-layout={tokens.layout}
       data-radius={tokens.radius}
       data-style={tokens.style}
       style={gaya}

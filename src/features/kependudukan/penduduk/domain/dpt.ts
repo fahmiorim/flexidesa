@@ -1,10 +1,8 @@
 import { z } from "zod";
 
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { toCsv } from "@/lib/csv";
 
 /** Slug resource RBAC untuk modul DPT. */
-export const DPT_RESOURCE = RESOURCES.penduduk;
 
 /** Skema input CRUD pemilihan (dipakai admin). */
 export const electionFormSchema = z.object({

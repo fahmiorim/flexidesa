@@ -13,12 +13,15 @@ import {
   buatTemplateWebsite,
   distribusikanVersiTemplate,
   getTemplateWebsite,
+  listDesaUntukTemplate,
   listPenggunaanTemplateWebsite,
   listTemplateWebsite,
   listVersiTemplateWebsite,
   setStatusTemplateWebsite,
   slugTemplateDipakai,
+  terapkanTemplateKeDesaRepo,
   ubahTemplateWebsite,
+  type DesaUntukTemplateRow,
   type PenggunaanTemplateWebsiteRow,
   type TemplateWebsiteRow,
   type VersiTemplateWebsiteRow,
@@ -141,6 +144,54 @@ export async function ubahStatusTemplateWebsiteData(
   });
 
   return { status: parsed.status };
+}
+
+export async function daftarDesaUntukTemplate(): Promise<DesaUntukTemplateRow[]> {
+  await requireSuperAdmin();
+  return listDesaUntukTemplate();
+}
+
+/** Ganti template aktif satu desa dari Super Admin (template harus terbit). */
+export async function gantiTemplateDesa(input: {
+  villageId: unknown;
+  templateId: unknown;
+}): Promise<{ villageId: number; templateId: number }> {
+  const user = await requireSuperAdmin();
+  const villageId = Number(input.villageId);
+  const templateId = Number(input.templateId);
+  if (!Number.isSafeInteger(villageId) || villageId <= 0) {
+    throw conflict("Desa tidak valid.");
+  }
+  if (!Number.isSafeInteger(templateId) || templateId <= 0) {
+    throw conflict("Template tidak valid.");
+  }
+  const template = await getTemplateWebsite(templateId);
+  if (!template) throw notFound("Template website tidak ditemukan.");
+  if (template.status !== "published") {
+    throw conflict("Hanya template terbit yang dapat diterapkan.");
+  }
+  const desa = await listDesaUntukTemplate();
+  if (!desa.some((item) => item.id === villageId)) {
+    throw notFound("Desa tidak ditemukan.");
+  }
+
+  await terapkanTemplateKeDesaRepo(villageId, {
+    slug: template.slug,
+    nama: template.name,
+    versi: template.version,
+    tokens: template.tokens,
+  });
+
+  await recordAuditEvent({
+    villageId,
+    actorId: user.id,
+    event: AUDIT_EVENTS.websiteTemplateDistribute,
+    resource: "website_templates",
+    resourceId: String(template.id),
+    details: { slug: template.slug, version: template.version, aksi: "ganti-tenant" },
+  });
+
+  return { villageId, templateId };
 }
 
 export async function distribusikanVersiTemplateWebsite(

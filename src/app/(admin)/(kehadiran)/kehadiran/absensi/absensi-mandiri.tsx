@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
+
 import styles from "../absensi-kepegawaian.module.css";
 import { absensiMandiriAction } from "../actions";
 
@@ -57,14 +59,14 @@ export function AbsensiMandiri({
         <input type="hidden" name="latitude" value={coords?.latitude ?? ""} />
         <input type="hidden" name="longitude" value={coords?.longitude ?? ""} />
         <div className={styles.wide}>
-          <button
+          <Button
             type="button"
             className={styles["ak-button"]}
             onClick={ambilLokasi}
             disabled={loading}
           >
             {loading ? "Mengambil lokasi…" : "◎ Ambil Lokasi GPS"}
-          </button>
+          </Button>
           <p aria-live="polite">{locationStatus}</p>
           {!wajibGps ? (
             <small>
@@ -78,7 +80,7 @@ export function AbsensiMandiri({
           <input type="file" name="foto" accept="image/jpeg,image/png,image/webp" capture="user" />
           <small>JPG, PNG, atau WEBP. Maksimal 5 MB.</small>
         </label>
-        <button
+        <Button
           className={styles["ak-button"]}
           type="submit"
           disabled={Boolean(attendance.jamKeluar) || (wajibGps && !coords)}
@@ -88,7 +90,7 @@ export function AbsensiMandiri({
             : attendance.jamMasuk
               ? "Check-out"
               : "Check-in"}
-        </button>
+        </Button>
       </form>
     </section>
   );

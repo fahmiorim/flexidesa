@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect } from "react";
 
 import { simpanAnggotaAction } from "@/app/(admin)/(kependudukan)/kependudukan/rumah-tangga/actions";
+import { Button } from "@/components/ui/button";
 import {
   RTM_LEVEL_ANGGOTA,
   RTM_LEVEL_KEPALA,
@@ -56,9 +57,9 @@ export function FormAnggotaRumahTangga({
         </label>
       </div>
       <div className="penduduk-heading-actions">
-        <button className="button button-primary" disabled={pending} type="submit">
+        <Button variant="primary" disabled={pending} type="submit">
           {pending ? "Menyimpan…" : "Tambahkan Anggota"}
-        </button>
+        </Button>
       </div>
       {state.status === "idle" ? null : (
         <p

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   ambilTemplateWebsite,
   daftarTemplateWebsite,
@@ -119,16 +121,16 @@ export default async function SuperAdminPenggunaanTemplatePage({ searchParams }:
                   ))}
                 </select>
               </label>
-              <button className="button button-secondary" type="submit">
+              <Button variant="secondary" type="submit">
                 Tampilkan
-              </button>
+              </Button>
               {dipilih ? (
-                <Link
-                  className="button button-primary"
+                <ButtonLink
+                  variant="primary"
                   href={`/super-admin/template/${dipilih.id}?tab=penggunaan`}
                 >
                   Distribusi versi
-                </Link>
+                </ButtonLink>
               ) : null}
             </form>
 
@@ -157,33 +159,33 @@ export default async function SuperAdminPenggunaanTemplatePage({ searchParams }:
             ) : null}
 
             {penggunaan.length > 0 ? (
-              <div className="tenant-table-scroll">
-                <table className="tenant-table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Desa</th>
-                      <th scope="col">Domain</th>
-                      <th scope="col">Tema</th>
-                      <th scope="col">Versi</th>
-                      <th scope="col">Diperbarui</th>
-                      <th scope="col">
+              <TableScroll className="tenant-table-scroll">
+                <Table className="tenant-table">
+                  <THead>
+                    <Row>
+                      <HeaderCell scope="col">Desa</HeaderCell>
+                      <HeaderCell scope="col">Domain</HeaderCell>
+                      <HeaderCell scope="col">Tema</HeaderCell>
+                      <HeaderCell scope="col">Versi</HeaderCell>
+                      <HeaderCell scope="col">Diperbarui</HeaderCell>
+                      <HeaderCell scope="col">
                         <span className="sr-only">Aksi</span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
+                      </HeaderCell>
+                    </Row>
+                  </THead>
+                  <TBody>
                     {penggunaan.map((item) => (
-                      <tr key={item.villageId}>
-                        <td>
+                      <Row key={item.villageId}>
+                        <Cell>
                           <strong>{item.namaDesa ?? "Tanpa nama"}</strong>
-                        </td>
-                        <td>
+                        </Cell>
+                        <Cell>
                           {item.domain ?? (
                             <span className="tenant-secondary">Belum ada domain</span>
                           )}
-                        </td>
-                        <td>{item.themeNama}</td>
-                        <td>
+                        </Cell>
+                        <Cell>{item.themeNama}</Cell>
+                        <Cell>
                           <span
                             className={
                               item.versi === dipilih?.version
@@ -193,21 +195,21 @@ export default async function SuperAdminPenggunaanTemplatePage({ searchParams }:
                           >
                             v{item.versi}
                           </span>
-                        </td>
-                        <td>{tanggal.format(new Date(item.diperbaruiPada))}</td>
-                        <td>
-                          <Link
-                            className="button button-secondary"
+                        </Cell>
+                        <Cell>{tanggal.format(new Date(item.diperbaruiPada))}</Cell>
+                        <Cell>
+                          <ButtonLink
+                            variant="secondary"
                             href={`/super-admin/tenant?q=${encodeURIComponent(item.namaDesa ?? "")}`}
                           >
                             Lihat desa
-                          </Link>
-                        </td>
-                      </tr>
+                          </ButtonLink>
+                        </Cell>
+                      </Row>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </TBody>
+                </Table>
+              </TableScroll>
             ) : (
               <PlatformEmpty
                 description="Tenant akan muncul setelah memilih tema ini sebagai tema aktif."

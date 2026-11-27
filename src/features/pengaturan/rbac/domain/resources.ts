@@ -22,7 +22,6 @@ export const RESOURCES = {
   pengaduan: "pengaduan",
   layananPublik: "layanan-publik",
   pengajuanLayanan: "pengajuan-layanan",
-  agenda: "agenda",
   /** Agenda kegiatan desa (menu Sekretariat) yang juga dipakai Website → Konten. */
   agendaKegiatan: "agenda-kegiatan",
   pembangunan: "pembangunan",
@@ -51,6 +50,8 @@ export const RESOURCES = {
   widget: "widget",
   kehadiran: "kehadiran",
   kepegawaian: "kepegawaian",
+  /** Modul menu Data Perangkat Desa; inilah slug yang di-grant ke semua role. */
+  dataPegawai: "data-pegawai",
   cutiIzin: "cuti-izin",
   pengajuanIzin: "pengajuan-izin",
   persetujuanIzin: "persetujuan-izin",
@@ -68,6 +69,11 @@ export const RESOURCES = {
   dokumenPublik: "dokumen",
   /** Modul menu Pengaturan Website; juga pemilik struktur & tampilan situs. */
   websitePengaturan: "website-pengaturan",
+  /** Menu Konten Website (berita, agenda, galeri, slider) dan Halaman Website. */
+  websiteKonten: "website-konten",
+  websiteHalaman: "website-halaman",
+  /** Menu Dokumen & Peraturan Keuangan (dokumen laporan resmi). */
+  dokumenKeuangan: "dokumen-keuangan",
   profilDesa: "profil-desa",
   potensi: "potensi",
   saranaPrasarana: "sarana-prasarana",

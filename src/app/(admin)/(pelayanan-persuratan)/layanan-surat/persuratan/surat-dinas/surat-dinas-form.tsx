@@ -1,6 +1,7 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
 import type {
   KlasifikasiSuratDTO,
   SuratDinasDTO,
@@ -20,87 +21,79 @@ export function SuratDinasForm({
       <PageHeading
         judul={<>{row ? "Ubah Surat Dinas" : "Buat Surat Dinas"}</>}
         deskripsi={<>Catat surat dinas yang diterbitkan.</>}
-        aksi={
-          <>
-            <Link className="button button-secondary" href="/layanan-surat/persuratan/surat-dinas">
-              Kembali
-            </Link>
-          </>
-        }
       />
       <section className="modul-card">
-        <form action={simpanSuratDinasAction} className="modul-form-grid">
+        <form action={simpanSuratDinasAction} className="modul-form-grid modul-card-body form-card">
           {row ? <input type="hidden" name="id" value={row.id} /> : null}
-          <label className="modul-field">
-            <span>Nomor surat *</span>
-            <input
-              name="letterNumber"
-              required
-              maxLength={100}
-              defaultValue={row?.letterNumber ?? ""}
-            />
-          </label>
-          <label className="modul-field">
-            <span>Tanggal surat *</span>
-            <input name="letterDate" type="date" required defaultValue={row?.letterDate ?? ""} />
-          </label>
-          <label className="modul-field">
-            <span>Penerima</span>
-            <input name="recipient" maxLength={150} defaultValue={row?.recipient ?? ""} />
-          </label>
-          <label className="modul-field">
-            <span>Alamat penerima</span>
-            <input
-              name="recipientAddress"
-              maxLength={255}
-              defaultValue={row?.recipientAddress ?? ""}
-            />
-          </label>
-          <label className="modul-field">
-            <span>Perihal *</span>
-            <input name="subject" required maxLength={200} defaultValue={row?.subject ?? ""} />
-          </label>
-          <label className="modul-field">
-            <span>Klasifikasi</span>
-            <select
-              name="classificationId"
-              defaultValue={row?.classificationId?.toString() ?? "none"}
-            >
-              <option value="none">Tanpa klasifikasi</option>
-              {klasifikasi.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.code} — {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="modul-field" style={{ gridColumn: "1 / -1" }}>
-            <span>Isi / ringkasan surat</span>
-            <textarea name="content" rows={6} maxLength={4000} defaultValue={row?.content ?? ""} />
-          </label>
-          <label className="modul-field">
-            <span>Unggah lampiran surat (PDF, maksimal 20 MB)</span>
-            <input name="archiveUpload" type="file" accept="application/pdf,.pdf" />
-          </label>
-          <label className="modul-field">
-            <span>Lokasi arsip fisik</span>
-            <input
-              name="archiveLocation"
-              maxLength={150}
-              defaultValue={row?.archiveLocation ?? ""}
-            />
-          </label>
+          <FormField
+            label="Nomor surat *"
+            name="letterNumber"
+            required
+            maxLength={100}
+            defaultValue={row?.letterNumber ?? ""}
+          />
+          <FormField
+            label="Tanggal surat *"
+            name="letterDate"
+            type="date"
+            required
+            defaultValue={row?.letterDate ?? ""}
+          />
+          <FormField
+            label="Penerima"
+            name="recipient"
+            maxLength={150}
+            defaultValue={row?.recipient ?? ""}
+          />
+          <FormField
+            label="Alamat penerima"
+            name="recipientAddress"
+            maxLength={255}
+            defaultValue={row?.recipientAddress ?? ""}
+          />
+          <FormField
+            label="Perihal *"
+            name="subject"
+            required
+            maxLength={200}
+            defaultValue={row?.subject ?? ""}
+          />
+          <FormField
+            label="Klasifikasi"
+            kind="select"
+            name="classificationId"
+            defaultValue={row?.classificationId?.toString() ?? "none"}
+            options={[
+              { value: "none", label: "Tanpa klasifikasi" },
+              ...klasifikasi.map((item) => ({
+                value: String(item.id),
+                label: `${item.code} — ${item.name}`,
+              })),
+            ]}
+          />
+          <FormField
+            label="Isi / ringkasan surat"
+            kind="textarea"
+            name="content"
+            rows={6}
+            maxLength={4000}
+            defaultValue={row?.content ?? ""}
+            containerClassName="form-field-full"
+          />
+          <FormField
+            label="Unggah lampiran surat (PDF, maksimal 20 MB)"
+            name="archiveUpload"
+            type="file"
+            accept="application/pdf,.pdf"
+          />
+          <FormField
+            label="Lokasi arsip fisik"
+            name="archiveLocation"
+            maxLength={150}
+            defaultValue={row?.archiveLocation ?? ""}
+          />
           {row?.archiveFile ? (
-            <div
-              className="modul-field"
-              style={{
-                gridColumn: "1 / -1",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                flexWrap: "wrap",
-              }}
-            >
+            <div className="form-field-full form-check-inline">
               <span>
                 Lampiran tersimpan:{" "}
                 <a
@@ -117,15 +110,13 @@ export function SuratDinasForm({
               </label>
             </div>
           ) : null}
-          <div
-            style={{ gridColumn: "1 / -1", display: "flex", justifyContent: "flex-end", gap: 10 }}
-          >
-            <Link className="button button-secondary" href="/layanan-surat/persuratan/surat-dinas">
+          <div className="form-actions">
+            <ButtonLink variant="secondary" href="/layanan-surat/persuratan/surat-dinas">
               Batal
-            </Link>
-            <button className="button button-primary" type="submit">
+            </ButtonLink>
+            <Button variant="primary" type="submit">
               Simpan Surat Dinas
-            </button>
+            </Button>
           </div>
         </form>
       </section>

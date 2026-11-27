@@ -49,6 +49,26 @@ const warnaSchema = z
   .trim()
   .regex(/^#[0-9a-fA-F]{6}$/, "Warna harus berupa kode heksadesimal 6 digit.");
 
+/**
+ * Susunan desain situs publik.
+ *
+ * Menentukan varian header dan hero beranda, bukan sekadar warna: setiap nilai
+ * dipetakan ke komposisi berbeda di `PublicSiteHeader` dan `HeroBeranda`.
+ * Nilai bawaan `klasik` menjaga tenant lama (token tanpa `layout`) tetap tampil
+ * seperti sebelumnya.
+ */
+export const VARIAN_LAYOUT = ["klasik", "modern", "ringkas"] as const;
+export type VarianLayout = (typeof VARIAN_LAYOUT)[number];
+
+export const LABEL_VARIAN_LAYOUT: Record<VarianLayout, string> = {
+  klasik: "Klasik — header terang, nav di tengah, hero foto di samping",
+  modern: "Modern — header berwarna, nav pill di kanan, hero di tengah",
+  ringkas: "Ringkas — header putih ramping, hero tanpa foto",
+};
+
+const teksPendekSchema = z.string().trim().max(120).default("");
+const teksPanjangSchema = z.string().trim().max(400).default("");
+
 export const tokenTemplateSchema = z.object({
   primary: warnaSchema,
   secondary: warnaSchema,
@@ -60,6 +80,15 @@ export const tokenTemplateSchema = z.object({
   fontHeading: z.enum(["sans", "serif"]),
   radius: z.enum(["kecil", "sedang", "besar"]),
   style: z.enum(["terang", "gelap"]),
+  layout: z.enum(VARIAN_LAYOUT).default("klasik"),
+  /**
+   * Teks situs publik per template. Kosong berarti memakai bawaan komponen
+   * (judul `Sistem Informasi Desa`, sub hero berbasis nama desa, dan tagline
+   * footer baku), sehingga token lama tanpa field ini tetap tampil sama.
+   */
+  judulHero: teksPendekSchema,
+  subHero: teksPanjangSchema,
+  taglineFooter: teksPanjangSchema,
 });
 
 export type TokenTemplate = z.infer<typeof tokenTemplateSchema>;
@@ -104,13 +133,7 @@ export const distribusiTemplateSchema = z.object({
     .max(500, "Maksimal 500 desa dalam satu distribusi."),
 });
 
-export type WebsiteTemplateInput = z.infer<typeof websiteTemplateInputSchema>;
-export type WebsiteTemplateUpdateInput = z.infer<typeof websiteTemplateUpdateSchema>;
-
 /** Apakah template dapat dipakai tenant baru. */
-export function templateDapatDipakai(status: StatusTemplate): boolean {
-  return status === "published";
-}
 
 /** Bandingkan dua versi semver sederhana. */
 export function bandingkanVersi(a: string, b: string): number {

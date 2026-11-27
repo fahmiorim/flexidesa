@@ -1,22 +1,24 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
-import {
-  getHariLiburData,
-  getHariLiburUntukUbah,
-} from "@/features/kehadiran/kehadiran/application/hari-libur-use-cases";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { HapusTerpilih } from "@/components/ui/hapus-terpilih";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
+import { getHariLiburData } from "@/features/kehadiran/kehadiran/application/hari-libur-use-cases";
 import {
   formatTanggalIndonesia,
   HARI_LIBUR_RESOURCE,
+  KETERANGAN_HARI_LIBUR_MAKS,
   namaHariIndonesia,
 } from "@/features/kehadiran/kehadiran/domain/hari-libur";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { verifySession } from "@/lib/dal";
 
-import { hapusHariLiburAction, hapusHariLiburMassalAction, simpanHariLiburAction } from "./actions";
-import { FormHariLibur } from "./form-hari-libur";
+import { hapusHariLiburAction, hapusHariLiburMassalAction } from "./actions";
+import { simpanHariLiburFormAction } from "./form-actions";
 
 export const metadata: Metadata = { title: "Hari Libur" };
 
@@ -32,6 +34,33 @@ function nilaiTunggal(nilai: string | string[] | undefined): string {
   return nilai ?? "";
 }
 
+type HariLiburRow = Awaited<ReturnType<typeof getHariLiburData>>[number];
+
+function formHariLibur(row: HariLiburRow | null) {
+  return (
+    <div className="modul-form-grid">
+      {row ? <input name="id" type="hidden" value={row.id} /> : null}
+      <FormField
+        defaultValue={row?.tanggal ?? ""}
+        label="Tanggal"
+        name="tanggal"
+        required
+        type="date"
+      />
+      <FormField
+        defaultValue={row?.keterangan ?? ""}
+        kind="textarea"
+        label="Keterangan"
+        maxLength={KETERANGAN_HARI_LIBUR_MAKS}
+        name="keterangan"
+        placeholder="Contoh: Tahun Baru Masehi"
+        required
+        rows={3}
+      />
+    </div>
+  );
+}
+
 export default async function HariLiburPage({
   searchParams,
 }: {
@@ -44,10 +73,6 @@ export default async function HariLiburPage({
   const bolehUbah = hasPermission(user.permissions, HARI_LIBUR_RESOURCE, "update");
   const bolehHapus = hasPermission(user.permissions, HARI_LIBUR_RESOURCE, "delete");
 
-  const idUbah = bolehUbah ? Number(nilaiTunggal(params.ubah)) : 0;
-  const sedangDiubah =
-    Number.isSafeInteger(idUbah) && idUbah > 0 ? await getHariLiburUntukUbah(idUbah) : null;
-
   const status = nilaiTunggal(params.status);
   const jumlahDihapus = nilaiTunggal(params.jumlah);
   const pesanStatus = PESAN_STATUS[status];
@@ -57,139 +82,112 @@ export default async function HariLiburPage({
       <PageHeading judul={<>Hari Libur</>} deskripsi={<>Daftar hari libur desa.</>} />
 
       {pesanStatus ? (
-        <p className="form-help" role="status">
+        <p className="alert alert-info" role="status">
           {status === "dihapus" && jumlahDihapus !== ""
             ? `Hari libur berhasil dihapus (${jumlahDihapus} data).`
             : pesanStatus}
         </p>
       ) : null}
 
-      {sedangDiubah ? (
-        <section className="platform-card data-panel">
-          <header>
-            <h2>Ubah Hari Libur</h2>
-            <p>
-              {formatTanggalIndonesia(sedangDiubah.tanggal)}
-              {namaHariIndonesia(sedangDiubah.tanggal)
-                ? ` (${namaHariIndonesia(sedangDiubah.tanggal)})`
-                : ""}
-            </p>
-          </header>
-          <FormHariLibur
-            aksi={simpanHariLiburAction}
-            awal={{
-              id: sedangDiubah.id,
-              tanggal: sedangDiubah.tanggal,
-              keterangan: sedangDiubah.keterangan,
-            }}
-          />
-        </section>
-      ) : bolehTambah ? (
-        <section className="platform-card data-panel">
-          <header>
-            <h2>Tambah Hari Libur</h2>
-            <p>Satu tanggal hanya dapat tercatat sekali untuk desa ini.</p>
-          </header>
-          <FormHariLibur aksi={simpanHariLiburAction} />
-        </section>
-      ) : null}
-
-      <section className="platform-card data-panel">
-        <header>
-          <h2>Daftar Hari Libur</h2>
-          <p>
-            {rows.length === 0
-              ? "Belum ada hari libur yang tercatat."
-              : `${rows.length} tanggal libur tercatat.`}
-          </p>
-        </header>
-
-        <form action={hapusHariLiburMassalAction}>
-          {bolehHapus && rows.length > 0 ? (
-            <div className="penduduk-heading-actions">
-              <ConfirmSubmit
-                className="button button-danger"
-                message="Hapus semua hari libur yang dicentang?"
+      <TableCard
+        title="Daftar Hari Libur"
+        description={
+          rows.length === 0
+            ? "Belum ada hari libur yang tercatat."
+            : `${rows.length} tanggal libur tercatat.`
+        }
+        actions={
+          <>
+            {bolehTambah ? (
+              <FormDialog
+                aksi={simpanHariLiburFormAction}
+                deskripsi="Satu tanggal hanya dapat tercatat sekali untuk desa ini."
+                judul="Tambah hari libur"
+                label="Tambah hari libur"
+                labelSimpan="Tambah hari libur"
               >
-                Hapus Terpilih
-              </ConfirmSubmit>
-            </div>
-          ) : null}
-
-          {rows.length === 0 ? (
-            <div className="modul-empty">
-              <strong>Belum ada hari libur.</strong>
-              <p>Tambahkan tanggal libur nasional atau cuti bersama agar tercatat di desa ini.</p>
-            </div>
-          ) : (
-            <div className="table-scroll">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    {bolehHapus ? <th scope="col">Hapus</th> : null}
-                    <th scope="col">No.</th>
-                    <th scope="col">Tanggal</th>
-                    <th scope="col">Hari</th>
-                    <th scope="col">Keterangan</th>
-                    {bolehUbah || bolehHapus ? <th scope="col">Aksi</th> : null}
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row, index) => (
-                    <tr key={row.id}>
-                      {bolehHapus ? (
-                        <td>
-                          <input
-                            aria-label={`Pilih hari libur ${formatTanggalIndonesia(row.tanggal)}`}
-                            name="idCb"
-                            type="checkbox"
-                            value={row.id}
-                          />
-                        </td>
-                      ) : null}
-                      <td>{index + 1}</td>
-                      <td>{formatTanggalIndonesia(row.tanggal)}</td>
-                      <td>{namaHariIndonesia(row.tanggal) || "-"}</td>
-                      <td>{row.keterangan ?? "-"}</td>
-                      {bolehUbah || bolehHapus ? (
-                        <td>
-                          <div className="penduduk-heading-actions">
-                            {bolehUbah ? (
-                              <Link
-                                className="button button-ghost"
-                                href={`/kehadiran/hari-libur?ubah=${row.id}`}
-                              >
-                                Ubah
-                              </Link>
-                            ) : null}
-                            {bolehHapus ? (
-                              <ConfirmSubmit
-                                className="button button-ghost"
-                                form={`hapus-hari-libur-${row.id}`}
-                                message={`Hapus hari libur ${formatTanggalIndonesia(row.tanggal)}?`}
-                              >
-                                Hapus
-                              </ConfirmSubmit>
-                            ) : null}
-                          </div>
-                        </td>
-                      ) : null}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </form>
-
-        {bolehHapus
-          ? rows.map((row) => (
-              <form action={hapusHariLiburAction} id={`hapus-hari-libur-${row.id}`} key={row.id}>
-                <input name="id" type="hidden" value={row.id} />
-              </form>
-            ))
-          : null}
-      </section>
+                {formHariLibur(null)}
+              </FormDialog>
+            ) : null}
+            {bolehHapus && rows.length > 0 ? (
+              <HapusTerpilih
+                aksi={hapusHariLiburMassalAction}
+                judul="Hapus hari libur terpilih?"
+                label="Hapus terpilih"
+              />
+            ) : null}
+          </>
+        }
+      >
+        {rows.length === 0 ? (
+          <div className="modul-empty">
+            <strong>Belum ada hari libur.</strong>
+            <p>Tambahkan tanggal libur nasional atau cuti bersama agar tercatat di desa ini.</p>
+          </div>
+        ) : (
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  {bolehHapus ? <HeaderCell scope="col">Hapus</HeaderCell> : null}
+                  <HeaderCell scope="col">No.</HeaderCell>
+                  <HeaderCell scope="col">Tanggal</HeaderCell>
+                  <HeaderCell scope="col">Hari</HeaderCell>
+                  <HeaderCell scope="col">Keterangan</HeaderCell>
+                  {bolehUbah || bolehHapus ? <HeaderCell scope="col">Aksi</HeaderCell> : null}
+                </Row>
+              </THead>
+              <TBody>
+                {rows.map((row, index) => (
+                  <Row key={row.id}>
+                    {bolehHapus ? (
+                      <Cell>
+                        <input
+                          aria-label={`Pilih hari libur ${formatTanggalIndonesia(row.tanggal)}`}
+                          name="idCb"
+                          type="checkbox"
+                          value={row.id}
+                        />
+                      </Cell>
+                    ) : null}
+                    <Cell>{index + 1}</Cell>
+                    <Cell>{formatTanggalIndonesia(row.tanggal)}</Cell>
+                    <Cell>{namaHariIndonesia(row.tanggal) || "-"}</Cell>
+                    <Cell>{row.keterangan ?? "-"}</Cell>
+                    {bolehUbah || bolehHapus ? (
+                      <Cell>
+                        <div className="table-actions">
+                          {bolehUbah ? (
+                            <FormDialog
+                              aksi={simpanHariLiburFormAction}
+                              deskripsi={`Ubah hari libur ${formatTanggalIndonesia(row.tanggal)}.`}
+                              judul="Ubah hari libur"
+                              label="Ubah"
+                              labelSimpan="Simpan perubahan"
+                              varian="secondary"
+                            >
+                              {formHariLibur(row)}
+                            </FormDialog>
+                          ) : null}
+                          {bolehHapus ? (
+                            <DialogHapusForm
+                              aksi={hapusHariLiburAction}
+                              id={row.id}
+                              judul={`Hapus hari libur ${formatTanggalIndonesia(row.tanggal)}?`}
+                              keterangan="Tanggal libur akan dihapus permanen."
+                              labelAksi="Hapus hari libur"
+                            />
+                          ) : null}
+                        </div>
+                      </Cell>
+                    ) : null}
+                  </Row>
+                ))}
+              </TBody>
+            </Table>
+          </TableScroll>
+        )}
+      </TableCard>
     </div>
   );
 }

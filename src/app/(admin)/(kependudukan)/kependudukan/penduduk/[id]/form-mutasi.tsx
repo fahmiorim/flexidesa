@@ -1,9 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState, useState } from "react";
 
 import { ubahStatusDasarAction } from "@/app/(admin)/(kependudukan)/kependudukan/mutasi-penduduk/actions";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import {
   LIFE_STATUS_LABELS,
   type LifeStatus,
@@ -219,12 +220,12 @@ export function FormMutasiPenduduk({
       </div>
 
       <div className="penduduk-heading-actions">
-        <Link className="button button-secondary" href={`/kependudukan/penduduk/${residentId}`}>
+        <ButtonLink variant="secondary" href={`/kependudukan/penduduk/${residentId}`}>
           Batal
-        </Link>
-        <button className="button button-primary" disabled={pending} type="submit">
+        </ButtonLink>
+        <Button variant="primary" disabled={pending} type="submit">
           {pending ? "Menyimpan…" : "Simpan"}
-        </button>
+        </Button>
       </div>
     </form>
   );

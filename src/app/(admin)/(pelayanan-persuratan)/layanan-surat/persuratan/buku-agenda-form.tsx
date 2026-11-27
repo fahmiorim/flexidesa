@@ -1,6 +1,7 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
 import type { KlasifikasiSuratDTO } from "@/features/pelayanan-persuratan/surat/domain/surat";
 
 type Row = {
@@ -38,109 +39,90 @@ export function BukuAgendaForm({
           </>
         }
         deskripsi={<>Catat informasi surat dan lokasi arsip pada buku agenda desa.</>}
-        aksi={
-          <>
-            <Link
-              className="button button-secondary"
-              href={
-                masuk
-                  ? "/layanan-surat/persuratan/surat-masuk"
-                  : "/layanan-surat/persuratan/surat-keluar"
-              }
-            >
-              Kembali
-            </Link>
-          </>
-        }
       />
       <section className="modul-card">
-        <form action={action} className="modul-form-grid">
+        <form action={action} className="modul-form-grid modul-card-body form-card">
           {row?.id ? <input type="hidden" name="id" value={row.id} /> : null}
-          <label className="modul-field">
-            <span>Nomor agenda (kosong = otomatis)</span>
-            <input
-              name="agendaNumber"
-              type="number"
-              min="0"
-              max="99999"
-              placeholder="Otomatis"
-              defaultValue={row?.agendaNumber ?? ""}
-            />
-          </label>
-          <label className="modul-field">
-            <span>Nomor surat</span>
-            <input
-              name="letterNumber"
-              required
-              maxLength={50}
-              defaultValue={row?.letterNumber ?? ""}
-            />
-          </label>
-          <label className="modul-field">
-            <span>{masuk ? "Tanggal diterima" : "Tanggal surat"}</span>
-            <input
-              name={masuk ? "receivedDate" : "letterDate"}
+          <FormField
+            label="Nomor agenda (kosong = otomatis)"
+            name="agendaNumber"
+            type="number"
+            min={0}
+            max={99999}
+            placeholder="Otomatis"
+            defaultValue={row?.agendaNumber ?? ""}
+          />
+          <FormField
+            label="Nomor surat"
+            name="letterNumber"
+            required
+            maxLength={50}
+            defaultValue={row?.letterNumber ?? ""}
+          />
+          <FormField
+            label={masuk ? "Tanggal diterima" : "Tanggal surat"}
+            name={masuk ? "receivedDate" : "letterDate"}
+            type="date"
+            required
+            defaultValue={masuk ? (row?.receivedDate ?? "") : (row?.letterDate ?? "")}
+          />
+          {masuk ? (
+            <FormField
+              label="Tanggal surat"
+              name="letterDate"
               type="date"
-              required
-              defaultValue={masuk ? (row?.receivedDate ?? "") : (row?.letterDate ?? "")}
+              defaultValue={row?.letterDate ?? ""}
             />
-          </label>
-          {masuk ? (
-            <label className="modul-field">
-              <span>Tanggal surat</span>
-              <input name="letterDate" type="date" defaultValue={row?.letterDate ?? ""} />
-            </label>
           ) : (
-            <label className="modul-field">
-              <span>Tanggal dikirim</span>
-              <input name="sentDate" type="date" defaultValue={row?.sentDate ?? ""} />
-            </label>
+            <FormField
+              label="Tanggal dikirim"
+              name="sentDate"
+              type="date"
+              defaultValue={row?.sentDate ?? ""}
+            />
           )}
-          <label className="modul-field">
-            <span>{masuk ? "Pengirim" : "Penerima"}</span>
-            <input
-              name={masuk ? "sender" : "recipient"}
-              maxLength={150}
-              defaultValue={masuk ? (row?.sender ?? "") : (row?.recipient ?? "")}
-            />
-          </label>
-          <label className="modul-field">
-            <span>Klasifikasi</span>
-            <select
-              name="classificationId"
-              defaultValue={row?.classificationId?.toString() ?? "none"}
-            >
-              <option value="none">Tanpa klasifikasi</option>
-              {klasifikasi.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.code} — {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="modul-field">
-            <span>Ringkasan / perihal</span>
-            <input name="summary" maxLength={255} defaultValue={row?.summary ?? ""} />
-          </label>
+          <FormField
+            label={masuk ? "Pengirim" : "Penerima"}
+            name={masuk ? "sender" : "recipient"}
+            maxLength={150}
+            defaultValue={masuk ? (row?.sender ?? "") : (row?.recipient ?? "")}
+          />
+          <FormField
+            label="Klasifikasi"
+            kind="select"
+            name="classificationId"
+            defaultValue={row?.classificationId?.toString() ?? "none"}
+            options={[
+              { value: "none", label: "Tanpa klasifikasi" },
+              ...klasifikasi.map((item) => ({
+                value: String(item.id),
+                label: `${item.code} — ${item.name}`,
+              })),
+            ]}
+          />
+          <FormField
+            label="Ringkasan / perihal"
+            name="summary"
+            maxLength={255}
+            defaultValue={row?.summary ?? ""}
+          />
           {masuk ? (
-            <label className="modul-field">
-              <span>Disposisi</span>
-              <input name="disposition" maxLength={255} defaultValue={row?.disposition ?? ""} />
-            </label>
-          ) : null}
-          <label className="modul-field">
-            <span>Lokasi arsip</span>
-            <input
-              name="archiveLocation"
-              maxLength={150}
-              defaultValue={row?.archiveLocation ?? ""}
+            <FormField
+              label="Disposisi"
+              name="disposition"
+              maxLength={255}
+              defaultValue={row?.disposition ?? ""}
             />
-          </label>
-          <div
-            style={{ gridColumn: "1 / -1", display: "flex", gap: 10, justifyContent: "flex-end" }}
-          >
-            <Link
-              className="button button-secondary"
+          ) : null}
+          <FormField
+            label="Lokasi arsip"
+            name="archiveLocation"
+            maxLength={150}
+            defaultValue={row?.archiveLocation ?? ""}
+          />
+          <div className="form-actions">
+            <ButtonLink
+              variant="secondary"
               href={
                 masuk
                   ? "/layanan-surat/persuratan/surat-masuk"
@@ -148,10 +130,10 @@ export function BukuAgendaForm({
               }
             >
               Batal
-            </Link>
-            <button className="button button-primary" type="submit">
+            </ButtonLink>
+            <Button variant="primary" type="submit">
               Simpan Surat {masuk ? "Masuk" : "Keluar"}
-            </button>
+            </Button>
           </div>
         </form>
       </section>

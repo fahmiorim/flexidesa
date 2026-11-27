@@ -28,6 +28,8 @@ vi.mock("@/features/info-desa/publik/application/konten-publik", () => ({
   daftarSliderBeranda: sumber.daftarSliderBeranda,
   daftarAlbumGaleri: sumber.daftarAlbumGaleri,
   daftarFotoAlbum: sumber.daftarFotoAlbum,
+}));
+vi.mock("@/features/program-data-desa/potensi-sarana/application/kontrak", () => ({
   daftarPotensiDesa: sumber.daftarPotensiDesa,
   daftarSaranaPrasarana: sumber.daftarSaranaPrasarana,
 }));

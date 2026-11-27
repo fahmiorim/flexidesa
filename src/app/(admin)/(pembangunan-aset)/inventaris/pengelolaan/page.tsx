@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { formatRupiah } from "@/features/keuangan-desa/keuangan/domain/keuangan";
 import { getInventarisPageData } from "@/features/pembangunan-aset/inventaris/application/inventaris-use-cases";
 import { INVENTARIS_KONDISI_LABELS } from "@/features/pembangunan-aset/inventaris/domain/inventaris";
@@ -40,14 +41,6 @@ export default async function PengelolaanAsetPage() {
           <small>Perlu dilengkapi</small>
         </article>
       </section>
-      <nav className={styles.tabs}>
-        <Link href="/inventaris/dashboard">Dashboard</Link>
-        <Link href="/inventaris">Daftar Inventaris</Link>
-        <Link className={styles.active} href="/inventaris/pengelolaan">
-          Pengelolaan Aset
-        </Link>
-        <Link href="/inventaris/mutasi">Mutasi &amp; Pemeliharaan</Link>
-      </nav>
       <section className={styles.panel}>
         <div className={styles.panelHead}>
           <div>
@@ -64,65 +57,67 @@ export default async function PengelolaanAsetPage() {
           ) : null}
         </div>
         <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Kode Inventaris</th>
-                <th>Nama Aset</th>
-                <th>Perolehan</th>
-                <th>Penanggung Jawab</th>
-                <th>Lokasi</th>
-                <th>Kondisi</th>
-                <th>Nilai Perolehan</th>
-                <th>Nilai Buku</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.rows.map((x) => (
-                <tr key={x.id}>
-                  <td>{x.nomorInventaris ?? "—"}</td>
-                  <td>
-                    <strong>{x.namaBarang}</strong>
-                    <small style={{ display: "block" }} className={styles.muted}>
-                      {x.merk ?? ""} {x.tipe ?? ""}
-                    </small>
-                  </td>
-                  <td>{x.tanggalPembelian ?? x.tahunPembelian ?? "—"}</td>
-                  <td>
-                    {x.penanggungJawab ?? "Belum ditetapkan"}
-                    <small style={{ display: "block" }} className={styles.muted}>
-                      {x.jabatanPenanggungJawab ?? ""}
-                    </small>
-                  </td>
-                  <td>{x.lokasi ?? "—"}</td>
-                  <td>
-                    <span
-                      className={`${styles.tag} ${
-                        x.kondisi === "baik"
-                          ? styles.good
-                          : x.kondisi === "rusak_berat"
-                            ? styles.bad
-                            : styles.warn
-                      }`}
-                    >
-                      {INVENTARIS_KONDISI_LABELS[x.kondisi]}
-                    </span>
-                  </td>
-                  <td>{formatRupiah(x.nilaiAkhir ?? "0")}</td>
-                  <td>{formatRupiah(x.nilaiBuku ?? x.nilaiAkhir ?? "0")}</td>
-                  <td>
-                    <div className={styles.actions}>
-                      <Link href={"/inventaris/" + x.id}>Detail</Link>
-                      {data.canUpdate ? (
-                        <Link href={"/inventaris/" + x.id + "?edit=1"}>Edit</Link>
-                      ) : null}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TableScroll>
+            <Table className={styles.table}>
+              <THead>
+                <Row>
+                  <HeaderCell>Kode Inventaris</HeaderCell>
+                  <HeaderCell>Nama Aset</HeaderCell>
+                  <HeaderCell>Perolehan</HeaderCell>
+                  <HeaderCell>Penanggung Jawab</HeaderCell>
+                  <HeaderCell>Lokasi</HeaderCell>
+                  <HeaderCell>Kondisi</HeaderCell>
+                  <HeaderCell>Nilai Perolehan</HeaderCell>
+                  <HeaderCell>Nilai Buku</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
+                {data.rows.map((x) => (
+                  <Row key={x.id}>
+                    <Cell>{x.nomorInventaris ?? "—"}</Cell>
+                    <Cell>
+                      <strong>{x.namaBarang}</strong>
+                      <small style={{ display: "block" }} className={styles.muted}>
+                        {x.merk ?? ""} {x.tipe ?? ""}
+                      </small>
+                    </Cell>
+                    <Cell>{x.tanggalPembelian ?? x.tahunPembelian ?? "—"}</Cell>
+                    <Cell>
+                      {x.penanggungJawab ?? "Belum ditetapkan"}
+                      <small style={{ display: "block" }} className={styles.muted}>
+                        {x.jabatanPenanggungJawab ?? ""}
+                      </small>
+                    </Cell>
+                    <Cell>{x.lokasi ?? "—"}</Cell>
+                    <Cell>
+                      <span
+                        className={`${styles.tag} ${
+                          x.kondisi === "baik"
+                            ? styles.good
+                            : x.kondisi === "rusak_berat"
+                              ? styles.bad
+                              : styles.warn
+                        }`}
+                      >
+                        {INVENTARIS_KONDISI_LABELS[x.kondisi]}
+                      </span>
+                    </Cell>
+                    <Cell>{formatRupiah(x.nilaiAkhir ?? "0")}</Cell>
+                    <Cell>{formatRupiah(x.nilaiBuku ?? x.nilaiAkhir ?? "0")}</Cell>
+                    <Cell>
+                      <div className={styles.actions}>
+                        <Link href={"/inventaris/" + x.id}>Detail</Link>
+                        {data.canUpdate ? (
+                          <Link href={"/inventaris/" + x.id + "?edit=1"}>Edit</Link>
+                        ) : null}
+                      </div>
+                    </Cell>
+                  </Row>
+                ))}
+              </TBody>
+            </Table>
+          </TableScroll>
           {data.rows.length === 0 ? (
             <p className={styles.empty}>Belum ada aset yang tercatat.</p>
           ) : null}

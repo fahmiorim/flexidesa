@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
 import { getDaftarBukuData } from "@/features/administrasi-desa/bumindes/application/buku-umum";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
@@ -81,23 +82,22 @@ export default async function BukuAdministrasiPage({ searchParams }: Props) {
 
   return (
     <main className={styles.page}>
-      <PageHeading
-        judul={<>Buku Administrasi</>}
-        deskripsi={<>Buku administrasi resmi desa.</>}
-        aksi={
-          <>
-            <div className="page-heading-actions">
-              {bisaTambah ? (
-                <form action={sinkronisasiBukuAction}>
-                  <button className={styles.secondary} type="submit">
-                    ⟳ Sinkron data penduduk
-                  </button>
-                </form>
-              ) : null}
-            </div>
-          </>
-        }
-      />
+      <PageHeading judul={<>Buku Administrasi</>} deskripsi={<>Buku administrasi resmi desa.</>} />
+
+      {bisaTambah ? (
+        <section className={styles.panel} aria-label="Konteks sinkronisasi">
+          <div className="page-heading-actions">
+            <form action={sinkronisasiBukuAction}>
+              <Button type="submit" variant="secondary">
+                ⟳ Sinkron data penduduk
+              </Button>
+            </form>
+          </div>
+          <p className={styles.muted}>
+            Perbarui ringkasan buku penduduk dari data penduduk desa saat ini.
+          </p>
+        </section>
+      ) : null}
 
       {params.sinkron === "1" ? (
         <p className={styles.notice}>

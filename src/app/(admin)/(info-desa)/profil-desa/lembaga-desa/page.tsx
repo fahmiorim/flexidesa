@@ -2,8 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
 import { FormDialog } from "@/components/ui/form-dialog";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getLembagaDesaData } from "@/features/info-desa/pemerintahan/application/lembaga";
 import { hapusLembagaAction } from "@/features/info-desa/pemerintahan/presentation/actions";
 import { simpanLembagaFormAction } from "@/features/info-desa/pemerintahan/presentation/form-actions";
@@ -56,15 +59,9 @@ export default async function LembagaDesaPage({
     <div className="modul-page pemerintahan-page pemerintahan-halaman lembaga-desa-page">
       <PageHeading judul={<>Lembaga Desa & BPD</>} deskripsi={<>Kelola lembaga desa dan BPD.</>} />
 
-      <section aria-label="Daftar lembaga" className="pd-panel" id="daftar-lembaga">
-        <div className="pd-panel-kepala">
-          <div>
-            <h2>Daftar Lembaga &amp; BPD</h2>
-            <p>
-              {active.length} lembaga aktif · {semuaRows.length - active.length} nonaktif.
-            </p>
-          </div>
-          <div className="wilayah-toolbar">
+      <TableCard
+        actions={
+          <>
             <div className="wilayah-toolbar-grup">
               <KelolaKategoriDialog
                 bolehHapus={akses.hapus}
@@ -241,35 +238,38 @@ export default async function LembagaDesaPage({
                 </fieldset>
               </FormDialog>
             ) : null}
-          </div>
-        </div>
+          </>
+        }
+        description={`${active.length} lembaga aktif · ${semuaRows.length - active.length} nonaktif`}
+        title="Daftar Lembaga & BPD"
+      >
         {semuaRows.length ? (
-          <div className="modul-table-wrap">
-            <table className="modul-table pemerintah-table">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Lembaga</th>
-                  <th>Kategori</th>
-                  <th>Ketua</th>
-                  <th>Masa Bakti</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-table-wrap">
+            <Table className="modul-table pemerintah-table">
+              <THead>
+                <Row>
+                  <HeaderCell>No</HeaderCell>
+                  <HeaderCell>Lembaga</HeaderCell>
+                  <HeaderCell>Kategori</HeaderCell>
+                  <HeaderCell>Ketua</HeaderCell>
+                  <HeaderCell>Masa Bakti</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row, index) => {
                   const logo = urlMediaDesa(row.logo, row.villageId);
                   const ketua = row.ketuaResidentId
                     ? namaPenduduk.get(row.ketuaResidentId)?.nama
                     : null;
                   return (
-                    <tr
+                    <Row
                       className={row.status === "aktif" ? undefined : "pemerintah-row-nonaktif"}
                       key={row.id}
                     >
-                      <td>{index + 1}</td>
-                      <td>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>
                         <div className="pemerintah-nama">
                           <span aria-hidden className="pd-aparat-avatar">
                             {logo ? (
@@ -282,56 +282,54 @@ export default async function LembagaDesaPage({
                             <strong>{row.nama}</strong>
                           </div>
                         </div>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <strong className="pemerintah-jabatan">
                           {namaKategori(row.masterId) || "—"}
                         </strong>
                         <small className="pemerintah-jenis-jabatan">Kode {row.kode}</small>
-                      </td>
-                      <td>{ketua ?? "Belum ditetapkan"}</td>
-                      <td>
+                      </Cell>
+                      <Cell>{ketua ?? "Belum ditetapkan"}</Cell>
+                      <Cell>
                         {row.masaBaktiMulai ?? "—"} – {row.masaBaktiSelesai ?? "—"}
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span
                           className={`pd-chip ${row.status === "aktif" ? "is-aktif" : "is-nonaktif"}`}
                         >
                           {row.status === "aktif" ? "Aktif" : "Nonaktif"}
                         </span>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <div className="pd-aparat-aksi">
                           {akses.ubah ? (
-                            <Link className="button button-ghost" href={tautan({ edit: row.id })}>
+                            <ButtonLink variant="ghost" href={tautan({ edit: row.id })}>
                               Ubah
-                            </Link>
+                            </ButtonLink>
                           ) : null}
                           {akses.hapus ? (
-                            <form action={hapusLembagaAction}>
-                              <input name="id" type="hidden" value={row.id} />
-                              <ConfirmSubmit
-                                className="button button-danger-ghost"
-                                message={`Hapus lembaga ${row.nama}?`}
-                              >
-                                Hapus
-                              </ConfirmSubmit>
-                            </form>
+                            <DialogHapusForm
+                              aksi={hapusLembagaAction}
+                              id={row.id}
+                              judul={`Hapus lembaga "${row.nama}"?`}
+                              keterangan="Lembaga beserta data pengurusnya akan dihapus permanen."
+                              labelAksi="Hapus lembaga"
+                            />
                           ) : null}
                         </div>
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <p className="modul-empty">
             Belum ada lembaga desa. Tambahkan lewat tombol &ldquo;Tambah Lembaga&rdquo; di atas.
           </p>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

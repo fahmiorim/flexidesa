@@ -1,11 +1,16 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getLayananPageData } from "@/features/layanan-warga/pelayanan/application/layanan-use-cases";
 
 import { hapusLayananAction } from "./actions";
 
 export const metadata = { title: "Daftar Layanan Publik" };
+
 const money = (value: number) =>
   value === 0
     ? "Gratis"
@@ -14,6 +19,16 @@ const money = (value: number) =>
         currency: "IDR",
         maximumFractionDigits: 0,
       }).format(value);
+
+const categories = [
+  ["Semua", ""],
+  ["Administrasi", "administrasi"],
+  ["Kependudukan", "kependudukan"],
+  ["Sosial", "sosial"],
+  ["Pemerintahan", "pemerintahan"],
+  ["Lainnya", "lainnya"],
+] as const;
+
 export default async function LayananPage({
   searchParams,
 }: {
@@ -24,30 +39,10 @@ export default async function LayananPage({
   const [d, all] = await Promise.all([getLayananPageData(q), getLayananPageData()]);
   const active = all.rows.filter((r) => r.aktif).length,
     inactive = all.rows.length - active;
-  const selected = d.rows[0];
-  const categories = [
-    ["Semua", ""],
-    ["Administrasi", "administrasi"],
-    ["Kependudukan", "kependudukan"],
-    ["Sosial", "sosial"],
-    ["Pemerintahan", "pemerintahan"],
-    ["Lainnya", "lainnya"],
-  ] as const;
+
   return (
     <div className="modul-page">
-      <PageHeading
-        judul={<>Daftar Layanan</>}
-        deskripsi={<>Kelola jenis layanan publik desa.</>}
-        aksi={
-          <>
-            {d.canCreate ? (
-              <Link className="button button-primary" href="/pelayanan-publik/layanan/baru">
-                ＋ Tambah Layanan
-              </Link>
-            ) : null}
-          </>
-        }
-      />
+      <PageHeading judul={<>Daftar Layanan</>} deskripsi={<>Kelola jenis layanan publik desa.</>} />
       <div className="dashboard-stats">
         <article className="modul-card">
           <span>Total Layanan</span>
@@ -77,153 +72,112 @@ export default async function LayananPage({
       </div>
       {p.tersimpan ? <div className="alert alert-info">Layanan berhasil disimpan.</div> : null}
       {p.dihapus ? <div className="alert alert-info">Layanan berhasil dihapus.</div> : null}
-      <section className="modul-card">
-        <div className="page-heading">
-          <div>
-            <h2>Katalog Layanan Desa</h2>
-            <p>Gunakan pencarian untuk menemukan layanan yang akan dikelola.</p>
-          </div>
-        </div>
-        <nav className="quick-actions" aria-label="Kategori layanan">
-          {categories.map(([label, value]) => (
-            <Link
-              key={value || "all"}
-              className={
-                "button " + (q === value || (!q && !value) ? "button-primary" : "button-secondary")
-              }
-              href={
-                value
-                  ? "/pelayanan-publik/layanan?q=" + encodeURIComponent(value)
-                  : "/pelayanan-publik/layanan"
-              }
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
-        <form method="get" className="modul-filter-row">
-          <label>
-            <span>Cari layanan</span>
-            <input name="q" defaultValue={q} placeholder="Cari nama atau kategori layanan…" />
-          </label>
-          <button className="button button-secondary">Cari</button>
-        </form>
-        <div className="modul-scroll">
-          <table className="modul-table">
-            <thead>
-              <tr>
-                <th>Nama layanan</th>
-                <th>Kategori</th>
-                <th>Estimasi</th>
-                <th>Biaya</th>
-                <th>Status</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
+      <TableCard
+        title="Katalog Layanan Desa"
+        description="Gunakan pencarian atau kategori untuk menemukan layanan yang akan dikelola."
+        actions={
+          d.canCreate ? (
+            <ButtonLink variant="primary" href="/pelayanan-publik/layanan/baru">
+              ＋ Tambah Layanan
+            </ButtonLink>
+          ) : null
+        }
+        filter={
+          <>
+            <nav className="quick-actions" aria-label="Kategori layanan">
+              {categories.map(([label, value]) => (
+                <ButtonLink
+                  key={value || "all"}
+                  variant={q === value || (!q && !value) ? "primary" : "secondary"}
+                  href={
+                    value
+                      ? "/pelayanan-publik/layanan?q=" + encodeURIComponent(value)
+                      : "/pelayanan-publik/layanan"
+                  }
+                >
+                  {label}
+                </ButtonLink>
+              ))}
+            </nav>
+            <form method="get" className="modul-filter-row">
+              <FormField
+                defaultValue={q}
+                label="Cari layanan"
+                name="q"
+                placeholder="Cari nama atau kategori layanan…"
+              />
+              <Button variant="secondary" type="submit">
+                Cari
+              </Button>
+            </form>
+          </>
+        }
+        footer={
+          <p className="modul-muted">
+            Menampilkan {d.rows.length} dari {d.total} layanan.
+          </p>
+        }
+      >
+        <TableScroll className="modul-scroll">
+          <Table className="modul-table">
+            <THead>
+              <Row>
+                <HeaderCell>Nama layanan</HeaderCell>
+                <HeaderCell>Kategori</HeaderCell>
+                <HeaderCell>Estimasi</HeaderCell>
+                <HeaderCell>Biaya</HeaderCell>
+                <HeaderCell>Status</HeaderCell>
+                <HeaderCell>Aksi</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {d.rows.map((r) => (
-                <tr key={r.id}>
-                  <td>
+                <Row key={r.id}>
+                  <Cell>
                     <strong>{r.nama}</strong>
                     <br />
                     <small>{r.deskripsi ?? ""}</small>
-                  </td>
-                  <td>{r.kategori}</td>
-                  <td>{r.estimasiHari} hari kerja</td>
-                  <td>{money(r.biaya)}</td>
-                  <td>{r.aktif ? "Aktif" : "Nonaktif"}</td>
-                  <td>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                      <Link
-                        className="button button-secondary"
-                        href={"/pelayanan-publik/layanan/" + r.id}
-                      >
+                  </Cell>
+                  <Cell>{r.kategori}</Cell>
+                  <Cell>{r.estimasiHari} hari kerja</Cell>
+                  <Cell>{money(r.biaya)}</Cell>
+                  <Cell>{r.aktif ? "Aktif" : "Nonaktif"}</Cell>
+                  <Cell>
+                    <div className="table-actions">
+                      <ButtonLink variant="secondary" href={"/pelayanan-publik/layanan/" + r.id}>
                         Detail
-                      </Link>
+                      </ButtonLink>
                       {d.canUpdate ? (
-                        <Link
-                          className="button button-secondary"
+                        <ButtonLink
+                          variant="secondary"
                           href={"/pelayanan-publik/layanan/" + r.id + "/edit"}
                         >
                           Ubah
-                        </Link>
+                        </ButtonLink>
                       ) : null}
                       {d.canDelete ? (
-                        <form action={hapusLayananAction}>
-                          <input type="hidden" name="id" value={r.id} />
-                          <button className="button button-danger-ghost">Hapus</button>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusLayananAction}
+                          id={r.id}
+                          judul={`Hapus layanan "${r.nama}"?`}
+                          keterangan="Layanan dan persyaratannya akan dihapus permanen dari katalog desa."
+                          labelAksi="Hapus layanan"
+                        />
                       ) : null}
                     </div>
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
         {d.rows.length === 0 ? (
           <p className="modul-empty">
             Belum ada layanan yang sesuai. Tambahkan layanan pertama untuk mulai mengelola katalog
             desa.
           </p>
         ) : null}
-        <p>
-          Menampilkan {d.rows.length} dari {d.total} layanan.
-        </p>
-      </section>
-      {selected ? (
-        <section className="modul-card">
-          <div className="page-heading">
-            <div>
-              <h2>Detail Layanan Terpilih</h2>
-              <p>Ringkasan konfigurasi dan persyaratan layanan.</p>
-            </div>
-            <Link
-              className="button button-secondary"
-              href={"/pelayanan-publik/layanan/" + selected.id}
-            >
-              Buka detail →
-            </Link>
-          </div>
-          <div className="service-preview-grid">
-            <div>
-              <h3>{selected.nama}</h3>
-              <p>{selected.deskripsi || "Belum ada deskripsi layanan."}</p>
-              <strong>Persyaratan</strong>
-              {(selected.persyaratan ?? "").split(/\r?\n/).filter(Boolean).length ? (
-                <ul>
-                  {(selected.persyaratan ?? "")
-                    .split(/\r?\n/)
-                    .filter(Boolean)
-                    .map((item, i) => (
-                      <li key={i}>{item}</li>
-                    ))}
-                </ul>
-              ) : (
-                <p className="modul-empty">Belum ada persyaratan yang ditetapkan.</p>
-              )}
-            </div>
-            <div className="service-preview-facts">
-              <div>
-                <span>Kategori</span>
-                <strong>{selected.kategori}</strong>
-              </div>
-              <div>
-                <span>Estimasi</span>
-                <strong>{selected.estimasiHari} hari kerja</strong>
-              </div>
-              <div>
-                <span>Biaya</span>
-                <strong>{money(selected.biaya)}</strong>
-              </div>
-              <div>
-                <span>Status</span>
-                <strong>{selected.aktif ? "Aktif" : "Nonaktif"}</strong>
-              </div>
-            </div>
-          </div>
-        </section>
-      ) : null}
+      </TableCard>
     </div>
   );
 }

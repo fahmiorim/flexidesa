@@ -37,6 +37,13 @@ import styles from "./pengaturan-desa.module.css";
  * Identitas desa (profil, wilayah, media identitas) punya client sendiri di
  * `IdentitasDesaClient` agar dua menu itu tidak berbagi state dan endpoint.
  */
+/** Label susunan desain untuk kartu katalog template tenant. */
+const LABEL_VARIAN: Record<string, string> = {
+  klasik: "Klasik",
+  modern: "Modern",
+  ringkas: "Ringkas",
+};
+
 export function PengaturanDesaClient({ initialSection }: { initialSection?: string }) {
   const [data, setData] = useState<Data | null>(null);
   const [tab, setTab] = useState<TabId>(
@@ -446,6 +453,9 @@ export function PengaturanDesaClient({ initialSection }: { initialSection?: stri
                         </div>
                         <strong>{t.nama}</strong>
                         <small>{t.deskripsi}</small>
+                        <small className={styles.muted}>
+                          Susunan: {LABEL_VARIAN[t.tokens.layout ?? ""] ?? "Klasik"}
+                        </small>
                         {templateSlug === t.slug && <em>✓ Dipilih</em>}
                       </button>
                     ))}

@@ -15,8 +15,6 @@ export type MutationType = ResidentMutationType;
 
 export const MUTATION_TYPE_LABELS = RESIDENT_MUTATION_TYPE_LABELS;
 
-export const mutationTypeSchema = z.enum(MUTATION_TYPES);
-
 // --- Konstanta paritas OpenSID (donjo-app/config/constants.php) ----------
 
 /** Sebab kematian, paritas `SEBAB` OpenSID. */

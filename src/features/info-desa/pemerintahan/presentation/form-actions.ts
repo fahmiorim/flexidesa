@@ -3,7 +3,6 @@
 import { successState, toErrorState, type ActionState } from "@/lib/action-state";
 
 import {
-  simpanAnggotaLembagaAction,
   simpanBaganAction,
   simpanJabatanAction,
   simpanLembagaAction,
@@ -57,10 +56,6 @@ export async function ubahDokumenFormAction(_state: ActionState<null>, fd: FormD
 
 export async function simpanLembagaFormAction(_state: ActionState<null>, fd: FormData) {
   return jalankan(fd, simpanLembagaAction, "Lembaga desa disimpan.");
-}
-
-export async function simpanAnggotaLembagaFormAction(_state: ActionState<null>, fd: FormData) {
-  return jalankan(fd, simpanAnggotaLembagaAction, "Pengurus lembaga disimpan.");
 }
 
 export async function simpanMasterLembagaFormAction(_state: ActionState<null>, fd: FormData) {

@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 
 import { pecahKeluargaAction } from "@/app/(admin)/(kependudukan)/kependudukan/keluarga/actions";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getKeluargaDetail } from "@/features/kependudukan/keluarga/application/use-cases";
 import {
   HEAD_OF_FAMILY_RELATION_ID,
@@ -100,12 +102,12 @@ export default async function PecahKeluargaPage({ params }: { params: Promise<{ 
             </select>
           </label>
           <div className="penduduk-heading-actions">
-            <Link className="button button-secondary" href={`/kependudukan/keluarga/${id}`}>
+            <ButtonLink variant="secondary" href={`/kependudukan/keluarga/${id}`}>
               Batal
-            </Link>
-            <button className="button button-primary" type="submit">
+            </ButtonLink>
+            <Button variant="primary" type="submit">
               Pecah &amp; Buat KK Baru
-            </button>
+            </Button>
           </div>
         </form>
       </section>

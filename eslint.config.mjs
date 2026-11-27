@@ -52,6 +52,40 @@ const eslintConfig = defineConfig([
     },
   },
 
+  // Tabel admin memakai komponen bersama, bukan class data-table lama.
+  {
+    files: ["src/**/*.tsx"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "Literal[value=/data-table/]",
+          message: "Gunakan komponen <Table> dari @/components/ui/table, bukan class data-table.",
+        },
+        {
+          selector: "TemplateElement[value.raw=/data-table/]",
+          message: "Gunakan komponen <Table> dari @/components/ui/table, bukan class data-table.",
+        },
+      ],
+    },
+  },
+
+  // Tabel mentah dilarang di halaman admin non-cetak; pakai <Table> bersama.
+  // Halaman cetak dikecualikan karena memakai layout cetak khusus.
+  {
+    files: ["src/app/(admin)/**/*.tsx", "src/features/**/*.tsx"],
+    ignores: ["**/cetak/**/*.tsx", "**/*.test.tsx"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "JSXOpeningElement[name.name='table']",
+          message: "Gunakan komponen <Table> dari @/components/ui/table, bukan <table> mentah.",
+        },
+      ],
+    },
+  },
+
   // Override default ignores of eslint-config-next.
   globalIgnores([".next/**", "out/**", "build/**", ".tmp/**", "next-env.d.ts"]),
 ]);

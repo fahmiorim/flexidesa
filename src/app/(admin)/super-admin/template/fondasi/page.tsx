@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { getTemplateTenantPlatform } from "@/features/multi-desa/application/platform-info-use-cases";
 import {
   PlatformCard,
@@ -90,30 +91,30 @@ export default async function SuperAdminTemplatePage() {
         flush
         title="Role dan akses"
       >
-        <div className="tenant-table-scroll">
-          <table className="tenant-table">
-            <thead>
-              <tr>
-                <th scope="col">Role</th>
-                <th scope="col">Slug</th>
-                <th scope="col">Sistem</th>
-                <th scope="col">Aturan akses</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll className="tenant-table-scroll">
+          <Table className="tenant-table">
+            <THead>
+              <Row>
+                <HeaderCell scope="col">Role</HeaderCell>
+                <HeaderCell scope="col">Slug</HeaderCell>
+                <HeaderCell scope="col">Sistem</HeaderCell>
+                <HeaderCell scope="col">Aturan akses</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {template.roles.map((role) => (
-                <tr key={role.slug}>
-                  <td>
+                <Row key={role.slug}>
+                  <Cell>
                     <strong>{role.name}</strong>
-                  </td>
-                  <td>{role.slug}</td>
-                  <td>{role.isSystem ? "Ya" : "Tidak"}</td>
-                  <td>{angka.format(aksesPerRole.get(role.slug) ?? 0)}</td>
-                </tr>
+                  </Cell>
+                  <Cell>{role.slug}</Cell>
+                  <Cell>{role.isSystem ? "Ya" : "Tidak"}</Cell>
+                  <Cell>{angka.format(aksesPerRole.get(role.slug) ?? 0)}</Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       </PlatformCard>
 
       <PlatformCard
@@ -122,34 +123,34 @@ export default async function SuperAdminTemplatePage() {
         title="Modul dan menu"
       >
         {template.modules.length > 0 ? (
-          <div className="tenant-table-scroll">
-            <table className="tenant-table">
-              <thead>
-                <tr>
-                  <th scope="col">Modul</th>
-                  <th scope="col">Slug</th>
-                  <th scope="col">URL</th>
-                  <th scope="col">Induk</th>
-                  <th scope="col">Status</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="tenant-table-scroll">
+            <Table className="tenant-table">
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">Modul</HeaderCell>
+                  <HeaderCell scope="col">Slug</HeaderCell>
+                  <HeaderCell scope="col">URL</HeaderCell>
+                  <HeaderCell scope="col">Induk</HeaderCell>
+                  <HeaderCell scope="col">Status</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {template.modules.map((modul) => (
-                  <tr key={modul.slug}>
-                    <td>
+                  <Row key={modul.slug}>
+                    <Cell>
                       <strong>{modul.name}</strong>
                       {modul.icon ? <span className="tenant-secondary">{modul.icon}</span> : null}
-                    </td>
-                    <td>{modul.slug}</td>
-                    <td>{modul.url ?? <span className="tenant-secondary">—</span>}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{modul.slug}</Cell>
+                    <Cell>{modul.url ?? <span className="tenant-secondary">—</span>}</Cell>
+                    <Cell>
                       {modul.parentSlug ? (
                         (namaInduk.get(modul.parentSlug) ?? modul.parentSlug)
                       ) : (
                         <span className="tenant-secondary">Tingkat atas</span>
                       )}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <PlatformStatus
                         aktif={modul.isActive}
                         label={modul.isActive ? "Aktif" : "Nonaktif"}
@@ -157,12 +158,12 @@ export default async function SuperAdminTemplatePage() {
                       {modul.isHidden ? (
                         <span className="tenant-secondary">Disembunyikan</span>
                       ) : null}
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <PlatformEmpty
             description="Sidebar desa baru akan kosong sampai modul ditambahkan ke template."

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { getKeuanganBulanan } from "@/features/keuangan-desa/keuangan/application/keuangan-bulanan-use-cases";
 import { listKeuangan } from "@/features/keuangan-desa/keuangan/application/keuangan-use-cases";
 import { formatRupiah, toMinor } from "@/features/keuangan-desa/keuangan/domain/keuangan";
@@ -85,16 +87,6 @@ export default async function KeuanganPage() {
         </article>
       </section>
 
-      <nav className={styles.tabs} aria-label="Navigasi keuangan dan pembangunan">
-        <Link className={styles.activeTab} href="/keuangan">
-          ◫ Dashboard
-        </Link>
-        <Link href="/keuangan/apbdes">▤ APBDes</Link>
-        <Link href="/keuangan/realisasi">▥ Realisasi Anggaran</Link>
-        <Link href="/keuangan/kegiatan">⚒ Kegiatan &amp; Pembangunan</Link>
-        <Link href="/keuangan/laporan">▧ Laporan Keuangan</Link>
-      </nav>
-
       <section className={styles.panel}>
         <div className={styles.panelHeading}>
           <div>
@@ -153,20 +145,20 @@ export default async function KeuanganPage() {
           <summary>Input / perbarui target dan realisasi per bulan</summary>
           <form action={simpanTargetRealisasiBulananAction}>
             <input type="hidden" name="tahun" value={tahun} />
-            <div className={styles.tableWrap}>
-              <table className={styles.dataTable}>
-                <thead>
-                  <tr>
-                    <th>Bulan</th>
-                    <th>Target (Rp)</th>
-                    <th>Realisasi (Rp)</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableScroll className={styles.tableWrap}>
+              <Table className={styles.dataTable}>
+                <THead>
+                  <Row>
+                    <HeaderCell>Bulan</HeaderCell>
+                    <HeaderCell>Target (Rp)</HeaderCell>
+                    <HeaderCell>Realisasi (Rp)</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
                   {bulanan.rows.map((row) => (
-                    <tr key={row.bulan}>
-                      <td>{row.label}</td>
-                      <td>
+                    <Row key={row.bulan}>
+                      <Cell>{row.label}</Cell>
+                      <Cell>
                         <input
                           className={styles.moneyInput}
                           type="number"
@@ -175,8 +167,8 @@ export default async function KeuanganPage() {
                           name={"target:" + row.bulan}
                           defaultValue={Number(row.target)}
                         />
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <input
                           className={styles.moneyInput}
                           type="number"
@@ -185,15 +177,13 @@ export default async function KeuanganPage() {
                           name={"realisasi:" + row.bulan}
                           defaultValue={Number(row.realisasi)}
                         />
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   ))}
-                </tbody>
-              </table>
-            </div>
-            <button className={styles.primaryButton} type="submit">
-              Simpan Data Bulanan
-            </button>
+                </TBody>
+              </Table>
+            </TableScroll>
+            <Button type="submit">Simpan Data Bulanan</Button>
           </form>
         </details>
       </section>

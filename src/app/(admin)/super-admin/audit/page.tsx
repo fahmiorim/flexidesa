@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { ambilAuditPlatform } from "@/features/multi-desa/application/audit-platform-use-cases";
 import { daftarDesaSuperAdmin } from "@/features/multi-desa/application/provisioning-use-cases";
 import {
@@ -79,9 +81,9 @@ export default async function SuperAdminAuditPage({
               {angka.format(data.total)} peristiwa · halaman {angka.format(data.page)}/
               {angka.format(data.pageCount)}
             </span>
-            <a className="button button-secondary" download href={tautanEkspor}>
+            <ButtonLink variant="secondary" download href={tautanEkspor}>
               Unduh CSV
-            </a>
+            </ButtonLink>
           </div>
         }
         description="Gunakan filter untuk mempersempit peristiwa sebelum mengekspor."
@@ -127,55 +129,55 @@ export default async function SuperAdminAuditPage({
                 </option>
               ))}
             </select>
-            <button className="button button-primary" type="submit">
+            <Button variant="primary" type="submit">
               Terapkan
-            </button>
+            </Button>
             {adaFilter ? (
-              <Link className="button button-secondary" href="/super-admin/audit">
+              <ButtonLink variant="secondary" href="/super-admin/audit">
                 Bersihkan
-              </Link>
+              </ButtonLink>
             ) : null}
           </form>
 
           {data.rows.length > 0 ? (
-            <div className="tenant-table-scroll">
-              <table className="tenant-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Waktu</th>
-                    <th scope="col">Aktor</th>
-                    <th scope="col">Peristiwa</th>
-                    <th scope="col">Resource</th>
-                    <th scope="col">Desa</th>
-                    <th scope="col">IP</th>
-                    <th scope="col">Detail</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableScroll className="tenant-table-scroll">
+              <Table className="tenant-table">
+                <THead>
+                  <Row>
+                    <HeaderCell scope="col">Waktu</HeaderCell>
+                    <HeaderCell scope="col">Aktor</HeaderCell>
+                    <HeaderCell scope="col">Peristiwa</HeaderCell>
+                    <HeaderCell scope="col">Resource</HeaderCell>
+                    <HeaderCell scope="col">Desa</HeaderCell>
+                    <HeaderCell scope="col">IP</HeaderCell>
+                    <HeaderCell scope="col">Detail</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
                   {data.rows.map((item) => (
-                    <tr key={item.id}>
-                      <td>{waktu.format(new Date(item.createdAt))}</td>
-                      <td>
+                    <Row key={item.id}>
+                      <Cell>{waktu.format(new Date(item.createdAt))}</Cell>
+                      <Cell>
                         {item.actorName ?? <span className="tenant-secondary">Sistem</span>}
                         {item.actorId ? (
                           <span className="tenant-secondary">{item.actorId.slice(0, 8)}</span>
                         ) : null}
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <strong>{labelPeristiwa(item.event)}</strong>
                         <span className="tenant-secondary">{item.event}</span>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         {item.resource}
                         {item.resourceId ? (
                           <span className="tenant-secondary">#{item.resourceId}</span>
                         ) : null}
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         {item.villageName ?? <span className="tenant-secondary">Platform</span>}
-                      </td>
-                      <td>{item.ipAddress ?? <span className="tenant-secondary">—</span>}</td>
-                      <td>
+                      </Cell>
+                      <Cell>{item.ipAddress ?? <span className="tenant-secondary">—</span>}</Cell>
+                      <Cell>
                         {item.details ? (
                           <details>
                             <summary>Lihat</summary>
@@ -184,19 +186,19 @@ export default async function SuperAdminAuditPage({
                         ) : (
                           <span className="tenant-secondary">—</span>
                         )}
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TBody>
+              </Table>
+            </TableScroll>
           ) : (
             <PlatformEmpty
               action={
                 adaFilter ? (
-                  <Link className="button button-secondary" href="/super-admin/audit">
+                  <ButtonLink variant="secondary" href="/super-admin/audit">
                     Bersihkan filter
-                  </Link>
+                  </ButtonLink>
                 ) : undefined
               }
               description={
@@ -211,9 +213,9 @@ export default async function SuperAdminAuditPage({
           {data.pageCount > 1 ? (
             <div className="platform-pagination">
               {data.page > 1 ? (
-                <Link className="button button-secondary" href={tautan(data.page - 1)}>
+                <ButtonLink variant="secondary" href={tautan(data.page - 1)}>
                   Sebelumnya
-                </Link>
+                </ButtonLink>
               ) : (
                 <span aria-disabled="true" className="button button-secondary">
                   Sebelumnya
@@ -223,9 +225,9 @@ export default async function SuperAdminAuditPage({
                 Halaman {angka.format(data.page)} / {angka.format(data.pageCount)}
               </span>
               {data.page < data.pageCount ? (
-                <Link className="button button-secondary" href={tautan(data.page + 1)}>
+                <ButtonLink variant="secondary" href={tautan(data.page + 1)}>
                   Berikutnya
-                </Link>
+                </ButtonLink>
               ) : (
                 <span aria-disabled="true" className="button button-secondary">
                   Berikutnya

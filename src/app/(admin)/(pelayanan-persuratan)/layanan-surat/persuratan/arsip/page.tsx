@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
+import { StatCard, StatGrid } from "@/components/ui/stat-card";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { listArsipNomorSuratData } from "@/features/pelayanan-persuratan/surat/application/arsip";
 
 export const metadata: Metadata = { title: "Arsip & Riwayat Surat" };
@@ -53,161 +59,137 @@ export default async function ArsipSuratPage({ searchParams }: { searchParams: S
       <PageHeading
         judul={<>Arsip & Riwayat Surat</>}
         deskripsi={<>Telusuri arsip nomor surat resmi yang telah diterbitkan oleh desa.</>}
-        aksi={
+      />
+      <StatGrid columns={4}>
+        <StatCard
+          icon="▤"
+          label="Total Arsip"
+          utama
+          note="Nomor resmi terbit"
+          value={result.total.toLocaleString("id-ID")}
+        />
+        <StatCard
+          icon="✓"
+          label="Periode dipilih"
+          note="Filter periode"
+          tone="hijau"
+          value={filter.year ?? tahunSekarang}
+        />
+        <StatCard
+          icon="▧"
+          label="Jenis Surat"
+          note="Katalog desa"
+          tone="biru"
+          value={result.jenis.length}
+        />
+        <StatCard
+          icon="☷"
+          label="Klasifikasi"
+          note="Kategori surat"
+          tone="oranye"
+          value={result.klasifikasi.length}
+        />
+      </StatGrid>
+      <TableCard
+        title="Arsip nomor surat"
+        description="Telusuri nomor dan jenis surat resmi yang telah diterbitkan."
+        actions={
           <>
-            <div className="page-heading-actions">
-              <Link href="/layanan-surat/persuratan/surat" className="button button-secondary">
-                Pengelolaan Surat
-              </Link>
-              <a
-                href={`/layanan-surat/persuratan/arsip/ekspor?${query.toString()}`}
-                className="button button-primary"
-              >
-                ↓ Ekspor CSV
-              </a>
-            </div>
+            <ButtonLink
+              size="sm"
+              variant="secondary"
+              href={`/layanan-surat/persuratan/arsip/ekspor?${query.toString()}`}
+            >
+              ↓ Ekspor CSV
+            </ButtonLink>
+            <Link href="/layanan-surat/persuratan/arsip" className="table-action-link">
+              Reset filter
+            </Link>
           </>
         }
-      />
-      <div className="beranda-kpi-grid">
-        <article className="beranda-card beranda-kpi" data-tone="ungu">
-          <span className="beranda-kpi-icon">▤</span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Total Arsip</span>
-            <strong className="beranda-kpi-value">{result.total.toLocaleString("id-ID")}</strong>
-            <span className="beranda-chip" data-tone="ungu">
-              Nomor resmi terbit
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="hijau">
-          <span className="beranda-kpi-icon">✓</span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Periode dipilih</span>
-            <strong className="beranda-kpi-value">{filter.year ?? tahunSekarang}</strong>
-            <span className="beranda-chip" data-tone="hijau">
-              Filter periode
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="biru">
-          <span className="beranda-kpi-icon">▧</span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Jenis Surat</span>
-            <strong className="beranda-kpi-value">{result.jenis.length}</strong>
-            <span className="beranda-chip" data-tone="biru">
-              Katalog desa
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="jingga">
-          <span className="beranda-kpi-icon">☷</span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Klasifikasi</span>
-            <strong className="beranda-kpi-value">{result.klasifikasi.length}</strong>
-            <span className="beranda-chip" data-tone="netral">
-              Kategori surat
-            </span>
-          </div>
-        </article>
-      </div>
-      <section className="modul-card">
-        <div className="beranda-card-head">
-          <div>
-            <h2 className="beranda-card-title">Pencarian arsip</h2>
-            <p className="modul-muted">
-              Pencarian hanya pada nomor dan nama jenis surat dalam arsip resmi.
-            </p>
-          </div>
-          <Link href="/layanan-surat/persuratan/arsip" className="table-action-link">
-            Reset filter
-          </Link>
-        </div>
-        <form method="get" action="/layanan-surat/persuratan/arsip" className="modul-filter-row">
-          <label>
-            Kata kunci
-            <input
-              type="search"
+        filter={
+          <form method="get" action="/layanan-surat/persuratan/arsip" className="modul-filter-row">
+            <FormField
+              label="Kata kunci"
               name="q"
+              type="search"
               maxLength={100}
               defaultValue={filter.search}
               placeholder="Nomor atau jenis surat..."
             />
-          </label>
-          <label>
-            Tahun
-            <select name="tahun" defaultValue={filter.year ? String(filter.year) : ""}>
-              <option value="">Semua tahun</option>
-              {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Jenis surat
-            <select name="jenis" defaultValue={filter.typeId ? String(filter.typeId) : ""}>
-              <option value="">Semua jenis</option>
-              {result.jenis.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Klasifikasi
-            <select
+            <FormField
+              label="Tahun"
+              kind="select"
+              name="tahun"
+              defaultValue={filter.year ? String(filter.year) : ""}
+              options={[
+                { value: "", label: "Semua tahun" },
+                ...years.map((year) => ({ value: String(year), label: String(year) })),
+              ]}
+            />
+            <FormField
+              label="Jenis surat"
+              kind="select"
+              name="jenis"
+              defaultValue={filter.typeId ? String(filter.typeId) : ""}
+              options={[
+                { value: "", label: "Semua jenis" },
+                ...result.jenis.map((item) => ({ value: String(item.id), label: item.name })),
+              ]}
+            />
+            <FormField
+              label="Klasifikasi"
+              kind="select"
               name="klasifikasi"
               defaultValue={filter.classificationId ? String(filter.classificationId) : ""}
-            >
-              <option value="">Semua klasifikasi</option>
-              {result.klasifikasi.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.code} — {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button className="button button-primary" type="submit">
-            Terapkan
-          </button>
-        </form>
+              options={[
+                { value: "", label: "Semua klasifikasi" },
+                ...result.klasifikasi.map((item) => ({
+                  value: String(item.id),
+                  label: `${item.code} — ${item.name}`,
+                })),
+              ]}
+            />
+            <Button variant="primary" type="submit">
+              Terapkan
+            </Button>
+          </form>
+        }
+      >
         {result.rows.length === 0 ? (
           <div className="modul-empty">
             <strong>Belum ada arsip pada filter ini</strong>
             <p className="modul-muted">
               Arsip otomatis terbentuk setelah surat disetujui dan diterbitkan.
             </p>
-            <Link href="/layanan-surat/persuratan/surat" className="button button-secondary">
+            <ButtonLink variant="secondary" href="/layanan-surat/persuratan/surat">
               Lihat Pengelolaan Surat
-            </Link>
+            </ButtonLink>
           </div>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>Nomor surat</th>
-                  <th>Jenis surat</th>
-                  <th>Nomor urut</th>
-                  <th>Tahun</th>
-                  <th>Tanggal terbit</th>
-                  <th>Dokumen</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>Nomor surat</HeaderCell>
+                  <HeaderCell>Jenis surat</HeaderCell>
+                  <HeaderCell>Nomor urut</HeaderCell>
+                  <HeaderCell>Tahun</HeaderCell>
+                  <HeaderCell>Tanggal terbit</HeaderCell>
+                  <HeaderCell>Dokumen</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {result.rows.map((row) => (
-                  <tr key={row.id}>
-                    <td className="modul-mono">
+                  <Row key={row.id}>
+                    <Cell className="modul-mono">
                       <strong>{row.number}</strong>
-                    </td>
-                    <td>{row.typeName}</td>
-                    <td>{row.sequence}</td>
-                    <td>{row.year}</td>
-                    <td>{tanggal(row.issuedAt)}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.typeName}</Cell>
+                    <Cell>{row.sequence}</Cell>
+                    <Cell>{row.year}</Cell>
+                    <Cell>{tanggal(row.issuedAt)}</Cell>
+                    <Cell>
                       {row.letterId ? (
                         <Link
                           href={`/layanan-surat/persuratan/surat/${row.letterId}`}
@@ -218,12 +200,12 @@ export default async function ArsipSuratPage({ searchParams }: { searchParams: S
                       ) : (
                         <span className="modul-muted">Arsip nomor saja</span>
                       )}
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
         <div
           className="modul-total"
@@ -240,18 +222,18 @@ export default async function ArsipSuratPage({ searchParams }: { searchParams: S
           </span>
           <div style={{ display: "flex", gap: 8 }}>
             {result.page > 1 ? (
-              <Link href={pageHref(result.page - 1)} className="button button-secondary">
+              <ButtonLink variant="secondary" href={pageHref(result.page - 1)}>
                 Sebelumnya
-              </Link>
+              </ButtonLink>
             ) : null}
             {result.page * result.pageSize < result.total ? (
-              <Link href={pageHref(result.page + 1)} className="button button-secondary">
+              <ButtonLink variant="secondary" href={pageHref(result.page + 1)}>
                 Berikutnya
-              </Link>
+              </ButtonLink>
             ) : null}
           </div>
         </div>
-      </section>
+      </TableCard>
       <p className="modul-muted">
         Sumber: arsip nomor resmi. Aktivitas hanya tampil bila tercatat di audit.
       </p>

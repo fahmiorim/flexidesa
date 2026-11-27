@@ -42,7 +42,9 @@ function bacaFormKeluarga(formData: FormData) {
 function bacaIds(formData: FormData): number[] {
   return [
     ...new Set(
-      String(formData.get("ids") ?? "")
+      formData
+        .getAll("ids")
+        .join(",")
         .split(/[^0-9]+/)
         .map(Number)
         .filter((id) => Number.isSafeInteger(id) && id > 0),

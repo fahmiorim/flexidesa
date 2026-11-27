@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
@@ -40,24 +41,12 @@ export function FormKeputusanIzin({ aksi, id }: { aksi: AksiPutuskanIzin; id: nu
       </label>
 
       <div className="penduduk-heading-actions">
-        <button
-          className="button button-primary"
-          disabled={pending}
-          name="status"
-          type="submit"
-          value="disetujui"
-        >
+        <Button variant="primary" disabled={pending} name="status" type="submit" value="disetujui">
           Setujui
-        </button>
-        <button
-          className="button button-danger"
-          disabled={pending}
-          name="status"
-          type="submit"
-          value="ditolak"
-        >
+        </Button>
+        <Button variant="danger" disabled={pending} name="status" type="submit" value="ditolak">
           Tolak
-        </button>
+        </Button>
       </div>
     </form>
   );

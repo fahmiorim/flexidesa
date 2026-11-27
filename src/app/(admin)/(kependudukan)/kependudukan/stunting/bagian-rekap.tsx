@@ -1,3 +1,15 @@
+import { Button } from "@/components/ui/button";
+import { StatGrid } from "@/components/ui/stat-card";
+import {
+  Cell,
+  HeaderCell,
+  Row,
+  Table,
+  TableScroll,
+  TBody,
+  TFoot,
+  THead,
+} from "@/components/ui/table";
 import {
   buildSkorcardKonvergensi,
   hitungKonvergensiBaris,
@@ -169,9 +181,9 @@ export function BagianRekap({
             ))}
           </select>
         </label>
-        <button className="button button-primary" type="submit">
+        <Button variant="primary" type="submit">
           Cari
-        </button>
+        </Button>
       </form>
       <section className="platform-card data-panel">
         <header className={styles.panelHead}>
@@ -192,7 +204,7 @@ export function BagianRekap({
           </DialogPanduan>
         </header>
 
-        <section aria-label="Ringkasan rekapitulasi ibu hamil" className="data-kependudukan-kpis">
+        <StatGrid ariaLabel="Ringkasan rekapitulasi ibu hamil" columns={4}>
           <Kpi label="Total Ibu Hamil" nilai={angka.format(ibuTampil.length)} utama />
           <Kpi
             label="Tingkat Konvergensi"
@@ -209,41 +221,43 @@ export function BagianRekap({
             nilai={angka.format(tingkatIbu?.jumlah_seharusnya ?? 0)}
             kecil="Tanpa status -"
           />
-        </section>
+        </StatGrid>
 
-        <div className="table-scroll">
-          <table className={`data-table ${styles.matrix}`}>
+        <TableScroll>
+          <Table className={styles.matrix}>
             <caption className={styles.matrixCaption}>
               Data rekapitulasi konvergensi stunting ibu hamil
             </caption>
-            <thead>
-              <tr>
-                <th rowSpan={2}>No</th>
-                <th rowSpan={2}>NO KIA</th>
-                <th rowSpan={2}>Nama Ibu</th>
-                <th rowSpan={2}>Status Kehamilan</th>
-                <th colSpan={2}>Usia Kehamilan dan Persalinan</th>
-                <th colSpan={INDIKATOR_IBU_HAMIL_KEYS.length}>Status Penerimaan Indikator</th>
-                <th colSpan={3}>Tingkat Konvergensi Indikator</th>
-              </tr>
-              <tr>
-                <th>Usia (Bulan)</th>
-                <th>Tanggal Melahirkan</th>
+            <THead>
+              <Row>
+                <HeaderCell rowSpan={2}>No</HeaderCell>
+                <HeaderCell rowSpan={2}>NO KIA</HeaderCell>
+                <HeaderCell rowSpan={2}>Nama Ibu</HeaderCell>
+                <HeaderCell rowSpan={2}>Status Kehamilan</HeaderCell>
+                <HeaderCell colSpan={2}>Usia Kehamilan dan Persalinan</HeaderCell>
+                <HeaderCell colSpan={INDIKATOR_IBU_HAMIL_KEYS.length}>
+                  Status Penerimaan Indikator
+                </HeaderCell>
+                <HeaderCell colSpan={3}>Tingkat Konvergensi Indikator</HeaderCell>
+              </Row>
+              <Row>
+                <HeaderCell>Usia (Bulan)</HeaderCell>
+                <HeaderCell>Tanggal Melahirkan</HeaderCell>
                 {INDIKATOR_IBU_HAMIL_KEYS.map((key) => (
-                  <th key={key}>{LABEL_INDIKATOR_IBU[key] ?? key}</th>
+                  <HeaderCell key={key}>{LABEL_INDIKATOR_IBU[key] ?? key}</HeaderCell>
                 ))}
-                <th>Diterima</th>
-                <th>Seharusnya</th>
-                <th>%</th>
-              </tr>
-            </thead>
-            <tbody>
+                <HeaderCell>Diterima</HeaderCell>
+                <HeaderCell>Seharusnya</HeaderCell>
+                <HeaderCell>%</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {ibuTampil.length === 0 ? (
-                <tr>
-                  <td colSpan={4 + 2 + INDIKATOR_IBU_HAMIL_KEYS.length + 3}>
+                <Row>
+                  <Cell colSpan={4 + 2 + INDIKATOR_IBU_HAMIL_KEYS.length + 3}>
                     Belum ada data rekapitulasi ibu hamil untuk filter yang dipilih.
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ) : (
                 ibuTampil.map((row, index) => {
                   const kia = kiaNama.get(row.kiaId);
@@ -256,11 +270,11 @@ export function BagianRekap({
                     (item) => item.value === row.statusKehamilan,
                   );
                   return (
-                    <tr key={row.id}>
-                      <td>{index + 1}</td>
-                      <td>{kia?.noKia ?? "—"}</td>
-                      <td>{kia?.ibuName ?? "—"}</td>
-                      <td>
+                    <Row key={row.id}>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>{kia?.noKia ?? "—"}</Cell>
+                      <Cell>{kia?.ibuName ?? "—"}</Cell>
+                      <Cell>
                         <span
                           className={`${styles.badge} ${
                             row.statusKehamilan === 1
@@ -274,72 +288,74 @@ export function BagianRekap({
                         >
                           {status?.label ?? "—"}
                         </span>
-                      </td>
-                      <td>{row.usiaKehamilan ?? "—"}</td>
-                      <td>{row.tanggalMelahirkan ? formatTanggal(row.tanggalMelahirkan) : "—"}</td>
+                      </Cell>
+                      <Cell>{row.usiaKehamilan ?? "—"}</Cell>
+                      <Cell>
+                        {row.tanggalMelahirkan ? formatTanggal(row.tanggalMelahirkan) : "—"}
+                      </Cell>
                       {INDIKATOR_IBU_HAMIL_KEYS.map((key) => {
                         const kolom = KOLOM_INDIKATOR_IBU_HAMIL[key];
                         const nilai = kolom ? row[kolom] : null;
                         return (
-                          <td key={key}>
+                          <Cell key={key}>
                             <Penanda status={statusIndikator(nilai as boolean | null)} />
-                          </td>
+                          </Cell>
                         );
                       })}
-                      <td>
+                      <Cell>
                         <BadgeAngka hijau nilai={konvergensi.jumlah_diterima_lengkap} />
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <BadgeAngka nilai={konvergensi.jumlah_seharusnya} />
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <BatangPersen nilai={konvergensi.persen} />
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   );
                 })
               )}
-            </tbody>
+            </TBody>
             {ibuTampil.length > 0 ? (
-              <tfoot>
-                <tr>
-                  <th colSpan={4} rowSpan={3}>
+              <TFoot>
+                <Row>
+                  <HeaderCell colSpan={4} rowSpan={3}>
                     Tingkat Capaian Konvergensi
-                  </th>
-                  <th colSpan={2}>Jumlah Diterima</th>
+                  </HeaderCell>
+                  <HeaderCell colSpan={2}>Jumlah Diterima</HeaderCell>
                   {INDIKATOR_IBU_HAMIL_KEYS.map((key) => (
-                    <td key={key}>
+                    <Cell key={key}>
                       <BadgeAngka hijau nilai={ibu[key]?.jumlah_diterima ?? 0} />
-                    </td>
+                    </Cell>
                   ))}
-                  <td rowSpan={3}>
+                  <Cell rowSpan={3}>
                     <BadgeAngka hijau nilai={tingkatIbu?.jumlah_diterima ?? 0} />
-                  </td>
-                  <td rowSpan={3}>
+                  </Cell>
+                  <Cell rowSpan={3}>
                     <BadgeAngka nilai={tingkatIbu?.jumlah_seharusnya ?? 0} />
-                  </td>
-                  <td rowSpan={3}>
+                  </Cell>
+                  <Cell rowSpan={3}>
                     <BatangPersen nilai={tingkatIbu?.persen ?? 0} />
-                  </td>
-                </tr>
-                <tr>
-                  <th colSpan={2}>Jumlah Seharusnya</th>
+                  </Cell>
+                </Row>
+                <Row>
+                  <HeaderCell colSpan={2}>Jumlah Seharusnya</HeaderCell>
                   {INDIKATOR_IBU_HAMIL_KEYS.map((key) => (
-                    <td key={key}>
+                    <Cell key={key}>
                       <BadgeAngka nilai={ibu[key]?.jumlah_seharusnya ?? 0} />
-                    </td>
+                    </Cell>
                   ))}
-                </tr>
-                <tr>
-                  <th colSpan={2}>%</th>
+                </Row>
+                <Row>
+                  <HeaderCell colSpan={2}>%</HeaderCell>
                   {INDIKATOR_IBU_HAMIL_KEYS.map((key) => (
-                    <td key={key}>{persen(ibu[key]?.persen ?? 0)}</td>
+                    <Cell key={key}>{persen(ibu[key]?.persen ?? 0)}</Cell>
                   ))}
-                </tr>
-              </tfoot>
+                </Row>
+              </TFoot>
             ) : null}
-          </table>
-        </div>
+          </Table>
+        </TableScroll>
         <p className="form-help">
           Posyandu terlibat: {posyanduNama.size === 0 ? "—" : [...posyanduNama.values()].join(", ")}
           . Status indikator: Y = memenuhi syarat, T = tidak memenuhi syarat, - = data tidak
@@ -365,7 +381,7 @@ export function BagianRekap({
           </DialogPanduan>
         </header>
 
-        <section aria-label="Ringkasan rekapitulasi anak" className="data-kependudukan-kpis">
+        <StatGrid ariaLabel="Ringkasan rekapitulasi anak" columns={4}>
           <Kpi label="Total Anak (0-2 Tahun)" nilai={angka.format(anakTampil.length)} utama />
           <Kpi label="Status Gizi Normal" nilai={angka.format(giziNormal)} kecil="Gizi baik" />
           <Kpi
@@ -380,7 +396,7 @@ export function BagianRekap({
               tingkatAnak?.jumlah_seharusnya ?? 0,
             )} indikator`}
           />
-        </section>
+        </StatGrid>
 
         <section aria-label="Distribusi kategori usia anak" className={styles.distribusi}>
           <article className={`${styles.distribusiKartu} ${styles.distribusiBiru}`}>
@@ -405,41 +421,41 @@ export function BagianRekap({
           </article>
         </section>
 
-        <div className="table-scroll">
-          <table className={`data-table ${styles.matrix}`}>
+        <TableScroll>
+          <Table className={styles.matrix}>
             <caption className={styles.matrixCaption}>
               Data rekapitulasi konvergensi stunting anak 0-2 tahun
             </caption>
-            <thead>
-              <tr>
-                <th rowSpan={2}>No</th>
-                <th rowSpan={2}>NO KIA</th>
-                <th rowSpan={2}>Nama Anak</th>
-                <th rowSpan={2}>Jenis Kelamin</th>
-                <th colSpan={2}>Profil Anak</th>
-                <th colSpan={INDIKATOR_ANAK_KEYS.length}>
+            <THead>
+              <Row>
+                <HeaderCell rowSpan={2}>No</HeaderCell>
+                <HeaderCell rowSpan={2}>NO KIA</HeaderCell>
+                <HeaderCell rowSpan={2}>Nama Anak</HeaderCell>
+                <HeaderCell rowSpan={2}>Jenis Kelamin</HeaderCell>
+                <HeaderCell colSpan={2}>Profil Anak</HeaderCell>
+                <HeaderCell colSpan={INDIKATOR_ANAK_KEYS.length}>
                   Indikator Layanan Kesehatan &amp; Pengasuhan
-                </th>
-                <th colSpan={3}>Tingkat Konvergensi Indikator</th>
-              </tr>
-              <tr>
-                <th>Umur &amp; Kategori</th>
-                <th>Status Gizi</th>
+                </HeaderCell>
+                <HeaderCell colSpan={3}>Tingkat Konvergensi Indikator</HeaderCell>
+              </Row>
+              <Row>
+                <HeaderCell>Umur &amp; Kategori</HeaderCell>
+                <HeaderCell>Status Gizi</HeaderCell>
                 {INDIKATOR_ANAK_KEYS.map((key) => (
-                  <th key={key}>{LABEL_INDIKATOR_ANAK[key] ?? key}</th>
+                  <HeaderCell key={key}>{LABEL_INDIKATOR_ANAK[key] ?? key}</HeaderCell>
                 ))}
-                <th>Diterima</th>
-                <th>Seharusnya</th>
-                <th>%</th>
-              </tr>
-            </thead>
-            <tbody>
+                <HeaderCell>Diterima</HeaderCell>
+                <HeaderCell>Seharusnya</HeaderCell>
+                <HeaderCell>%</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {anakTampil.length === 0 ? (
-                <tr>
-                  <td colSpan={4 + 2 + INDIKATOR_ANAK_KEYS.length + 3}>
+                <Row>
+                  <Cell colSpan={4 + 2 + INDIKATOR_ANAK_KEYS.length + 3}>
                     Belum ada data rekapitulasi anak 0-2 tahun untuk filter yang dipilih.
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ) : (
                 anakTampil.map((row, index) => {
                   const kia = kiaNama.get(row.kiaId);
@@ -451,23 +467,23 @@ export function BagianRekap({
                   );
                   const gizi = STATUS_GIZI_ANAK.find((item) => item.value === row.statusGizi);
                   return (
-                    <tr key={row.id}>
-                      <td>{index + 1}</td>
-                      <td>{kia?.noKia ?? "—"}</td>
-                      <td>{profil?.name ?? "—"}</td>
-                      <td>
+                    <Row key={row.id}>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>{kia?.noKia ?? "—"}</Cell>
+                      <Cell>{profil?.name ?? "—"}</Cell>
+                      <Cell>
                         {profil
                           ? profil.gender === "male"
                             ? "LAKI-LAKI"
                             : "PEREMPUAN"
                           : "TIDAK DIKETAHUI"}
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <strong>{row.umurBulan ?? "—"}</strong>
                         <br />
                         <small>{kategoriUsiaAnak(row.umurBulan)}</small>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span
                           className={`${styles.badge} ${
                             row.statusGizi === 1
@@ -479,70 +495,70 @@ export function BagianRekap({
                         >
                           {gizi?.label ?? "—"}
                         </span>
-                      </td>
+                      </Cell>
                       {INDIKATOR_ANAK_KEYS.map((key) => {
                         const kolom = KOLOM_INDIKATOR_ANAK[key];
                         const nilai = kolom ? row[kolom] : null;
                         return (
-                          <td key={key}>
+                          <Cell key={key}>
                             <Penanda status={statusIndikator(nilai as boolean | null)} />
-                          </td>
+                          </Cell>
                         );
                       })}
-                      <td>
+                      <Cell>
                         <BadgeAngka hijau nilai={konvergensi.jumlah_diterima_lengkap} />
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <BadgeAngka nilai={konvergensi.jumlah_seharusnya} />
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <BatangPersen nilai={konvergensi.persen} />
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   );
                 })
               )}
-            </tbody>
+            </TBody>
             {anakTampil.length > 0 ? (
-              <tfoot>
-                <tr>
-                  <th colSpan={4} rowSpan={3}>
+              <TFoot>
+                <Row>
+                  <HeaderCell colSpan={4} rowSpan={3}>
                     Tingkat Capaian Konvergensi
-                  </th>
-                  <th colSpan={2}>Jumlah Diterima</th>
+                  </HeaderCell>
+                  <HeaderCell colSpan={2}>Jumlah Diterima</HeaderCell>
                   {INDIKATOR_ANAK_KEYS.map((key) => (
-                    <td key={key}>
+                    <Cell key={key}>
                       <BadgeAngka hijau nilai={balita[key]?.jumlah_diterima ?? 0} />
-                    </td>
+                    </Cell>
                   ))}
-                  <td rowSpan={3}>
+                  <Cell rowSpan={3}>
                     <BadgeAngka hijau nilai={tingkatAnak?.jumlah_diterima ?? 0} />
-                  </td>
-                  <td rowSpan={3}>
+                  </Cell>
+                  <Cell rowSpan={3}>
                     <BadgeAngka nilai={tingkatAnak?.jumlah_seharusnya ?? 0} />
-                  </td>
-                  <td rowSpan={3}>
+                  </Cell>
+                  <Cell rowSpan={3}>
                     <BatangPersen nilai={tingkatAnak?.persen ?? 0} />
-                  </td>
-                </tr>
-                <tr>
-                  <th colSpan={2}>Jumlah Seharusnya</th>
+                  </Cell>
+                </Row>
+                <Row>
+                  <HeaderCell colSpan={2}>Jumlah Seharusnya</HeaderCell>
                   {INDIKATOR_ANAK_KEYS.map((key) => (
-                    <td key={key}>
+                    <Cell key={key}>
                       <BadgeAngka nilai={balita[key]?.jumlah_seharusnya ?? 0} />
-                    </td>
+                    </Cell>
                   ))}
-                </tr>
-                <tr>
-                  <th colSpan={2}>%</th>
+                </Row>
+                <Row>
+                  <HeaderCell colSpan={2}>%</HeaderCell>
                   {INDIKATOR_ANAK_KEYS.map((key) => (
-                    <td key={key}>{persen(balita[key]?.persen ?? 0)}</td>
+                    <Cell key={key}>{persen(balita[key]?.persen ?? 0)}</Cell>
                   ))}
-                </tr>
-              </tfoot>
+                </Row>
+              </TFoot>
             ) : null}
-          </table>
-        </div>
+          </Table>
+        </TableScroll>
       </section>
     </>
   );

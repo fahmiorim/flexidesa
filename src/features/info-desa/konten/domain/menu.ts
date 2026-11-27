@@ -1,18 +1,14 @@
 import { z } from "zod";
 
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
-
 /** Menu navigasi situs publik. */
 
 /** Setiap desa memiliki baris `menu_publik`. Form ini disinkronkan dengan
  * baris tersebut. Untuk instalasi baru bila belum ada menu, dipakai
  * `PUBLIC_NAV` bawaan.
  */
-export const MENU_RESOURCE = RESOURCES.menuPublik;
 
 /** Tipe tautan yang didukung menu publik. */
 export const MENU_LINK_TIPE = ["internal", "external"] as const;
-export type MenuLinkTipe = (typeof MENU_LINK_TIPE)[number];
 
 /** Baris menu yang aman dikirim ke komponen klien. */
 export interface MenuRow {
@@ -38,8 +34,6 @@ export const menuPublikFormSchema = z.object({
     .default(0),
   aktif: z.boolean().default(true),
 });
-
-export type MenuPublikFormInput = z.infer<typeof menuPublikFormSchema>;
 
 /**
  * Periksa apakah `parentId` boleh dipakai.

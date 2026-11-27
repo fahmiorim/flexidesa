@@ -26,7 +26,6 @@ import {
   insertPengaduan,
   listPengaduan,
   listPengaduanPublik,
-  setPublikPengaduan,
   updateTanggapanPengaduan,
 } from "@/features/layanan-warga/pengaduan/infrastructure/pengaduan-repository";
 import type { BerkasUnggahan } from "@/features/media/domain/media";
@@ -131,17 +130,6 @@ export async function tanggapiPengaduanData(
 }
 
 /** Tandai pengaduan boleh tampil di halaman publik. */
-export async function setPublikPengaduanData(id: number, publik: boolean): Promise<{ id: number }> {
-  const user = await requirePermission(RESOURCES.pengaduan, "update");
-  const villageId = await resolveVillageId(user);
-
-  const updated = await setPublikPengaduan(villageId, id, publik);
-  if (!updated) throw notFound("Pengaduan tidak ditemukan.");
-
-  // Publikasi bukan perubahan status, jadi tidak dikirim notifikasi email
-  // "status berubah" (yang status lamanya sama dengan status barunya).
-  return { id };
-}
 
 /** Hapus pengaduan beserta lampirannya. */
 export async function hapusPengaduanData(id: number): Promise<void> {

@@ -2,8 +2,6 @@ import { z } from "zod";
 
 import { NO_SELECTION } from "@/lib/forms";
 
-export const MODUL_RESOURCE = "modul" as const;
-
 export const modulFormSchema = z.object({
   name: z.string().trim().min(1, "Nama modul wajib diisi.").max(100, "Maksimal 100 karakter."),
   slug: z.string().trim().min(1, "Slug wajib diisi.").max(100, "Maksimal 100 karakter."),
@@ -14,8 +12,6 @@ export const modulFormSchema = z.object({
   isActive: z.boolean().optional().default(true),
   sortOrder: z.coerce.number().int().min(0).optional().default(0),
 });
-
-export type ModulFormInput = z.infer<typeof modulFormSchema>;
 
 export interface ModulDTO {
   id: number;

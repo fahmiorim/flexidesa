@@ -1,6 +1,10 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getBukuAgendaData } from "@/features/pelayanan-persuratan/surat/application/buku-agenda-use-cases";
 
 import { hapusSuratKeluarAction } from "../buku-agenda-actions";
@@ -19,76 +23,85 @@ export default async function SuratKeluarPage({
       <PageHeading
         judul={<>Surat Keluar</>}
         deskripsi={<>Buku agenda surat yang diterbitkan dan dikirim oleh pemerintah desa.</>}
-        aksi={
-          <>
-            {canCreate ? (
-              <Link
-                className="button button-primary"
-                href="/layanan-surat/persuratan/surat-keluar/baru"
-              >
-                ＋ Tambah Surat Keluar
-              </Link>
-            ) : null}
-          </>
-        }
       />
       {params.berhasil ? (
         <div className="alert alert-info">Perubahan data surat keluar berhasil.</div>
       ) : null}
-      <section className="modul-card">
-        <form method="get" className="modul-filter-row">
-          <input name="q" defaultValue={q} placeholder="Cari nomor surat, penerima, ringkasan…" />
-          <button className="button button-secondary">Cari</button>
-        </form>
-        <div className="modul-scroll">
-          <table className="modul-table">
-            <thead>
-              <tr>
-                <th>No. Agenda</th>
-                <th>Nomor Surat</th>
-                <th>Tanggal</th>
-                <th>Penerima</th>
-                <th>Klasifikasi</th>
-                <th>Ringkasan</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
+      <TableCard
+        title="Daftar Surat Keluar"
+        description={`${rows.length.toLocaleString("id-ID")} surat tercatat`}
+        actions={
+          canCreate ? (
+            <ButtonLink size="sm" href="/layanan-surat/persuratan/surat-keluar/baru">
+              ＋ Tambah Surat Keluar
+            </ButtonLink>
+          ) : null
+        }
+        filter={
+          <form method="get" className="modul-filter-row">
+            <FormField
+              label="Cari surat"
+              name="q"
+              type="search"
+              defaultValue={q}
+              placeholder="Cari nomor surat, penerima, ringkasan…"
+            />
+            <Button variant="secondary" type="submit">
+              Cari
+            </Button>
+          </form>
+        }
+        footer={rows.length === 0 ? <p className="modul-muted">Belum ada surat keluar.</p> : null}
+      >
+        <TableScroll className="modul-scroll">
+          <Table className="modul-table">
+            <THead>
+              <Row>
+                <HeaderCell>No. Agenda</HeaderCell>
+                <HeaderCell>Nomor Surat</HeaderCell>
+                <HeaderCell>Tanggal</HeaderCell>
+                <HeaderCell>Penerima</HeaderCell>
+                <HeaderCell>Klasifikasi</HeaderCell>
+                <HeaderCell>Ringkasan</HeaderCell>
+                <HeaderCell>Aksi</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {rows.map((row) => (
-                <tr key={row.id}>
-                  <td>{row.agendaNumber}</td>
-                  <td className="modul-mono">{row.letterNumber}</td>
-                  <td>{row.letterDate}</td>
-                  <td>{row.recipient ?? "—"}</td>
-                  <td>{row.classificationName ?? "—"}</td>
-                  <td>{row.summary ?? "—"}</td>
-                  <td>
+                <Row key={row.id}>
+                  <Cell>{row.agendaNumber}</Cell>
+                  <Cell className="modul-mono">{row.letterNumber}</Cell>
+                  <Cell>{row.letterDate}</Cell>
+                  <Cell>{row.recipient ?? "—"}</Cell>
+                  <Cell>{row.classificationName ?? "—"}</Cell>
+                  <Cell>{row.summary ?? "—"}</Cell>
+                  <Cell>
                     <div style={{ display: "flex", gap: 8 }}>
                       {canUpdate ? (
-                        <Link
-                          className="button button-secondary"
+                        <ButtonLink
+                          variant="secondary"
                           href={`/layanan-surat/persuratan/surat-keluar/${row.id}/edit`}
                         >
                           Ubah
-                        </Link>
+                        </ButtonLink>
                       ) : null}
                       {canDelete ? (
-                        <form action={hapusSuratKeluarAction}>
-                          <input type="hidden" name="id" value={row.id} />
-                          <button className="button button-danger-ghost" type="submit">
-                            Hapus
-                          </button>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusSuratKeluarAction}
+                          id={row.id}
+                          judul={`Hapus surat keluar ${row.letterNumber}?`}
+                          keterangan="Catatan agenda surat keluar akan dihapus permanen."
+                          labelAksi="Hapus surat"
+                        />
                       ) : null}
                     </div>
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
-        {rows.length === 0 ? <p className="modul-empty">Belum ada surat keluar.</p> : null}
-      </section>
+            </TBody>
+          </Table>
+        </TableScroll>
+      </TableCard>
     </div>
   );
 }

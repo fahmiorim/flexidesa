@@ -11,7 +11,6 @@ import {
   fallbackEmail,
   PENGGUNA_RESOURCE,
   type PenggunaCreateInput,
-  type PenggunaDTO,
   type PenggunaUpdateInput,
   type RoleOption,
 } from "@/features/pengaturan/pengguna/domain/pengguna";
@@ -36,7 +35,7 @@ import {
 } from "@/features/pengaturan/pengguna/infrastructure/pengguna-repository";
 import { getRoleById, listRoles } from "@/features/pengaturan/rbac/application/kontrak";
 import { isPlatformRole } from "@/features/pengaturan/rbac/domain/role";
-import { requirePermission, requireUser } from "@/lib/dal";
+import { requirePermission } from "@/lib/dal";
 import { conflict, notFound } from "@/lib/errors";
 
 export async function getKeamananAkunSaya(userId: string, villageId: number | null) {
@@ -79,14 +78,6 @@ export async function hapusIpBlokir(villageId: number, id: number): Promise<void
 }
 
 /** Data profil pengguna yang sedang login (halaman "Profil Saya"). */
-export async function getProfilSaya(): Promise<PenggunaDTO> {
-  const user = await requireUser();
-
-  const profil = await getPenggunaById(user.id);
-  if (!profil) throw notFound("Profil tidak ditemukan.");
-
-  return profil;
-}
 
 /** Daftar pengguna pada desa pengguna yang sedang login + opsi grup akses. */
 export async function listPenggunaWithMeta(): Promise<{

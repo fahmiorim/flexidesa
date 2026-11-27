@@ -4,7 +4,6 @@ import type { Readable } from "node:stream";
 
 export const BACKUP_EXT = ".sql" as const;
 export const BACKUP_GZIP_EXT = ".sql.gz" as const;
-export const RESTORE_SQL_EXTS = [".sql", ".sql.gz"] as const;
 
 export const MAX_RESTORE_BYTES = 200 * 1024 * 1024; // 200 MB
 

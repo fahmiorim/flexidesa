@@ -84,7 +84,6 @@ export const permohonanSuratFormSchema = z.object({
   noHpAktif: z.string().trim().max(50).optional().or(z.literal("")),
   keterangan: z.string().trim().max(500).optional().or(z.literal("")),
 });
-export type PermohonanSuratInput = z.infer<typeof permohonanSuratFormSchema>;
 
 /** Baris permohonan untuk tabel operator. */
 export interface PermohonanAdminRow {
@@ -174,6 +173,3 @@ export function serializeBerkasSyarat(items: readonly BerkasSyarat[]): string {
 }
 
 /** Status permohonan yang boleh diubah operator. */
-export function isPermohonanStatus(value: number): boolean {
-  return (PERMOHONAN_STATUS as readonly string[]).includes(String(value));
-}

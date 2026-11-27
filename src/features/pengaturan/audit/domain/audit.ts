@@ -194,10 +194,6 @@ export interface AuditEventInput {
 }
 
 /** Serialisasi detail yang aman untuk disimpan tanpa memasukkan kredensial. */
-export function serializeAuditDetails(details: AuditEventInput["details"]): string | null {
-  if (!details || Object.keys(details).length === 0) return null;
-  return JSON.stringify(details);
-}
 
 export interface AuditLogRow {
   id: number;

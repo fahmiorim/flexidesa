@@ -1,7 +1,9 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Card } from "@/components/ui/card";
 import { FormDialog } from "@/components/ui/form-dialog";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { getPerangkatDesaData } from "@/features/info-desa/pemerintahan/application/perangkat";
 import { susunBagan, type BaganNode } from "@/features/info-desa/pemerintahan/domain/aparat-desa";
 import { simpanBaganFormAction } from "@/features/info-desa/pemerintahan/presentation/form-actions";
@@ -131,7 +133,7 @@ export default async function BaganOrganisasiPage({
         judul={<>Bagan Organisasi</>}
         deskripsi={<>Susunan bagan mengikuti atasan langsung masing-masing aparat aktif.</>}
       />
-      <section className="modul-card">
+      <Card variant="panel">
         <div className="pemerintahan-card-heading">
           <div>
             <h2>Struktur Organisasi {denganBpd ? "dengan BPD" : "tanpa BPD"}</h2>
@@ -172,8 +174,8 @@ export default async function BaganOrganisasiPage({
             Bagan belum tersedia. Aktifkan minimal satu aparat pemerintah desa.
           </p>
         )}
-      </section>
-      <section className="modul-card">
+      </Card>
+      <Card variant="panel">
         <div className="pemerintahan-card-heading">
           <div>
             <h2>Atur Bagan</h2>
@@ -181,23 +183,23 @@ export default async function BaganOrganisasiPage({
           </div>
         </div>
         {rows.length ? (
-          <div className="modul-table-wrap">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>Aparat</th>
-                  <th>Susunan Bagan</th>
-                  {akses.ubah ? <th>Aksi</th> : null}
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
+                  <HeaderCell>Aparat</HeaderCell>
+                  <HeaderCell>Susunan Bagan</HeaderCell>
+                  {akses.ubah ? <HeaderCell>Aksi</HeaderCell> : null}
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row) => (
-                  <tr key={row.id}>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>
                       <strong>{row.nama}</strong>
                       <small>{row.jabatan ?? "Belum ditentukan"}</small>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {row.atasanId
                         ? `Atasan: ${namaAparat.get(row.atasanId) ?? "Tidak ditemukan"}`
                         : "Akar bagan"}
@@ -206,9 +208,9 @@ export default async function BaganOrganisasiPage({
                         Tata letak {LABEL_LAYOUT[row.baganLayout ?? ""] ?? "Bawaan"}
                         {row.baganWarna ? ` · Warna ${row.baganWarna}` : ""}
                       </small>
-                    </td>
+                    </Cell>
                     {akses.ubah ? (
-                      <td>
+                      <Cell>
                         <FormDialog
                           aksi={simpanBaganFormAction}
                           deskripsi={`Atur posisi ${row.nama} pada bagan organisasi.`}
@@ -220,17 +222,17 @@ export default async function BaganOrganisasiPage({
                         >
                           {isiBagan(row)}
                         </FormDialog>
-                      </td>
+                      </Cell>
                     ) : null}
-                  </tr>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <p className="modul-empty">Belum ada aparat untuk diatur pada bagan.</p>
         )}
-      </section>
+      </Card>
     </div>
   );
 }

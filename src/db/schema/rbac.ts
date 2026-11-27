@@ -21,7 +21,7 @@ import { villages } from "./village";
  * kosakatanya berasal dari domain RBAC, bukan kode bitmask.
  *
  * Aturan lintas tenant yang dijaga database (migrasi
- * `0006_rbac_batas_tenant_dan_slug_global.sql`, tidak dapat ditulis lewat
+ * `0000_baseline.sql`, tidak dapat ditulis lewat
  * Drizzle):
  * - `role_permissions` hanya boleh menautkan role dan modul bila keduanya satu
  *   tenant, atau salah satunya global (`village_id IS NULL`).

@@ -27,12 +27,6 @@ export async function listArsip(
     .orderBy(desc(arsip.id));
 }
 
-export async function createArsip(data: NewArsip): Promise<number> {
-  const result = await db.insert(arsip).values(data);
-  const insertId = result[0].insertId;
-  return typeof insertId === "bigint" ? Number(insertId) : insertId;
-}
-
 export async function updateArsip(
   id: number,
   villageId: number,
@@ -46,12 +40,4 @@ export async function updateArsip(
 
 export async function deleteArsip(id: number, villageId: number): Promise<void> {
   await db.delete(arsip).where(and(eq(arsip.id, id), eq(arsip.villageId, villageId)));
-}
-
-export async function listKategoriArsip(villageId: number): Promise<string[]> {
-  const rows = await db
-    .selectDistinct({ kategori: arsip.kategori })
-    .from(arsip)
-    .where(and(eq(arsip.villageId, villageId)));
-  return rows.map((r) => r.kategori).filter((k): k is string => k !== null && k !== "");
 }

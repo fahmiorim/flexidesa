@@ -1,9 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useActionState, useState } from "react";
 
-import { GalatField, PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FieldShell } from "@/components/ui/form-field";
+import { PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import type { KonfigurasiTtePageData } from "@/features/pelayanan-persuratan/surat/application/tte-use-cases";
 import {
   FIELD_PENDUDUK_LUAR,
@@ -55,12 +57,9 @@ function Field({
   children: React.ReactNode;
 }) {
   return (
-    <label className="form-field">
-      <span className="form-label">{label}</span>
+    <FieldShell label={label} helpText={hint} error={galat}>
       {children}
-      {hint ? <span className="modul-muted">{hint}</span> : null}
-      <GalatField pesan={galat} />
-    </label>
+    </FieldShell>
   );
 }
 
@@ -165,13 +164,9 @@ export function PengaturanSuratForm({
               </label>
 
               <div className="penduduk-heading-actions">
-                <button
-                  className="button button-primary"
-                  disabled={!tte.canManage || pendingTte}
-                  type="submit"
-                >
+                <Button variant="primary" disabled={!tte.canManage || pendingTte} type="submit">
                   {pendingTte ? "Menyimpan…" : "Simpan Konfigurasi TTE"}
-                </button>
+                </Button>
               </div>
             </>
           )}
@@ -485,16 +480,12 @@ export function PengaturanSuratForm({
           </fieldset>
 
           <div className="penduduk-heading-actions">
-            <Link className="button button-secondary" href="/layanan-surat/persuratan/jenis-surat">
+            <ButtonLink variant="secondary" href="/layanan-surat/persuratan/jenis-surat">
               Kembali
-            </Link>
-            <button
-              className="button button-primary"
-              disabled={!canManage || pending}
-              type="submit"
-            >
+            </ButtonLink>
+            <Button variant="primary" disabled={!canManage || pending} type="submit">
               {pending ? "Menyimpan…" : "Simpan Pengaturan"}
-            </button>
+            </Button>
           </div>
         </form>
       )}

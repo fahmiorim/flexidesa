@@ -2,7 +2,7 @@ import "server-only";
 
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { redirect, forbidden as renderForbidden } from "next/navigation";
 import { cache } from "react";
 
 import { db } from "@/db";
@@ -256,7 +256,9 @@ export async function requireAnyPermission(
   if (user.passwordExpired) throw forbidden();
 
   if (!resources.some((resource) => hasPermission(user.permissions, resource, action))) {
-    throw forbidden();
+    // `forbidden()` Next merender `src/app/forbidden.tsx` (403), bukan error
+    // runtime. Server Action yang memanggil ini tetap mendapat respons 403.
+    renderForbidden();
   }
 
   return user;
@@ -270,10 +272,11 @@ export async function requireAnyPermission(
  */
 export async function requirePermission(resource: string, action: Action): Promise<CurrentUser> {
   const user = await requireUser();
-  if (user.passwordExpired) throw forbidden();
+  if (user.passwordExpired) renderForbidden();
 
   if (!hasPermission(user.permissions, resource, action)) {
-    throw forbidden();
+    // Halaman tanpa izin harus menampilkan 403 yang ramah, bukan layar error.
+    renderForbidden();
   }
 
   return user;

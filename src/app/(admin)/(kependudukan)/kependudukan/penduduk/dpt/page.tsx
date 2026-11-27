@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   getDpt,
   getDptReference,
@@ -155,197 +159,192 @@ export default async function CalonPemilihPage({
 
       {params.dihapus === "1" ? <p className="dpt-alert">Pemilihan berhasil dihapus.</p> : null}
 
-      <section className="platform-card penduduk-card dpt-card">
-        <div className="penduduk-card-head">
-          <div>
-            <h2>Daftar Calon Pemilih</h2>
-            <p>
-              {aktif
-                ? `${aktif.judul} · ${formatTanggal(aktif.tanggal)}`
-                : "Pilih pemilihan aktif untuk menampilkan daftar"}
-              {` · ${angka.format(hasil.total)} pemilih`}
-            </p>
-          </div>
-          <div className="penduduk-heading-actions penduduk-card-actions">
+      <TableCard
+        actions={
+          <>
             <MenuCetakDpt
               cetakHref={tautanEkspor("/kependudukan/penduduk/dpt/cetak", filter)}
               exportHref={tautanEkspor("/kependudukan/penduduk/dpt/ekspor", filter)}
               unduhHref={tautanEkspor("/kependudukan/penduduk/dpt/unduh", filter)}
             />
-            <Link className="button button-secondary" href="#pemilihan">
+            <ButtonLink variant="secondary" href="#pemilihan">
               Kelola Pemilihan
-            </Link>
-          </div>
-        </div>
+            </ButtonLink>
+          </>
+        }
+        className="penduduk-card dpt-card"
+        description={`${aktif ? `${aktif.judul} · ${formatTanggal(aktif.tanggal)}` : "Pilih pemilihan aktif untuk menampilkan daftar"} · ${angka.format(hasil.total)} pemilih`}
+        filter={
+          <form className="penduduk-filter dpt-filter" method="get">
+            <label className="penduduk-search">
+              <span>Cari</span>
+              <input
+                defaultValue={filter.search}
+                name="search"
+                placeholder="NIK atau nama calon pemilih"
+                type="search"
+              />
+            </label>
+            <label>
+              <span>Jenis kelamin</span>
+              <select defaultValue={filter.gender ?? ""} name="gender">
+                <option value="">Semua</option>
+                {Object.entries(GENDER_LABELS).map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>Dusun</span>
+              <select defaultValue={filter.dusun ?? ""} name="dusun">
+                <option value="">Semua dusun</option>
+                {referensi.dusun.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>RW</span>
+              <select defaultValue={filter.rw ?? ""} name="rw">
+                <option value="">Semua RW</option>
+                {referensi.rw.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span>RT</span>
+              <select defaultValue={filter.rt ?? ""} name="rt">
+                <option value="">Semua RT</option>
+                {referensi.rt.map((value) => (
+                  <option key={value} value={value}>
+                    {value}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="penduduk-filter-aksi">
+              <Button variant="primary" type="submit">
+                Terapkan
+              </Button>
+              <ButtonLink variant="secondary" href="/kependudukan/penduduk/dpt">
+                Bersihkan
+              </ButtonLink>
+            </div>
 
-        <form className="penduduk-filter dpt-filter" method="get">
-          <label className="penduduk-search">
-            <span>Cari</span>
-            <input
-              defaultValue={filter.search}
-              name="search"
-              placeholder="NIK atau nama calon pemilih"
-              type="search"
-            />
-          </label>
-          <label>
-            <span>Jenis kelamin</span>
-            <select defaultValue={filter.gender ?? ""} name="gender">
-              <option value="">Semua</option>
-              {Object.entries(GENDER_LABELS).map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span>Dusun</span>
-            <select defaultValue={filter.dusun ?? ""} name="dusun">
-              <option value="">Semua dusun</option>
-              {referensi.dusun.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span>RW</span>
-            <select defaultValue={filter.rw ?? ""} name="rw">
-              <option value="">Semua RW</option>
-              {referensi.rw.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            <span>RT</span>
-            <select defaultValue={filter.rt ?? ""} name="rt">
-              <option value="">Semua RT</option>
-              {referensi.rt.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="penduduk-filter-aksi">
-            <button className="button button-primary" type="submit">
-              Terapkan
-            </button>
-            <Link className="button button-secondary" href="/kependudukan/penduduk/dpt">
-              Bersihkan
-            </Link>
-          </div>
-
-          <details className="dpt-filter-more" open={jumlahFilter > 0}>
-            <summary>
-              <span>Filter lainnya</span>
-              {jumlahFilter > 0 ? (
-                <span className="keluarga-filter-count">{jumlahFilter}</span>
-              ) : null}
-            </summary>
-            <div className="dpt-filter-panel">
-              <fieldset className="dpt-age-filter">
-                <legend>Umur pada tanggal pemilihan</legend>
+            <details className="dpt-filter-more" open={jumlahFilter > 0}>
+              <summary>
+                <span>Filter lainnya</span>
+                {jumlahFilter > 0 ? (
+                  <span className="keluarga-filter-count">{jumlahFilter}</span>
+                ) : null}
+              </summary>
+              <div className="dpt-filter-panel">
+                <fieldset className="dpt-age-filter">
+                  <legend>Umur pada tanggal pemilihan</legend>
+                  <label>
+                    <span>Dari</span>
+                    <input
+                      defaultValue={filter.umurMin ?? ""}
+                      min={0}
+                      name="umurMin"
+                      placeholder="0"
+                      type="number"
+                    />
+                  </label>
+                  <label>
+                    <span>Sampai</span>
+                    <input
+                      defaultValue={filter.umurMax ?? ""}
+                      min={0}
+                      name="umurMax"
+                      placeholder="Tanpa batas"
+                      type="number"
+                    />
+                  </label>
+                  <label>
+                    <span>Satuan</span>
+                    <select defaultValue={filter.umurSatuan ?? "tahun"} name="umurSatuan">
+                      <option value="tahun">Tahun</option>
+                      <option value="bulan">Bulan</option>
+                    </select>
+                  </label>
+                </fieldset>
                 <label>
-                  <span>Dari</span>
-                  <input
-                    defaultValue={filter.umurMin ?? ""}
-                    min={0}
-                    name="umurMin"
-                    placeholder="0"
-                    type="number"
-                  />
-                </label>
-                <label>
-                  <span>Sampai</span>
-                  <input
-                    defaultValue={filter.umurMax ?? ""}
-                    min={0}
-                    name="umurMax"
-                    placeholder="Tanpa batas"
-                    type="number"
-                  />
-                </label>
-                <label>
-                  <span>Satuan</span>
-                  <select defaultValue={filter.umurSatuan ?? "tahun"} name="umurSatuan">
-                    <option value="tahun">Tahun</option>
-                    <option value="bulan">Bulan</option>
+                  <span>Agama</span>
+                  <select defaultValue={filter.agamaId ?? ""} name="agamaId">
+                    <option value="">Semua agama</option>
+                    {referensi.religions.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
                   </select>
                 </label>
-              </fieldset>
-              <label>
-                <span>Agama</span>
-                <select defaultValue={filter.agamaId ?? ""} name="agamaId">
-                  <option value="">Semua agama</option>
-                  {referensi.religions.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Pendidikan dalam KK</span>
-                <select defaultValue={filter.pendidikanId ?? ""} name="pendidikanId">
-                  <option value="">Semua pendidikan</option>
-                  {referensi.educations.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Pendidikan sedang ditempuh</span>
-                <select defaultValue={filter.pendidikanSedangId ?? ""} name="pendidikanSedangId">
-                  <option value="">Semua</option>
-                  {referensi.educations.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Pekerjaan</span>
-                <select defaultValue={filter.pekerjaanId ?? ""} name="pekerjaanId">
-                  <option value="">Semua pekerjaan</option>
-                  {referensi.occupations.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Status perkawinan</span>
-                <select defaultValue={filter.statusKawinId ?? ""} name="statusKawinId">
-                  <option value="">Semua status</option>
-                  {referensi.maritalStatuses.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                <span>Tag ID Card</span>
-                <select defaultValue={filter.tagIdCard ?? ""} name="tagIdCard">
-                  <option value="">Semua</option>
-                  <option value="ada">Sudah punya</option>
-                  <option value="tidak">Belum punya</option>
-                </select>
-              </label>
-            </div>
-          </details>
-        </form>
-
+                <label>
+                  <span>Pendidikan dalam KK</span>
+                  <select defaultValue={filter.pendidikanId ?? ""} name="pendidikanId">
+                    <option value="">Semua pendidikan</option>
+                    {referensi.educations.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>Pendidikan sedang ditempuh</span>
+                  <select defaultValue={filter.pendidikanSedangId ?? ""} name="pendidikanSedangId">
+                    <option value="">Semua</option>
+                    {referensi.educations.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>Pekerjaan</span>
+                  <select defaultValue={filter.pekerjaanId ?? ""} name="pekerjaanId">
+                    <option value="">Semua pekerjaan</option>
+                    {referensi.occupations.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>Status perkawinan</span>
+                  <select defaultValue={filter.statusKawinId ?? ""} name="statusKawinId">
+                    <option value="">Semua status</option>
+                    {referensi.maritalStatuses.map((item) => (
+                      <option key={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>Tag ID Card</span>
+                  <select defaultValue={filter.tagIdCard ?? ""} name="tagIdCard">
+                    <option value="">Semua</option>
+                    <option value="ada">Sudah punya</option>
+                    <option value="tidak">Belum punya</option>
+                  </select>
+                </label>
+              </div>
+            </details>
+          </form>
+        }
+        title="Daftar Calon Pemilih"
+      >
         {hasil.rows.length === 0 ? (
           <p className="modul-empty">
             {!aktif
@@ -355,31 +354,31 @@ export default async function CalonPemilihPage({
                 : "Belum ada penduduk yang memenuhi syarat sebagai calon pemilih."}
           </p>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table penduduk-table dpt-table">
-              <thead>
-                <tr>
-                  <th scope="col">No</th>
-                  <th scope="col">NIK</th>
-                  <th scope="col">Nama / No. KK</th>
-                  <th scope="col">Tag ID</th>
-                  <th scope="col">JK</th>
-                  <th scope="col">Alamat / Wilayah</th>
-                  <th scope="col">Umur</th>
-                  <th scope="col">Pendidikan KK</th>
-                  <th scope="col">Pekerjaan</th>
-                  <th scope="col">Kawin</th>
-                  <th scope="col">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table className="penduduk-table dpt-table">
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">No</HeaderCell>
+                  <HeaderCell scope="col">NIK</HeaderCell>
+                  <HeaderCell scope="col">Nama / No. KK</HeaderCell>
+                  <HeaderCell scope="col">Tag ID</HeaderCell>
+                  <HeaderCell scope="col">JK</HeaderCell>
+                  <HeaderCell scope="col">Alamat / Wilayah</HeaderCell>
+                  <HeaderCell scope="col">Umur</HeaderCell>
+                  <HeaderCell scope="col">Pendidikan KK</HeaderCell>
+                  <HeaderCell scope="col">Pekerjaan</HeaderCell>
+                  <HeaderCell scope="col">Kawin</HeaderCell>
+                  <HeaderCell scope="col">Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {hasil.rows.map((row, index) => (
-                  <tr key={row.id}>
-                    <td className="penduduk-nomor">{mulai + index}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell className="penduduk-nomor">{mulai + index}</Cell>
+                    <Cell>
                       <span className="penduduk-nik">{samarkanNik(row.nationalId)}</span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <div className="penduduk-identitas">
                         <span
                           aria-hidden="true"
@@ -407,27 +406,27 @@ export default async function CalonPemilihPage({
                           )}
                         </div>
                       </div>
-                    </td>
-                    <td>{row.idCardTag ?? "—"}</td>
-                    <td>{row.gender === "male" ? "L" : "P"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.idCardTag ?? "—"}</Cell>
+                    <Cell>{row.gender === "male" ? "L" : "P"}</Cell>
+                    <Cell>
                       <span>{row.address ?? "—"}</span>
                       <span className="modul-muted">{wilayah(row) || "Wilayah belum diisi"}</span>
-                    </td>
-                    <td>{row.umurPemilihan !== null ? `${row.umurPemilihan} th` : "—"}</td>
-                    <td>{row.pendidikan ?? "—"}</td>
-                    <td>{row.pekerjaan ?? "—"}</td>
-                    <td>{row.statusKawin ?? "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.umurPemilihan !== null ? `${row.umurPemilihan} th` : "—"}</Cell>
+                    <Cell>{row.pendidikan ?? "—"}</Cell>
+                    <Cell>{row.pekerjaan ?? "—"}</Cell>
+                    <Cell>{row.statusKawin ?? "—"}</Cell>
+                    <Cell>
                       <Link className="penduduk-aksi" href={`/kependudukan/penduduk/${row.id}`}>
                         Lihat
                       </Link>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
 
         <div className="penduduk-footer">
@@ -439,11 +438,20 @@ export default async function CalonPemilihPage({
           {hasil.pageCount > 1 ? (
             <nav aria-label="Navigasi halaman calon pemilih" className="penduduk-pagination">
               {hasil.page > 1 ? (
-                <Link className="penduduk-page-arrow" href={tautanHalaman(filter, hasil.page - 1)}>
+                <Link
+                  aria-label="Halaman sebelumnya"
+                  className="penduduk-page-arrow"
+                  href={tautanHalaman(filter, hasil.page - 1)}
+                >
                   ‹
                 </Link>
               ) : (
-                <span aria-disabled="true" className="penduduk-page-arrow" data-disabled="true">
+                <span
+                  aria-disabled="true"
+                  aria-label="Halaman sebelumnya"
+                  className="penduduk-page-arrow"
+                  data-disabled="true"
+                >
                   ‹
                 </span>
               )}
@@ -458,18 +466,27 @@ export default async function CalonPemilihPage({
                 </Link>
               ))}
               {hasil.page < hasil.pageCount ? (
-                <Link className="penduduk-page-arrow" href={tautanHalaman(filter, hasil.page + 1)}>
+                <Link
+                  aria-label="Halaman berikutnya"
+                  className="penduduk-page-arrow"
+                  href={tautanHalaman(filter, hasil.page + 1)}
+                >
                   ›
                 </Link>
               ) : (
-                <span aria-disabled="true" className="penduduk-page-arrow" data-disabled="true">
+                <span
+                  aria-disabled="true"
+                  aria-label="Halaman berikutnya"
+                  className="penduduk-page-arrow"
+                  data-disabled="true"
+                >
                   ›
                 </span>
               )}
             </nav>
           ) : null}
         </div>
-      </section>
+      </TableCard>
 
       <PanelPemilihan
         bolehHapus={bolehHapus}

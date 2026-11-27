@@ -2,6 +2,8 @@
 
 import { useActionState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { ModulePermissionRow } from "@/features/pengaturan/rbac/domain/grup";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
@@ -20,26 +22,26 @@ export function FormIzin({ roleId, permissions, readOnly, aksi, resetAction }: P
     <form action={formAction} className="pengguna-izin-form">
       <input name="roleId" type="hidden" value={roleId} />
 
-      <div className="tenant-table-scroll">
-        <table className="tenant-table pengguna-izin-table">
-          <thead>
-            <tr>
-              <th scope="col">Modul</th>
-              <th scope="col">Lihat</th>
-              <th scope="col">Tambah</th>
-              <th scope="col">Ubah</th>
-              <th scope="col">Hapus</th>
-            </tr>
-          </thead>
-          <tbody>
+      <TableScroll className="tenant-table-scroll">
+        <Table className="tenant-table pengguna-izin-table">
+          <THead>
+            <Row>
+              <HeaderCell scope="col">Modul</HeaderCell>
+              <HeaderCell scope="col">Lihat</HeaderCell>
+              <HeaderCell scope="col">Tambah</HeaderCell>
+              <HeaderCell scope="col">Ubah</HeaderCell>
+              <HeaderCell scope="col">Hapus</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
             {permissions.map((modul) => (
-              <tr key={modul.moduleId} data-grup={modul.isGroup || undefined}>
-                <td style={{ paddingLeft: modul.parentId === null ? 16 : 32 }}>
+              <Row key={modul.moduleId} data-grup={modul.isGroup || undefined}>
+                <Cell style={{ paddingLeft: modul.parentId === null ? 16 : 32 }}>
                   <span className={modul.isGroup ? "modul-strong" : undefined}>{modul.name}</span>
                   <span className="tenant-secondary">{modul.slug}</span>
-                </td>
+                </Cell>
                 {(["read", "create", "update", "delete"] as const).map((akses) => (
-                  <td key={akses}>
+                  <Cell key={akses}>
                     <input
                       aria-label={`${modul.name}: ${akses}`}
                       defaultChecked={modul[akses]}
@@ -48,13 +50,13 @@ export function FormIzin({ roleId, permissions, readOnly, aksi, resetAction }: P
                       type="checkbox"
                     />
                     <input name="moduleId" type="hidden" value={modul.moduleId} />
-                  </td>
+                  </Cell>
                 ))}
-              </tr>
+              </Row>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
 
       <div className="pengguna-izin-footer">
         <p>Izin Lihat wajib aktif sebelum Tambah/Ubah/Hapus. Reset = default-deny.</p>
@@ -62,17 +64,12 @@ export function FormIzin({ roleId, permissions, readOnly, aksi, resetAction }: P
           <span className="pengguna-rail-note">Grup sistem tidak dapat diubah.</span>
         ) : (
           <div className="pengguna-izin-actions">
-            <button className="button button-primary" disabled={pending} type="submit">
-              {pending ? "Menyimpan..." : "Simpan izin"}
-            </button>
-            <button
-              className="button button-secondary"
-              disabled={pending}
-              formAction={resetAction}
-              type="submit"
-            >
+            <Button loading={pending} type="submit" variant="primary">
+              Simpan izin
+            </Button>
+            <Button variant="secondary" disabled={pending} formAction={resetAction} type="submit">
               Reset ke Default
-            </button>
+            </Button>
           </div>
         )}
       </div>

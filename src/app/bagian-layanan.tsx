@@ -1,43 +1,64 @@
-import Image from "next/image";
 import Link from "next/link";
+import { Fragment } from "react";
+
+import { formatSkor, type RekapIdm } from "@/features/program-data-desa/idm/domain/idm";
 
 import styles from "./public-home.module.css";
 
-export function BannerLayanan() {
+/** Label pendek dimensi IDM agar muat di kolom sempit panel beranda. */
+const LABEL_DIMENSI: Record<string, string> = {
+  iks: "Sosial",
+  ike: "Ekonomi",
+  ikl: "Lingkungan",
+};
+
+/**
+ * Ringkasan Status IDM di beranda.
+ *
+ * Menggantikan banner layanan lama: menampilkan skor dan status IDM desa aktif
+ * beserta skor tiap dimensi, dengan tautan ke halaman status desa untuk rincian
+ * indikator. Data berasal dari rekap IDM yang sudah dimuat halaman beranda.
+ */
+export function BannerIdm({
+  namaDesa,
+  rekapIdm,
+  tahunIdm,
+}: {
+  namaDesa: string | null;
+  rekapIdm: RekapIdm;
+  tahunIdm: number;
+}) {
+  const terisi = rekapIdm.skor !== null;
+
   return (
     <section className={styles.serviceBanner}>
       <div className={styles.bannerIllustration}>
-        <Image src="/images/home-service-illustration.svg" alt="" width={100} height={72} />
+        ◉<b>✓</b>
       </div>
       <div className={styles.bannerCopy}>
-        <strong>
-          Urus Administrasi Desa
-          <br />
-          Kini Lebih Mudah & Cepat
-        </strong>
+        <strong>Status IDM {namaDesa ?? "Desa"}</strong>
         <small>
-          Ajukan berbagai surat secara online, pantau prosesnya, dan ambil di kantor desa tanpa
-          antre.
+          {terisi
+            ? `Indeks Desa Membangun ${tahunIdm}: skor ${formatSkor(rekapIdm.skor)} dengan status ${
+                rekapIdm.status ?? "belum ditetapkan"
+              }. Skor adalah rata-rata tiga dimensi ketahanan desa.`
+            : `Indikator IDM ${tahunIdm} belum diisi. Lengkapi indikator agar skor dan status desa dapat dihitung.`}
         </small>
+        <Link className={styles.bannerLink} href="/desa/status-des">
+          Lihat Status IDM →
+        </Link>
       </div>
       <div className={styles.bannerSteps}>
-        <span>
-          ▤<small>Ajukan Permohonan</small>
-        </span>
-        <b>→</b>
-        <span>
-          ⌛<small>Proses & Verifikasi</small>
-        </span>
-        <b>→</b>
-        <span>
-          ♧<small>Dapatkan Notifikasi</small>
-        </span>
-        <b>→</b>
-        <span>
-          ✓<small>Ambil Dokumen</small>
-        </span>
+        {rekapIdm.dimensi.map((dimensi, index) => (
+          <Fragment key={dimensi.id}>
+            {index > 0 ? <b>·</b> : null}
+            <span>
+              <strong className={styles.bannerSkor}>{formatSkor(dimensi.skor)}</strong>
+              <small>{LABEL_DIMENSI[dimensi.id] ?? dimensi.label}</small>
+            </span>
+          </Fragment>
+        ))}
       </div>
-      <Link href="/layanan/surat">Mulai Sekarang →</Link>
     </section>
   );
 }

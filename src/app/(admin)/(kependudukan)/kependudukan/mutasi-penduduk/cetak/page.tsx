@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { ButtonLink } from "@/components/ui/button-link";
 import { TombolCetak } from "@/components/ui/tombol-cetak";
 import { getIdentitas } from "@/features/info-desa/desa/application/get-identitas";
 import { listRiwayat } from "@/features/kependudukan/penduduk/application/riwayat-penduduk-use-cases";
@@ -52,9 +52,9 @@ export default async function CetakMutasiPage({
   return (
     <div className={styles.printPage}>
       <div className={styles.printActions}>
-        <Link className="button button-secondary" href="/kependudukan/mutasi-penduduk">
+        <ButtonLink variant="secondary" href="/kependudukan/mutasi-penduduk">
           ← Kembali
-        </Link>
+        </ButtonLink>
         <TombolCetak />
       </div>
 

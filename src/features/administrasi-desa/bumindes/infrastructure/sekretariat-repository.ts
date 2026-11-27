@@ -96,15 +96,6 @@ export async function listBumindesAparat(villageId: number) {
     .orderBy(asc(bumindesAparat.jabatan), asc(bumindesAparat.id));
 }
 
-export async function getBumindesAparat(villageId: number, id: number) {
-  const [row] = await db
-    .select()
-    .from(bumindesAparat)
-    .where(and(eq(bumindesAparat.villageId, villageId), eq(bumindesAparat.id, id)))
-    .limit(1);
-  return row ?? null;
-}
-
 export async function insertBumindesAparat(villageId: number, values: AparatValues) {
   const [row] = await db
     .insert(bumindesAparat)
@@ -218,15 +209,6 @@ export async function listBumindesAgenda(
   return [...manual, ...dariSurat].sort(
     (a, b) => b.tanggal.localeCompare(a.tanggal) || b.id - a.id,
   );
-}
-
-export async function getBumindesAgenda(villageId: number, id: number) {
-  const [row] = await db
-    .select()
-    .from(bumindesAgenda)
-    .where(and(eq(bumindesAgenda.villageId, villageId), eq(bumindesAgenda.id, id)))
-    .limit(1);
-  return row ?? null;
 }
 
 export async function insertBumindesAgenda(villageId: number, values: AgendaValues) {

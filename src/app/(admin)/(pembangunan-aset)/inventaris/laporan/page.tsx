@@ -1,6 +1,16 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import {
+  Cell,
+  HeaderCell,
+  Row,
+  Table,
+  TableScroll,
+  TBody,
+  TFoot,
+  THead,
+} from "@/components/ui/table";
 import { formatRupiah } from "@/features/keuangan-desa/keuangan/domain/keuangan";
 import {
   getLaporanInventaris,
@@ -58,15 +68,6 @@ export default async function LaporanInventarisPage() {
           <small>Nilai perolehan dikurangi penyusutan</small>
         </article>
       </section>
-      <nav className={styles.tabs}>
-        <Link href="/inventaris/dashboard">Dashboard</Link>
-        <Link href="/inventaris">Daftar Inventaris</Link>
-        <Link href="/inventaris/pengelolaan">Pengelolaan Aset</Link>
-        <Link className={styles.active} href="/inventaris/laporan">
-          Laporan &amp; Statistik
-        </Link>
-        <Link href="/inventaris/mutasi">Mutasi &amp; Pemeliharaan</Link>
-      </nav>
       <section className={styles.panel}>
         <div className={styles.panelHead}>
           <div>
@@ -77,23 +78,23 @@ export default async function LaporanInventarisPage() {
             Export CSV ↓
           </Link>
         </div>
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Kategori</th>
-                <th>Jumlah Barang</th>
-                <th>Total Unit</th>
-                <th>Baik (Rp)</th>
-                <th>Rusak Ringan (Rp)</th>
-                <th>Rusak Berat (Rp)</th>
-                <th>Dalam Perbaikan (Rp)</th>
-                <th>Akumulasi Penyusutan</th>
-                <th>Nilai Buku</th>
-                <th>Total Nilai</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll className={styles.tableWrap}>
+          <Table className={styles.table}>
+            <THead>
+              <Row>
+                <HeaderCell>Kategori</HeaderCell>
+                <HeaderCell>Jumlah Barang</HeaderCell>
+                <HeaderCell>Total Unit</HeaderCell>
+                <HeaderCell>Baik (Rp)</HeaderCell>
+                <HeaderCell>Rusak Ringan (Rp)</HeaderCell>
+                <HeaderCell>Rusak Berat (Rp)</HeaderCell>
+                <HeaderCell>Dalam Perbaikan (Rp)</HeaderCell>
+                <HeaderCell>Akumulasi Penyusutan</HeaderCell>
+                <HeaderCell>Nilai Buku</HeaderCell>
+                <HeaderCell>Total Nilai</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {n.baris.map((x) => {
                 const group = laporan.items.filter(
                   (item) => (item.kategoriId ?? null) === (x.kategoriId ?? null),
@@ -107,41 +108,43 @@ export default async function LaporanInventarisPage() {
                   0,
                 );
                 return (
-                  <tr key={x.kategoriId ?? x.nama}>
-                    <td>
+                  <Row key={x.kategoriId ?? x.nama}>
+                    <Cell>
                       <strong>{x.nama}</strong>
-                    </td>
-                    <td>{x.jumlahBarang}</td>
-                    <td>{Number(x.totalUnit).toLocaleString("id-ID")}</td>
-                    <td>{formatRupiah(x.nilaiPerKondisi.baik)}</td>
-                    <td>{formatRupiah(x.nilaiPerKondisi.rusak_ringan)}</td>
-                    <td>{formatRupiah(x.nilaiPerKondisi.rusak_berat)}</td>
-                    <td>{formatRupiah(x.nilaiPerKondisi.dalam_perbaikan)}</td>
-                    <td>{formatRupiah(depresiasi.toFixed(2))}</td>
-                    <td>{formatRupiah(buku.toFixed(2))}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{x.jumlahBarang}</Cell>
+                    <Cell>{Number(x.totalUnit).toLocaleString("id-ID")}</Cell>
+                    <Cell>{formatRupiah(x.nilaiPerKondisi.baik)}</Cell>
+                    <Cell>{formatRupiah(x.nilaiPerKondisi.rusak_ringan)}</Cell>
+                    <Cell>{formatRupiah(x.nilaiPerKondisi.rusak_berat)}</Cell>
+                    <Cell>{formatRupiah(x.nilaiPerKondisi.dalam_perbaikan)}</Cell>
+                    <Cell>{formatRupiah(depresiasi.toFixed(2))}</Cell>
+                    <Cell>{formatRupiah(buku.toFixed(2))}</Cell>
+                    <Cell>
                       <strong>{formatRupiah(x.totalNilai)}</strong>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 );
               })}
-            </tbody>
-            <tfoot>
-              <tr>
-                <th>Total</th>
-                <th>{n.baris.reduce((s, x) => s + x.jumlahBarang, 0)}</th>
-                <th>{Number(laporan.rekap.total.totalUnit).toLocaleString("id-ID")}</th>
-                <th>{formatRupiah(n.totalPerKondisi.baik)}</th>
-                <th>{formatRupiah(n.totalPerKondisi.rusak_ringan)}</th>
-                <th>{formatRupiah(n.totalPerKondisi.rusak_berat)}</th>
-                <th>{formatRupiah(n.totalPerKondisi.dalam_perbaikan)}</th>
-                <th>{formatRupiah(totalDepresiasi.toFixed(2))}</th>
-                <th>{formatRupiah(totalNilaiBuku.toFixed(2))}</th>
-                <th>{formatRupiah(n.grandTotal)}</th>
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+            </TBody>
+            <TFoot>
+              <Row>
+                <HeaderCell>Total</HeaderCell>
+                <HeaderCell>{n.baris.reduce((s, x) => s + x.jumlahBarang, 0)}</HeaderCell>
+                <HeaderCell>
+                  {Number(laporan.rekap.total.totalUnit).toLocaleString("id-ID")}
+                </HeaderCell>
+                <HeaderCell>{formatRupiah(n.totalPerKondisi.baik)}</HeaderCell>
+                <HeaderCell>{formatRupiah(n.totalPerKondisi.rusak_ringan)}</HeaderCell>
+                <HeaderCell>{formatRupiah(n.totalPerKondisi.rusak_berat)}</HeaderCell>
+                <HeaderCell>{formatRupiah(n.totalPerKondisi.dalam_perbaikan)}</HeaderCell>
+                <HeaderCell>{formatRupiah(totalDepresiasi.toFixed(2))}</HeaderCell>
+                <HeaderCell>{formatRupiah(totalNilaiBuku.toFixed(2))}</HeaderCell>
+                <HeaderCell>{formatRupiah(n.grandTotal)}</HeaderCell>
+              </Row>
+            </TFoot>
+          </Table>
+        </TableScroll>
       </section>
       <section className={styles.grid}>
         <article className={styles.panel}>

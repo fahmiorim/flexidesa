@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { ButtonLink } from "@/components/ui/button-link";
 import { TombolCetak } from "@/components/ui/tombol-cetak";
 import { getIdentitas } from "@/features/info-desa/desa/application/get-identitas";
 import { getLaporanAnggota } from "@/features/kependudukan/kelompok/application/use-cases";
@@ -29,9 +29,9 @@ export default async function CetakKelompokPage({
   return (
     <div className={styles.printPage}>
       <div className={styles.printActions}>
-        <Link className="button button-secondary" href="/kependudukan/kelompok">
+        <ButtonLink variant="secondary" href="/kependudukan/kelompok">
           ← Kembali
-        </Link>
+        </ButtonLink>
         <TombolCetak />
       </div>
 

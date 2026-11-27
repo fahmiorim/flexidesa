@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 import { IDENTITAS_DESA_RESOURCE } from "@/features/info-desa/desa/domain/desa";
-import { IdentitasDesaClient } from "@/features/pengaturan/pengaturan/presentation/identitas-desa-client";
+import { IdentitasDesaClient } from "@/features/info-desa/identitas-desa/presentation/identitas-desa-client";
 import styles from "@/features/pengaturan/pengaturan/presentation/pengaturan-desa.module.css";
 import { requirePermission } from "@/lib/dal";
 

@@ -15,7 +15,6 @@ import {
   type InventarisInput,
   type InventarisKategoriInput,
   type InventarisMutasiInput,
-  type InventarisOption,
   type MutasiStep,
 } from "@/features/pembangunan-aset/inventaris/domain/inventaris";
 import {
@@ -50,7 +49,6 @@ import {
   listRiwayatPemeliharaan,
   listRiwayatPenanggungJawab,
   setujuiMutasiTahap,
-  softDeleteInventaris,
   tolakMutasi,
   updateInventaris,
   updateInventarisKategori,
@@ -153,17 +151,6 @@ export async function getInventarisTablePageData(input: {
       hasPermission(user.permissions, MUTASI_RESOURCE, "update"),
     canMutateCreate: hasPermission(user.permissions, MUTASI_RESOURCE, "create"),
     canMutateUpdate: hasPermission(user.permissions, MUTASI_RESOURCE, "update"),
-  };
-}
-
-export async function getInventarisKategoriPageData() {
-  const user = await requirePermission(INVENTARIS_RESOURCE, "read");
-  const villageId = await resolveVillageId(user);
-  const kategori = await listInventarisKategori(villageId);
-  return {
-    kategori,
-    canWrite: hasPermission(user.permissions, INVENTARIS_RESOURCE, "update"),
-    canManage: hasPermission(user.permissions, INVENTARIS_RESOURCE, "delete"),
   };
 }
 
@@ -314,22 +301,6 @@ export async function saveInventaris(input: InventarisInput, id?: number) {
   return { id: newId };
 }
 
-export async function hapusInventaris(id: number) {
-  const user = await requirePermission(INVENTARIS_RESOURCE, "delete");
-  const villageId = await resolveVillageId(user);
-  const item = await getInventaris(villageId, id);
-  if (!item) throw notFound("Data inventaris tidak ditemukan");
-  await softDeleteInventaris(villageId, id);
-
-  await recordAuditEvent({
-    villageId,
-    actorId: user.id,
-    event: AUDIT_EVENTS.inventarisDelete,
-    resource: INVENTARIS_RESOURCE,
-    resourceId: String(id),
-  });
-}
-
 export async function ajukanMutasi(input: InventarisMutasiInput) {
   const user = await requirePermission(MUTASI_RESOURCE, "create");
   const villageId = await resolveVillageId(user);
@@ -403,35 +374,6 @@ export async function tolakMutasiData(id: number, catatanPenolakan: string) {
   }
 
   await tolakMutasi(villageId, id, catatanPenolakan.trim(), mutasiLogBeforeStep(step));
-}
-
-export async function getMutasiPageData(inventarisId?: number) {
-  const user = await requirePermission(MUTASI_RESOURCE, "read");
-  const villageId = await resolveVillageId(user);
-  const [data, inventarisData] = await Promise.all([
-    listMutasi(villageId, inventarisId),
-    listInventaris(villageId, ""),
-  ]);
-
-  const inventaris: InventarisOption[] = inventarisData.rows.map((item) => ({
-    id: item.id,
-    namaBarang: item.namaBarang,
-    nomorInventaris: item.nomorInventaris,
-    jumlah: item.jumlah,
-    satuan: item.satuan,
-  }));
-
-  const role = user.roleId === null ? null : await findRoleById(user.roleId, user.villageId);
-  const approverSteps = MUTASI_STEPS.filter((step) =>
-    roleCanApproveMutasiStep(step, role?.slug ?? null, user.permissions.isSuperadmin),
-  );
-
-  return {
-    rows: data,
-    inventaris,
-    canWrite: hasPermission(user.permissions, MUTASI_RESOURCE, "update"),
-    approverSteps: approverSteps as MutasiStep[],
-  };
 }
 
 /** Detail aset dan riwayat mutasi untuk halaman pengelolaan aset. */

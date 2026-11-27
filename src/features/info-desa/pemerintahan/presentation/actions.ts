@@ -15,10 +15,8 @@ import {
   simpanRiwayatJabatan,
 } from "@/features/info-desa/pemerintahan/application/jabatan";
 import {
-  hapusAnggotaLembaga,
   hapusLembagaDesa,
   hapusMasterLembaga,
-  hapusMasterLembagaMasal,
   simpanAnggotaLembaga,
   simpanLembagaDesa,
   simpanMasterLembaga,
@@ -32,7 +30,6 @@ import {
   ubahKehadiranPerangkat,
   ubahStatusPerangkat,
 } from "@/features/info-desa/pemerintahan/application/perangkat";
-import { simpanProfilWilayah } from "@/features/info-desa/pemerintahan/application/wilayah";
 import { simpanBerkasMedia } from "@/features/info-desa/publik/application/simpan-berkas-media";
 import { requirePermission } from "@/lib/dal";
 import { validationError } from "@/lib/errors";
@@ -198,15 +195,6 @@ export async function hapusMasterLembagaAction(fd: FormData) {
   refresh();
 }
 
-export async function hapusMasterLembagaMasalAction(fd: FormData) {
-  const ids = fd
-    .getAll("ids")
-    .map((isi) => numberOrNull(String(isi)))
-    .filter((id): id is number => id !== null);
-  await hapusMasterLembagaMasal(ids);
-  refresh();
-}
-
 export async function hapusLembagaAction(fd: FormData) {
   const id = numberOrNull(value(fd, "id"));
   if (!id) throw validationError("ID lembaga tidak valid.");
@@ -258,33 +246,6 @@ export async function simpanAnggotaLembagaAction(fd: FormData) {
     tampilPublik: value(fd, "tampilPublik") === "on",
     urut: Number(value(fd, "urut") || 0),
   });
-  refresh();
-}
-
-export async function hapusLembagaMassalAction(fd: FormData) {
-  const ids = fd
-    .getAll("ids")
-    .map((isi) => numberOrNull(String(isi)))
-    .filter((id): id is number => id !== null);
-  if (!ids.length) throw validationError("Pilih lembaga yang akan dihapus.");
-  for (const id of ids) await hapusLembagaDesa(id);
-  refresh();
-}
-
-export async function hapusAnggotaLembagaMassalAction(fd: FormData) {
-  const ids = fd
-    .getAll("ids")
-    .map((isi) => numberOrNull(String(isi)))
-    .filter((id): id is number => id !== null);
-  if (!ids.length) throw validationError("Pilih anggota yang akan dihapus.");
-  for (const id of ids) await hapusAnggotaLembaga(id);
-  refresh();
-}
-
-export async function hapusAnggotaLembagaAction(fd: FormData) {
-  const id = numberOrNull(value(fd, "id"));
-  if (!id) throw validationError("ID anggota tidak valid.");
-  await hapusAnggotaLembaga(id);
   refresh();
 }
 
@@ -454,21 +415,6 @@ export async function ubahDokumenPemerintahanAction(fd: FormData) {
     nomor: value(fd, "nomor") || null,
     tanggal: value(fd, "tanggal") || null,
     tampilPublik: value(fd, "tampilPublik") === "on",
-  });
-  refresh();
-}
-
-export async function simpanProfilWilayahAction(fd: FormData) {
-  await simpanProfilWilayah({
-    luasWilayah: value(fd, "luasWilayah") || null,
-    batasUtara: value(fd, "batasUtara") || null,
-    batasSelatan: value(fd, "batasSelatan") || null,
-    batasTimur: value(fd, "batasTimur") || null,
-    batasBarat: value(fd, "batasBarat") || null,
-    ketinggian: value(fd, "ketinggian") || null,
-    suhuRataRata: value(fd, "suhuRataRata") || null,
-    curahHujan: value(fd, "curahHujan") || null,
-    topografi: value(fd, "topografi") || null,
   });
   refresh();
 }

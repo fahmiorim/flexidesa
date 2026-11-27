@@ -355,6 +355,3 @@ export async function getRingkasanPembangunanPublik(
 }
 
 /** Apakah desa memiliki proyek pada tahun tertentu (untuk filter tahun publik). */
-export async function listTahunPembangunanPublik(villageId: number): Promise<number[]> {
-  return listTahunAnggaran(villageId);
-}

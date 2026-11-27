@@ -26,8 +26,6 @@ export const KEUANGAN_AKUN = [
   { kode: "7", nama: "NON ANGGARAN", reportable: false },
 ] as const;
 
-export type KeuanganAkunKode = (typeof KEUANGAN_AKUN)[number]["kode"];
-
 /** Kode akun yang dikecualikan dari ringkasan APBDes. */
 export const EXCLUDED_AKUN: readonly string[] = KEUANGAN_AKUN.filter(
   (item) => !item.reportable,
@@ -284,13 +282,6 @@ export function seriGrafik(baris: readonly RpApbdBaris[]): GrafikBatangan[] {
 }
 
 // --- Skema formulir --------------------------------------------------------
-
-export const keuanganTahunSchema = z
-  .string()
-  .trim()
-  .refine((value) => /^\d{4}$/.test(value), "Tahun harus 4 angka.")
-  .refine((value) => Number(value) >= 2000 && Number(value) <= 2100, "Tahun di luar rentang wajar.")
-  .transform((value) => Number(value));
 
 export const keuanganBarisFormSchema = z.object({
   templateUuid: z.string().trim().min(1, "Rekening wajib dipilih.").max(20),

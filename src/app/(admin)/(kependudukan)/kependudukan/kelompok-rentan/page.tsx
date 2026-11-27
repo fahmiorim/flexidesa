@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getLaporanKelompokRentanData } from "@/features/kependudukan/statistik/application/kelompok-rentan-use-cases";
 
 import { KopLaporanRentan } from "./kop-laporan";
@@ -29,19 +29,16 @@ export default async function LaporanKelompokRentanPage({
 
       <section className="platform-card penduduk-card">
         <div className="kelompok-rentan-aksi">
-          <Link
-            className="button button-secondary"
+          <ButtonLink
+            variant="secondary"
             href={`/kependudukan/kelompok-rentan/cetak${query}`}
             target="_blank"
           >
             Cetak
-          </Link>
-          <Link
-            className="button button-primary"
-            href={`/kependudukan/kelompok-rentan/ekspor${query}`}
-          >
+          </ButtonLink>
+          <ButtonLink variant="primary" href={`/kependudukan/kelompok-rentan/ekspor${query}`}>
             Unduh
-          </Link>
+          </ButtonLink>
         </div>
 
         <KopLaporanRentan

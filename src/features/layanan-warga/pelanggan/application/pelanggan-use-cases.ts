@@ -6,7 +6,7 @@ import {
   simpanUnggahanMedia,
 } from "@/features/media/infrastructure/media-storage";
 import { requirePermission } from "@/lib/dal";
-import { AppError, notFound, validationError } from "@/lib/errors";
+import { notFound, validationError } from "@/lib/errors";
 
 import {
   PELANGGAN_RESOURCE,
@@ -14,52 +14,10 @@ import {
   validasiDokumenKerjasama,
 } from "../domain/pelanggan";
 import {
-  createPelanggan,
-  deletePelanggan,
   findPelanggan,
-  listPelanggan,
   updateStatusLangganan as repoUpdateStatusLangganan,
   updatePelanggan,
 } from "../infrastructure/pelanggan-repository";
-
-export async function daftarPelanggan(villageId: number, opts?: { q?: string }) {
-  await requirePermission(PELANGGAN_RESOURCE, "read");
-  return listPelanggan(villageId, opts);
-}
-
-export async function tambahPelanggan(villageId: number, input: unknown) {
-  await requirePermission(PELANGGAN_RESOURCE, "create");
-  const parsed = pelangganFormSchema.parse(input);
-  const id = await createPelanggan({
-    villageId,
-    nama: parsed.nama,
-    kontak: parsed.kontak ?? null,
-    alamat: parsed.alamat ?? null,
-    keterangan: parsed.keterangan ?? null,
-    statusLangganan: parsed.statusLangganan ?? "menunggu",
-    tanggalMulai: parsed.tanggalMulai ? new Date(parsed.tanggalMulai) : null,
-    tanggalSelesai: parsed.tanggalSelesai ? new Date(parsed.tanggalSelesai) : null,
-    noKerjasama: parsed.noKerjasama ?? null,
-    keteranganLangganan: parsed.keteranganLangganan ?? null,
-  });
-  return { id };
-}
-
-export async function ubahPelanggan(villageId: number, id: number, input: unknown) {
-  await requirePermission(PELANGGAN_RESOURCE, "update");
-  const parsed = pelangganFormSchema.parse(input);
-  await updatePelanggan(id, villageId, {
-    nama: parsed.nama,
-    kontak: parsed.kontak ?? null,
-    alamat: parsed.alamat ?? null,
-    keterangan: parsed.keterangan ?? null,
-    statusLangganan: parsed.statusLangganan ?? "menunggu",
-    tanggalMulai: parsed.tanggalMulai ? new Date(parsed.tanggalMulai) : null,
-    tanggalSelesai: parsed.tanggalSelesai ? new Date(parsed.tanggalSelesai) : null,
-    noKerjasama: parsed.noKerjasama ?? null,
-    keteranganLangganan: parsed.keteranganLangganan ?? null,
-  });
-}
 
 /** Berkas yang sudah dibaca dari `FormData` (isi, bukan jalur). */
 export interface BerkasDokumenKerjasama {
@@ -113,15 +71,6 @@ export async function getDokumenKerjasama(villageId: number, id: number) {
   if (!row?.dokumenKerjasama) throw notFound("Dokumen kerja sama tidak ditemukan.");
 
   return { row, isi: await bacaMedia(row.dokumenKerjasama) };
-}
-
-export async function hapusPelanggan(villageId: number, id: number) {
-  await requirePermission(PELANGGAN_RESOURCE, "delete");
-  if (!id || id < 1) throw new AppError("NOT_FOUND", "ID tidak valid.");
-
-  const row = await findPelanggan(villageId, id);
-  await deletePelanggan(id, villageId);
-  if (row?.dokumenKerjasama) await hapusMedia(row.dokumenKerjasama);
 }
 
 export async function ubahStatusLangganan(villageId: number, id: number, input: unknown) {

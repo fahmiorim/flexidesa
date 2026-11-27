@@ -37,7 +37,6 @@ import {
   updatePosyandu,
   updateSasaranPaud,
 } from "@/features/kependudukan/kesehatan/infrastructure/kesehatan-repository";
-import { listPendudukOptions } from "@/features/kependudukan/penduduk/application/kontrak";
 import type { Action } from "@/features/pengaturan/rbac/domain/permission";
 import { requirePermission } from "@/lib/dal";
 import { AppError } from "@/lib/errors";
@@ -63,28 +62,12 @@ function normalisasiTanggal<T extends { tanggalPeriksa?: string | null }>(input:
 }
 
 /** Data halaman pemantauan anak beserta opsi posyandu dan KIA. */
-export async function muatPemantauanAnakData() {
-  const villageId = await konteksKia("read");
-  return Promise.all([listBulananAnak(villageId), listPosyandu(villageId), listKia(villageId)]);
-}
 
 /** Data halaman pemantauan ibu hamil beserta opsi posyandu dan KIA. */
-export async function muatPemantauanIbuHamilData() {
-  const villageId = await konteksKia("read");
-  return Promise.all([listIbuHamil(villageId), listPosyandu(villageId), listKia(villageId)]);
-}
 
 /** Data halaman KIA beserta opsi penduduk dan posyandu. */
-export async function muatKiaData() {
-  const villageId = await konteksKia("read");
-  return Promise.all([listKia(villageId), listPendudukOptions(villageId), listPosyandu(villageId)]);
-}
 
 /** Daftar posyandu desa untuk halaman admin. */
-export async function daftarPosyanduData() {
-  const villageId = await konteksKia("read");
-  return listPosyandu(villageId);
-}
 
 /**
  * Seluruh data workspace Stunting dalam satu muatan.

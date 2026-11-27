@@ -3,7 +3,11 @@ import Link from "next/link";
 
 import { hapusRumahTanggaAction } from "@/app/(admin)/(kependudukan)/kependudukan/rumah-tangga/actions";
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { StatCard, StatGrid } from "@/components/ui/stat-card";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   getLaporanRumahTangga,
   getRtmFilterOptions,
@@ -87,43 +91,41 @@ export default async function RumahTanggaPage({
         </p>
       ) : null}
 
-      <section className="data-kependudukan-kpis">
-        <article className="data-kpi data-kpi-primary">
-          <span>Total Rumah Tangga</span>
-          <strong>{number.format(rekap.rekap.totalRtm)} RTM</strong>
-          <small>Sesuai filter yang aktif</small>
-        </article>
-        <article className="data-kpi">
-          <span>Total Anggota</span>
-          <strong>{number.format(rekap.rekap.totalAnggota)} orang</strong>
-          <small>Seluruh anggota pada RTM yang ditampilkan</small>
-        </article>
-        <article className="data-kpi">
-          <span>Rata-rata Anggota</span>
-          <strong>{number.format(Number(rataAnggota.toFixed(1)))}</strong>
-          <small>Orang per rumah tangga</small>
-        </article>
-        <article className="data-kpi">
-          <span>Filter Aktif</span>
-          <strong>{number.format(hitungFilterRtm(filter) + (filter.search ? 1 : 0))}</strong>
-          <small>{filter.search ? "Termasuk pencarian" : "Tanpa pencarian"}</small>
-        </article>
-      </section>
-
-      <section className="platform-card data-panel">
-        <header>
-          <h2>Daftar Rumah Tangga</h2>
-          <p>
-            {number.format(result.total)} RTM pada halaman {result.page} dari {result.pageCount}
-          </p>
-        </header>
-
-        <FilterRtm
-          dusun={filterOptions.dusun}
-          filter={filter}
-          resetHref="/kependudukan/rumah-tangga"
+      <StatGrid columns={4}>
+        <StatCard
+          label="Total Rumah Tangga"
+          note="Sesuai filter yang aktif"
+          utama
+          value={`${number.format(rekap.rekap.totalRtm)} RTM`}
         />
+        <StatCard
+          label="Total Anggota"
+          note="Seluruh anggota pada RTM yang ditampilkan"
+          value={`${number.format(rekap.rekap.totalAnggota)} orang`}
+        />
+        <StatCard
+          label="Rata-rata Anggota"
+          note="Orang per rumah tangga"
+          value={number.format(Number(rataAnggota.toFixed(1)))}
+        />
+        <StatCard
+          label="Filter Aktif"
+          note={filter.search ? "Termasuk pencarian" : "Tanpa pencarian"}
+          value={number.format(hitungFilterRtm(filter) + (filter.search ? 1 : 0))}
+        />
+      </StatGrid>
 
+      <TableCard
+        title="Daftar Rumah Tangga"
+        description={`${number.format(result.total)} RTM pada halaman ${result.page} dari ${result.pageCount}`}
+        filter={
+          <FilterRtm
+            dusun={filterOptions.dusun}
+            filter={filter}
+            resetHref="/kependudukan/rumah-tangga"
+          />
+        }
+      >
         {chipFilterAktif(filter).length > 0 ? (
           <div className={styles.chips}>
             <span className={styles.chipsLabel}>Filter aktif:</span>
@@ -156,98 +158,93 @@ export default async function RumahTanggaPage({
             <p>Ubah filter atau tambahkan rumah tangga pertama untuk desa ini.</p>
           </div>
         ) : (
-          <div className="table-scroll">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>No.</th>
-                  <th>Nomor RTM</th>
-                  <th>Kepala Rumah Tangga</th>
-                  <th>Anggota</th>
-                  <th>Kelas</th>
-                  <th>BDT</th>
-                  <th>DTKS</th>
-                  <th>Alamat</th>
-                  <th>Wilayah</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
+                  <HeaderCell>No.</HeaderCell>
+                  <HeaderCell>Nomor RTM</HeaderCell>
+                  <HeaderCell>Kepala Rumah Tangga</HeaderCell>
+                  <HeaderCell>Anggota</HeaderCell>
+                  <HeaderCell>Kelas</HeaderCell>
+                  <HeaderCell>BDT</HeaderCell>
+                  <HeaderCell>DTKS</HeaderCell>
+                  <HeaderCell>Alamat</HeaderCell>
+                  <HeaderCell>Wilayah</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {result.rows.map((row, index) => (
-                  <tr key={row.id}>
-                    <td>{(result.page - 1) * result.pageSize + index + 1}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>{(result.page - 1) * result.pageSize + index + 1}</Cell>
+                    <Cell>
                       <Link href={`/kependudukan/rumah-tangga/${row.id}`}>
                         <strong>{row.number}</strong>
                       </Link>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {row.headName ? (
                         <Link href={`/kependudukan/rumah-tangga/${row.id}`}>{row.headName}</Link>
                       ) : (
                         <span className={styles.muted}>Belum ditentukan</span>
                       )}
-                    </td>
-                    <td>{number.format(row.memberCount)}</td>
-                    <td>{labelKelas(row.kelasSosial)}</td>
-                    <td>{row.bdt ?? "—"}</td>
-                    <td>{row.hasDtks ? "Terdaftar" : "—"}</td>
-                    <td>{row.address ?? "—"}</td>
-                    <td>{row.regionLabel ?? "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{number.format(row.memberCount)}</Cell>
+                    <Cell>{labelKelas(row.kelasSosial)}</Cell>
+                    <Cell>{row.bdt ?? "—"}</Cell>
+                    <Cell>{row.hasDtks ? "Terdaftar" : "—"}</Cell>
+                    <Cell>{row.address ?? "—"}</Cell>
+                    <Cell>{row.regionLabel ?? "—"}</Cell>
+                    <Cell>
                       <div className={styles.actions}>
-                        <Link
-                          className="button button-ghost"
-                          href={`/kependudukan/rumah-tangga/${row.id}`}
-                        >
+                        <ButtonLink variant="ghost" href={`/kependudukan/rumah-tangga/${row.id}`}>
                           Detail
-                        </Link>
+                        </ButtonLink>
                         {bolehUbah ? (
-                          <Link
-                            className="button button-ghost"
+                          <ButtonLink
+                            variant="ghost"
                             href={`/kependudukan/rumah-tangga/${row.id}/ubah`}
                           >
                             Ubah
-                          </Link>
+                          </ButtonLink>
                         ) : null}
                         {bolehHapus ? (
-                          <form action={hapusRumahTanggaAction}>
-                            <input name="id" type="hidden" value={row.id} />
-                            <ConfirmSubmit
-                              className="button button-danger"
-                              message={`Hapus Rumah Tangga ${row.number}? Anggota akan dilepas dari RTM ini.`}
-                            >
-                              Hapus
-                            </ConfirmSubmit>
-                          </form>
+                          <DialogHapusForm
+                            aksi={hapusRumahTanggaAction}
+                            id={row.id}
+                            judul={`Hapus Rumah Tangga ${row.number}?`}
+                            keterangan="Semua anggota akan dilepas dari RTM ini; data penduduk tetap tersimpan."
+                            labelAksi="Hapus RTM"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
 
         {result.pageCount > 1 ? (
           <nav aria-label="Navigasi halaman rumah tangga" className="pagination">
             {result.page > 1 ? (
-              <Link className="button button-secondary" href={halamanHref(result.page - 1)}>
+              <ButtonLink variant="secondary" href={halamanHref(result.page - 1)}>
                 ← Sebelumnya
-              </Link>
+              </ButtonLink>
             ) : null}
             <span>
               Halaman {result.page} dari {result.pageCount}
             </span>
             {result.page < result.pageCount ? (
-              <Link className="button button-secondary" href={halamanHref(result.page + 1)}>
+              <ButtonLink variant="secondary" href={halamanHref(result.page + 1)}>
                 Berikutnya →
-              </Link>
+              </ButtonLink>
             ) : null}
           </nav>
         ) : null}
-      </section>
+      </TableCard>
     </div>
   );
 }

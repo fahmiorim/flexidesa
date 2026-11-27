@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   SASARAN_KELUARGA,
   SASARAN_LABELS,
@@ -145,30 +146,30 @@ export function FormSuplemen({
         {fields.length === 0 ? (
           <p className="modul-muted">Belum ada kolom isian tambahan.</p>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table suplemen-field-table">
-              <thead>
-                <tr>
-                  <th>Label</th>
-                  <th>Tipe</th>
-                  <th>Wajib</th>
-                  <th>Pilihan / Referensi</th>
-                  <th>Kolom</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table suplemen-field-table">
+              <THead>
+                <Row>
+                  <HeaderCell>Label</HeaderCell>
+                  <HeaderCell>Tipe</HeaderCell>
+                  <HeaderCell>Wajib</HeaderCell>
+                  <HeaderCell>Pilihan / Referensi</HeaderCell>
+                  <HeaderCell>Kolom</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {fields.map((field, indeks) => (
-                  <tr key={`${indeks}-${field.label}`}>
-                    <td>
+                  <Row key={`${indeks}-${field.label}`}>
+                    <Cell>
                       <input
                         aria-label={`Label kolom ${indeks + 1}`}
                         onChange={(event) => ubahField(indeks, { label: event.target.value })}
                         placeholder="Masukkan Label"
                         value={field.label}
                       />
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <select
                         aria-label={`Tipe kolom ${indeks + 1}`}
                         onChange={(event) =>
@@ -184,16 +185,16 @@ export function FormSuplemen({
                           </option>
                         ))}
                       </select>
-                    </td>
-                    <td className="suplemen-field-center">
+                    </Cell>
+                    <Cell className="suplemen-field-center">
                       <input
                         aria-label={`Wajib diisi kolom ${indeks + 1}`}
                         checked={field.required ?? false}
                         onChange={(event) => ubahField(indeks, { required: event.target.checked })}
                         type="checkbox"
                       />
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {field.tipe === "select-manual" ? (
                         <input
                           aria-label={`Pilihan kolom ${indeks + 1}`}
@@ -223,8 +224,8 @@ export function FormSuplemen({
                       ) : (
                         <span className="modul-muted">—</span>
                       )}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <select
                         aria-label={`Lebar kolom ${indeks + 1}`}
                         onChange={(event) =>
@@ -241,8 +242,8 @@ export function FormSuplemen({
                           </option>
                         ))}
                       </select>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <button
                         className="button button-danger"
                         onClick={() => hapusField(indeks)}
@@ -250,12 +251,12 @@ export function FormSuplemen({
                       >
                         Hapus
                       </button>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
 
         <button className="button button-secondary" onClick={tambahField} type="button">

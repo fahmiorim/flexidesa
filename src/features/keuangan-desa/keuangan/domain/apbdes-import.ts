@@ -6,18 +6,6 @@ import { bacaTabelImpor } from "@/lib/spreadsheet";
 import { kodeLength, parentKode } from "./keuangan";
 
 /** Kolom template APBDes (Excel/CSV). */
-export const APBDES_TEMPLATE_COLUMNS = [
-  "kode_rekening",
-  "nama",
-  "pagu",
-  "bidang",
-  "kelompok",
-  "subkelompok",
-  "akun",
-  "sumber_dana",
-  "level",
-  "parent_kode",
-] as const;
 
 /** Tipe data baris template. */
 export interface ApbdesTemplateRow {

@@ -20,7 +20,7 @@ import {
   setRolePermissions,
   updateRole,
 } from "@/features/pengaturan/rbac/infrastructure/rbac-repository";
-import { requirePermission, requireUser } from "@/lib/dal";
+import { requirePermission } from "@/lib/dal";
 import { conflict, notFound } from "@/lib/errors";
 
 /** Pastikan role yang diakses berada pada desa yang sama. */
@@ -32,19 +32,7 @@ async function getScopedRole(id: number, villageId: number) {
   return role;
 }
 
-export async function listRolesWithMeta() {
-  const user = await requirePermission(GRUP_AKSES_RESOURCE, "read");
-  const villageId = await resolveVillageId(user);
-  return listRoles(villageId);
-}
-
 /** Nama dan slug peran pengguna sesi; sesi sudah diverifikasi layout/halaman pemanggil. */
-export async function getPeranSesi(roleId: number): Promise<{ name: string; slug: string } | null> {
-  const user = await requireUser();
-  const villageId = await resolveVillageId(user);
-  const role = await getRoleById(roleId, villageId);
-  return role ? { name: role.name, slug: role.slug } : null;
-}
 
 export async function getRoleDetail(id: number) {
   const user = await requirePermission(GRUP_AKSES_RESOURCE, "read");

@@ -1,9 +1,6 @@
 import { z } from "zod";
 
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
-
 /** Slider gambar sorotan beranda. */
-export const SLIDER_RESOURCE = RESOURCES.slider;
 
 /** Baris slider yang aman dikirim ke komponen klien. */
 export interface SliderRow {
@@ -32,5 +29,3 @@ export const sliderFormSchema = z.object({
     .default(0),
   aktif: z.boolean().default(true),
 });
-
-export type SliderFormInput = z.infer<typeof sliderFormSchema>;

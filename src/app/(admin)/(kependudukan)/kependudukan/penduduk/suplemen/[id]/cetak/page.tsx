@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ButtonLink } from "@/components/ui/button-link";
 import { TombolCetak } from "@/components/ui/tombol-cetak";
 import {
   filterTerdataDariQuery,
@@ -71,15 +71,15 @@ export default async function CetakSuplemenPage({
           <p>Daftar sesuai filter aktif, siap dicetak atau disimpan sebagai PDF.</p>
         </div>
         <div className="page-heading-actions">
-          <Link className="button button-ghost" href={`/kependudukan/penduduk/suplemen/${id}`}>
+          <ButtonLink variant="ghost" href={`/kependudukan/penduduk/suplemen/${id}`}>
             Kembali
-          </Link>
-          <Link
-            className="button button-ghost"
+          </ButtonLink>
+          <ButtonLink
+            variant="ghost"
             href={`/kependudukan/penduduk/suplemen/${id}/cetak/unduh${cetakQuery ? `?${cetakQuery}` : ""}`}
           >
             Unduh CSV
-          </Link>
+          </ButtonLink>
           <TombolCetak />
         </div>
       </header>

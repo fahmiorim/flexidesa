@@ -3,6 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
 import { FormDialog } from "@/components/ui/form-dialog";
 import { formatRupiah } from "@/features/keuangan-desa/keuangan/domain/keuangan";
 import { getInventarisDetailPageData } from "@/features/pembangunan-aset/inventaris/application/inventaris-use-cases";
@@ -204,15 +206,6 @@ export default async function DetailInventarisPage({ params, searchParams }: Pro
           </>
         }
       />
-      <nav className={styles.tabs}>
-        <Link href="/inventaris">Daftar Inventaris</Link>
-        <Link href="/inventaris/pengelolaan">Pengelolaan Aset</Link>
-        <Link className={styles.active} href={"/inventaris/" + id}>
-          Detail Aset
-        </Link>
-        <Link href={"/inventaris/mutasi?inventarisId=" + id}>Riwayat Mutasi</Link>
-        <Link href="/inventaris/laporan">Laporan &amp; Statistik</Link>
-      </nav>
       {query.saved ? (
         <p className={styles.notice}>Perubahan inventaris berhasil disimpan.</p>
       ) : null}
@@ -386,11 +379,14 @@ export default async function DetailInventarisPage({ params, searchParams }: Pro
                     Unduh
                   </a>
                   {data.canDelete ? (
-                    <form action={hapusDokumenInventarisAction}>
-                      <input type="hidden" name="id" value={doc.id} />
-                      <input type="hidden" name="inventarisId" value={x.id} />
-                      <button className={styles.secondary}>Hapus</button>
-                    </form>
+                    <DialogHapusForm
+                      aksi={hapusDokumenInventarisAction}
+                      id={doc.id}
+                      hidden={{ inventarisId: x.id }}
+                      judul={`Hapus dokumen "${doc.nama}"?`}
+                      keterangan="Dokumen aset beserta berkasnya akan dihapus permanen."
+                      labelAksi="Hapus dokumen"
+                    />
                   ) : null}
                 </div>
               </article>
@@ -419,7 +415,9 @@ export default async function DetailInventarisPage({ params, searchParams }: Pro
                 required
               />
             </label>
-            <button className={styles.primary}>Unggah Dokumen</button>
+            <Button className={styles.primary} variant="primary">
+              Unggah Dokumen
+            </Button>
           </form>
         ) : null}
       </section>

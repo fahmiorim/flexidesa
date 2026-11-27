@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
 import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
 import { getDataHalamanKeamanan } from "@/features/pengaturan/pengguna/application/pengguna-use-cases";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
@@ -59,16 +60,6 @@ export default async function KeamananPage() {
           <strong>{blockedIps.length} Alamat</strong>
         </article>
       </div>
-      <nav className={styles.tabs}>
-        <Link href="/pengaturan/pengguna">Pengguna</Link>
-        <Link href="/pengaturan/grup-akses">Peran & Hak Akses</Link>
-        {hasPermission(user.permissions, RESOURCES.auditLog, "read") ? (
-          <Link href="/pengaturan/pengguna/aktivitas">Aktivitas Pengguna</Link>
-        ) : null}
-        <Link aria-current="page" href="/pengaturan/pengguna/keamanan">
-          Pengaturan Keamanan
-        </Link>
-      </nav>
       <TwoFactorSetup
         required={settings.requireTwoFactorForAllUsers}
         enabled={account?.twoFactorEnabled ?? false}
@@ -195,10 +186,15 @@ export default async function KeamananPage() {
             </p>
           </section>
           <div className={styles.actions}>
-            <button type="submit">Simpan Pengaturan</button>
-            <button formAction={resetKeamananAction} className={styles.reset} type="submit">
+            <Button type="submit">Simpan Pengaturan</Button>
+            <Button
+              className={styles.reset}
+              formAction={resetKeamananAction}
+              type="submit"
+              variant="secondary"
+            >
               Reset ke Default
-            </button>
+            </Button>
           </div>
         </form>
       ) : (
@@ -214,7 +210,7 @@ export default async function KeamananPage() {
           <form action={blokirIpAction} className={styles.inline}>
             <input name="ipAddress" placeholder="Alamat IP" required />
             <input name="reason" placeholder="Alasan pemblokiran" required />
-            <button type="submit">Blokir IP</button>
+            <Button type="submit">Blokir IP</Button>
           </form>
         ) : null}
         <div className={styles.list}>
@@ -225,7 +221,11 @@ export default async function KeamananPage() {
                 <b>{ip.ipAddress}</b>
                 <small>{ip.reason}</small>
               </span>
-              {canDelete ? <button type="submit">Cabut blokir</button> : null}
+              {canDelete ? (
+                <Button type="submit" variant="secondary">
+                  Cabut blokir
+                </Button>
+              ) : null}
             </form>
           ))}
           {blockedIps.length === 0 ? <p>Belum ada IP yang diblokir.</p> : null}

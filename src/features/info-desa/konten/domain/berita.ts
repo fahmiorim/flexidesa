@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { buatSlug, PANJANG_SLUG_MAKS } from "@/features/info-desa/publik/domain/slug";
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { optionalIsoDate, optionalSelectId, optionalText } from "@/lib/forms";
 
 /**
@@ -14,9 +13,6 @@ import { optionalIsoDate, optionalSelectId, optionalText } from "@/lib/forms";
  * - Status hanya `draft` (belum tampil) atau `published` (tampil setelah
  *   `terbitPada` lewat; `null` berarti langsung tampil).
  */
-
-export const BERITA_RESOURCE = RESOURCES.berita;
-export const BERITA_KATEGORI_RESOURCE = RESOURCES.beritaKategori;
 
 export const STATUS_BERITA = ["draft", "published"] as const;
 export type StatusBerita = (typeof STATUS_BERITA)[number];
@@ -43,8 +39,6 @@ export const beritaFormSchema = z.object({
   bolehKomentar: z.boolean().default(true),
 });
 
-export type BeritaFormInput = z.infer<typeof beritaFormSchema>;
-
 /** Skema form kategori berita. */
 export const kategoriBeritaFormSchema = z.object({
   nama: z.string().trim().min(1, "Nama kategori wajib diisi.").max(100, "Maksimal 100 karakter."),
@@ -56,8 +50,6 @@ export const kategoriBeritaFormSchema = z.object({
     .default(0),
   aktif: z.boolean().default(true),
 });
-
-export type KategoriBeritaFormInput = z.infer<typeof kategoriBeritaFormSchema>;
 
 /**
  * Slug dasar berita dari judul.
@@ -105,9 +97,6 @@ export function tanggalTerbitEfektif(
 }
 
 /** Status yang bisa dipilih operator. */
-export function labelStatusBerita(status: string): string {
-  return status === "published" ? STATUS_BERITA_LABELS.published : STATUS_BERITA_LABELS.draft;
-}
 
 /** Baris daftar berita di admin (tanpa kolom isi yang besar). */
 export interface BeritaAdminRow {
@@ -122,42 +111,9 @@ export interface BeritaAdminRow {
 }
 
 /** Data lengkap berita untuk form ubah. */
-export interface BeritaAdminDetail {
-  id: number;
-  judul: string;
-  slug: string;
-  kategoriId: number | null;
-  ringkasan: string | null;
-  isi: string;
-  gambar: string | null;
-  dokumen: string | null;
-  status: string;
-  terbitPada: string | null;
-  headline: boolean;
-  slider: boolean;
-  bolehKomentar: boolean;
-}
 
 /** Pilihan kategori untuk form berita. */
-export interface KategoriBeritaOption {
-  id: number;
-  nama: string;
-}
 
 /** Baris kategori pada halaman pengelolaan. */
-export interface KategoriBeritaRow {
-  id: number;
-  nama: string;
-  slug: string;
-  urut: number;
-  aktif: boolean;
-}
 
 /** Hasil paginasi daftar berita admin. */
-export interface BeritaAdminListResult {
-  rows: BeritaAdminRow[];
-  total: number;
-  page: number;
-  pageSize: number;
-  pageCount: number;
-}

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, type ReactNode } from "react";
 
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import type {
   PendudukDTO,
   PendudukReferenceData,
@@ -113,14 +115,14 @@ export function FormPenduduk({
               {labelKembali}
             </Link>
           ) : null}
-          <Link className="button button-secondary" href={kembali}>
+          <ButtonLink variant="secondary" href={kembali}>
             Batal
-          </Link>
-          <button className="button button-primary" disabled={pending} type="submit">
+          </ButtonLink>
+          <Button variant="primary" disabled={pending} type="submit">
             {pending
               ? "Menyimpan..."
               : (labelSimpan ?? (ubah ? "Simpan Perubahan" : "Simpan Penduduk"))}
-          </button>
+          </Button>
         </div>
       </div>
     </form>

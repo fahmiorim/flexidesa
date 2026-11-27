@@ -13,8 +13,6 @@ export const JALUR_API_PUBLIK = {
   openapi: "/api/publik/openapi",
 } as const;
 
-export type NamaApiPublik = keyof typeof JALUR_API_PUBLIK;
-
 const responsGalat = {
   description: "Permintaan gagal (desa tidak valid, rate limit, atau galat server).",
   content: {

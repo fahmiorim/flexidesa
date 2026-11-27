@@ -22,6 +22,7 @@ import {
   kelompokFormSchema,
 } from "@/features/kependudukan/kelompok/domain/kelompok";
 import { errorState, successState, toErrorState, type ActionState } from "@/lib/action-state";
+import { jalankanAksiForm } from "@/lib/form-action-state";
 
 function idPositif(nilai: FormDataEntryValue | null): number | null {
   const id = Number(nilai);
@@ -211,6 +212,13 @@ export async function simpanKategoriFormAction(
 }
 
 /** Hapus kategori dari dalam dialog kelola (tanpa pindah halaman). */
+export async function hapusKategoriDialogAction(
+  _state: ActionState<null>,
+  formData: FormData,
+): Promise<ActionState<null>> {
+  return jalankanAksiForm(formData, hapusKategoriModalAction, "Kategori dihapus.");
+}
+
 export async function hapusKategoriModalAction(formData: FormData): Promise<void> {
   const id = idPositif(formData.get("id"));
   if (id === null) throw new Error("Kategori tidak valid.");

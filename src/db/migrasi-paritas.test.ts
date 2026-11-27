@@ -190,23 +190,9 @@ describe("paritas skema vs migrasi", () => {
       entries: Array<{ idx: number; tag: string }>;
     };
 
-    expect(files).toEqual([
-      "0000_baseline.sql",
-      "0001_pindah_lembaga_ke_lembaga_desa.sql",
-      "0002_slug_profil_desa.sql",
-      "0003_bored_chronomancer.sql",
-      "0004_magical_skreet.sql",
-      "0005_aromatic_miss_america.sql",
-      "0006_rbac_batas_tenant_dan_slug_global.sql",
-    ]);
+    expect(files).toEqual(["0000_baseline.sql"]);
     expect(journal.entries.map(({ idx, tag }) => ({ idx, tag }))).toEqual([
       { idx: 0, tag: "0000_baseline" },
-      { idx: 1, tag: "0001_pindah_lembaga_ke_lembaga_desa" },
-      { idx: 2, tag: "0002_slug_profil_desa" },
-      { idx: 3, tag: "0003_bored_chronomancer" },
-      { idx: 4, tag: "0004_magical_skreet" },
-      { idx: 5, tag: "0005_aromatic_miss_america" },
-      { idx: 6, tag: "0006_rbac_batas_tenant_dan_slug_global" },
     ]);
 
     const baseline = fs.readFileSync(MIGRATIONS_DIR + "0000_baseline.sql", "utf8");

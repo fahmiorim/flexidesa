@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
 import { StatIcon } from "@/components/ui/stat-icon";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { labelAktivitas, toneAktivitas } from "@/features/beranda/dashboard/domain/aktivitas";
 import { waktuRelatif } from "@/features/beranda/dashboard/domain/waktu-relatif";
 import { getAuditLogPageData } from "@/features/pengaturan/audit/application/audit-use-cases";
@@ -103,36 +105,25 @@ export default async function PenggunaPage() {
         </article>
       </div>
 
-      <nav aria-label="Bagian manajemen pengguna" className="pengguna-tabs">
-        <Link aria-current="page" className="pengguna-tab" href="/pengaturan/pengguna">
-          Pengguna
-        </Link>
-        <Link className="pengguna-tab" href="/pengaturan/grup-akses">
-          Peran &amp; Hak Akses
-        </Link>
-        {data.canUpdate ? (
-          <Link className="pengguna-tab" href="/pengaturan/pengguna/pendaftaran">
-            Pendaftaran Warga
-          </Link>
-        ) : null}
-        {bolehAudit ? (
-          <Link className="pengguna-tab" href="/pengaturan/pengguna/aktivitas">
-            Aktivitas Pengguna
-          </Link>
-        ) : null}
-        <Link className="pengguna-tab" href="/pengaturan/pengguna/keamanan">
-          Pengaturan Keamanan
-        </Link>
-      </nav>
-
       <div className="pengguna-layout">
-        <section className="platform-card pengguna-card">
-          <div className="pengguna-card-head">
-            <div>
-              <h2>Daftar Pengguna</h2>
-              <p>{angka.format(data.statistik.total)} akun terdaftar pada desa ini.</p>
-            </div>
-          </div>
+        <TableCard
+          actions={
+            data.canCreate ? (
+              <DialogPengguna
+                aksi={buatPenggunaAction}
+                currentUserId={data.currentUserId}
+                label="+ Tambah Pengguna"
+                roles={roles}
+                varian="primary"
+              />
+            ) : (
+              <span className="pengguna-rail-note">Anda hanya memiliki akses baca.</span>
+            )
+          }
+          className="pengguna-card"
+          description={`${angka.format(data.statistik.total)} akun terdaftar pada desa ini.`}
+          title="Daftar Pengguna"
+        >
           <div className="pengguna-card-body">
             <PenggunaConsole
               aksi={{
@@ -147,21 +138,10 @@ export default async function PenggunaPage() {
               rows={data.rows}
             />
           </div>
-        </section>
+        </TableCard>
 
         <aside className="pengguna-rail">
           <section className="pengguna-rail-card pengguna-rail-aksi">
-            {data.canCreate ? (
-              <DialogPengguna
-                aksi={buatPenggunaAction}
-                currentUserId={data.currentUserId}
-                label="+ Tambah Pengguna"
-                roles={roles}
-                varian="primary"
-              />
-            ) : (
-              <span className="pengguna-rail-note">Anda hanya memiliki akses baca.</span>
-            )}
             <Link className="pengguna-rail-tombol" href="/pengaturan/grup-akses">
               Kelola Role &amp; Hak Akses
             </Link>
@@ -182,6 +162,22 @@ export default async function PenggunaPage() {
                   <strong>{data.statistik.perRole[role.id] ?? 0}</strong>
                 </li>
               ))}
+            </ul>
+          </section>
+
+          <section className="pengguna-rail-card">
+            <header className="pengguna-rail-head">
+              <h2>Keamanan & Pendaftaran</h2>
+            </header>
+            <ul className="pengguna-role-list">
+              <li>
+                <Link href="/pengaturan/pengguna/keamanan">Pengaturan Keamanan</Link>
+              </li>
+              {data.canUpdate ? (
+                <li>
+                  <Link href="/pengaturan/pengguna/pendaftaran">Pendaftaran Warga</Link>
+                </li>
+              ) : null}
             </ul>
           </section>
 
@@ -241,43 +237,41 @@ export default async function PenggunaPage() {
       </div>
 
       {bolehAudit && audit ? (
-        <section className="platform-card pengguna-audit" id="log-aktivitas">
-          <div className="pengguna-card-head">
-            <div>
-              <h2>Log Aktivitas</h2>
-              <p>{angka.format(audit.total)} peristiwa tercatat untuk desa ini.</p>
-            </div>
-          </div>
+        <TableCard
+          className="pengguna-audit"
+          description={`${angka.format(audit.total)} peristiwa tercatat untuk desa ini.`}
+          title="Log Aktivitas"
+        >
           {audit.rows.length === 0 ? (
             <p className="modul-empty">Belum ada aktivitas yang tercatat.</p>
           ) : (
-            <div className="tenant-table-scroll">
-              <table className="tenant-table">
-                <thead>
-                  <tr>
-                    <th scope="col">Peristiwa</th>
-                    <th scope="col">Aktor</th>
-                    <th scope="col">Resource</th>
-                    <th scope="col">Waktu</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableScroll className="tenant-table-scroll">
+              <Table className="tenant-table">
+                <THead>
+                  <Row>
+                    <HeaderCell scope="col">Peristiwa</HeaderCell>
+                    <HeaderCell scope="col">Aktor</HeaderCell>
+                    <HeaderCell scope="col">Resource</HeaderCell>
+                    <HeaderCell scope="col">Waktu</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
                   {audit.rows.map((baris) => (
-                    <tr key={baris.id}>
-                      <td>{labelAktivitas(baris.event)}</td>
-                      <td>{baris.actorName ?? "Sistem"}</td>
-                      <td className="pengguna-mono">
+                    <Row key={baris.id}>
+                      <Cell>{labelAktivitas(baris.event)}</Cell>
+                      <Cell>{baris.actorName ?? "Sistem"}</Cell>
+                      <Cell className="pengguna-mono">
                         {baris.resource}
                         {baris.resourceId ? `:${baris.resourceId}` : ""}
-                      </td>
-                      <td>{waktuRelatif(baris.createdAt)}</td>
-                    </tr>
+                      </Cell>
+                      <Cell>{waktuRelatif(baris.createdAt)}</Cell>
+                    </Row>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TBody>
+              </Table>
+            </TableScroll>
           )}
-        </section>
+        </TableCard>
       ) : null}
     </div>
   );

@@ -3,7 +3,11 @@ import Link from "next/link";
 
 import { hapusSuplemenAction } from "@/app/(admin)/(kependudukan)/kependudukan/penduduk/suplemen/actions";
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   getDaftarSuplemenData,
   labelSasaranSuplemen,
@@ -85,60 +89,55 @@ export default async function SuplemenPage({
         </p>
       ) : null}
 
-      <section className="platform-card penduduk-card">
-        <div className="penduduk-card-head">
-          <div>
-            <h2>Daftar Data Suplemen</h2>
-            <p>
-              {hasil.total} data{adaFilter ? " sesuai filter" : " terdaftar"}.
-            </p>
-          </div>
+      <TableCard
+        className="penduduk-card"
+        title="Daftar Data Suplemen"
+        description={`${hasil.total} data${adaFilter ? " sesuai filter" : " terdaftar"}.`}
+        actions={
           <div className="penduduk-heading-actions penduduk-card-actions">
             {adaFilter ? (
               <Link className="penduduk-reset" href="/kependudukan/penduduk/suplemen">
                 Reset filter
               </Link>
             ) : null}
-            <Link
-              className="button button-secondary"
-              href="/kependudukan/penduduk/suplemen/laporan/ekspor"
-            >
+            <ButtonLink variant="secondary" href="/kependudukan/penduduk/suplemen/laporan/ekspor">
               Unduh Rekap
-            </Link>
+            </ButtonLink>
             {bolehUbah ? (
-              <Link className="button button-primary" href="/kependudukan/penduduk/suplemen/baru">
+              <ButtonLink variant="primary" href="/kependudukan/penduduk/suplemen/baru">
                 + Tambah
-              </Link>
+              </ButtonLink>
             ) : null}
           </div>
-        </div>
-
-        <form className="penduduk-filter" method="get">
-          <label className="penduduk-search">
-            <span>Cari</span>
-            <input defaultValue={q} name="q" placeholder="Nama data suplemen" type="search" />
-          </label>
-          <label>
-            <span>Sasaran</span>
-            <select defaultValue={sasaran ?? ""} name="sasaran">
-              <option value="">Pilih Sasaran</option>
-              {OPSI_SASARAN.map((opsi) => (
-                <option key={opsi.value} value={opsi.value}>
-                  {opsi.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="penduduk-filter-aksi">
-            <button className="button button-primary" type="submit">
-              Terapkan
-            </button>
-            <Link className="button button-secondary" href="/kependudukan/penduduk/suplemen">
-              Bersihkan
-            </Link>
-          </div>
-        </form>
-
+        }
+        filter={
+          <form className="penduduk-filter" method="get">
+            <label className="penduduk-search">
+              <span>Cari</span>
+              <input defaultValue={q} name="q" placeholder="Nama data suplemen" type="search" />
+            </label>
+            <label>
+              <span>Sasaran</span>
+              <select defaultValue={sasaran ?? ""} name="sasaran">
+                <option value="">Pilih Sasaran</option>
+                {OPSI_SASARAN.map((opsi) => (
+                  <option key={opsi.value} value={opsi.value}>
+                    {opsi.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <div className="penduduk-filter-aksi">
+              <Button variant="primary" type="submit">
+                Terapkan
+              </Button>
+              <ButtonLink variant="secondary" href="/kependudukan/penduduk/suplemen">
+                Bersihkan
+              </ButtonLink>
+            </div>
+          </form>
+        }
+      >
         {hasil.rows.length === 0 ? (
           <p className="modul-empty">
             {adaFilter
@@ -146,60 +145,60 @@ export default async function SuplemenPage({
               : "Belum ada data suplemen pada desa ini."}
           </p>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th scope="col">No</th>
-                  <th scope="col">Aksi</th>
-                  <th scope="col">Nama Data</th>
-                  <th scope="col">Jumlah Terdata</th>
-                  <th scope="col">Sasaran</th>
-                  <th scope="col">Keterangan</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">No</HeaderCell>
+                  <HeaderCell scope="col">Aksi</HeaderCell>
+                  <HeaderCell scope="col">Nama Data</HeaderCell>
+                  <HeaderCell scope="col">Jumlah Terdata</HeaderCell>
+                  <HeaderCell scope="col">Sasaran</HeaderCell>
+                  <HeaderCell scope="col">Keterangan</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {hasil.rows.map((row, indeks) => (
-                  <tr key={row.id}>
-                    <td className="modul-angka">{(hasil.page - 1) * hasil.perPage + indeks + 1}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell className="modul-angka">
+                      {(hasil.page - 1) * hasil.perPage + indeks + 1}
+                    </Cell>
+                    <Cell>
                       <div className={styles.aksiBaris}>
-                        <Link
-                          className="button button-secondary"
+                        <ButtonLink
+                          variant="secondary"
                           href={`/kependudukan/penduduk/suplemen/${row.id}`}
                         >
                           Rincian
-                        </Link>
+                        </ButtonLink>
                         {bolehUbah ? (
                           <>
-                            <Link
-                              className="button button-secondary"
+                            <ButtonLink
+                              variant="secondary"
                               href={`/kependudukan/penduduk/suplemen/${row.id}/impor`}
                             >
                               Impor
-                            </Link>
-                            <Link
-                              className="button button-secondary"
+                            </ButtonLink>
+                            <ButtonLink
+                              variant="secondary"
                               href={`/kependudukan/penduduk/suplemen/${row.id}/ubah`}
                             >
                               Ubah
-                            </Link>
+                            </ButtonLink>
                           </>
                         ) : null}
                         {bolehHapus ? (
-                          <form action={hapusSuplemenAction}>
-                            <input name="id" type="hidden" value={row.id} />
-                            <ConfirmSubmit
-                              className="button button-danger"
-                              message={`Hapus data suplemen "${row.nama}"? Data yang masih memiliki peserta tidak dapat dihapus.`}
-                            >
-                              Hapus
-                            </ConfirmSubmit>
-                          </form>
+                          <DialogHapusForm
+                            aksi={hapusSuplemenAction}
+                            id={row.id}
+                            judul={`Hapus data suplemen "${row.nama}"?`}
+                            keterangan="Suplemen yang masih memiliki peserta tidak dapat dihapus."
+                            labelAksi="Hapus suplemen"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <Link
                         className={styles.namaTautan}
                         href={`/kependudukan/penduduk/suplemen/${row.id}`}
@@ -209,15 +208,15 @@ export default async function SuplemenPage({
                       <span className="modul-muted">
                         Diperbarui {tanggal.format(new Date(row.updatedAt))}
                       </span>
-                    </td>
-                    <td className="modul-angka">{row.terdataCount}</td>
-                    <td>{labelSasaranSuplemen(row.sasaran)}</td>
-                    <td>{row.keterangan?.trim() || "—"}</td>
-                  </tr>
+                    </Cell>
+                    <Cell className="modul-angka">{row.terdataCount}</Cell>
+                    <Cell>{labelSasaranSuplemen(row.sasaran)}</Cell>
+                    <Cell>{row.keterangan?.trim() || "—"}</Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
 
         <div className="penduduk-footer">
@@ -230,13 +229,19 @@ export default async function SuplemenPage({
             <nav aria-label="Navigasi halaman data suplemen" className="penduduk-pagination">
               {hasil.page > 1 ? (
                 <Link
+                  aria-label="Halaman sebelumnya"
                   className="penduduk-page-arrow"
                   href={tautanHalaman({ q, sasaran: sasaranMentah }, hasil.page - 1)}
                 >
                   ‹
                 </Link>
               ) : (
-                <span aria-disabled="true" className="penduduk-page-arrow" data-disabled="true">
+                <span
+                  aria-disabled="true"
+                  aria-label="Halaman sebelumnya"
+                  className="penduduk-page-arrow"
+                  data-disabled="true"
+                >
                   ‹
                 </span>
               )}
@@ -257,20 +262,26 @@ export default async function SuplemenPage({
                 ))}
               {hasil.page < hasil.pageCount ? (
                 <Link
+                  aria-label="Halaman berikutnya"
                   className="penduduk-page-arrow"
                   href={tautanHalaman({ q, sasaran: sasaranMentah }, hasil.page + 1)}
                 >
                   ›
                 </Link>
               ) : (
-                <span aria-disabled="true" className="penduduk-page-arrow" data-disabled="true">
+                <span
+                  aria-disabled="true"
+                  aria-label="Halaman berikutnya"
+                  className="penduduk-page-arrow"
+                  data-disabled="true"
+                >
                   ›
                 </span>
               )}
             </nav>
           ) : null}
         </div>
-      </section>
+      </TableCard>
     </div>
   );
 }

@@ -5,13 +5,12 @@ import { describe, expect, it } from "vitest";
 import { GalleryShell } from "./gallery-shell";
 
 describe("GalleryShell", () => {
-  it("renders the existing gallery navigation, village identity, footer and page content", () => {
+  it("renders the existing gallery navigation, village identity, footer and page content", async () => {
     const markup = renderToStaticMarkup(
-      createElement(
-        GalleryShell,
-        { villageName: "Desa Contoh" },
-        createElement("section", null, "Isi halaman"),
-      ),
+      await GalleryShell({
+        villageName: "Desa Contoh",
+        children: createElement("section", null, "Isi halaman"),
+      }),
     );
 
     expect(markup).toContain('aria-label="Navigasi utama"');

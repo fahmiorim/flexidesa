@@ -6,7 +6,12 @@ import {
   kembalikanStatusMassalAction,
 } from "@/app/(admin)/(kependudukan)/kependudukan/mutasi-penduduk/actions";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { listRiwayat } from "@/features/kependudukan/penduduk/application/riwayat-penduduk-use-cases";
 import { getPendudukFormData } from "@/features/kependudukan/penduduk/application/use-cases";
 import {
@@ -127,114 +132,116 @@ export default async function MutasiPendudukPage({
       <PageHeading
         judul={<>Mutasi Penduduk</>}
         deskripsi={<>Riwayat kelahiran, kematian, pindah, dan datang penduduk.</>}
-        aksi={
-          <>
-            {bolehUbah ? (
-              <Link className="button button-primary" href="/kependudukan/mutasi-penduduk/baru">
-                + Catat Mutasi
-              </Link>
-            ) : null}
-          </>
-        }
       />
 
-      <section className="platform-card data-panel">
-        <header className="data-section-heading">
-          <div>
-            <h2>Daftar Mutasi Penduduk</h2>
-            <p>
-              Menampilkan {number.format(result.rows.length)} dari {number.format(result.total)}{" "}
-              kejadian.
-            </p>
-          </div>
-        </header>
-
-        <form className="data-filter" method="get">
-          <label className="data-filter-date">
-            <span>Jenis Peristiwa</span>
-            <select aria-label="Jenis peristiwa" defaultValue={type} name="type">
-              <option value="all">Pilih Jenis Peristiwa</option>
-              {MUTATION_TYPES.map((value) => (
-                <option key={value} value={value}>
-                  {MUTATION_TYPE_LABELS[value]}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="data-filter-date">
-            <span>Tahun</span>
-            <select aria-label="Tahun" defaultValue={year ?? ""} name="year">
-              <option value="">Pilih Tahun</option>
-              {tahunList.map((value) => (
-                <option key={value} value={value}>
-                  {value}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="data-filter-date">
-            <span>Bulan</span>
-            <select aria-label="Bulan" defaultValue={month ?? ""} name="month">
-              <option value="">Pilih Bulan</option>
-              {NAMA_BULAN.map((nama, index) => (
-                <option key={nama} value={index + 1}>
-                  {nama}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="data-filter-date">
-            <span>Jenis Kelamin</span>
-            <select aria-label="Jenis kelamin" defaultValue={gender ?? ""} name="gender">
-              <option value="">Pilih Jenis Kelamin</option>
-              <option value="male">{GENDER_LABELS.male}</option>
-              <option value="female">{GENDER_LABELS.female}</option>
-            </select>
-          </label>
-          <label className="data-filter-date">
-            <span>Agama</span>
-            <select aria-label="Agama" defaultValue={religionId ?? ""} name="religionId">
-              <option value="">Pilih Agama</option>
-              {formData.references.religions.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="data-filter-date">
-            <span>Wilayah</span>
-            <select aria-label="Wilayah" defaultValue={regionId ?? ""} name="regionId">
-              <option value="">Pilih Wilayah</option>
-              {formData.references.regions.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <input
-            aria-label="Cari nama, NIK, atau nomor surat"
-            defaultValue={q}
-            name="q"
-            placeholder="Cari nama, NIK, atau nomor surat..."
-            type="search"
-          />
-          <button className="button button-secondary" type="submit">
-            Filter
-          </button>
-          <Link className="button button-ghost" href="/kependudukan/mutasi-penduduk">
-            Bersihkan
-          </Link>
-        </form>
-
+      <TableCard
+        actions={
+          bolehUbah ? (
+            <ButtonLink variant="primary" href="/kependudukan/mutasi-penduduk/baru">
+              + Catat Mutasi
+            </ButtonLink>
+          ) : null
+        }
+        description={`Menampilkan ${number.format(result.rows.length)} dari ${number.format(result.total)} kejadian.`}
+        filter={
+          <form className="data-filter" method="get">
+            <FormField
+              defaultValue={type}
+              kind="select"
+              label="Jenis Peristiwa"
+              name="type"
+              options={[
+                { value: "all", label: "Semua Jenis Peristiwa" },
+                ...MUTATION_TYPES.map((value) => ({
+                  value,
+                  label: MUTATION_TYPE_LABELS[value],
+                })),
+              ]}
+            />
+            <FormField
+              defaultValue={year === null ? "" : String(year)}
+              kind="select"
+              label="Tahun"
+              name="year"
+              options={[
+                { value: "", label: "Pilih Tahun" },
+                ...tahunList.map((value) => ({ value: String(value), label: String(value) })),
+              ]}
+            />
+            <FormField
+              defaultValue={month === null ? "" : String(month)}
+              kind="select"
+              label="Bulan"
+              name="month"
+              options={[
+                { value: "", label: "Pilih Bulan" },
+                ...NAMA_BULAN.map((nama, index) => ({
+                  value: String(index + 1),
+                  label: nama,
+                })),
+              ]}
+            />
+            <FormField
+              defaultValue={gender ?? ""}
+              kind="select"
+              label="Jenis Kelamin"
+              name="gender"
+              options={[
+                { value: "", label: "Pilih Jenis Kelamin" },
+                { value: "male", label: GENDER_LABELS.male },
+                { value: "female", label: GENDER_LABELS.female },
+              ]}
+            />
+            <FormField
+              defaultValue={religionId === null ? "" : String(religionId)}
+              kind="select"
+              label="Agama"
+              name="religionId"
+              options={[
+                { value: "", label: "Pilih Agama" },
+                ...formData.references.religions.map((item) => ({
+                  value: String(item.id),
+                  label: item.name,
+                })),
+              ]}
+            />
+            <FormField
+              defaultValue={regionId === null ? "" : String(regionId)}
+              kind="select"
+              label="Wilayah"
+              name="regionId"
+              options={[
+                { value: "", label: "Pilih Wilayah" },
+                ...formData.references.regions.map((item) => ({
+                  value: String(item.id),
+                  label: item.label,
+                })),
+              ]}
+            />
+            <FormField
+              defaultValue={q}
+              label="Pencarian"
+              name="q"
+              placeholder="Cari nama, NIK, atau nomor surat..."
+              type="search"
+            />
+            <Button variant="secondary" type="submit">
+              Filter
+            </Button>
+            <ButtonLink variant="ghost" href="/kependudukan/mutasi-penduduk">
+              Bersihkan
+            </ButtonLink>
+          </form>
+        }
+        title="Daftar Mutasi Penduduk"
+      >
         <form action={kembalikanStatusMassalAction}>
           <div className={styles.buttonGroups}>
             <div className={styles.buttonGroup} role="group" aria-label="Kelola">
               <span className={styles.buttonGroupLabel}>Kelola</span>
               {bolehUbah ? (
                 <ConfirmSubmit
-                  className="button button-secondary"
+                  variant="secondary"
                   message="Kembalikan status penduduk terpilih menjadi Hidup? Perubahan ini akan mempengaruhi laporan penduduk bulanan."
                 >
                   Kembalikan Status Terpilih
@@ -243,44 +250,41 @@ export default async function MutasiPendudukPage({
             </div>
             <div className={styles.buttonGroup} role="group" aria-label="Laporan">
               <span className={styles.buttonGroupLabel}>Laporan</span>
-              <Link
-                className="button button-secondary"
-                href={`/kependudukan/mutasi-penduduk/cetak${suffix}`}
-              >
+              <ButtonLink variant="secondary" href={`/kependudukan/mutasi-penduduk/cetak${suffix}`}>
                 Cetak
-              </Link>
-              <Link
-                className="button button-secondary"
+              </ButtonLink>
+              <ButtonLink
+                variant="secondary"
                 href={`/kependudukan/mutasi-penduduk/ekspor${suffix}`}
               >
                 Unduh
-              </Link>
+              </ButtonLink>
             </div>
           </div>
 
           {result.rows.length ? (
-            <div className="table-scroll">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    {bolehUbah ? <th>Kembalikan</th> : null}
-                    <th>No.</th>
-                    <th>Aksi</th>
-                    <th>NIK</th>
-                    <th>Nama</th>
-                    <th>No. KK / Nama KK</th>
-                    <th>Jenis Kelamin</th>
-                    <th>Dusun</th>
-                    <th>RW</th>
-                    <th>RT</th>
-                    <th>Umur</th>
-                    <th>Status Menjadi</th>
-                    <th>Tgl Peristiwa</th>
-                    <th>Tgl Lapor</th>
-                    <th>Catatan Peristiwa</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableScroll>
+              <Table>
+                <THead>
+                  <Row>
+                    {bolehUbah ? <HeaderCell>Kembalikan</HeaderCell> : null}
+                    <HeaderCell>No.</HeaderCell>
+                    <HeaderCell>Aksi</HeaderCell>
+                    <HeaderCell>NIK</HeaderCell>
+                    <HeaderCell>Nama</HeaderCell>
+                    <HeaderCell>No. KK / Nama KK</HeaderCell>
+                    <HeaderCell>Jenis Kelamin</HeaderCell>
+                    <HeaderCell>Dusun</HeaderCell>
+                    <HeaderCell>RW</HeaderCell>
+                    <HeaderCell>RT</HeaderCell>
+                    <HeaderCell>Umur</HeaderCell>
+                    <HeaderCell>Status Menjadi</HeaderCell>
+                    <HeaderCell>Tgl Peristiwa</HeaderCell>
+                    <HeaderCell>Tgl Lapor</HeaderCell>
+                    <HeaderCell>Catatan Peristiwa</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
                   {result.rows.map((row, index) => {
                     const meta = (row.meta ?? {}) as MutasiDetailMeta;
                     const detailBaris = labelDetailMeta(meta);
@@ -289,9 +293,9 @@ export default async function MutasiPendudukPage({
                       .filter((v) => typeof v === "string" && v.trim())
                       .join(" · ");
                     return (
-                      <tr key={row.id}>
+                      <Row key={row.id}>
                         {bolehUbah ? (
-                          <td>
+                          <Cell>
                             {row.residentId !== null &&
                             row.type !== "birth" &&
                             row.type !== "move_in" ? (
@@ -302,25 +306,25 @@ export default async function MutasiPendudukPage({
                                 value={row.residentId}
                               />
                             ) : null}
-                          </td>
+                          </Cell>
                         ) : null}
-                        <td>{index + 1}</td>
-                        <td>
+                        <Cell>{index + 1}</Cell>
+                        <Cell>
                           <span className={styles.actions}>
                             {bolehUbah ? (
-                              <Link
-                                className="button button-ghost"
+                              <ButtonLink
+                                variant="ghost"
                                 href={`/kependudukan/mutasi-penduduk/${row.id}/ubah`}
                               >
                                 Ubah
-                              </Link>
+                              </ButtonLink>
                             ) : null}
                             {bolehUbah &&
                             row.residentId !== null &&
                             row.type !== "birth" &&
                             row.type !== "move_in" ? (
                               <ConfirmSubmit
-                                className="button button-secondary"
+                                variant="secondary"
                                 form={`kembali-${row.id}`}
                                 message="Kembalikan status penduduk ini menjadi Hidup? Perubahan ini akan mempengaruhi laporan penduduk bulanan."
                               >
@@ -328,42 +332,42 @@ export default async function MutasiPendudukPage({
                               </ConfirmSubmit>
                             ) : null}
                           </span>
-                        </td>
-                        <td className="modul-mono">
+                        </Cell>
+                        <Cell className="modul-mono">
                           {row.residentNationalId
                             ? row.residentNationalId.replace(/^(\d{6})\d+(\d{4})$/, "$1••••••$2")
                             : "—"}
-                        </td>
-                        <td>{row.residentName ?? "Data penduduk tidak tersedia"}</td>
-                        <td>
+                        </Cell>
+                        <Cell>{row.residentName ?? "Data penduduk tidak tersedia"}</Cell>
+                        <Cell>
                           {row.familyNumber ?? "—"}
                           {row.familyHeadName ? ` / ${row.familyHeadName}` : ""}
-                        </td>
-                        <td>{row.gender ? GENDER_LABELS[row.gender] : "—"}</td>
-                        <td>{row.dusun ?? "—"}</td>
-                        <td>{row.rw ?? "—"}</td>
-                        <td>{row.rt ?? "—"}</td>
-                        <td>{umur ?? "—"}</td>
-                        <td>
+                        </Cell>
+                        <Cell>{row.gender ? GENDER_LABELS[row.gender] : "—"}</Cell>
+                        <Cell>{row.dusun ?? "—"}</Cell>
+                        <Cell>{row.rw ?? "—"}</Cell>
+                        <Cell>{row.rt ?? "—"}</Cell>
+                        <Cell>{umur ?? "—"}</Cell>
+                        <Cell>
                           <span className="data-status">
                             {statusMenjadi(row.type, meta, row.lifeStatus)}
                           </span>
-                        </td>
-                        <td>{date.format(new Date(`${row.eventDate}T00:00:00`))}</td>
-                        <td>
+                        </Cell>
+                        <Cell>{date.format(new Date(`${row.eventDate}T00:00:00`))}</Cell>
+                        <Cell>
                           {date.format(
                             new Date(
                               new Date(row.reportedAt).toISOString().slice(0, 10) + "T00:00:00",
                             ),
                           )}
-                        </td>
-                        <td>{catatan || "—"}</td>
-                      </tr>
+                        </Cell>
+                        <Cell>{catatan || "—"}</Cell>
+                      </Row>
                     );
                   })}
-                </tbody>
-              </table>
-            </div>
+                </TBody>
+              </Table>
+            </TableScroll>
           ) : (
             <p className="modul-empty">Belum ada catatan mutasi untuk filter ini.</p>
           )}
@@ -391,7 +395,7 @@ export default async function MutasiPendudukPage({
             ) : null}
           </div>
         </footer>
-      </section>
+      </TableCard>
     </div>
   );
 }

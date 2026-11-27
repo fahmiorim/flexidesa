@@ -2,6 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { StatCard, StatGrid } from "@/components/ui/stat-card";
+import {
+  Cell,
+  HeaderCell,
+  Row,
+  Table,
+  TableScroll,
+  TBody,
+  TFoot,
+  THead,
+} from "@/components/ui/table";
 import { getPendudukFilterOptionsData } from "@/features/kependudukan/penduduk/application/use-cases";
 import {
   getPenandatanganStatistikData,
@@ -97,12 +110,12 @@ export default async function StatistikKependudukanPage({
         aksi={
           <>
             <div className={styles.headingActions}>
-              <Link className="button button-secondary" href="/statistik/rentang-umur">
+              <ButtonLink variant="secondary" href="/statistik/rentang-umur">
                 Rentang Umur
-              </Link>
-              <a className="button button-secondary" href={ekspor()}>
+              </ButtonLink>
+              <ButtonLink variant="secondary" href={ekspor()}>
                 Unduh CSV
-              </a>
+              </ButtonLink>
               <DialogCetakStatistik
                 cetakHref={cetakHref()}
                 pdfHref={ekspor("pdf")}
@@ -113,28 +126,25 @@ export default async function StatistikKependudukanPage({
         }
       />
 
-      <section className="data-kependudukan-kpis">
-        <article className="data-kpi data-kpi-primary">
-          <span>Total {satuanTotal}</span>
-          <strong>{angka.format(total)}</strong>
-          <small>{fokus}</small>
-        </article>
-        <article className="data-kpi" data-tone="blue">
-          <span>Laki-laki</span>
-          <strong>{angka.format(hasil.total.lakiLaki)}</strong>
-          <small>{persen(hasil.total.lakiLaki, total)}% dari total</small>
-        </article>
-        <article className="data-kpi" data-tone="pink">
-          <span>Perempuan</span>
-          <strong>{angka.format(hasil.total.perempuan)}</strong>
-          <small>{persen(hasil.total.perempuan, total)}% dari total</small>
-        </article>
-        <article className="data-kpi">
-          <span>Kelompok kategori</span>
-          <strong>{angka.format(jumlahBaris)}</strong>
-          <small>{kategori.label}</small>
-        </article>
-      </section>
+      <StatGrid columns={4}>
+        <StatCard label={`Total ${satuanTotal}`} note={fokus} utama value={angka.format(total)} />
+        <StatCard
+          label="Laki-laki"
+          note={`${persen(hasil.total.lakiLaki, total)}% dari total`}
+          tone="biru"
+          value={angka.format(hasil.total.lakiLaki)}
+        />
+        <StatCard
+          label="Perempuan"
+          note={`${persen(hasil.total.perempuan, total)}% dari total`}
+          value={angka.format(hasil.total.perempuan)}
+        />
+        <StatCard
+          label="Kelompok kategori"
+          note={kategori.label}
+          value={angka.format(jumlahBaris)}
+        />
+      </StatGrid>
 
       <div className={styles.layout}>
         <aside className={styles.sidebar}>
@@ -176,12 +186,12 @@ export default async function StatistikKependudukanPage({
                 </select>
               </label>
               <div className={styles.filterActions}>
-                <button className="button button-primary" type="submit">
+                <Button variant="primary" type="submit">
                   Terapkan
-                </button>
-                <Link className="button button-secondary" href="/kependudukan/statistik">
+                </Button>
+                <ButtonLink variant="secondary" href="/kependudukan/statistik">
                   Reset
-                </Link>
+                </ButtonLink>
               </div>
             </form>
           </section>
@@ -231,80 +241,80 @@ export default async function StatistikKependudukanPage({
             <>
               <GrafikKependudukan baris={hasil.baris} total={total} satuan={satuanTotal} />
 
-              <div className={`table-scroll ${styles.tableWrap}`}>
-                <table className="data-table">
-                  <thead>
-                    <tr>
-                      <th rowSpan={2}>No.</th>
-                      <th rowSpan={2}>Kelompok</th>
-                      <th colSpan={2}>Jumlah</th>
-                      <th colSpan={2}>Laki-laki</th>
-                      <th colSpan={2}>Perempuan</th>
-                    </tr>
-                    <tr>
-                      <th>Total</th>
-                      <th>Persen</th>
-                      <th>Total</th>
-                      <th>Persen</th>
-                      <th>Total</th>
-                      <th>Persen</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              <TableScroll className={styles.tableWrap}>
+                <Table>
+                  <THead>
+                    <Row>
+                      <HeaderCell rowSpan={2}>No.</HeaderCell>
+                      <HeaderCell rowSpan={2}>Kelompok</HeaderCell>
+                      <HeaderCell colSpan={2}>Jumlah</HeaderCell>
+                      <HeaderCell colSpan={2}>Laki-laki</HeaderCell>
+                      <HeaderCell colSpan={2}>Perempuan</HeaderCell>
+                    </Row>
+                    <Row>
+                      <HeaderCell>Total</HeaderCell>
+                      <HeaderCell>Persen</HeaderCell>
+                      <HeaderCell>Total</HeaderCell>
+                      <HeaderCell>Persen</HeaderCell>
+                      <HeaderCell>Total</HeaderCell>
+                      <HeaderCell>Persen</HeaderCell>
+                    </Row>
+                  </THead>
+                  <TBody>
                     {hasil.baris.map((row, index) => (
-                      <tr key={row.label}>
-                        <td>{index + 1}</td>
-                        <td>{row.label}</td>
-                        <td>{selAngka(row.jumlah, row.label)}</td>
-                        <td>{persen(row.jumlah, total)}%</td>
-                        <td>{selAngka(row.lakiLaki, row.label, "male")}</td>
-                        <td>{persen(row.lakiLaki, total)}%</td>
-                        <td>{selAngka(row.perempuan, row.label, "female")}</td>
-                        <td>{persen(row.perempuan, total)}%</td>
-                      </tr>
+                      <Row key={row.label}>
+                        <Cell>{index + 1}</Cell>
+                        <Cell>{row.label}</Cell>
+                        <Cell>{selAngka(row.jumlah, row.label)}</Cell>
+                        <Cell>{persen(row.jumlah, total)}%</Cell>
+                        <Cell>{selAngka(row.lakiLaki, row.label, "male")}</Cell>
+                        <Cell>{persen(row.lakiLaki, total)}%</Cell>
+                        <Cell>{selAngka(row.perempuan, row.label, "female")}</Cell>
+                        <Cell>{persen(row.perempuan, total)}%</Cell>
+                      </Row>
                     ))}
                     {hasil.baris.length === 0 && (
-                      <tr>
-                        <td colSpan={8} className={styles.emptyRow}>
+                      <Row>
+                        <Cell colSpan={8} className={styles.emptyRow}>
                           Belum ada data untuk kategori ini.
-                        </td>
-                      </tr>
+                        </Cell>
+                      </Row>
                     )}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <th />
-                      <th>JUMLAH</th>
-                      <th>{angka.format(hasil.jumlah.jumlah)}</th>
-                      <th>{persen(hasil.jumlah.jumlah, total)}%</th>
-                      <th>{angka.format(hasil.jumlah.lakiLaki)}</th>
-                      <th>{persen(hasil.jumlah.lakiLaki, total)}%</th>
-                      <th>{angka.format(hasil.jumlah.perempuan)}</th>
-                      <th>{persen(hasil.jumlah.perempuan, total)}%</th>
-                    </tr>
-                    <tr>
-                      <th />
-                      <th>{labelBelum}</th>
-                      <th>{angka.format(hasil.belumMengisi.jumlah)}</th>
-                      <th>{persen(hasil.belumMengisi.jumlah, total)}%</th>
-                      <th>{angka.format(hasil.belumMengisi.lakiLaki)}</th>
-                      <th>{persen(hasil.belumMengisi.lakiLaki, total)}%</th>
-                      <th>{angka.format(hasil.belumMengisi.perempuan)}</th>
-                      <th>{persen(hasil.belumMengisi.perempuan, total)}%</th>
-                    </tr>
-                    <tr>
-                      <th />
-                      <th>TOTAL</th>
-                      <th>{angka.format(hasil.total.jumlah)}</th>
-                      <th>{persen(hasil.total.jumlah, total)}%</th>
-                      <th>{angka.format(hasil.total.lakiLaki)}</th>
-                      <th>{persen(hasil.total.lakiLaki, total)}%</th>
-                      <th>{angka.format(hasil.total.perempuan)}</th>
-                      <th>{persen(hasil.total.perempuan, total)}%</th>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
+                  </TBody>
+                  <TFoot>
+                    <Row>
+                      <HeaderCell />
+                      <HeaderCell>JUMLAH</HeaderCell>
+                      <HeaderCell>{angka.format(hasil.jumlah.jumlah)}</HeaderCell>
+                      <HeaderCell>{persen(hasil.jumlah.jumlah, total)}%</HeaderCell>
+                      <HeaderCell>{angka.format(hasil.jumlah.lakiLaki)}</HeaderCell>
+                      <HeaderCell>{persen(hasil.jumlah.lakiLaki, total)}%</HeaderCell>
+                      <HeaderCell>{angka.format(hasil.jumlah.perempuan)}</HeaderCell>
+                      <HeaderCell>{persen(hasil.jumlah.perempuan, total)}%</HeaderCell>
+                    </Row>
+                    <Row>
+                      <HeaderCell />
+                      <HeaderCell>{labelBelum}</HeaderCell>
+                      <HeaderCell>{angka.format(hasil.belumMengisi.jumlah)}</HeaderCell>
+                      <HeaderCell>{persen(hasil.belumMengisi.jumlah, total)}%</HeaderCell>
+                      <HeaderCell>{angka.format(hasil.belumMengisi.lakiLaki)}</HeaderCell>
+                      <HeaderCell>{persen(hasil.belumMengisi.lakiLaki, total)}%</HeaderCell>
+                      <HeaderCell>{angka.format(hasil.belumMengisi.perempuan)}</HeaderCell>
+                      <HeaderCell>{persen(hasil.belumMengisi.perempuan, total)}%</HeaderCell>
+                    </Row>
+                    <Row>
+                      <HeaderCell />
+                      <HeaderCell>TOTAL</HeaderCell>
+                      <HeaderCell>{angka.format(hasil.total.jumlah)}</HeaderCell>
+                      <HeaderCell>{persen(hasil.total.jumlah, total)}%</HeaderCell>
+                      <HeaderCell>{angka.format(hasil.total.lakiLaki)}</HeaderCell>
+                      <HeaderCell>{persen(hasil.total.lakiLaki, total)}%</HeaderCell>
+                      <HeaderCell>{angka.format(hasil.total.perempuan)}</HeaderCell>
+                      <HeaderCell>{persen(hasil.total.perempuan, total)}%</HeaderCell>
+                    </Row>
+                  </TFoot>
+                </Table>
+              </TableScroll>
 
               <footer className={styles.note}>
                 <span>

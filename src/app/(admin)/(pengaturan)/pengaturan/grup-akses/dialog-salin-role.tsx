@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useId, useRef } from "react";
 
+import { Button } from "@/components/ui/button";
 import { GalatField, PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
@@ -26,13 +27,9 @@ export function DialogSalinRole({ role, aksi }: Props) {
   }, [state, router]);
   return (
     <>
-      <button
-        className="button button-secondary"
-        type="button"
-        onClick={() => ref.current?.showModal()}
-      >
+      <Button variant="secondary" type="button" onClick={() => ref.current?.showModal()}>
         Salin
-      </button>
+      </Button>
       <dialog
         ref={ref}
         className="platform-dialog"
@@ -72,16 +69,12 @@ export function DialogSalinRole({ role, aksi }: Props) {
           </label>
           <PesanDialog state={state} />
           <div className="platform-dialog-actions">
-            <button
-              type="button"
-              className="button button-secondary"
-              onClick={() => ref.current?.close()}
-            >
+            <Button variant="secondary" type="button" onClick={() => ref.current?.close()}>
               Batal
-            </button>
-            <button type="submit" className="button button-primary" disabled={pending}>
+            </Button>
+            <Button variant="primary" type="submit" disabled={pending}>
               {pending ? "Menyalin..." : "Salin Role"}
-            </button>
+            </Button>
           </div>
         </form>
       </dialog>

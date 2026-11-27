@@ -1,10 +1,19 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useActionState,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  useTransition,
+} from "react";
 import { createPortal } from "react-dom";
 
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   isJenisJabatan,
   LABEL_JENIS_JABATAN,
@@ -103,12 +112,12 @@ function FormJabatan({
       {isiJabatan(item)}
       <PesanDialog state={state} />
       <div className="platform-dialog-actions">
-        <button className="button button-secondary" onClick={onBatal} type="button">
+        <Button onClick={onBatal} type="button" variant="secondary">
           Kembali ke daftar
-        </button>
-        <button className="button button-primary" disabled={pending} type="submit">
-          {pending ? "Menyimpan..." : item ? "Simpan Perubahan" : "Simpan Jabatan"}
-        </button>
+        </Button>
+        <Button loading={pending} type="submit" variant="primary">
+          {item ? "Simpan Perubahan" : "Simpan Jabatan"}
+        </Button>
       </div>
     </form>
   );
@@ -134,8 +143,25 @@ export function KelolaJabatanDialog({
   tombolClassName?: string;
 }) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const router = useRouter();
   const id = useId();
   const [tampilan, setTampilan] = useState<Tampilan>({ jenis: "daftar" });
+  const [konfirmasiHapus, setKonfirmasiHapus] = useState<number | null>(null);
+  const [menghapus, mulaiHapus] = useTransition();
+
+  function hapusJabatan(item: JabatanKelolaItem) {
+    const formData = new FormData();
+    formData.set("id", String(item.id));
+    mulaiHapus(async () => {
+      try {
+        await hapusJabatanAction(formData);
+      } finally {
+        setKonfirmasiHapus(null);
+        router.refresh();
+      }
+    });
+  }
+
   // Dialog dipindah ke `body` agar tampil sama di mana pun tombolnya dipasang.
   const terpasang = useSyncExternalStore(
     () => () => {},
@@ -209,27 +235,27 @@ export function KelolaJabatanDialog({
                   </div>
 
                   {jabatan.length ? (
-                    <div className="modul-table-wrap">
-                      <table className="modul-table jabatan-table">
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Nama Jabatan</th>
-                            <th>Jenis</th>
-                            <th>Urutan</th>
-                            <th>Aparat</th>
-                            <th>Tugas Pokok &amp; Fungsi</th>
-                            <th>Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                    <TableScroll className="modul-table-wrap">
+                      <Table className="modul-table jabatan-table">
+                        <THead>
+                          <Row>
+                            <HeaderCell>No</HeaderCell>
+                            <HeaderCell>Nama Jabatan</HeaderCell>
+                            <HeaderCell>Jenis</HeaderCell>
+                            <HeaderCell>Urutan</HeaderCell>
+                            <HeaderCell>Aparat</HeaderCell>
+                            <HeaderCell>Tugas Pokok &amp; Fungsi</HeaderCell>
+                            <HeaderCell>Aksi</HeaderCell>
+                          </Row>
+                        </THead>
+                        <TBody>
                           {jabatan.map((item, index) => (
-                            <tr key={item.id}>
-                              <td>{index + 1}</td>
-                              <td>
+                            <Row key={item.id}>
+                              <Cell>{index + 1}</Cell>
+                              <Cell>
                                 <strong>{item.nama}</strong>
-                              </td>
-                              <td>
+                              </Cell>
+                              <Cell>
                                 <span className="jabatan-badges">
                                   {badgeJenis(item) ? (
                                     <span className="jabatan-badge">{badgeJenis(item)}</span>
@@ -241,17 +267,17 @@ export function KelolaJabatanDialog({
                                     <span className="jabatan-badge">{labelJenis(item.jenis)}</span>
                                   ) : null}
                                 </span>
-                              </td>
-                              <td>{item.urut}</td>
-                              <td>{item.jumlahAparat}</td>
-                              <td>
+                              </Cell>
+                              <Cell>{item.urut}</Cell>
+                              <Cell>{item.jumlahAparat}</Cell>
+                              <Cell>
                                 {item.tupoksi ? (
                                   <span className="jabatan-tupoksi-sel">{item.tupoksi}</span>
                                 ) : (
                                   "—"
                                 )}
-                              </td>
-                              <td>
+                              </Cell>
+                              <Cell>
                                 <div className="pemerintahan-row-actions">
                                   {bolehUbah ? (
                                     <button
@@ -263,23 +289,43 @@ export function KelolaJabatanDialog({
                                     </button>
                                   ) : null}
                                   {bolehHapus && item.jenis === "lainnya" ? (
-                                    <form action={hapusJabatanAction}>
-                                      <input name="id" type="hidden" value={item.id} />
-                                      <ConfirmSubmit
-                                        className="button button-danger-ghost"
-                                        message={`Hapus jabatan ${item.nama}?`}
+                                    konfirmasiHapus === item.id ? (
+                                      <span className="table-actions">
+                                        <Button
+                                          loading={menghapus}
+                                          onClick={() => hapusJabatan(item)}
+                                          size="sm"
+                                          type="button"
+                                          variant="danger"
+                                        >
+                                          Hapus jabatan
+                                        </Button>
+                                        <Button
+                                          onClick={() => setKonfirmasiHapus(null)}
+                                          size="sm"
+                                          type="button"
+                                          variant="secondary"
+                                        >
+                                          Batal
+                                        </Button>
+                                      </span>
+                                    ) : (
+                                      <Button
+                                        onClick={() => setKonfirmasiHapus(item.id)}
+                                        type="button"
+                                        variant="danger-ghost"
                                       >
                                         Hapus
-                                      </ConfirmSubmit>
-                                    </form>
+                                      </Button>
+                                    )
                                   ) : null}
                                 </div>
-                              </td>
-                            </tr>
+                              </Cell>
+                            </Row>
                           ))}
-                        </tbody>
-                      </table>
-                    </div>
+                        </TBody>
+                      </Table>
+                    </TableScroll>
                   ) : (
                     <p className="modul-empty">
                       Belum ada jabatan. Tambahkan Kepala Desa terlebih dahulu.

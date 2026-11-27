@@ -4,7 +4,7 @@ import { and, asc, eq, gte, lt } from "drizzle-orm";
 
 import { db } from "@/db";
 import { agendaKegiatan } from "@/db/schema";
-import type { AgendaRow, AgendaStatus } from "@/features/info-desa/agenda/domain/agenda";
+import type { AgendaRow } from "@/features/info-desa/agenda/domain/agenda";
 
 /**
  * Query agenda kegiatan desa.
@@ -91,47 +91,4 @@ export async function getAgendaPublikById(
     )
     .limit(1);
   return row ?? null;
-}
-
-/** Seluruh agenda desa untuk halaman admin, termasuk yang belum tayang. */
-export async function listAgendaAdmin(villageId: number): Promise<AgendaRow[]> {
-  return db
-    .select({ ...KOLOM, tayang: agendaKegiatan.tayang })
-    .from(agendaKegiatan)
-    .where(eq(agendaKegiatan.villageId, villageId))
-    .orderBy(asc(agendaKegiatan.mulai), asc(agendaKegiatan.jamMulai), asc(agendaKegiatan.id));
-}
-
-export interface AgendaInput {
-  judul: string;
-  mulai: string;
-  selesai: string | null;
-  jamMulai: string | null;
-  jamSelesai: string | null;
-  kategori: string;
-  status: AgendaStatus;
-  lokasi: string | null;
-  deskripsi: string | null;
-  tayang: boolean;
-}
-
-export async function createAgenda(villageId: number, data: AgendaInput): Promise<void> {
-  await db.insert(agendaKegiatan).values({ villageId, ...data });
-}
-
-export async function updateAgenda(
-  villageId: number,
-  id: number,
-  data: AgendaInput,
-): Promise<void> {
-  await db
-    .update(agendaKegiatan)
-    .set(data)
-    .where(and(eq(agendaKegiatan.villageId, villageId), eq(agendaKegiatan.id, id)));
-}
-
-export async function deleteAgenda(villageId: number, id: number): Promise<void> {
-  await db
-    .delete(agendaKegiatan)
-    .where(and(eq(agendaKegiatan.villageId, villageId), eq(agendaKegiatan.id, id)));
 }

@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { SinkronIdmForm } from "@/app/(admin)/(info-desa)/profil-desa/status-desa/sinkron-form";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
@@ -67,9 +69,9 @@ export default async function IdmPage({
         aksi={
           <>
             <div className="page-heading-actions">
-              <Link className="button button-secondary" href={`/desa/idm/ekspor?tahun=${tahun}`}>
+              <ButtonLink variant="secondary" href={`/desa/idm/ekspor?tahun=${tahun}`}>
                 Unduh CSV
-              </Link>
+              </ButtonLink>
             </div>
           </>
         }
@@ -99,9 +101,9 @@ export default async function IdmPage({
             Tahun penilaian
             <input type="number" name="tahun" min="2000" max="2100" defaultValue={tahun} />
           </label>
-          <button className="button button-primary" type="submit">
+          <Button variant="primary" type="submit">
             Tampilkan
-          </button>
+          </Button>
         </form>
         <p className="modul-muted">
           {tahunTersedia.length
@@ -120,29 +122,29 @@ export default async function IdmPage({
         <p className="modul-muted">
           Hanya indikator dengan kode berdimensi (I.x, II.x, III.x, atau IKS/IKE/IKL) yang dihitung.
         </p>
-        <div className="modul-scroll">
-          <table className="modul-table">
-            <thead>
-              <tr>
-                <th>Dimensi</th>
-                <th>Jumlah indikator</th>
-                <th>Skor</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll className="modul-scroll">
+          <Table className="modul-table">
+            <THead>
+              <Row>
+                <HeaderCell>Dimensi</HeaderCell>
+                <HeaderCell>Jumlah indikator</HeaderCell>
+                <HeaderCell>Skor</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {rekap.dimensi.map((dimensi) => (
-                <tr key={dimensi.id}>
-                  <td>
+                <Row key={dimensi.id}>
+                  <Cell>
                     <strong>{dimensi.kode}</strong>{" "}
                     <span className="modul-muted">{dimensi.label}</span>
-                  </td>
-                  <td className="modul-angka">{dimensi.jumlahIndikator}</td>
-                  <td className="modul-angka">{formatSkor(dimensi.skor)}</td>
-                </tr>
+                  </Cell>
+                  <Cell className="modul-angka">{dimensi.jumlahIndikator}</Cell>
+                  <Cell className="modul-angka">{formatSkor(dimensi.skor)}</Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       </section>
 
       <section className="modul-card">
@@ -161,33 +163,33 @@ export default async function IdmPage({
             </span>
           </p>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>Kode &amp; nama</th>
-                  <th>Dimensi</th>
-                  <th>Kategori</th>
-                  <th>Skor</th>
-                  <th>Keterangan</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>Kode &amp; nama</HeaderCell>
+                  <HeaderCell>Dimensi</HeaderCell>
+                  <HeaderCell>Kategori</HeaderCell>
+                  <HeaderCell>Skor</HeaderCell>
+                  <HeaderCell>Keterangan</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {indikator.map((row) => (
-                  <tr key={row.id}>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>
                       <strong>{row.kode}</strong>
                       <small className="modul-muted">{row.nama}</small>
-                    </td>
-                    <td>{labelDimensi(row.kode)}</td>
-                    <td>{row.kategori ?? "—"}</td>
-                    <td className="modul-angka">{row.skor ?? "—"}</td>
-                    <td>{row.keterangan ?? "—"}</td>
-                  </tr>
+                    </Cell>
+                    <Cell>{labelDimensi(row.kode)}</Cell>
+                    <Cell>{row.kategori ?? "—"}</Cell>
+                    <Cell className="modul-angka">{row.skor ?? "—"}</Cell>
+                    <Cell>{row.keterangan ?? "—"}</Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
       </section>
     </div>

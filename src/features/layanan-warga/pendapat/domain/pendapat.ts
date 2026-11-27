@@ -19,8 +19,6 @@ export const pendapatSchema = z.object({
   ipAddress: z.string().max(45).optional().or(z.literal("")),
 });
 
-export type PendapatInput = z.infer<typeof pendapatSchema>;
-
 export type PendapatRekapRow = {
   pilihan: number;
   label: string;

@@ -1,7 +1,12 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
 import { FormDialog } from "@/components/ui/form-dialog";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { formatRupiah } from "@/features/keuangan-desa/keuangan/domain/keuangan";
 import { getInventarisTablePageData } from "@/features/pembangunan-aset/inventaris/application/inventaris-use-cases";
 import {
@@ -204,7 +209,20 @@ export default async function DaftarInventarisPage({ searchParams }: Props) {
 
   return (
     <main className={styles.page}>
-      <PageHeading judul={<>Daftar Inventaris</>} deskripsi={<>Data inventaris dan aset desa.</>} />
+      <PageHeading
+        judul={<>Daftar Inventaris</>}
+        deskripsi={<>Data inventaris dan aset desa.</>}
+        aksi={
+          <div className={styles.actions}>
+            <Link className={styles.secondary} href="/inventaris/dashboard">
+              Dashboard Aset
+            </Link>
+            <Link className={styles.secondary} href="/inventaris/pengelolaan">
+              Pengelolaan Aset
+            </Link>
+          </div>
+        }
+      />
       <section className={styles.metrics}>
         <article className={`${styles.metric} ${styles.metricPrimary}`}>
           <span>Total Inventaris</span>
@@ -234,15 +252,6 @@ export default async function DaftarInventarisPage({ searchParams }: Props) {
           <small>Akumulasi nilai tercatat</small>
         </article>
       </section>
-      <nav className={styles.tabs}>
-        <Link href="/inventaris/dashboard">Dashboard</Link>
-        <Link className={styles.active} href="/inventaris">
-          Daftar Inventaris
-        </Link>
-        <Link href="/inventaris/pengelolaan">Pengelolaan Aset</Link>
-        <Link href="/inventaris/laporan">Rekap Nilai Aset</Link>
-        <Link href="/inventaris/mutasi">Mutasi &amp; Pemeliharaan</Link>
-      </nav>
       <section className={styles.panel}>
         <div className={styles.panelHead}>
           <div>
@@ -252,15 +261,14 @@ export default async function DaftarInventarisPage({ searchParams }: Props) {
             </p>
           </div>
           <div className={styles.actions}>
-            <Link className={styles.secondary} href="/inventaris/laporan/ekspor">
+            <ButtonLink variant="secondary" href="/inventaris/laporan/ekspor">
               Export CSV ↓
-            </Link>
+            </ButtonLink>
             {data.canCreate ? (
               <FormDialog
                 aksi={simpanInventarisFormAction}
                 deskripsi="Isi data barang, perolehan, kondisi, dan nilai aset."
                 judul="Tambah Inventaris"
-                kelasTombol={styles.primary}
                 label="＋ Tambah Inventaris"
                 labelSimpan="Simpan Inventaris"
               >
@@ -270,8 +278,13 @@ export default async function DaftarInventarisPage({ searchParams }: Props) {
           </div>
         </div>
         <form method="get" className={styles.filters}>
-          <input name="q" placeholder="Cari kode, nama barang, atau merek..." defaultValue={q} />
-          <select name="kategori" defaultValue={p.kategori ?? ""}>
+          <input
+            aria-label="Cari inventaris"
+            name="q"
+            placeholder="Cari kode, nama barang, atau merek..."
+            defaultValue={q}
+          />
+          <select aria-label="Filter kategori" name="kategori" defaultValue={p.kategori ?? ""}>
             <option value="">Semua Kategori</option>
             {data.kategori.map((k) => (
               <option key={k.id} value={k.id}>
@@ -279,7 +292,7 @@ export default async function DaftarInventarisPage({ searchParams }: Props) {
               </option>
             ))}
           </select>
-          <select name="lokasi" defaultValue={p.lokasi ?? ""}>
+          <select aria-label="Filter lokasi" name="lokasi" defaultValue={p.lokasi ?? ""}>
             <option value="">Semua Lokasi</option>
             {data.locations.map((x) => (
               <option key={x} value={x}>
@@ -287,7 +300,7 @@ export default async function DaftarInventarisPage({ searchParams }: Props) {
               </option>
             ))}
           </select>
-          <select name="kondisi" defaultValue={p.kondisi ?? ""}>
+          <select aria-label="Filter kondisi" name="kondisi" defaultValue={p.kondisi ?? ""}>
             <option value="">Semua Kondisi</option>
             {Object.entries(INVENTARIS_KONDISI_LABELS).map(([k, v]) => (
               <option key={k} value={k}>
@@ -295,79 +308,81 @@ export default async function DaftarInventarisPage({ searchParams }: Props) {
               </option>
             ))}
           </select>
-          <button className={styles.primary}>Filter</button>
-          <Link className={styles.secondary} href="/inventaris">
+          <Button type="submit">Filter</Button>
+          <ButtonLink variant="secondary" href="/inventaris">
             Reset
-          </Link>
+          </ButtonLink>
         </form>
         <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>Kode Inventaris</th>
-                <th>Nama Barang</th>
-                <th>Kategori</th>
-                <th>Lokasi</th>
-                <th>Kondisi</th>
-                <th>Jumlah</th>
-                <th>Nilai Satuan</th>
-                <th>Total Nilai</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((x, i) => (
-                <tr key={x.id}>
-                  <td>{(current - 1) * pageSize + i + 1}</td>
-                  <td>
-                    <Link href={"/inventaris/" + x.id}>
-                      {x.nomorInventaris ?? x.kodeBarang ?? "—"}
-                    </Link>
-                  </td>
-                  <td>
-                    <Link href={"/inventaris/" + x.id}>{x.namaBarang}</Link>
-                    <small className={styles.muted} style={{ display: "block" }}>
-                      {[x.merk, x.tipe].filter(Boolean).join(" ")}
-                    </small>
-                  </td>
-                  <td>{x.kategoriNama ?? "Tanpa kategori"}</td>
-                  <td>{x.lokasi ?? "—"}</td>
-                  <td>
-                    <span
-                      className={`${styles.tag} ${
-                        x.kondisi === "baik"
-                          ? styles.good
-                          : x.kondisi === "rusak_ringan"
-                            ? styles.warn
-                            : styles.bad
-                      }`}
-                    >
-                      {INVENTARIS_KONDISI_LABELS[x.kondisi]}
-                    </span>
-                  </td>
-                  <td>
-                    {Number(x.jumlah).toLocaleString("id-ID")} {x.satuan}
-                  </td>
-                  <td>{formatRupiah(x.hargaSatuan ?? "0")}</td>
-                  <td>{formatRupiah(x.nilaiAkhir ?? "0")}</td>
-                  <td>
-                    <div className={styles.actions}>
-                      <Link href={"/inventaris/" + x.id}>Detail</Link>
-                      {data.canUpdate ? (
-                        <Link href={"/inventaris/" + x.id + "?edit=1"}>Edit</Link>
-                      ) : null}
-                      {data.canMutateCreate ? (
-                        <Link href={"/inventaris/mutasi?inventarisId=" + x.id + "&jenis=hapus"}>
-                          Ajukan Penghapusan
-                        </Link>
-                      ) : null}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <TableScroll>
+            <Table className={styles.table}>
+              <THead>
+                <Row>
+                  <HeaderCell>No.</HeaderCell>
+                  <HeaderCell>Kode Inventaris</HeaderCell>
+                  <HeaderCell>Nama Barang</HeaderCell>
+                  <HeaderCell>Kategori</HeaderCell>
+                  <HeaderCell>Lokasi</HeaderCell>
+                  <HeaderCell>Kondisi</HeaderCell>
+                  <HeaderCell>Jumlah</HeaderCell>
+                  <HeaderCell>Nilai Satuan</HeaderCell>
+                  <HeaderCell>Total Nilai</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
+                {rows.map((x, i) => (
+                  <Row key={x.id}>
+                    <Cell>{(current - 1) * pageSize + i + 1}</Cell>
+                    <Cell>
+                      <Link href={"/inventaris/" + x.id}>
+                        {x.nomorInventaris ?? x.kodeBarang ?? "—"}
+                      </Link>
+                    </Cell>
+                    <Cell>
+                      <Link href={"/inventaris/" + x.id}>{x.namaBarang}</Link>
+                      <small className={styles.muted} style={{ display: "block" }}>
+                        {[x.merk, x.tipe].filter(Boolean).join(" ")}
+                      </small>
+                    </Cell>
+                    <Cell>{x.kategoriNama ?? "Tanpa kategori"}</Cell>
+                    <Cell>{x.lokasi ?? "—"}</Cell>
+                    <Cell>
+                      <span
+                        className={`${styles.tag} ${
+                          x.kondisi === "baik"
+                            ? styles.good
+                            : x.kondisi === "rusak_ringan"
+                              ? styles.warn
+                              : styles.bad
+                        }`}
+                      >
+                        {INVENTARIS_KONDISI_LABELS[x.kondisi]}
+                      </span>
+                    </Cell>
+                    <Cell>
+                      {Number(x.jumlah).toLocaleString("id-ID")} {x.satuan}
+                    </Cell>
+                    <Cell>{formatRupiah(x.hargaSatuan ?? "0")}</Cell>
+                    <Cell>{formatRupiah(x.nilaiAkhir ?? "0")}</Cell>
+                    <Cell>
+                      <div className={styles.actions}>
+                        <Link href={"/inventaris/" + x.id}>Detail</Link>
+                        {data.canUpdate ? (
+                          <Link href={"/inventaris/" + x.id + "?edit=1"}>Edit</Link>
+                        ) : null}
+                        {data.canMutateCreate ? (
+                          <Link href={"/inventaris/mutasi?inventarisId=" + x.id + "&jenis=hapus"}>
+                            Ajukan Penghapusan
+                          </Link>
+                        ) : null}
+                      </div>
+                    </Cell>
+                  </Row>
+                ))}
+              </TBody>
+            </Table>
+          </TableScroll>
           {rows.length === 0 ? (
             <p className={styles.empty}>Tidak ada inventaris yang sesuai filter.</p>
           ) : null}
@@ -379,74 +394,102 @@ export default async function DaftarInventarisPage({ searchParams }: Props) {
           </span>
           <div className={styles.actions}>
             {current > 1 ? (
-              <Link className={styles.secondary} href={"/inventaris?" + params(current - 1)}>
+              <ButtonLink
+                aria-label="Halaman sebelumnya"
+                className={styles.secondary}
+                href={"/inventaris?" + params(current - 1)}
+                variant="ghost"
+              >
                 ←
-              </Link>
+              </ButtonLink>
             ) : null}
             <strong>
               {current} / {pageCount}
             </strong>
             {current < pageCount ? (
-              <Link className={styles.secondary} href={"/inventaris?" + params(current + 1)}>
+              <ButtonLink
+                aria-label="Halaman berikutnya"
+                className={styles.secondary}
+                href={"/inventaris?" + params(current + 1)}
+                variant="ghost"
+              >
                 →
-              </Link>
+              </ButtonLink>
             ) : null}
           </div>
         </div>
       </section>
       {data.canWrite || data.canManage ? (
-        <section className={styles.panel}>
-          <div className={styles.panelHead}>
-            <div>
-              <h2>Kategori Inventaris</h2>
-              <p>Kelola klasifikasi aset yang berlaku untuk desa ini.</p>
-            </div>
-            {data.canCreate ? (
+        <TableCard
+          actions={
+            data.canCreate ? (
               <FormDialog
                 aksi={simpanKategoriInventarisFormAction}
                 deskripsi="Tambahkan klasifikasi aset baru untuk desa ini."
                 judul="Tambah Kategori"
-                kelasTombol={styles.primary}
                 label="Tambah Kategori"
                 labelSimpan="Tambah Kategori"
               >
                 {formKategori(null)}
               </FormDialog>
-            ) : null}
-          </div>
-          <div>
-            {data.kategori.map((k) => (
-              <div className={styles.statLine} key={k.id}>
-                <div>
-                  <strong>{k.nama}</strong>
-                  <small className={styles.muted} style={{ display: "block" }}>
-                    {k.kode} · {INVENTARIS_KATEGORI_LABELS[k.golongan]}
-                  </small>
-                </div>
-                <div className={styles.actions}>
-                  {data.canUpdate ? (
-                    <FormDialog
-                      aksi={simpanKategoriInventarisFormAction}
-                      deskripsi={`Ubah kode, nama, dan golongan kategori ${k.nama}.`}
-                      judul="Ubah Kategori"
-                      kelasTombol={styles.secondary}
-                      label="Ubah"
-                      labelSimpan="Simpan"
-                    >
-                      {formKategori(k)}
-                    </FormDialog>
-                  ) : null}
-                  {data.canManage ? (
-                    <form action={hapusKategoriInventarisAction}>
-                      <input type="hidden" name="id" value={k.id} />
-                      <button className={styles.secondary}>Hapus</button>
-                    </form>
-                  ) : null}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+            ) : null
+          }
+          description={`${data.kategori.length} kategori aset terdaftar.`}
+          title="Kategori Inventaris"
+        >
+          {data.kategori.length === 0 ? (
+            <p className={styles.empty}>Belum ada kategori inventaris.</p>
+          ) : (
+            <TableScroll>
+              <Table>
+                <THead>
+                  <Row>
+                    <HeaderCell scope="col">Kategori</HeaderCell>
+                    <HeaderCell scope="col">Kode</HeaderCell>
+                    <HeaderCell scope="col">Golongan</HeaderCell>
+                    <HeaderCell scope="col">Aksi</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
+                  {data.kategori.map((k) => (
+                    <Row key={k.id}>
+                      <Cell>
+                        <strong>{k.nama}</strong>
+                      </Cell>
+                      <Cell>{k.kode}</Cell>
+                      <Cell>{INVENTARIS_KATEGORI_LABELS[k.golongan]}</Cell>
+                      <Cell>
+                        <div className={styles.actions}>
+                          {data.canUpdate ? (
+                            <FormDialog
+                              aksi={simpanKategoriInventarisFormAction}
+                              deskripsi={`Ubah kode, nama, dan golongan kategori ${k.nama}.`}
+                              judul="Ubah Kategori"
+                              label="Ubah"
+                              labelSimpan="Simpan"
+                              varian="secondary"
+                            >
+                              {formKategori(k)}
+                            </FormDialog>
+                          ) : null}
+                          {data.canManage ? (
+                            <DialogHapusForm
+                              aksi={hapusKategoriInventarisAction}
+                              id={k.id}
+                              judul={`Hapus kategori "${k.nama}"?`}
+                              keterangan="Kategori hanya dapat dihapus bila tidak dipakai barang inventaris."
+                              labelAksi="Hapus kategori"
+                            />
+                          ) : null}
+                        </div>
+                      </Cell>
+                    </Row>
+                  ))}
+                </TBody>
+              </Table>
+            </TableScroll>
+          )}
+        </TableCard>
       ) : null}
     </main>
   );

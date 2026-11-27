@@ -1,3 +1,4 @@
+import { StatCard } from "@/components/ui/stat-card";
 import type { StatusIndikator } from "@/features/kependudukan/kesehatan/domain/kesehatan";
 
 import styles from "./stunting.module.css";
@@ -72,11 +73,5 @@ export function Kpi({
   kecil?: string;
   utama?: boolean;
 }) {
-  return (
-    <article className={utama ? "data-kpi data-kpi-primary" : "data-kpi"}>
-      <span>{label}</span>
-      <strong>{nilai}</strong>
-      {kecil ? <small>{kecil}</small> : null}
-    </article>
-  );
+  return <StatCard label={label} note={kecil} utama={utama} value={nilai} />;
 }

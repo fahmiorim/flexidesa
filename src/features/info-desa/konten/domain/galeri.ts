@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { buatSlug } from "@/features/info-desa/publik/domain/slug";
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { optionalText } from "@/lib/forms";
 
 /**
@@ -11,8 +10,6 @@ import { optionalText } from "@/lib/forms";
  * ditandai `slider` ikut dipakai beranda bila tabel `slider` kosong (lihat
  * `listSliderBeranda` di repository publik). Semua aturan di sini murni.
  */
-
-export const GALERI_RESOURCE = RESOURCES.galeri;
 
 /** Skema form album. */
 export const albumFormSchema = z.object({
@@ -27,8 +24,6 @@ export const albumFormSchema = z.object({
   aktif: z.boolean().default(true),
 });
 
-export type AlbumFormInput = z.infer<typeof albumFormSchema>;
-
 /** Skema form foto. */
 export const fotoFormSchema = z.object({
   judul: optionalText(150),
@@ -42,8 +37,6 @@ export const fotoFormSchema = z.object({
   aktif: z.boolean().default(true),
   slider: z.boolean().default(false),
 });
-
-export type FotoFormInput = z.infer<typeof fotoFormSchema>;
 
 /** Maksimal berkas per satu unggahan agar satu permintaan tidak terlalu besar. */
 export const MAKS_FOTO_PER_UNGGAH = 20;
@@ -60,27 +53,8 @@ export function slugAlbum(nama: string): string {
 }
 
 /** Album pada daftar admin (dengan jumlah foto). */
-export interface AlbumAdminRow {
-  id: number;
-  nama: string;
-  slug: string;
-  keterangan: string | null;
-  sampul: string | null;
-  aktif: boolean;
-  urut: number;
-  jumlahFoto: number;
-}
 
 /** Foto pada halaman kelola album. */
-export interface FotoAdminRow {
-  id: number;
-  gambar: string;
-  judul: string | null;
-  keterangan: string | null;
-  urut: number;
-  aktif: boolean;
-  slider: boolean;
-}
 
 /** Hasil unggah banyak foto: yang tersimpan dan yang dilewati beserta alasannya. */
 export interface HasilUnggahFoto {

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { ButtonLink } from "@/components/ui/button-link";
 
 import styles from "./rumah-tangga.module.css";
 
@@ -12,22 +12,22 @@ export function RtmToolbar({
   return (
     <div className={styles.toolbar}>
       <div className={styles.toolbarGroup}>
-        <Link className="button button-secondary" href="/kependudukan/rumah-tangga/laporan">
+        <ButtonLink variant="secondary" href="/kependudukan/rumah-tangga/laporan">
           Laporan RTM
-        </Link>
-        <Link className="button button-secondary" href={exportHref}>
+        </ButtonLink>
+        <ButtonLink variant="secondary" href={exportHref}>
           Ekspor CSV
-        </Link>
+        </ButtonLink>
         {bolehTambah ? (
-          <Link className="button button-secondary" href="/kependudukan/rumah-tangga/impor">
+          <ButtonLink variant="secondary" href="/kependudukan/rumah-tangga/impor">
             Impor RTM
-          </Link>
+          </ButtonLink>
         ) : null}
       </div>
       {bolehTambah ? (
-        <Link className="button button-primary" href="/kependudukan/rumah-tangga/baru">
+        <ButtonLink variant="primary" href="/kependudukan/rumah-tangga/baru">
           + Tambah Rumah Tangga
-        </Link>
+        </ButtonLink>
       ) : null}
     </div>
   );

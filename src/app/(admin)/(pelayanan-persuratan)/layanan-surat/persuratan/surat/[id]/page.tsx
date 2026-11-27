@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
 import { getSuratPrintData } from "@/features/pelayanan-persuratan/surat/application/cetak";
 import { getRiwayatSuratData } from "@/features/pelayanan-persuratan/surat/application/daftar-surat";
 import { getSuratCurrentRoleSlugData } from "@/features/pelayanan-persuratan/surat/application/verifikasi";
@@ -88,31 +90,6 @@ export default async function DetailSuratPage({
       <PageHeading
         judul={<>Detail & Proses Surat</>}
         deskripsi={<>Periksa surat dan proses penerbitannya.</>}
-        aksi={
-          <>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {surat.status === "draft" ? (
-                <Link
-                  href={"/layanan-surat/persuratan/surat/" + id + "/edit"}
-                  className="button button-secondary"
-                >
-                  Ubah Konsep
-                </Link>
-              ) : null}
-              <Link href="/layanan-surat/persuratan/surat" className="button button-secondary">
-                ← Daftar Surat
-              </Link>
-              <a
-                href={`/layanan-surat/persuratan/surat/${id}/pdf`}
-                target="_blank"
-                rel="noreferrer"
-                className="button button-secondary"
-              >
-                Pratinjau / Cetak PDF
-              </a>
-            </div>
-          </>
-        }
       />
 
       {pesan ? (
@@ -256,17 +233,18 @@ export default async function DetailSuratPage({
                     Saya sudah memeriksa kelengkapan {syarat.length} persyaratan surat.
                   </label>
                 ) : null}
-                <button type="submit" className="button button-primary">
+                <Button variant="primary" type="submit">
                   Ajukan Verifikasi
-                </button>
+                </Button>
               </form>
               {canDelete ? (
-                <form action={hapusKonsepSuratAction}>
-                  <input type="hidden" name="id" value={id} />
-                  <button type="submit" className="button button-danger-ghost">
-                    Hapus Konsep
-                  </button>
-                </form>
+                <DialogHapusForm
+                  aksi={hapusKonsepSuratAction}
+                  id={id}
+                  judul={`Hapus konsep surat ${surat.number ?? "tanpa nomor"}?`}
+                  keterangan={`Konsep untuk keperluan "${surat.purpose || "—"}" beserta isian dan lampirannya akan dihapus permanen.`}
+                  labelAksi="Hapus konsep"
+                />
               ) : null}
             </div>
           ) : surat.status === "verifikasi" ? (
@@ -275,9 +253,9 @@ export default async function DetailSuratPage({
                 <form action={verifikasiSuratAction}>
                   <input type="hidden" name="id" value={id} />
                   <input type="hidden" name="step" value={step} />
-                  <button type="submit" className="button button-primary">
+                  <Button variant="primary" type="submit">
                     Setujui Tahap {VERIFICATION_STEP_LABELS[step]}
-                  </button>
+                  </Button>
                 </form>
               ) : (
                 <p className="modul-muted">
@@ -300,9 +278,9 @@ export default async function DetailSuratPage({
                       placeholder="Jelaskan alasan surat perlu diperbaiki."
                     />
                   </label>
-                  <button type="submit" className="button button-danger-ghost">
+                  <Button variant="danger-ghost" type="submit">
                     Tolak & Kembalikan ke Konsep
-                  </button>
+                  </Button>
                 </form>
               ) : null}
             </div>
@@ -315,14 +293,14 @@ export default async function DetailSuratPage({
                 Nomor surat sudah diarsipkan. Dokumen dapat dipratinjau, dicetak, atau diunduh
                 sebagai PDF.
               </p>
-              <a
+              <ButtonLink
+                variant="primary"
                 href={`/layanan-surat/persuratan/surat/${id}/pdf`}
                 target="_blank"
                 rel="noreferrer"
-                className="button button-primary"
               >
                 Buka Dokumen PDF
-              </a>
+              </ButtonLink>
             </div>
           ) : (
             <p className="modul-muted">
@@ -399,14 +377,14 @@ export default async function DetailSuratPage({
             <h2 className="beranda-card-title">Pratinjau Isi Surat</h2>
             <p className="modul-muted">Isi surat hasil render template dan data desa/pemohon.</p>
           </div>
-          <a
+          <ButtonLink
+            variant="secondary"
             href={`/layanan-surat/persuratan/surat/${id}/pdf`}
             target="_blank"
             rel="noreferrer"
-            className="button button-secondary"
           >
             Cetak / Unduh PDF
-          </a>
+          </ButtonLink>
         </div>
         <pre
           style={{

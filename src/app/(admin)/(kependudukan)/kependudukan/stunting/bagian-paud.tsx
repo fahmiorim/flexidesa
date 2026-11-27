@@ -1,4 +1,7 @@
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   BULAN_PAUD,
   KATEGORI_USIA_PAUD,
@@ -157,9 +160,9 @@ export function BagianPaud({
             </fieldset>
 
             <div className="penduduk-heading-actions">
-              <button className="button button-primary" type="submit">
+              <Button variant="primary" type="submit">
                 {diubah ? "Simpan Perubahan" : "Simpan Sasaran PAUD"}
-              </button>
+              </Button>
             </div>
           </form>
         </details>
@@ -171,74 +174,72 @@ export function BagianPaud({
           <p>Tambahkan sasaran PAUD untuk anak usia 2 sampai 6 tahun.</p>
         </div>
       ) : (
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th rowSpan={2}>No.</th>
-                <th rowSpan={2}>Aksi</th>
-                <th rowSpan={2}>No KIA</th>
-                <th rowSpan={2}>Nama Ibu</th>
-                <th rowSpan={2}>Posyandu</th>
-                <th rowSpan={2}>Tanggal Periksa</th>
-                <th rowSpan={2}>Kategori Usia</th>
-                <th colSpan={12}>Mengikuti Layanan PAUD</th>
-              </tr>
-              <tr>
+        <TableScroll>
+          <Table>
+            <THead>
+              <Row>
+                <HeaderCell rowSpan={2}>No.</HeaderCell>
+                <HeaderCell rowSpan={2}>Aksi</HeaderCell>
+                <HeaderCell rowSpan={2}>No KIA</HeaderCell>
+                <HeaderCell rowSpan={2}>Nama Ibu</HeaderCell>
+                <HeaderCell rowSpan={2}>Posyandu</HeaderCell>
+                <HeaderCell rowSpan={2}>Tanggal Periksa</HeaderCell>
+                <HeaderCell rowSpan={2}>Kategori Usia</HeaderCell>
+                <HeaderCell colSpan={12}>Mengikuti Layanan PAUD</HeaderCell>
+              </Row>
+              <Row>
                 {NAMA_BULAN.map((bulan) => (
-                  <th key={bulan}>{bulan}</th>
+                  <HeaderCell key={bulan}>{bulan}</HeaderCell>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
+              </Row>
+            </THead>
+            <TBody>
               {data.map((row, index) => {
                 const kia = kiaNama.get(row.kiaId);
                 return (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       <div className={styles.rowActions}>
                         {bolehUbah ? (
-                          <a
-                            className="button button-ghost"
+                          <ButtonLink
+                            variant="ghost"
                             href={`/kependudukan/stunting?tab=paud&ubah=${row.id}`}
                           >
                             Ubah
-                          </a>
+                          </ButtonLink>
                         ) : null}
                         {bolehHapus ? (
-                          <form action={hapusPaudAction}>
-                            <input name="id" type="hidden" value={row.id} />
-                            <ConfirmSubmit
-                              className="button button-danger"
-                              message="Hapus data sasaran PAUD ini?"
-                            >
-                              Hapus
-                            </ConfirmSubmit>
-                          </form>
+                          <DialogHapusForm
+                            aksi={hapusPaudAction}
+                            id={row.id}
+                            judul="Hapus data sasaran PAUD ini?"
+                            keterangan="Data pemantauan PAUD akan dihapus permanen."
+                            labelAksi="Hapus data PAUD"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                    <td>{kia?.noKia ?? "—"}</td>
-                    <td>{kia?.ibuName ?? "—"}</td>
-                    <td>{posyanduNama.get(row.posyanduId) ?? "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{kia?.noKia ?? "—"}</Cell>
+                    <Cell>{kia?.ibuName ?? "—"}</Cell>
+                    <Cell>{posyanduNama.get(row.posyanduId) ?? "—"}</Cell>
+                    <Cell>
                       {formatTanggal(tanggalPeriksaEfektif(row.tanggalPeriksa, row.createdAt))}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {KATEGORI_USIA_PAUD.find((item) => item.value === row.kategoriUsia)?.label ??
                         "—"}
-                    </td>
+                    </Cell>
                     {BULAN_PAUD.map((nama) => {
                       const status = STATUS_PAUD.find((item) => item.value === row[nama]);
-                      return <td key={nama}>{status?.label ?? "—"}</td>;
+                      return <Cell key={nama}>{status?.label ?? "—"}</Cell>;
                     })}
-                  </tr>
+                  </Row>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       )}
     </section>
   );

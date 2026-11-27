@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { daftarPaketPlatform } from "@/features/multi-desa/application/paket-langganan-use-cases";
 import {
   PlatformCard,
@@ -41,9 +42,9 @@ export default async function SuperAdminPaketPage() {
 
       <PlatformCard
         actions={
-          <Link className="button button-primary" href="/super-admin/paket/baru">
+          <ButtonLink variant="primary" href="/super-admin/paket/baru">
             Buat paket
-          </Link>
+          </ButtonLink>
         }
         description="Kelola paket, fitur, dan versi langganan."
         flush
@@ -55,43 +56,43 @@ export default async function SuperAdminPaketPage() {
             title="Belum ada paket"
           />
         ) : (
-          <div className="tenant-table-scroll">
-            <table className="tenant-table tenant-table-list">
-              <thead>
-                <tr>
-                  <th scope="col">Paket</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Versi diterbitkan</th>
-                  <th scope="col">Draf aktif</th>
-                  <th scope="col">
+          <TableScroll className="tenant-table-scroll">
+            <Table className="tenant-table tenant-table-list">
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">Paket</HeaderCell>
+                  <HeaderCell scope="col">Status</HeaderCell>
+                  <HeaderCell scope="col">Versi diterbitkan</HeaderCell>
+                  <HeaderCell scope="col">Draf aktif</HeaderCell>
+                  <HeaderCell scope="col">
                     <span className="sr-only">Kelola</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
+                  </HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {paket.map((item) => (
-                  <tr key={item.id}>
-                    <td className="tenant-cell-name">
+                  <Row key={item.id}>
+                    <Cell className="tenant-cell-name">
                       <strong>{item.name}</strong>
                       <div className="tenant-status-note">
                         <code>{item.slug}</code>
                         {item.description ? <span>{item.description}</span> : null}
                       </div>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <PlatformStatus
                         aktif={item.status === "active"}
                         label={item.status === "active" ? "Aktif" : "Diarsipkan"}
                       />
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {item.publishedVersion ? (
                         <span>v{item.publishedVersion.version}</span>
                       ) : (
                         <span className="tenant-secondary">Belum diterbitkan</span>
                       )}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {item.draftVersion ? (
                         <span className="template-version is-warning">
                           Draf v{item.draftVersion.version}
@@ -99,20 +100,17 @@ export default async function SuperAdminPaketPage() {
                       ) : (
                         <span className="tenant-secondary">Tidak ada</span>
                       )}
-                    </td>
-                    <td>
-                      <Link
-                        className="button button-secondary"
-                        href={`/super-admin/paket/${item.id}`}
-                      >
+                    </Cell>
+                    <Cell>
+                      <ButtonLink variant="secondary" href={`/super-admin/paket/${item.id}`}>
                         Kelola
-                      </Link>
-                    </td>
-                  </tr>
+                      </ButtonLink>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
       </PlatformCard>
     </>

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import {
   catatDatangAction,
@@ -9,6 +8,8 @@ import {
   catatPindahKeluarAction,
 } from "@/app/(admin)/(kependudukan)/kependudukan/mutasi-penduduk/actions";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import {
   getPendudukFormData,
   listPendudukOptionsData,
@@ -127,9 +128,9 @@ export default async function MutasiBaruPage() {
         deskripsi={<>Catat peristiwa mutasi penduduk.</>}
         aksi={
           <>
-            <Link className="button button-secondary" href="/kependudukan/mutasi-penduduk">
+            <ButtonLink variant="secondary" href="/kependudukan/mutasi-penduduk">
               Kembali
-            </Link>
+            </ButtonLink>
           </>
         }
       />
@@ -160,9 +161,9 @@ export default async function MutasiBaruPage() {
             <FamilyFields {...familyFields} />
             <Field label="Alasan / keterangan" name="reason" />
             <Field label="Nomor surat" name="referenceNo" />
-            <button className="button button-primary" type="submit">
+            <Button variant="primary" type="submit">
               Simpan Penduduk Masuk
-            </button>
+            </Button>
           </form>
         </section>
         <section className="platform-card data-panel">
@@ -190,9 +191,9 @@ export default async function MutasiBaruPage() {
             <FamilyFields {...familyFields} />
             <Field label="Keterangan" name="reason" />
             <Field label="Nomor surat" name="referenceNo" />
-            <button className="button button-primary" type="submit">
+            <Button variant="primary" type="submit">
               Simpan Kelahiran
-            </button>
+            </Button>
           </form>
         </section>
         <section className="platform-card data-panel">
@@ -221,9 +222,9 @@ export default async function MutasiBaruPage() {
             <Field label="Kabupaten / kota tujuan" name="destination" />
             <Field label="Alasan" name="reason" />
             <Field label="Nomor surat" name="referenceNo" />
-            <button className="button button-primary" type="submit">
+            <Button variant="primary" type="submit">
               Simpan Pindah Keluar
-            </button>
+            </Button>
           </form>
         </section>
         <section className="platform-card data-panel">
@@ -267,9 +268,9 @@ export default async function MutasiBaruPage() {
             <Field label="Nomor akta kematian" name="nomorAkta" />
             <Field label="Alasan / keterangan" name="reason" />
             <Field label="Nomor surat kematian" name="referenceNo" />
-            <button className="button button-primary" type="submit">
+            <Button variant="primary" type="submit">
               Simpan Kematian
-            </button>
+            </Button>
           </form>
         </section>
         <section className="platform-card data-panel">
@@ -294,9 +295,9 @@ export default async function MutasiBaruPage() {
             </label>
             <Field label="Alasan" name="reason" />
             <Field label="Nomor dokumen" name="referenceNo" />
-            <button className="button button-primary" type="submit">
+            <Button variant="primary" type="submit">
               Simpan Perubahan
-            </button>
+            </Button>
           </form>
         </section>
       </div>

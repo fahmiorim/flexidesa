@@ -2,7 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   aksesBeritaAdmin,
   listBeritaAdminData,
@@ -181,52 +185,44 @@ export default async function BeritaAdminPage({
         </section>
       ) : null}
 
-      <section aria-label="Daftar berita" className="pd-panel" id="daftar-berita">
-        <div className="pd-panel-kepala">
-          <div>
-            <h2>Daftar Berita</h2>
-            <p>
-              {angka(tayang)} tayang · {angka(draft)} draft.
-            </p>
-          </div>
-          <div className="wilayah-toolbar">
-            <span className="wilayah-count-pill">{angka(rows.length)} berita</span>
-            <div className="wilayah-toolbar-grup">
-              <KelolaKategoriBeritaDialog
-                bolehHapus={akses.bolehHapus}
-                bolehUbah={akses.bolehUbah}
-                kategori={kategori.map((item) => ({
-                  ...item,
-                  jumlahBerita: jumlahPerKategori.get(item.id) ?? 0,
-                }))}
-                tombolClassName="wilayah-tool"
-              />
-            </div>
+      <TableCard
+        actions={
+          <>
+            <KelolaKategoriBeritaDialog
+              bolehHapus={akses.bolehHapus}
+              bolehUbah={akses.bolehUbah}
+              kategori={kategori.map((item) => ({
+                ...item,
+                jumlahBerita: jumlahPerKategori.get(item.id) ?? 0,
+              }))}
+            />
             {akses.bolehTambah ? <DialogBerita kategori={kategoriPilihan} /> : null}
-          </div>
-        </div>
-
+          </>
+        }
+        description={`${angka(tayang)} tayang · ${angka(draft)} draft · ${angka(rows.length)} berita`}
+        title="Daftar Berita"
+      >
         {rows.length ? (
-          <div className="modul-table-wrap">
-            <table className="modul-table pemerintah-table berita-tabel">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Berita</th>
-                  <th>Kategori</th>
-                  <th>Status</th>
-                  <th>Terbit</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-table-wrap">
+            <Table className="modul-table pemerintah-table berita-tabel">
+              <THead>
+                <Row>
+                  <HeaderCell>No</HeaderCell>
+                  <HeaderCell>Berita</HeaderCell>
+                  <HeaderCell>Kategori</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Terbit</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row, index) => {
                   const gambar = urlGambar(row.gambar);
                   const published = row.status === "published";
                   return (
-                    <tr className={published ? undefined : "pemerintah-row-nonaktif"} key={row.id}>
-                      <td>{index + 1}</td>
-                      <td>
+                    <Row className={published ? undefined : "pemerintah-row-nonaktif"} key={row.id}>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>
                         <div className="berita-sel">
                           <span aria-hidden className="berita-thumb">
                             {gambar ? (
@@ -248,33 +244,33 @@ export default async function BeritaAdminPage({
                             </div>
                           </div>
                         </div>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span className="berita-kategori">{row.kategori ?? "Umum"}</span>
                         <small className="berita-baca">{angka(row.hit)} kali dibaca</small>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span className={`berita-status ${published ? "is-tayang" : "is-draft"}`}>
                           <i aria-hidden="true" />
                           {published ? "Tayang" : "Draft"}
                         </span>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span className="berita-tanggal">
                           {row.terbitPada ? FORMAT_TANGGAL.format(row.terbitPada) : "Belum terbit"}
                           <small className="berita-tanggal-ket">
                             {row.terbitPada ? "Diterbitkan" : "Menunggu publikasi"}
                           </small>
                         </span>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <div className="pd-aparat-aksi">
-                          <Link
-                            className="button button-ghost"
+                          <ButtonLink
+                            variant="ghost"
                             href={`/profil-desa/berita?preview=${row.id}#pratinjau-berita`}
                           >
                             Pratinjau
-                          </Link>
+                          </ButtonLink>
                           {akses.bolehUbah ? (
                             <DialogBerita item={row} kategori={kategoriPilihan} />
                           ) : null}
@@ -286,30 +282,28 @@ export default async function BeritaAdminPage({
                                 type="hidden"
                                 value={published ? "draft" : "published"}
                               />
-                              <button className="button button-ghost" type="submit">
+                              <Button variant="ghost" type="submit">
                                 {published ? "Jadikan Draft" : "Publikasikan"}
-                              </button>
+                              </Button>
                             </form>
                           ) : null}
                           {akses.bolehHapus ? (
-                            <form action={hapusBeritaAction}>
-                              <input name="id" type="hidden" value={row.id} />
-                              <ConfirmSubmit
-                                className="button button-danger-ghost"
-                                message={`Hapus berita "${row.judul}"?`}
-                              >
-                                Hapus
-                              </ConfirmSubmit>
-                            </form>
+                            <DialogHapusForm
+                              aksi={hapusBeritaAction}
+                              id={row.id}
+                              judul={`Hapus berita "${row.judul}"?`}
+                              keterangan="Berita beserta gambarnya akan dihapus permanen."
+                              labelAksi="Hapus berita"
+                            />
                           ) : null}
                         </div>
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <div className="berita-kosong">
             <span aria-hidden="true">▤</span>
@@ -317,7 +311,7 @@ export default async function BeritaAdminPage({
             <p>Klik &ldquo;Tulis Berita&rdquo; untuk menambah berita pertama.</p>
           </div>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

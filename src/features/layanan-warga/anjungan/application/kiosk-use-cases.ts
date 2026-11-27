@@ -2,9 +2,7 @@ import "server-only";
 
 import { cariPendudukHidupByNikData } from "@/features/kependudukan/penduduk/application/use-cases";
 import {
-  getJenisSuratKiosk,
   listJenisSuratKiosk,
-  listPermohonanKiosk,
   simpanPermohonanSurat,
   type AjukanSuratInput,
 } from "@/features/pelayanan-persuratan/layanan-mandiri/application/ajukan-surat";
@@ -93,25 +91,6 @@ export async function daftarJenisSuratKioskData(
 ) {
   pastikanPermohonanTanpaAkun(perangkat);
   return listJenisSuratKiosk(villageId);
-}
-
-export async function getJenisSuratKioskData(
-  villageId: number,
-  perangkat: PerangkatKiosk | null,
-  letterTypeId: number,
-) {
-  pastikanPermohonanTanpaAkun(perangkat);
-  return getJenisSuratKiosk(villageId, letterTypeId);
-}
-
-export async function daftarPermohonanKioskData(
-  villageId: number,
-  perangkat: PerangkatKiosk | null,
-  sesi: KioskGuestSession | null,
-) {
-  pastikanPermohonanTanpaAkun(perangkat);
-  if (!sesi) return [];
-  return listPermohonanKiosk(villageId, sesi.residentId);
 }
 
 /** Ajukan surat atas nama penduduk pada sesi guest kiosk. */

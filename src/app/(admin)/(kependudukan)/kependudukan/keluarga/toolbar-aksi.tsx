@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent, type RefObject } from "react";
 
 import {
@@ -8,6 +7,9 @@ import {
   pindahWilayahKolektifAction,
   tambahRtmKolektifAction,
 } from "@/app/(admin)/(kependudukan)/kependudukan/keluarga/actions";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { HapusTerpilih } from "@/components/ui/hapus-terpilih";
 import type { LabelOption } from "@/lib/forms";
 
 type MenuKeluarga = "tambah" | "aksi" | "lainnya";
@@ -91,7 +93,6 @@ export function ToolbarAksiKeluarga({
   const [sensorIdentitas, setSensorIdentitas] = useState(false);
   const inputPindah = useRef<HTMLInputElement>(null);
   const inputRtm = useRef<HTMLInputElement>(null);
-  const inputHapus = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const sinkron = () => {
@@ -183,20 +184,22 @@ export function ToolbarAksiKeluarga({
             {menuTerbuka === "tambah" ? (
               <div className="keluarga-toolbar-menu-panel" role="menu">
                 <p className="keluarga-toolbar-menu-label">Tambah Kartu Keluarga</p>
-                <Link
-                  className="button button-primary keluarga-toolbar-menu-item"
+                <ButtonLink
+                  variant="primary"
+                  className="keluarga-toolbar-menu-item"
                   href="/kependudukan/keluarga/baru/kepala-baru"
                   role="menuitem"
                 >
                   Tambah Penduduk Masuk
-                </Link>
-                <Link
-                  className="button button-secondary keluarga-toolbar-menu-item"
+                </ButtonLink>
+                <ButtonLink
+                  variant="secondary"
+                  className="keluarga-toolbar-menu-item"
                   href="/kependudukan/keluarga/baru"
                   role="menuitem"
                 >
                   Dari Penduduk yang Sudah Ada
-                </Link>
+                </ButtonLink>
               </div>
             ) : null}
           </div>
@@ -224,24 +227,26 @@ export function ToolbarAksiKeluarga({
                   Pilih minimal satu Kartu Keluarga terlebih dahulu.
                 </p>
               ) : null}
-              <button
-                className="button button-secondary keluarga-toolbar-menu-item"
+              <Button
+                variant="secondary"
+                className="keluarga-toolbar-menu-item"
                 disabled={jumlahTerpilih === 0}
                 onClick={() => bukaCetak("cetak")}
                 role="menuitem"
                 type="button"
               >
                 Cetak KK
-              </button>
-              <button
-                className="button button-secondary keluarga-toolbar-menu-item"
+              </Button>
+              <Button
+                variant="secondary"
+                className="keluarga-toolbar-menu-item"
                 disabled={jumlahTerpilih === 0}
                 onClick={() => bukaCetak("unduh")}
                 role="menuitem"
                 type="button"
               >
                 Unduh KK
-              </button>
+              </Button>
 
               {bolehRtm ? (
                 <form
@@ -249,13 +254,14 @@ export function ToolbarAksiKeluarga({
                   onSubmit={(event) => isiIds(event, inputRtm)}
                 >
                   <input name="ids" ref={inputRtm} type="hidden" />
-                  <button
-                    className="button button-secondary keluarga-toolbar-menu-item"
+                  <Button
+                    variant="secondary"
+                    className="keluarga-toolbar-menu-item"
                     disabled={jumlahTerpilih === 0}
                     role="menuitem"
                   >
                     Tambah RTM kolektif
-                  </button>
+                  </Button>
                 </form>
               ) : null}
 
@@ -282,42 +288,25 @@ export function ToolbarAksiKeluarga({
                       ))}
                     </select>
                   </label>
-                  <button
-                    className="button button-secondary keluarga-toolbar-menu-item"
+                  <Button
+                    variant="secondary"
+                    className="keluarga-toolbar-menu-item"
                     disabled={jumlahTerpilih === 0}
                     role="menuitem"
                   >
                     Pindahkan KK terpilih
-                  </button>
+                  </Button>
                 </form>
               ) : null}
 
               {bolehHapus ? (
-                <form
-                  action={hapusKeluargaKolektifAction}
-                  onSubmit={(event) => {
-                    isiIds(event, inputHapus);
-                    if (event.defaultPrevented) return;
-                    const jumlah = idTerpilih().length;
-                    if (
-                      !window.confirm(
-                        `Hapus ${jumlah} Kartu Keluarga terpilih? Hanya KK kosong yang akan dihapus; KK yang masih memiliki anggota dilewati.`,
-                      )
-                    ) {
-                      event.preventDefault();
-                    }
-                  }}
-                >
-                  <input name="ids" ref={inputHapus} type="hidden" />
-                  <button
-                    className="button button-danger keluarga-toolbar-menu-item"
-                    disabled={jumlahTerpilih === 0}
-                    role="menuitem"
-                    type="submit"
-                  >
-                    Hapus KK terpilih
-                  </button>
-                </form>
+                <HapusTerpilih
+                  aksi={hapusKeluargaKolektifAction}
+                  judul="Hapus Kartu Keluarga terpilih?"
+                  keterangan="Hanya KK kosong yang akan dihapus; KK yang masih memiliki anggota dilewati."
+                  label="Hapus KK terpilih"
+                  namaField="familyIds"
+                />
               ) : null}
             </div>
           ) : null}
@@ -344,30 +333,33 @@ export function ToolbarAksiKeluarga({
                 />
                 <span>Sensor NIK/No. KK</span>
               </label>
-              <Link
-                className="button button-secondary keluarga-toolbar-menu-item"
+              <ButtonLink
+                variant="secondary"
+                className="keluarga-toolbar-menu-item"
                 href={tambahSensor(cetakDaftarHref, sensorIdentitas)}
                 rel="noopener noreferrer"
                 role="menuitem"
                 target="_blank"
               >
                 Cetak Daftar KK
-              </Link>
-              <Link
-                className="button button-secondary keluarga-toolbar-menu-item"
+              </ButtonLink>
+              <ButtonLink
+                variant="secondary"
+                className="keluarga-toolbar-menu-item"
                 href={tambahSensor(unduhDaftarHref, sensorIdentitas)}
                 role="menuitem"
               >
                 Unduh Daftar KK
-              </Link>
+              </ButtonLink>
               <div className="keluarga-toolbar-menu-divider" />
-              <Link
-                className="button button-secondary keluarga-toolbar-menu-item"
+              <ButtonLink
+                variant="secondary"
+                className="keluarga-toolbar-menu-item"
                 href={exportHref}
                 role="menuitem"
               >
                 Ekspor CSV
-              </Link>
+              </ButtonLink>
             </div>
           ) : null}
         </div>

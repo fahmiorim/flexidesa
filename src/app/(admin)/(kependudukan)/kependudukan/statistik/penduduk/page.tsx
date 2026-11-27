@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { GENDER_LABELS, samarkanNik } from "@/features/kependudukan/penduduk/domain/penduduk";
 import {
   getPendudukKategoriPageData,
@@ -71,9 +73,9 @@ export default async function DaftarPendudukStatistikPage({
         aksi={
           <>
             <div className="penduduk-heading-actions">
-              <Link className="button button-secondary" href={kembali}>
+              <ButtonLink variant="secondary" href={kembali}>
                 Kembali ke Statistik
-              </Link>
+              </ButtonLink>
             </div>
           </>
         }
@@ -117,36 +119,36 @@ export default async function DaftarPendudukStatistikPage({
           </div>
         ) : (
           <>
-            <div className="table-scroll">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    <th>No.</th>
-                    <th>Nama</th>
-                    <th>NIK</th>
-                    <th>Jenis Kelamin</th>
-                    <th>Umur</th>
-                    <th>Alamat</th>
-                    <th>Wilayah</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableScroll>
+              <Table>
+                <THead>
+                  <Row>
+                    <HeaderCell>No.</HeaderCell>
+                    <HeaderCell>Nama</HeaderCell>
+                    <HeaderCell>NIK</HeaderCell>
+                    <HeaderCell>Jenis Kelamin</HeaderCell>
+                    <HeaderCell>Umur</HeaderCell>
+                    <HeaderCell>Alamat</HeaderCell>
+                    <HeaderCell>Wilayah</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
                   {data.rows.map((row, index) => (
-                    <tr key={row.id}>
-                      <td>{index + 1}</td>
-                      <td>
+                    <Row key={row.id}>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>
                         <Link href={`/kependudukan/penduduk/${row.id}`}>{row.nama}</Link>
-                      </td>
-                      <td>{samarkanNik(row.nik)}</td>
-                      <td>{GENDER_LABELS[row.gender]}</td>
-                      <td>{row.umur === null ? "—" : `${row.umur} tahun`}</td>
-                      <td>{row.alamat || "—"}</td>
-                      <td>{row.wilayah ?? "—"}</td>
-                    </tr>
+                      </Cell>
+                      <Cell>{samarkanNik(row.nik)}</Cell>
+                      <Cell>{GENDER_LABELS[row.gender]}</Cell>
+                      <Cell>{row.umur === null ? "—" : `${row.umur} tahun`}</Cell>
+                      <Cell>{row.alamat || "—"}</Cell>
+                      <Cell>{row.wilayah ?? "—"}</Cell>
+                    </Row>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TBody>
+              </Table>
+            </TableScroll>
             <footer className="data-pagination">
               <span>
                 Menampilkan {angka.format(data.rows.length)} penduduk pada kelompok “{data.kelompok}

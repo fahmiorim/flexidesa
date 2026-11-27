@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { ButtonLink } from "@/components/ui/button-link";
 import { daftarTemplateWebsite } from "@/features/multi-desa/application/template-website-use-cases";
 import { KatalogTemplate } from "@/features/multi-desa/presentation/katalog-template";
 import {
@@ -31,12 +31,12 @@ export default async function SuperAdminTemplatePage() {
       <PlatformPageHeader
         actions={
           <>
-            <Link className="button button-secondary" href="/super-admin/template/fondasi">
+            <ButtonLink variant="secondary" href="/super-admin/template/fondasi">
               Fondasi tenant
-            </Link>
-            <Link className="button button-primary" href="/super-admin/template/baru">
+            </ButtonLink>
+            <ButtonLink variant="primary" href="/super-admin/template/baru">
               + Tambah template
-            </Link>
+            </ButtonLink>
           </>
         }
         path="/super-admin/template"
@@ -100,9 +100,9 @@ export default async function SuperAdminTemplatePage() {
           <div className="template-empty">
             <strong>Belum ada template</strong>
             <p>Tambahkan template pertama untuk mulai membangun katalog tema.</p>
-            <Link className="button button-primary" href="/super-admin/template/baru">
+            <ButtonLink variant="primary" href="/super-admin/template/baru">
               Tambah template
-            </Link>
+            </ButtonLink>
           </div>
         )}
       </PlatformCard>

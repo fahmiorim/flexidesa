@@ -2,9 +2,6 @@ import { z } from "zod";
 
 import { optionalIsoDate } from "@/lib/forms";
 
-export const KODE_BUKU_MAX = 20;
-export const NAMA_BUKU_MAX = 150;
-export const URAIAN_BUKU_MAX = 500;
 export const URAIAN_ITEM_MAX = 500;
 export const KETERANGAN_ITEM_MAX = 2000;
 export const NOMOR_URUT_MAX = 999_999;
@@ -145,12 +142,6 @@ export const itemBukuFormSchema = z.object({
 export type ItemBukuInput = z.infer<typeof itemBukuFormSchema>;
 
 /** Baris buku untuk halaman daftar. */
-export interface BukuAdministrasiRow {
-  id: number;
-  kodeBuku: string;
-  namaBuku: string;
-  uraian: string | null;
-}
 
 /** Baris item untuk tabel detail buku. */
 export interface ItemBukuRow {

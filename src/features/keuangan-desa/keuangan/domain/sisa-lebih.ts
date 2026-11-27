@@ -2,10 +2,7 @@ import { z } from "zod";
 
 import { formatMoney, toMinor } from "./keuangan";
 
-export const SISA_LEBIH_RESOURCE = "keuangan-sisa-lebih";
-
 /** Baris APBDes yang menerima SiLPA tahun sebelumnya. */
-export const SISA_LEBIH_KODE_REKENING = "6.1.1";
 
 /**
  * Normalisasi jumlah SiLPA ke format uang kanonik (`1234.00`).
@@ -52,15 +49,3 @@ export const sisaLebihFormSchema = z.object({
     .nullable()
     .optional(),
 });
-
-export type SisaLebihFormInput = z.input<typeof sisaLebihFormSchema>;
-export type SisaLebihFormValues = z.infer<typeof sisaLebihFormSchema>;
-
-export interface SisaLebihDTO {
-  id: number;
-  villageId: number;
-  tahun: number;
-  jumlah: string | null;
-  keterangan: string | null;
-  tanggal: string | null;
-}

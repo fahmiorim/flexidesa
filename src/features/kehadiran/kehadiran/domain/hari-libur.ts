@@ -46,9 +46,6 @@ export const hariLiburFormSchema = z.object({
     .max(KETERANGAN_HARI_LIBUR_MAKS, `Keterangan maksimal ${KETERANGAN_HARI_LIBUR_MAKS} karakter.`),
 });
 
-export type HariLiburFormInput = z.input<typeof hariLiburFormSchema>;
-export type HariLiburFormValues = z.infer<typeof hariLiburFormSchema>;
-
 /** Satu baris hari libur untuk UI. */
 export interface HariLiburRow {
   id: number;

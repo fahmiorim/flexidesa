@@ -62,51 +62,6 @@ function selectWilayah() {
     );
 }
 
-function buildWhere(villageId: number, search: string, excludeId?: number): SQL {
-  const villageFilter = eq(regions.villageId, villageId);
-  const filters: SQL[] = [villageFilter];
-
-  if (search) {
-    const term = `%${search}%`;
-    const searchFilter = or(
-      like(regions.dusun, term),
-      like(regions.rw, term),
-      like(regions.rt, term),
-    );
-    if (searchFilter) filters.push(searchFilter);
-  }
-
-  if (excludeId !== undefined) {
-    filters.push(ne(regions.id, excludeId));
-  }
-
-  return and(...filters) ?? villageFilter;
-}
-
-export async function listWilayah(params: WilayahListParams): Promise<WilayahListResult> {
-  const { villageId, search, page, pageSize } = params;
-  const where = buildWhere(villageId, search);
-
-  const [rows, totalRows] = await Promise.all([
-    selectWilayah()
-      .where(where)
-      .orderBy(asc(regions.sortOrder), asc(regions.dusun), asc(regions.rw), asc(regions.rt))
-      .limit(pageSize)
-      .offset((page - 1) * pageSize),
-    db.select({ value: count() }).from(regions).where(where),
-  ]);
-
-  const total = totalRows[0]?.value ?? 0;
-
-  return {
-    rows: rows.map((row) => toDto(row, row.kepalaNik)),
-    total,
-    page,
-    pageSize,
-    pageCount: Math.max(1, Math.ceil(total / pageSize)),
-  };
-}
-
 export async function findWilayahById(villageId: number, id: number): Promise<WilayahDTO | null> {
   const [row] = await selectWilayah()
     .where(and(eq(regions.villageId, villageId), eq(regions.id, id)))

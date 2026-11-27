@@ -41,31 +41,20 @@ export const lapakProdukFormSchema = z.object({
     .optional(),
 });
 
-export type LapakProdukFormInput = z.input<typeof lapakProdukFormSchema>;
-export type LapakProdukFormValues = z.infer<typeof lapakProdukFormSchema>;
+export type LapakProdukFormInput = z.infer<typeof lapakProdukFormSchema>;
 
-/** DTO untuk produk lapak. */
-export interface LapakProdukDTO {
+/** Baris produk lapak untuk tampilan admin. */
+export interface LapakProdukRow {
   id: number;
-  villageId: number;
   lapakId: number;
   nama: string;
   deskripsi: string | null;
+  /** Nilai decimal dari basis data, tetap berupa string agar tidak dibulatkan. */
   harga: string;
   stok: number | null;
   gambar: string | null;
-  aktif: boolean;
+  /** 1 = tampil di website, 0 = disembunyikan. */
+  aktif: number;
   latitude: string | null;
   longitude: string | null;
-}
-
-/** DTO untuk item keranjang belanja. */
-export interface KeranjangItemDTO {
-  id: number;
-  lapakId: number;
-  produkId: number;
-  jumlah: number;
-  produkNama: string;
-  produkHarga: string;
-  produkGambar: string | null;
 }

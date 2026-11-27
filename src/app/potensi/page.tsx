@@ -6,8 +6,8 @@ import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/r
 import {
   daftarAlbumGaleri,
   daftarFotoAlbum,
-  daftarPotensiDesa,
 } from "@/features/info-desa/publik/application/konten-publik";
+import { daftarPotensiDesa } from "@/features/program-data-desa/potensi-sarana/application/kontrak";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./potensi.module.css";

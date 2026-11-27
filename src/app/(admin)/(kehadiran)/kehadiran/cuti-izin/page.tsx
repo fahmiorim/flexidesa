@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { PERSETUJUAN_IZIN_RESOURCE } from "@/features/kehadiran/kehadiran/domain/pengajuan-izin";
 import { daftarCuti, ringkasanKuotaCuti } from "@/features/kehadiran/kepegawaian/application/cuti";
 import { daftarPegawai } from "@/features/kehadiran/kepegawaian/application/pegawai";
@@ -8,7 +13,8 @@ import { hasPermission } from "@/features/pengaturan/rbac/application/authorizat
 import { verifySession } from "@/lib/dal";
 
 import styles from "../absensi-kepegawaian.module.css";
-import { ajukanCutiAction, putuskanCutiAction, simpanKuotaCutiAction } from "../actions";
+import { simpanKuotaCutiAction } from "../actions";
+import { ajukanCutiFormAction, putuskanCutiFormAction } from "./form-actions";
 
 export const metadata: Metadata = { title: "Cuti & Izin" };
 
@@ -93,14 +99,6 @@ export default async function CutiIzinPage({
   return (
     <div className="modul-page">
       <PageHeading judul={<>Cuti & Izin</>} deskripsi={<>Pengajuan dan riwayat cuti pegawai.</>} />
-      <nav className={styles["ak-subnav"]} aria-label="Navigasi cuti dan izin">
-        <a className={styles["selected"]} href="#daftar">
-          ☷ Daftar Pengajuan
-        </a>
-        <a href="#ajukan">＋ Ajukan Cuti / Izin</a>
-        <a href="#kalender-cuti">◷ Riwayat & Rekap</a>
-        <a href="#kuota">⚙ Pengaturan Kuota</a>
-      </nav>
       <section className={styles["ak-kpi-grid"]}>
         <article className={styles["ak-kpi"] + " " + styles.primary}>
           <span>Total Pengajuan</span>
@@ -129,131 +127,145 @@ export default async function CutiIzinPage({
       </section>
 
       <div className={styles["ak-grid"]}>
-        <section id="daftar" className={styles["ak-card"]}>
-          <div className={styles["ak-card-heading-row"]}>
-            <div>
-              <h2>Daftar Pengajuan Cuti & Izin</h2>
-              <p>Riwayat dan status seluruh pengajuan pegawai.</p>
-            </div>
-            <span className={styles["ak-badge"]}>{rows.length} pengajuan</span>
-          </div>
-          {canRequest ? (
-            <details id="ajukan" className={styles["ak-add-panel"]}>
-              <summary>＋ Ajukan Cuti / Izin</summary>
-              <p>Pengajuan baru akan tercatat dengan status menunggu persetujuan.</p>
-              <form action={ajukanCutiAction} className={styles["ak-form"]}>
-                <label className={styles.wide}>
-                  Nama Pegawai
+        <TableCard
+          actions={
+            canRequest ? (
+              <FormDialog
+                aksi={ajukanCutiFormAction}
+                deskripsi="Pengajuan baru akan tercatat dengan status menunggu persetujuan."
+                judul="Ajukan cuti / izin"
+                label="＋ Ajukan Cuti / Izin"
+                labelSimpan="Ajukan cuti / izin"
+              >
+                <div className="modul-form-grid">
                   {canManage ? (
-                    <select name="pegawaiId" required>
-                      {pegawai
+                    <FormField
+                      kind="select"
+                      label="Nama pegawai"
+                      name="pegawaiId"
+                      options={pegawai
                         .filter((x) => x.status === "aktif")
-                        .map((x) => (
-                          <option key={x.id} value={x.id}>
-                            {x.nama}
-                          </option>
-                        ))}
-                    </select>
+                        .map((x) => ({ value: String(x.id), label: x.nama }))}
+                      required
+                    />
                   ) : (
                     <>
                       <input type="hidden" name="pegawaiId" value={pegawaiAkun?.id} />
-                      <span>{pegawaiAkun?.nama}</span>
+                      <FormField label="Nama pegawai" readOnly value={pegawaiAkun?.nama ?? ""} />
                     </>
                   )}
-                </label>
-                <label>
-                  Jenis
-                  <select name="jenis">
-                    <option value="cuti_tahunan">Cuti Tahunan</option>
-                    <option value="cuti_sakit">Cuti Sakit</option>
-                    <option value="izin">Izin</option>
-                    <option value="cuti_penting">Cuti Penting</option>
-                  </select>
-                </label>
-                <label>
-                  Tanggal Mulai
-                  <input type="date" name="mulai" min={hariIni} required />
-                </label>
-                <label>
-                  Tanggal Selesai
-                  <input type="date" name="selesai" min={hariIni} required />
-                </label>
-                <label className={styles.wide}>
-                  Alasan
-                  <textarea name="alasan" rows={3} required />
-                </label>
-                <label className={styles.wide}>
-                  Lampiran Pendukung
-                  <input
-                    type="file"
-                    name="lampiran"
-                    accept=".pdf,image/jpeg,image/png,image/webp"
+                  <FormField
+                    defaultValue="cuti_tahunan"
+                    kind="select"
+                    label="Jenis"
+                    name="jenis"
+                    options={[
+                      { value: "cuti_tahunan", label: "Cuti Tahunan" },
+                      { value: "cuti_sakit", label: "Cuti Sakit" },
+                      { value: "izin", label: "Izin" },
+                      { value: "cuti_penting", label: "Cuti Penting" },
+                    ]}
                   />
-                </label>
-                <button className={styles["ak-button"]}>Ajukan Cuti / Izin</button>
-              </form>
-            </details>
-          ) : null}
-          <form className={styles["ak-filter"]} method="get">
-            <label>
-              Cari pegawai
-              <input
-                type="search"
+                  <FormField
+                    label="Tanggal mulai"
+                    min={hariIni}
+                    name="mulai"
+                    required
+                    type="date"
+                  />
+                  <FormField
+                    label="Tanggal selesai"
+                    min={hariIni}
+                    name="selesai"
+                    required
+                    type="date"
+                  />
+                  <FormField
+                    containerClassName="form-field-full"
+                    kind="textarea"
+                    label="Alasan"
+                    name="alasan"
+                    required
+                    rows={3}
+                  />
+                  <FormField
+                    accept=".pdf,image/jpeg,image/png,image/webp"
+                    containerClassName="form-field-full"
+                    label="Lampiran pendukung"
+                    name="lampiran"
+                    type="file"
+                  />
+                </div>
+              </FormDialog>
+            ) : null
+          }
+          description={`Riwayat dan status seluruh pengajuan pegawai · ${rows.length} pengajuan.`}
+          filter={
+            <form className={styles["ak-filter"]} method="get">
+              <FormField
+                defaultValue={query}
+                label="Cari pegawai"
                 name="q"
                 placeholder="Cari nama pegawai..."
-                defaultValue={query}
+                type="search"
               />
-            </label>
-            <label>
-              Jenis
-              <select name="jenis" defaultValue={jenisFilter}>
-                <option value="">Semua Jenis</option>
-                <option value="cuti_tahunan">Cuti Tahunan</option>
-                <option value="cuti_sakit">Cuti Sakit</option>
-                <option value="izin">Izin</option>
-                <option value="cuti_penting">Cuti Penting</option>
-              </select>
-            </label>
-            <label>
-              Status
-              <select name="status" defaultValue={statusFilter}>
-                <option value="">Semua Status</option>
-                <option value="disetujui">Disetujui</option>
-                <option value="menunggu">Menunggu</option>
-                <option value="ditolak">Ditolak</option>
-              </select>
-            </label>
-            <button className={styles["ak-button"]} type="submit">
-              ⌕ Filter
-            </button>
-          </form>
-          <div className={styles["ak-table-wrap"]}>
-            <table className={styles["ak-table"]}>
-              <thead>
-                <tr>
-                  <th>Nama Pegawai</th>
-                  <th>Jenis</th>
-                  <th>Tanggal / Durasi</th>
-                  <th>Alasan</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+              <FormField
+                defaultValue={jenisFilter}
+                kind="select"
+                label="Jenis"
+                name="jenis"
+                options={[
+                  { value: "", label: "Semua Jenis" },
+                  { value: "cuti_tahunan", label: "Cuti Tahunan" },
+                  { value: "cuti_sakit", label: "Cuti Sakit" },
+                  { value: "izin", label: "Izin" },
+                  { value: "cuti_penting", label: "Cuti Penting" },
+                ]}
+              />
+              <FormField
+                defaultValue={statusFilter}
+                kind="select"
+                label="Status"
+                name="status"
+                options={[
+                  { value: "", label: "Semua Status" },
+                  { value: "disetujui", label: "Disetujui" },
+                  { value: "menunggu", label: "Menunggu" },
+                  { value: "ditolak", label: "Ditolak" },
+                ]}
+              />
+              <Button type="submit">⌕ Filter</Button>
+            </form>
+          }
+          title="Daftar Pengajuan Cuti & Izin"
+        >
+          <TableScroll className={styles["ak-table-wrap"]}>
+            <Table className={styles["ak-table"]}>
+              <THead>
+                <Row>
+                  <HeaderCell>Nama Pegawai</HeaderCell>
+                  <HeaderCell>Jenis</HeaderCell>
+                  <HeaderCell>Tanggal / Durasi</HeaderCell>
+                  <HeaderCell>Alasan</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {filteredRows.map((x) => (
-                  <tr key={x.id}>
-                    <td>
+                  <Row key={x.id}>
+                    <Cell>
                       <strong>{x.nama}</strong>
                       <br />
                       <small>{x.jabatan ?? "—"}</small>
-                    </td>
-                    <td>{jenisLabel[x.jenis] ?? x.jenis}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{jenisLabel[x.jenis] ?? x.jenis}</Cell>
+                    <Cell>
                       {x.mulai} – {x.selesai}
                       <br />
                       <small>{x.durasi} hari kerja</small>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {x.alasan}
                       {x.lampiran ? (
                         <>
@@ -261,41 +273,50 @@ export default async function CutiIzinPage({
                           <a href={"/api/kepegawaian/cuti/" + x.id + "/lampiran"}>Lihat lampiran</a>
                         </>
                       ) : null}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <span className={styles["ak-badge"] + " " + (statusClass[x.status] ?? "")}>
                         {x.status}
                       </span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {x.status === "menunggu" && canManage ? (
-                        <details>
-                          <summary>Putuskan</summary>
-                          <form action={putuskanCutiAction} className={styles["ak-form"]}>
-                            <input type="hidden" name="id" value={x.id} />
-                            <label>
-                              Catatan
-                              <input name="catatan" />
-                            </label>
-                            <label>
-                              Keputusan
-                              <select name="status">
-                                <option value="disetujui">Setujui</option>
-                                <option value="ditolak">Tolak</option>
-                              </select>
-                            </label>
-                            <button className={styles["ak-button"]}>Simpan Keputusan</button>
-                          </form>
-                        </details>
+                        <FormDialog
+                          aksi={putuskanCutiFormAction}
+                          deskripsi={`Putuskan pengajuan cuti/izin ${x.nama}.`}
+                          judul="Putuskan pengajuan"
+                          label="Putuskan"
+                          labelSimpan="Simpan keputusan"
+                          varian="secondary"
+                        >
+                          <div className="modul-form-grid">
+                            <input name="id" type="hidden" value={x.id} />
+                            <FormField
+                              containerClassName="form-field-full"
+                              label="Catatan keputusan"
+                              name="catatan"
+                            />
+                            <FormField
+                              defaultValue="disetujui"
+                              kind="select"
+                              label="Keputusan"
+                              name="status"
+                              options={[
+                                { value: "disetujui", label: "Setujui" },
+                                { value: "ditolak", label: "Tolak" },
+                              ]}
+                            />
+                          </div>
+                        </FormDialog>
                       ) : (
                         "—"
                       )}
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
           {!filteredRows.length ? (
             <div className={styles["ak-empty"]}>
               {rows.length
@@ -303,7 +324,7 @@ export default async function CutiIzinPage({
                 : "Belum ada pengajuan cuti atau izin."}
             </div>
           ) : null}
-        </section>
+        </TableCard>
 
         <div className={styles["ak-side-stack"]}>
           <section id="kalender-cuti" className={styles["ak-card"]}>
@@ -365,25 +386,25 @@ export default async function CutiIzinPage({
           <section id="kuota" className={styles["ak-card"]}>
             <h2>Kuota Cuti Tahunan ({tahun})</h2>
             <p>Default 12 hari per tahun. Kuota dapat disesuaikan per pegawai.</p>
-            <div className={styles["ak-table-wrap"]}>
-              <table className={styles["ak-table"]}>
-                <thead>
-                  <tr>
-                    <th>Pegawai</th>
-                    <th>Terpakai</th>
-                    <th>Sisa</th>
-                    <th>Kuota</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableScroll className={styles["ak-table-wrap"]}>
+              <Table className={styles["ak-table"]}>
+                <THead>
+                  <Row>
+                    <HeaderCell>Pegawai</HeaderCell>
+                    <HeaderCell>Terpakai</HeaderCell>
+                    <HeaderCell>Sisa</HeaderCell>
+                    <HeaderCell>Kuota</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
                   {kuota.map((x) => (
-                    <tr key={x.id}>
-                      <td>{x.nama}</td>
-                      <td>{x.terpakai}</td>
-                      <td>
+                    <Row key={x.id}>
+                      <Cell>{x.nama}</Cell>
+                      <Cell>{x.terpakai}</Cell>
+                      <Cell>
                         <strong>{x.total - x.terpakai}</strong>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         {canManage ? (
                           <form action={simpanKuotaCutiAction} className={styles["ak-inline-form"]}>
                             <input type="hidden" name="pegawaiId" value={x.id} />
@@ -396,19 +417,19 @@ export default async function CutiIzinPage({
                               max="365"
                               defaultValue={x.total}
                             />
-                            <button className={styles["ak-icon-button"]} title="Simpan kuota">
+                            <Button className={styles["ak-icon-button"]} title="Simpan kuota">
                               ✓
-                            </button>
+                            </Button>
                           </form>
                         ) : (
                           x.total
                         )}
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TBody>
+              </Table>
+            </TableScroll>
           </section>
         </div>
       </div>

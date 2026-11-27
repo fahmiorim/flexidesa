@@ -9,11 +9,6 @@ import {
   type LaporanPendudukRow,
 } from "@/features/kependudukan/statistik/domain/laporan-penduduk";
 
-/** Tanggal `Date | null` → string ISO agar aman dilewatkan ke komponen. */
-function tanggal(value: Date | null): string | null {
-  return value ? value.toISOString() : null;
-}
-
 function keRow(row: typeof laporanPenduduk.$inferSelect): LaporanPendudukRow {
   return {
     id: row.id,
@@ -22,7 +17,6 @@ function keRow(row: typeof laporanPenduduk.$inferSelect): LaporanPendudukRow {
     bulan: row.bulan,
     bulanLabel: bulanLabel(row.bulan),
     namaFile: row.namaFile,
-    kirim: tanggal(row.kirim),
     diunggahPada: row.updatedAt.toISOString(),
   };
 }
@@ -113,30 +107,11 @@ export async function updateLaporanPenduduk(
     .where(and(eq(laporanPenduduk.villageId, villageId), eq(laporanPenduduk.id, id)));
 }
 
-export async function deleteLaporanPenduduk(villageId: number, id: number): Promise<void> {
-  await db
-    .delete(laporanPenduduk)
-    .where(and(eq(laporanPenduduk.villageId, villageId), eq(laporanPenduduk.id, id)));
-}
-
 /** Hapus beberapa arsip sekaligus (aksi "Hapus" massal OpenSID). */
 export async function deleteLaporanPendudukBanyak(villageId: number, ids: number[]): Promise<void> {
   if (ids.length === 0) return;
   await db
     .delete(laporanPenduduk)
-    .where(and(eq(laporanPenduduk.villageId, villageId), inArray(laporanPenduduk.id, ids)));
-}
-
-/** Catat tanggal kirim ke OpenDK untuk arsip terpilih. */
-export async function setKirimLaporanPenduduk(
-  villageId: number,
-  ids: number[],
-  kirim: Date | null,
-): Promise<void> {
-  if (ids.length === 0) return;
-  await db
-    .update(laporanPenduduk)
-    .set({ kirim })
     .where(and(eq(laporanPenduduk.villageId, villageId), inArray(laporanPenduduk.id, ids)));
 }
 

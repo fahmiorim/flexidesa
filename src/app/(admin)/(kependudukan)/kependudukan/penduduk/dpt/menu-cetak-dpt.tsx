@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+
+import { ButtonLink } from "@/components/ui/button-link";
 
 function denganSensor(href: string, sensor: boolean): string {
   if (!sensor) return href;
@@ -32,24 +33,26 @@ export function MenuCetakDpt({
             />
             <span>Sensor NIK/No. KK</span>
           </label>
-          <Link
-            className="button button-secondary keluarga-toolbar-menu-item"
+          <ButtonLink
+            variant="secondary"
+            className="keluarga-toolbar-menu-item"
             href={denganSensor(cetakHref, sensor)}
             rel="noopener noreferrer"
             target="_blank"
           >
             Cetak PDF
-          </Link>
-          <Link
-            className="button button-secondary keluarga-toolbar-menu-item"
+          </ButtonLink>
+          <ButtonLink
+            variant="secondary"
+            className="keluarga-toolbar-menu-item"
             href={denganSensor(unduhHref, sensor)}
           >
             Unduh XLSX
-          </Link>
+          </ButtonLink>
           <div className="keluarga-toolbar-menu-divider" />
-          <Link className="button button-secondary keluarga-toolbar-menu-item" href={exportHref}>
+          <ButtonLink variant="secondary" className="keluarga-toolbar-menu-item" href={exportHref}>
             Ekspor CSV
-          </Link>
+          </ButtonLink>
         </div>
       </details>
     </div>

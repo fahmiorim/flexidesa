@@ -50,12 +50,6 @@ export interface SuratVerificationData {
  * sekretaris-desa → step2 (sekdes)
  * kepala-desa → step3 (kades)
  */
-export const ROLE_TO_VERIFICATION_STEP: Readonly<Record<string, VerificationStep>> = {
-  operator: "operator",
-  sekretaris: "sekdes",
-  "sekretaris-desa": "sekdes",
-  "kepala-desa": "kades",
-} as const;
 
 /**
  * Cek apakah role (slug) berwenang memverifikasi step tertentu.
@@ -85,29 +79,6 @@ export function canVerifyStep(surat: SuratVerificationData, step: VerificationSt
 /**
  * Dapatkan info lengkap tahap verifikasi untuk indikator visual.
  */
-export function getVerificationStepInfo(surat: SuratVerificationData): VerificationStepInfo {
-  const currentStep = nextVerificationStep({
-    status: surat.status,
-    verifikasiOperator: surat.verifikasiOperator,
-    verifikasiSekdes: surat.verifikasiSekdes,
-    verifikasiKades: surat.verifikasiKades,
-  });
-
-  const completedSteps: VerificationStep[] = [];
-  if (surat.verifikasiOperator) completedSteps.push("operator");
-  if (surat.verifikasiSekdes) completedSteps.push("sekdes");
-  if (surat.verifikasiKades) completedSteps.push("kades");
-
-  const pendingSteps = VERIFICATION_STEPS.filter(
-    (step) => !completedSteps.includes(step) && step !== currentStep,
-  );
-
-  return {
-    currentStep,
-    completedSteps,
-    pendingSteps,
-  };
-}
 
 /**
  * Validasi lengkap untuk aksi verifikasi (approve/reject).
@@ -209,40 +180,19 @@ export function validateVerification(
 /**
  * Helper: dapatkan label step untuk UI.
  */
-export function getStepLabel(step: VerificationStep): string {
-  return VERIFICATION_STEP_LABELS[step];
-}
 
 /**
  * Helper: dapatkan semua step labels berurutan.
  */
-export function getAllStepLabels(): Readonly<Record<VerificationStep, string>> {
-  return VERIFICATION_STEP_LABELS;
-}
 
 /**
  * Helper: cek apakah surat sudah selesai diverifikasi (semua 3 step approved).
  */
-export function isFullyVerified(surat: SuratVerificationData): boolean {
-  return (
-    surat.verifikasiOperator === true &&
-    surat.verifikasiSekdes === true &&
-    surat.verifikasiKades === true
-  );
-}
 
 /**
  * Helper: cek apakah surat sudah ditolak (status kembali ke draft dengan alasan).
  * Note: implementasi penolakan di layer use-case, di sini cek status saja.
  */
-export function isRejected(surat: SuratVerificationData): boolean {
-  return (
-    surat.status === "draft" &&
-    (surat.verifikasiOperator === false ||
-      surat.verifikasiSekdes === false ||
-      surat.verifikasiKades === false)
-  );
-}
 
 /**
  * Bangun URL verifikasi publik dari origin dan token mentah.

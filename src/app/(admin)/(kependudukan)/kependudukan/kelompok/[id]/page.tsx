@@ -8,7 +8,10 @@ import {
   ubahPublikasiAnggotaAction,
 } from "@/app/(admin)/(kependudukan)/kependudukan/kelompok/actions";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   getKelompokDetail,
   getKelompokMembers,
@@ -84,12 +87,9 @@ export default async function DetailKelompokPage({ params }: { params: Promise<{
           <>
             <div className="page-heading-actions">
               {bolehUbah ? (
-                <Link
-                  className="button button-secondary"
-                  href={`/kependudukan/kelompok/${id}/ubah`}
-                >
+                <ButtonLink variant="secondary" href={`/kependudukan/kelompok/${id}/ubah`}>
                   Ubah Data
-                </Link>
+                </ButtonLink>
               ) : null}
             </div>
           </>
@@ -171,24 +171,21 @@ export default async function DetailKelompokPage({ params }: { params: Promise<{
             {bolehTambah ? (
               <div className={styles.buttonGroup} role="group" aria-label="Tambah anggota">
                 <span className={styles.buttonGroupLabel}>Tambah</span>
-                <Link
-                  className="button button-primary"
-                  href={`/kependudukan/kelompok/${id}/anggota-baru`}
-                >
+                <ButtonLink variant="primary" href={`/kependudukan/kelompok/${id}/anggota-baru`}>
                   Satu Anggota
-                </Link>
-                <Link
-                  className="button button-secondary"
+                </ButtonLink>
+                <ButtonLink
+                  variant="secondary"
                   href={`/kependudukan/kelompok/${id}/anggota-baru?mode=banyak`}
                 >
                   Beberapa Anggota
-                </Link>
+                </ButtonLink>
               </div>
             ) : null}
             {bolehHapus ? (
               <div className={styles.buttonGroup} role="group" aria-label="Hapus anggota">
                 <ConfirmSubmit
-                  className="button button-danger"
+                  variant="danger"
                   message="Lepas anggota yang dicentang dari kelompok ini? Data penduduk tetap ada."
                 >
                   Hapus Terpilih
@@ -197,13 +194,13 @@ export default async function DetailKelompokPage({ params }: { params: Promise<{
             ) : null}
             <div className={styles.buttonGroup} role="group" aria-label="Laporan anggota">
               <span className={styles.buttonGroupLabel}>Laporan</span>
-              <Link
-                className="button button-secondary"
+              <ButtonLink
+                variant="secondary"
                 href={`/kependudukan/kelompok/${id}/cetak`}
                 target="_blank"
               >
                 Cetak
-              </Link>
+              </ButtonLink>
             </div>
           </div>
 
@@ -213,48 +210,48 @@ export default async function DetailKelompokPage({ params }: { params: Promise<{
               <p>Tambahkan anggota melalui tombol Tambah di atas.</p>
             </div>
           ) : (
-            <div className="table-scroll">
-              <table className="data-table">
-                <thead>
-                  <tr>
-                    {bolehHapus ? <th>Lepas</th> : null}
-                    <th>No.</th>
-                    <th>Aksi</th>
-                    <th>No. Anggota</th>
-                    <th>NIK</th>
-                    <th>Nama</th>
-                    <th>Tempat / Tanggal Lahir</th>
-                    <th>Umur</th>
-                    <th>Jenis Kelamin</th>
-                    <th>Alamat</th>
-                    <th>Jabatan</th>
-                    <th>Nomor SK Jabatan</th>
-                    <th>Keterangan</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableScroll>
+              <Table>
+                <THead>
+                  <Row>
+                    {bolehHapus ? <HeaderCell>Lepas</HeaderCell> : null}
+                    <HeaderCell>No.</HeaderCell>
+                    <HeaderCell>Aksi</HeaderCell>
+                    <HeaderCell>No. Anggota</HeaderCell>
+                    <HeaderCell>NIK</HeaderCell>
+                    <HeaderCell>Nama</HeaderCell>
+                    <HeaderCell>Tempat / Tanggal Lahir</HeaderCell>
+                    <HeaderCell>Umur</HeaderCell>
+                    <HeaderCell>Jenis Kelamin</HeaderCell>
+                    <HeaderCell>Alamat</HeaderCell>
+                    <HeaderCell>Jabatan</HeaderCell>
+                    <HeaderCell>Nomor SK Jabatan</HeaderCell>
+                    <HeaderCell>Keterangan</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
                   {members.map((member, index) => (
-                    <tr key={member.id}>
+                    <Row key={member.id}>
                       {bolehHapus ? (
-                        <td>
+                        <Cell>
                           <input
                             aria-label={`Pilih ${member.name}`}
                             name="idCb"
                             type="checkbox"
                             value={member.id}
                           />
-                        </td>
+                        </Cell>
                       ) : null}
-                      <td>{index + 1}</td>
-                      <td>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>
                         <div className={styles.memberActions}>
                           {bolehUbah ? (
-                            <Link
-                              className="button button-ghost"
+                            <ButtonLink
+                              variant="ghost"
                               href={`/kependudukan/kelompok/${id}/anggota/${member.id}/ubah`}
                             >
                               Ubah
-                            </Link>
+                            </ButtonLink>
                           ) : null}
                           {bolehUbah ? (
                             <span className={styles.inlineForm}>
@@ -267,18 +264,18 @@ export default async function DetailKelompokPage({ params }: { params: Promise<{
                                 />
                                 <span>Publik</span>
                               </label>
-                              <button
-                                className="button button-ghost"
+                              <Button
+                                variant="ghost"
                                 form={`publik-anggota-${member.id}`}
                                 type="submit"
                               >
                                 Simpan
-                              </button>
+                              </Button>
                             </span>
                           ) : null}
                           {bolehHapus ? (
                             <ConfirmSubmit
-                              className="button button-danger"
+                              variant="danger"
                               form={`lepas-anggota-${member.id}`}
                               message={`Lepas ${member.name} dari kelompok ini?`}
                             >
@@ -286,20 +283,20 @@ export default async function DetailKelompokPage({ params }: { params: Promise<{
                             </ConfirmSubmit>
                           ) : null}
                         </div>
-                      </td>
-                      <td>{member.memberNumber ?? "—"}</td>
-                      <td>{member.nationalId ?? "—"}</td>
-                      <td>
+                      </Cell>
+                      <Cell>{member.memberNumber ?? "—"}</Cell>
+                      <Cell>{member.nationalId ?? "—"}</Cell>
+                      <Cell>
                         <strong>{member.name}</strong>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         {member.birthPlace ?? "—"}
                         {member.birthDate ? ` / ${formatTanggal(member.birthDate)}` : ""}
-                      </td>
-                      <td>{umurTahun(member.birthDate)}</td>
-                      <td>{RTM_GENDER_LABELS[member.gender]}</td>
-                      <td>{member.address ?? "—"}</td>
-                      <td>
+                      </Cell>
+                      <Cell>{umurTahun(member.birthDate)}</Cell>
+                      <Cell>{RTM_GENDER_LABELS[member.gender]}</Cell>
+                      <Cell>{member.address ?? "—"}</Cell>
+                      <Cell>
                         <span
                           className={
                             isKetuaKelompok(member.position)
@@ -309,14 +306,14 @@ export default async function DetailKelompokPage({ params }: { params: Promise<{
                         >
                           {jabatanLabel(member.position)}
                         </span>
-                      </td>
-                      <td>{member.decreeNumber ?? "—"}</td>
-                      <td>{member.keterangan ?? "—"}</td>
-                    </tr>
+                      </Cell>
+                      <Cell>{member.decreeNumber ?? "—"}</Cell>
+                      <Cell>{member.keterangan ?? "—"}</Cell>
+                    </Row>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TBody>
+              </Table>
+            </TableScroll>
           )}
         </form>
 

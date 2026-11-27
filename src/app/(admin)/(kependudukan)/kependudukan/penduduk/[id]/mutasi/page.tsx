@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getKonteksMutasiPenduduk } from "@/features/kependudukan/penduduk/application/riwayat-penduduk-use-cases";
 import { LIFE_STATUS_LABELS } from "@/features/kependudukan/penduduk/domain/penduduk";
 import { hitungUmur } from "@/features/kependudukan/penduduk/domain/umur";
@@ -30,9 +30,9 @@ export default async function MutasiPendudukPage({ params }: { params: Promise<{
 
   return (
     <div className="modul-page data-kependudukan-page">
-      <Link className="button button-secondary" href={`/kependudukan/penduduk/${id}`}>
+      <ButtonLink variant="secondary" href={`/kependudukan/penduduk/${id}`}>
         ← Kembali
-      </Link>
+      </ButtonLink>
       <PageHeading
         judul={<>{penduduk.name}</>}
         deskripsi={

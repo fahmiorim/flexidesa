@@ -15,7 +15,6 @@ import {
   type ListSuplemenResult,
   type SuplemenCreateInput,
   type SuplemenFormField,
-  type SuplemenOption,
   type SuplemenSasaranOption,
   type SuplemenTerdataFilter,
   type SuplemenTerdataInput,
@@ -46,8 +45,6 @@ import {
   getSuplemenById,
   getSuplemenTerdataById,
   listSuplemen,
-  listSuplemenKeluargaOptions,
-  listSuplemenPendudukOptions,
   listSuplemenRekap,
   listSuplemenTerdata,
   listWilayahFilterOptions,
@@ -57,8 +54,6 @@ import {
   updateSuplemenTerdata,
 } from "@/features/kependudukan/penduduk/infrastructure/suplemen-repository";
 import { requirePermission } from "@/lib/dal";
-
-const HALAMAN_SUPLEMEN = "/kependudukan/penduduk/suplemen";
 
 /** Label sasaran suplemen (1 = penduduk, 2 = keluarga). */
 export function labelSasaranSuplemen(sasaran: number): string {
@@ -224,14 +219,6 @@ export async function getSuplemenDetailUseCase(villageId: number, suplemenId: nu
 
   const terdata = await listSuplemenTerdata(villageId, suplemenId);
   return { suplemen, terdata };
-}
-
-export async function getSuplemenTerdataUseCase(
-  villageId: number,
-  suplemenId: number,
-  filter?: SuplemenTerdataFilter,
-): Promise<SuplemenTerdataRow[]> {
-  return listSuplemenTerdata(villageId, suplemenId, filter);
 }
 
 export async function addSuplemenTerdataUseCase(
@@ -508,17 +495,6 @@ export async function exportRekapSuplemenUseCase(
   };
 }
 
-export async function getSuplemenReferencesUseCase(villageId: number): Promise<{
-  penduduk: SuplemenOption[];
-  keluarga: SuplemenOption[];
-}> {
-  const [penduduk, keluarga] = await Promise.all([
-    listSuplemenPendudukOptions(villageId),
-    listSuplemenKeluargaOptions(villageId),
-  ]);
-  return { penduduk, keluarga };
-}
-
 /** Pilihan referensi untuk kolom isian `select-otomatis`. */
 export async function getReferensiIsianSuplemenData(): Promise<Record<string, string[]>> {
   const user = await requirePermission(SUPLEMEN_RESOURCE, "read");
@@ -527,9 +503,6 @@ export async function getReferensiIsianSuplemenData(): Promise<Record<string, st
 }
 
 /** Path halaman rincian sebuah suplemen (dipakai redirect aksi). */
-export function rincianSuplemenPath(id: number): string {
-  return `${HALAMAN_SUPLEMEN}/${id}`;
-}
 
 /** Parse filter terdata dari query string halaman/cetak. */
 export function filterTerdataDariQuery(searchParams: URLSearchParams): SuplemenTerdataFilter {

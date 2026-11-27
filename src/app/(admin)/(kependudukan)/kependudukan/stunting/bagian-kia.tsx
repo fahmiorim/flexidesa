@@ -1,4 +1,7 @@
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { KiaRow } from "@/features/kependudukan/kesehatan/domain/kesehatan";
 
 import { hapusKiaAction, simpanKiaAction } from "./actions";
@@ -99,9 +102,9 @@ export function BagianKia({
               </label>
             </div>
             <div className="penduduk-heading-actions">
-              <button className="button button-primary" type="submit">
+              <Button variant="primary" type="submit">
                 {diubah ? "Simpan Perubahan" : "Simpan KIA"}
-              </button>
+              </Button>
             </div>
           </form>
         </details>
@@ -113,56 +116,54 @@ export function BagianKia({
           <p>Tambahkan KIA agar pemantauan ibu hamil dan anak dapat dicatat.</p>
         </div>
       ) : (
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>Aksi</th>
-                <th>Nomor KIA</th>
-                <th>Nama Ibu</th>
-                <th>Nama Anak</th>
-                <th>Perkiraan Lahir</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll>
+          <Table>
+            <THead>
+              <Row>
+                <HeaderCell>No.</HeaderCell>
+                <HeaderCell>Aksi</HeaderCell>
+                <HeaderCell>Nomor KIA</HeaderCell>
+                <HeaderCell>Nama Ibu</HeaderCell>
+                <HeaderCell>Nama Anak</HeaderCell>
+                <HeaderCell>Perkiraan Lahir</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {kia.map((row, index) => (
-                <tr key={row.id}>
-                  <td>{index + 1}</td>
-                  <td>
+                <Row key={row.id}>
+                  <Cell>{index + 1}</Cell>
+                  <Cell>
                     <div className={styles.rowActions}>
                       {bolehUbah ? (
-                        <a
-                          className="button button-ghost"
+                        <ButtonLink
+                          variant="ghost"
                           href={`/kependudukan/stunting?tab=kia&ubah=${row.id}`}
                         >
                           Ubah
-                        </a>
+                        </ButtonLink>
                       ) : null}
                       {bolehHapus && !terpakai.has(row.id) ? (
-                        <form action={hapusKiaAction}>
-                          <input name="id" type="hidden" value={row.id} />
-                          <ConfirmSubmit
-                            className="button button-danger"
-                            message={`Hapus KIA ${row.noKia}?`}
-                          >
-                            Hapus
-                          </ConfirmSubmit>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusKiaAction}
+                          id={row.id}
+                          judul={`Hapus KIA ${row.noKia}?`}
+                          keterangan="Data KIA akan dihapus permanen. KIA yang sudah dipakai data pemantauan tidak dapat dihapus."
+                          labelAksi="Hapus KIA"
+                        />
                       ) : null}
                     </div>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <strong>{row.noKia}</strong>
-                  </td>
-                  <td>{row.ibuName ?? nama.get(row.ibuId) ?? "—"}</td>
-                  <td>{row.anakId === null ? "—" : (nama.get(row.anakId) ?? "—")}</td>
-                  <td>{row.hariPerkiraanLahir ?? "—"}</td>
-                </tr>
+                  </Cell>
+                  <Cell>{row.ibuName ?? nama.get(row.ibuId) ?? "—"}</Cell>
+                  <Cell>{row.anakId === null ? "—" : (nama.get(row.anakId) ?? "—")}</Cell>
+                  <Cell>{row.hariPerkiraanLahir ?? "—"}</Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       )}
     </section>
   );

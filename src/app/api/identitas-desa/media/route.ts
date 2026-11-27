@@ -8,8 +8,8 @@ import {
 } from "@/features/info-desa/identitas-desa/application/identitas-desa-use-cases";
 import { terapkanUkuranLogo } from "@/features/info-desa/identitas-desa/application/transformasi-logo";
 import { validasiMediaIdentitas } from "@/features/info-desa/identitas-desa/application/validasi-media";
+import { validasiUkuranLogo } from "@/features/info-desa/identitas-desa/domain/identitas-form";
 import { simpanBerkasMedia } from "@/features/info-desa/publik/application/simpan-berkas-media";
-import { validasiUkuranLogo } from "@/features/pengaturan/pengaturan/domain/identitas-form";
 import { requirePermission } from "@/lib/dal";
 import { appErrorStatus, isAppError } from "@/lib/errors";
 

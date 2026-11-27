@@ -1,6 +1,7 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   getLaporanKeuangan,
   getLaporanRealisasiResmi,
@@ -33,28 +34,17 @@ export default async function LaporanKeuanganPage({ searchParams }: Props) {
         judul={<>Laporan Keuangan</>}
         deskripsi={<>Laporan realisasi APBDes dan keuangan desa.</>}
       />
-      <nav className={styles.tabs}>
-        <Link href="/keuangan">Dashboard</Link>
-        <Link href="/keuangan/apbdes">APBDes</Link>
-        <Link href="/keuangan/realisasi">Realisasi Anggaran</Link>
-        <Link href="/keuangan/kegiatan">Kegiatan &amp; Pembangunan</Link>
-        <Link className={styles.activeTab} href="/keuangan/laporan">
-          Laporan Keuangan
-        </Link>
-        <Link href="/keuangan/dokumen">Dokumen &amp; Peraturan</Link>
-      </nav>
       <form method="get" className={styles.filterForm}>
-        <label htmlFor="tahun-laporan">Tahun anggaran</label>
-        <select id="tahun-laporan" name="tahun" defaultValue={data.tahun}>
-          {data.tersedia.map((y) => (
-            <option key={y} value={y}>
-              {y}
-            </option>
-          ))}
-        </select>
-        <button className={styles.primaryButton} type="submit">
+        <FormField
+          defaultValue={String(data.tahun)}
+          kind="select"
+          label="Tahun anggaran"
+          name="tahun"
+          options={data.tersedia.map((y) => ({ value: String(y), label: String(y) }))}
+        />
+        <Button type="submit" variant="secondary">
           Tampilkan
-        </button>
+        </Button>
       </form>
       <section className={styles.metrics}>
         <article className={styles.metricPrimary}>
@@ -94,34 +84,34 @@ export default async function LaporanKeuanganPage({ searchParams }: Props) {
             <a href={"/keuangan/laporan/ekspor-excel?tahun=" + data.tahun}>Unduh Excel</a>
           </div>
         </div>
-        <div className={styles.tableWrap}>
-          <table className={styles.dataTable}>
-            <thead>
-              <tr>
-                <th>Kode</th>
-                <th>Uraian</th>
-                <th className={styles.number}>Pagu (Rp)</th>
-                <th className={styles.number}>Realisasi (Rp)</th>
-                <th className={styles.number}>Sisa (Rp)</th>
-                <th>Serapan</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll className={styles.tableWrap}>
+          <Table className={styles.dataTable}>
+            <THead>
+              <Row>
+                <HeaderCell>Kode</HeaderCell>
+                <HeaderCell>Uraian</HeaderCell>
+                <HeaderCell className={styles.number}>Pagu (Rp)</HeaderCell>
+                <HeaderCell className={styles.number}>Realisasi (Rp)</HeaderCell>
+                <HeaderCell className={styles.number}>Sisa (Rp)</HeaderCell>
+                <HeaderCell>Serapan</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {data.baris.map((row) => (
-                <tr key={row.kode}>
-                  <td>
+                <Row key={row.kode}>
+                  <Cell>
                     <b>{row.kode}</b>
-                  </td>
-                  <td>{row.uraian}</td>
-                  <td className={styles.number}>{formatRupiah(row.anggaran)}</td>
-                  <td className={styles.number}>{formatRupiah(row.realisasi)}</td>
-                  <td className={styles.number}>{formatRupiah(row.selisih)}</td>
-                  <td>{row.persen.toFixed(1)}%</td>
-                </tr>
+                  </Cell>
+                  <Cell>{row.uraian}</Cell>
+                  <Cell className={styles.number}>{formatRupiah(row.anggaran)}</Cell>
+                  <Cell className={styles.number}>{formatRupiah(row.realisasi)}</Cell>
+                  <Cell className={styles.number}>{formatRupiah(row.selisih)}</Cell>
+                  <Cell>{row.persen.toFixed(1)}%</Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       </section>
       <section className={styles.panel}>
         <div className={styles.panelHeading}>
@@ -130,35 +120,35 @@ export default async function LaporanKeuanganPage({ searchParams }: Props) {
             <p>Rincian belanja menurut bidang APBDes.</p>
           </div>
         </div>
-        <div className={styles.tableWrap}>
-          <table className={styles.dataTable}>
-            <thead>
-              <tr>
-                <th>Kode</th>
-                <th>Bidang</th>
-                <th className={styles.number}>Pagu (Rp)</th>
-                <th className={styles.number}>Realisasi (Rp)</th>
-                <th>Serapan</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll className={styles.tableWrap}>
+          <Table className={styles.dataTable}>
+            <THead>
+              <Row>
+                <HeaderCell>Kode</HeaderCell>
+                <HeaderCell>Bidang</HeaderCell>
+                <HeaderCell className={styles.number}>Pagu (Rp)</HeaderCell>
+                <HeaderCell className={styles.number}>Realisasi (Rp)</HeaderCell>
+                <HeaderCell>Serapan</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {data.bidang.map((row) => (
-                <tr key={row.kode}>
-                  <td>{row.kode}</td>
-                  <td>{row.uraian}</td>
-                  <td className={styles.number}>{formatRupiah(row.anggaran)}</td>
-                  <td className={styles.number}>{formatRupiah(row.realisasi)}</td>
-                  <td>
+                <Row key={row.kode}>
+                  <Cell>{row.kode}</Cell>
+                  <Cell>{row.uraian}</Cell>
+                  <Cell className={styles.number}>{formatRupiah(row.anggaran)}</Cell>
+                  <Cell className={styles.number}>{formatRupiah(row.realisasi)}</Cell>
+                  <Cell>
                     <div className={styles.progress}>
                       <i style={{ width: Math.min(100, row.persen) + "%" }} />
                     </div>
                     <small>{row.persen.toFixed(1)}%</small>
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       </section>
       <section className={styles.panel}>
         <div className={styles.panelHeading}>

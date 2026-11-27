@@ -1,24 +1,8 @@
-import { z } from "zod";
-
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
-
-/** Resource RBAC agenda desa (juga dipakai buku agenda surat). */
-export const AGENDA_RESOURCE = RESOURCES.agenda;
-
 /** Status editorial kegiatan; bukan status surat. */
 export const AGENDA_STATUS = ["rencana", "berlangsung", "selesai"] as const;
 export type AgendaStatus = (typeof AGENDA_STATUS)[number];
 
-export const AGENDA_STATUS_LABELS: Readonly<Record<AgendaStatus, string>> = {
-  rencana: "Rencana",
-  berlangsung: "Berlangsung",
-  selesai: "Selesai",
-};
-
-/** Kategori bawaan bila pengelola tidak mengisi kategori. */
-export const AGENDA_KATEGORI_DEFAULT = "umum";
-
-/** Baris agenda kegiatan untuk halaman admin. */
+/** Baris agenda kegiatan apa adanya dari database. */
 export interface AgendaRow {
   id: number;
   judul: string;
@@ -46,86 +30,6 @@ export interface AgendaPublikRow {
   lokasi: string | null;
   deskripsi: string | null;
 }
-
-/**
- * Jam `HH:MM`. Detik dari MySQL (`HH:MM:SS`) diterima saat edit, lalu
- * dinormalisasi ke `HH:MM` agar nilai formulir dan database konsisten.
- */
-const jamSchema = z
-  .string()
-  .trim()
-  .transform((value) => (value === "" ? null : value))
-  .pipe(
-    z.union([
-      z.string().regex(/^([01]\d|2[0-3]):[0-5]\d(:[0-5]\d)?$/, "Jam harus berformat HH:MM."),
-      z.null(),
-    ]),
-  )
-  .transform((value) => value?.slice(0, 5) ?? null)
-  .optional()
-  .default(null);
-
-/**
- * Skema formulir agenda kegiatan.
- *
- * `tayang` bernilai `false` bila checkbox tidak dikirim: agenda baru tidak
- * langsung tampil di situs publik tanpa persetujuan eksplisit pengelola.
- */
-export const agendaFormSchema = z
-  .object({
-    judul: z.string().trim().min(1, "Judul wajib diisi.").max(200, "Maksimal 200 karakter."),
-    mulai: z.iso.date("Tanggal mulai tidak valid."),
-    selesai: z
-      .string()
-      .trim()
-      .transform((value) => (value === "" ? null : value))
-      .pipe(z.union([z.iso.date("Tanggal selesai tidak valid."), z.null()]))
-      .optional()
-      .default(null),
-    lokasi: z.string().trim().max(200, "Maksimal 200 karakter.").optional().default(""),
-    jamMulai: jamSchema,
-    jamSelesai: jamSchema,
-    kategori: z
-      .string()
-      .trim()
-      .max(50, "Maksimal 50 karakter.")
-      .optional()
-      .default("")
-      .transform((value) => (value === "" ? AGENDA_KATEGORI_DEFAULT : value)),
-    status: z.enum(AGENDA_STATUS, { error: "Status agenda tidak valid." }).default("rencana"),
-    deskripsi: z.string().trim().max(2000, "Maksimal 2000 karakter.").optional().default(""),
-    tayang: z.boolean().default(false),
-  })
-  .refine((data) => data.selesai === null || data.selesai >= data.mulai, {
-    message: "Tanggal selesai tidak boleh mendahului tanggal mulai.",
-    path: ["selesai"],
-  })
-  .superRefine((data, ctx) => {
-    if (data.jamSelesai !== null && data.jamMulai === null) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["jamMulai"],
-        message: "Isi jam mulai sebelum jam selesai.",
-      });
-      return;
-    }
-
-    const tanggalAkhir = data.selesai ?? data.mulai;
-    if (
-      data.jamMulai !== null &&
-      data.jamSelesai !== null &&
-      tanggalAkhir === data.mulai &&
-      data.jamSelesai < data.jamMulai
-    ) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["jamSelesai"],
-        message: "Jam selesai tidak boleh mendahului jam mulai.",
-      });
-    }
-  });
-
-export type AgendaFormInput = z.infer<typeof agendaFormSchema>;
 
 export interface BulanAgenda {
   tahun: number;

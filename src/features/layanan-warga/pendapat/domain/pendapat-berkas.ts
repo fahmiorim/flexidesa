@@ -58,9 +58,3 @@ export function normalisasiHalaman(value: string | null | undefined): number {
   const angka = Number(value);
   return Number.isInteger(angka) && angka > 0 ? angka : 1;
 }
-
-export function normalisasiBatas(value: string | null | undefined, defaultLimit = 20): number {
-  const angka = Number(value);
-  if (!Number.isInteger(angka) || angka <= 0) return defaultLimit;
-  return Math.min(100, angka);
-}

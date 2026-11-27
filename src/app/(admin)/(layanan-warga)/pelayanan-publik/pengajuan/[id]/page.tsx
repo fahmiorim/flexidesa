@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import {
   getPengajuanDetailData,
   listBerkasPengajuanAdminData,
@@ -58,9 +59,9 @@ export default async function Page({
               <span className={"request-status request-status-" + r.status}>
                 {labels[r.status] ?? r.status}
               </span>
-              <Link className="button button-secondary" href="/pelayanan-publik/pengajuan">
+              <ButtonLink variant="secondary" href="/pelayanan-publik/pengajuan">
                 ← Kembali ke antrean
-              </Link>
+              </ButtonLink>
             </div>
           </>
         }
@@ -169,12 +170,12 @@ export default async function Page({
                         {file.namaAsli} · {(file.ukuran / 1024).toFixed(0)} KB
                       </small>
                     </span>
-                    <a
-                      className="button button-secondary"
+                    <ButtonLink
+                      variant="secondary"
                       href={"/api/admin/pelayanan-publik/pengajuan/" + id + "/berkas/" + file.id}
                     >
                       Unduh
-                    </a>
+                    </ButtonLink>
                   </li>
                 ))}
               </ul>
@@ -192,12 +193,12 @@ export default async function Page({
                       <strong>{file.namaAsli}</strong>
                       <small>{(file.ukuran / 1024).toFixed(0)} KB</small>
                     </span>
-                    <a
-                      className="button button-secondary"
+                    <ButtonLink
+                      variant="secondary"
                       href={"/api/admin/pelayanan-publik/pengajuan/" + id + "/berkas/" + file.id}
                     >
                       Unduh
-                    </a>
+                    </ButtonLink>
                   </li>
                 ))}
               </ul>
@@ -218,7 +219,7 @@ export default async function Page({
                   />
                 </label>
                 <div>
-                  <button className="button button-primary">＋ Unggah Hasil Pelayanan</button>
+                  <Button variant="primary">＋ Unggah Hasil Pelayanan</Button>
                 </div>
               </form>
             ) : (
@@ -283,7 +284,7 @@ export default async function Page({
                     defaultValue={r.alasanPenolakan ?? ""}
                   />
                 </label>
-                <button className="button button-primary">Simpan Perubahan Status</button>
+                <Button variant="primary">Simpan Perubahan Status</Button>
               </form>
             ) : (
               <p className="modul-empty">

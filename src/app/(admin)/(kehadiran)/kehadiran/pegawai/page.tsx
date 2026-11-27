@@ -3,6 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   daftarDokumenPegawai,
   daftarPegawai,
@@ -16,11 +22,11 @@ import styles from "../absensi-kepegawaian.module.css";
 import {
   hapusDokumenPegawaiAction,
   hapusRiwayatPegawaiAction,
-  simpanPegawaiAction,
   tambahRiwayatPegawaiAction,
   ubahRiwayatPegawaiAction,
   unggahDokumenPegawaiAction,
 } from "../actions";
+import { simpanPegawaiFormAction } from "./form-actions";
 
 export const metadata: Metadata = { title: "Data Pegawai" };
 
@@ -34,6 +40,115 @@ function mediaUrl(value: string | null | undefined, villageId: number): string |
     return null;
   const path = segments[0] === String(villageId) ? segments : [String(villageId), ...segments];
   return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
+}
+
+type PegawaiRow = Awaited<ReturnType<typeof daftarPegawai>>[number];
+type PerangkatRow = Awaited<ReturnType<typeof opsiPerangkatBelumTerhubung>>[number];
+
+/** Isi form pegawai, dipakai bersama dialog tambah dan dialog ubah agar field-nya identik. */
+function formPegawai(pegawai: PegawaiRow | null, perangkat: PerangkatRow[]) {
+  return (
+    <div className="modul-form-grid">
+      {pegawai ? <input name="id" type="hidden" value={pegawai.id} /> : null}
+      <FormField defaultValue={pegawai?.nama ?? ""} label="Nama lengkap" name="nama" required />
+      {pegawai ? (
+        <input name="perangkatId" type="hidden" value={pegawai.perangkatId ?? ""} />
+      ) : (
+        <FormField
+          defaultValue=""
+          kind="select"
+          label="Hubungkan perangkat desa"
+          name="perangkatId"
+          options={[
+            { value: "", label: "Pegawai/staf baru" },
+            ...perangkat.map((x) => ({
+              value: String(x.id),
+              label: `${x.nama} — ${x.jabatan ?? "Perangkat"}`,
+            })),
+          ]}
+        />
+      )}
+      <FormField defaultValue={pegawai?.nip ?? ""} label="NIP" name="nip" />
+      <FormField
+        defaultValue={pegawai?.nik ?? ""}
+        inputMode="numeric"
+        label="NIK"
+        maxLength={16}
+        name="nik"
+      />
+      <FormField defaultValue={pegawai?.jabatan ?? ""} label="Jabatan" name="jabatan" />
+      <FormField
+        defaultValue={pegawai?.jenisKelamin ?? ""}
+        kind="select"
+        label="Jenis kelamin"
+        name="jenisKelamin"
+        options={[
+          { value: "", label: "Pilih" },
+          { value: "male", label: "Laki-laki" },
+          { value: "female", label: "Perempuan" },
+        ]}
+      />
+      <FormField
+        defaultValue={pegawai?.tempatLahir ?? ""}
+        label="Tempat lahir"
+        name="tempatLahir"
+      />
+      <FormField
+        defaultValue={pegawai?.tanggalLahir ?? ""}
+        label="Tanggal lahir"
+        name="tanggalLahir"
+        type="date"
+      />
+      <FormField defaultValue={pegawai?.telepon ?? ""} label="Telepon" name="telepon" />
+      <FormField defaultValue={pegawai?.email ?? ""} label="Email" name="email" type="email" />
+      <FormField defaultValue={pegawai?.pendidikan ?? ""} label="Pendidikan" name="pendidikan" />
+      <FormField
+        defaultValue={pegawai?.statusPegawai ?? "tetap"}
+        kind="select"
+        label="Status pegawai"
+        name="statusPegawai"
+        options={[
+          { value: "tetap", label: "Tetap" },
+          { value: "kontrak", label: "Kontrak" },
+          { value: "purna_tugas", label: "Purna tugas" },
+        ]}
+      />
+      {pegawai ? (
+        <FormField
+          defaultValue={pegawai.status}
+          kind="select"
+          label="Status kepegawaian"
+          name="status"
+          options={[
+            { value: "aktif", label: "Aktif" },
+            { value: "nonaktif", label: "Nonaktif" },
+          ]}
+        />
+      ) : (
+        <input name="status" type="hidden" value="aktif" />
+      )}
+      <FormField
+        defaultValue={pegawai?.tanggalMasuk ?? ""}
+        label="Tanggal masuk"
+        name="tanggalMasuk"
+        type="date"
+      />
+      <FormField
+        defaultValue={pegawai?.tanggalKeluar ?? ""}
+        label="Tanggal keluar"
+        name="tanggalKeluar"
+        type="date"
+      />
+      <FormField
+        containerClassName="form-field-full"
+        defaultValue={pegawai?.alamat ?? ""}
+        kind="textarea"
+        label="Alamat"
+        name="alamat"
+        rows={2}
+      />
+    </div>
+  );
 }
 
 export default async function PegawaiPage({
@@ -55,7 +170,7 @@ export default async function PegawaiPage({
     opsiPerangkatBelumTerhubung(),
     verifySession(),
   ]);
-  const canManage = hasPermission(user.permissions, "kepegawaian", "update");
+  const canManage = hasPermission(user.permissions, "data-pegawai", "update");
   const selected = pegawai.find((x) => x.id === Number(selectedRaw)) ?? pegawai[0] ?? null;
   const [riwayat, dokumen] = selected
     ? await Promise.all([daftarRiwayatPegawai(selected.id), daftarDokumenPegawai(selected.id)])
@@ -95,15 +210,6 @@ export default async function PegawaiPage({
         judul={<>Data Pegawai</>}
         deskripsi={<>Data pegawai dan riwayat kepegawaian.</>}
       />
-      <nav className={styles["ak-subnav"]} aria-label="Navigasi data pegawai">
-        <a className={styles["selected"]} href="#daftar-pegawai">
-          ☷ Daftar Pegawai
-        </a>
-        <a href="#detail-pegawai">♧ Struktur Jabatan</a>
-        <a href="#masa-kerja">▦ Masa Kerja</a>
-        <a href="#dokumen">▤ Dokumen</a>
-        <a href="#riwayat">◷ Riwayat Jabatan</a>
-      </nav>
       <section className={styles["ak-kpi-grid"]}>
         <article className={styles["ak-kpi"]}>
           <span>Total Pegawai</span>
@@ -126,153 +232,72 @@ export default async function PegawaiPage({
           <strong>{purna} orang</strong>
         </article>
       </section>
-      <section className={styles["ak-card"]}>
-        <div className={styles["ak-section-heading"]}>
-          <div>
-            <h2>Data Pegawai</h2>
-            <p>Aparatur desa tersinkron otomatis; staf tambahan dapat didaftarkan di sini.</p>
-          </div>
-          {canManage ? <span className={styles["ak-badge"]}>Master Pegawai</span> : null}
-        </div>
-        {canManage ? (
-          <details className={styles["ak-add-panel"]}>
-            <summary>＋ Tambah Pegawai Baru</summary>
-            <form action={simpanPegawaiAction} className={styles["ak-form"]}>
+      <div id="daftar-pegawai" className={styles["ak-grid"]} style={{ marginTop: 16 }}>
+        <TableCard
+          actions={
+            canManage ? (
+              <FormDialog
+                aksi={simpanPegawaiFormAction}
+                deskripsi="Aparatur desa tersinkron otomatis; staf tambahan dapat didaftarkan di sini."
+                judul="Tambah pegawai"
+                label="+ Tambah Pegawai"
+                labelSimpan="Simpan pegawai"
+              >
+                {formPegawai(null, perangkat)}
+              </FormDialog>
+            ) : null
+          }
+          description={`${pegawai.length} pegawai terdaftar.`}
+          filter={
+            <form className={styles["ak-filter"]} method="get">
+              <input type="hidden" name="id" value={selected?.id ?? ""} />
               <label>
-                Nama Lengkap
-                <input name="nama" required />
+                Cari nama, NIK, atau jabatan
+                <input type="search" name="q" placeholder="Cari pegawai..." defaultValue={query} />
               </label>
               <label>
-                Hubungkan Perangkat Desa
-                <select name="perangkatId" defaultValue="">
-                  <option value="">Pegawai/staf baru</option>
-                  {perangkat.map((x) => (
-                    <option key={x.id} value={x.id}>
-                      {x.nama} — {x.jabatan ?? "Perangkat"}
+                Jabatan
+                <select name="jabatan" defaultValue={jabatanFilter}>
+                  <option value="">Semua Jabatan</option>
+                  {jabatanOptions.map((name) => (
+                    <option key={name} value={name}>
+                      {name}
                     </option>
                   ))}
                 </select>
               </label>
               <label>
-                NIP
-                <input name="nip" />
-              </label>
-              <label>
-                NIK
-                <input name="nik" inputMode="numeric" maxLength={16} />
-              </label>
-              <label>
-                Jabatan
-                <input name="jabatan" />
-              </label>
-              <label>
-                Jenis Kelamin
-                <select name="jenisKelamin">
-                  <option value="">Pilih</option>
-                  <option value="male">Laki-laki</option>
-                  <option value="female">Perempuan</option>
+                Status
+                <select name="status" defaultValue={statusFilter}>
+                  <option value="">Semua Status</option>
+                  <option value="aktif">Aktif</option>
+                  <option value="nonaktif">Nonaktif</option>
                 </select>
               </label>
-              <label>
-                Tempat Lahir
-                <input name="tempatLahir" />
-              </label>
-              <label>
-                Tanggal Lahir
-                <input type="date" name="tanggalLahir" />
-              </label>
-              <label>
-                Telepon
-                <input name="telepon" />
-              </label>
-              <label>
-                Email
-                <input type="email" name="email" />
-              </label>
-              <label>
-                Pendidikan
-                <input name="pendidikan" />
-              </label>
-              <label>
-                Status Pegawai
-                <select name="statusPegawai">
-                  <option value="tetap">Tetap</option>
-                  <option value="kontrak">Kontrak</option>
-                  <option value="purna_tugas">Purna Tugas</option>
-                </select>
-              </label>
-              <label>
-                Tanggal Masuk
-                <input type="date" name="tanggalMasuk" />
-              </label>
-              <label>
-                Tanggal Keluar
-                <input type="date" name="tanggalKeluar" />
-              </label>
-              <label className={styles.wide}>
-                Alamat
-                <textarea name="alamat" rows={2} />
-              </label>
-              <input type="hidden" name="status" value="aktif" />
-              <button className={styles["ak-button"]} type="submit">
-                + Simpan Pegawai
-              </button>
+              <Button className={styles["ak-button"]} type="submit">
+                ⌕ Filter
+              </Button>
             </form>
-          </details>
-        ) : (
-          <p>Akun ini hanya memiliki akses baca data pegawai.</p>
-        )}
-      </section>
-      <div id="daftar-pegawai" className={styles["ak-grid"]} style={{ marginTop: 16 }}>
-        <section className={styles["ak-card"]}>
-          <h2>Daftar Data Pegawai</h2>
-          <p>{pegawai.length} pegawai terdaftar.</p>
-          <form className={styles["ak-filter"]} method="get">
-            <input type="hidden" name="id" value={selected?.id ?? ""} />
-            <label>
-              Cari nama, NIK, atau jabatan
-              <input type="search" name="q" placeholder="Cari pegawai..." defaultValue={query} />
-            </label>
-            <label>
-              Jabatan
-              <select name="jabatan" defaultValue={jabatanFilter}>
-                <option value="">Semua Jabatan</option>
-                {jabatanOptions.map((name) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Status
-              <select name="status" defaultValue={statusFilter}>
-                <option value="">Semua Status</option>
-                <option value="aktif">Aktif</option>
-                <option value="nonaktif">Nonaktif</option>
-              </select>
-            </label>
-            <button className={styles["ak-button"]} type="submit">
-              ⌕ Filter
-            </button>
-          </form>
-          <div className={styles["ak-table-wrap"]}>
-            <table className={styles["ak-table"]}>
-              <thead>
-                <tr>
-                  <th>No.</th>
-                  <th>Nama</th>
-                  <th>Jabatan</th>
-                  <th>Status</th>
-                  <th>Masa Kerja</th>
-                  <th>Detail</th>
-                </tr>
-              </thead>
-              <tbody>
+          }
+          title="Daftar Data Pegawai"
+        >
+          <TableScroll className={styles["ak-table-wrap"]}>
+            <Table className={styles["ak-table"]}>
+              <THead>
+                <Row>
+                  <HeaderCell>No.</HeaderCell>
+                  <HeaderCell>Nama</HeaderCell>
+                  <HeaderCell>Jabatan</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Masa Kerja</HeaderCell>
+                  <HeaderCell>Detail</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {filteredPegawai.map((x, i) => (
-                  <tr key={x.id}>
-                    <td>{i + 1}</td>
-                    <td>
+                  <Row key={x.id}>
+                    <Cell>{i + 1}</Cell>
+                    <Cell>
                       <span className={styles["ak-person"]}>
                         <span>
                           {mediaUrl(x.foto, x.villageId) ? (
@@ -296,26 +321,26 @@ export default async function PegawaiPage({
                       </span>
                       <br />
                       <small>{x.nip ?? "NIP belum diisi"}</small>
-                    </td>
-                    <td>{x.jabatan ?? "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{x.jabatan ?? "—"}</Cell>
+                    <Cell>
                       <span className={styles["ak-badge"]}>{x.statusPegawai}</span>
-                    </td>
-                    <td>{hitungMasaKerja(x.tanggalMasuk, x.tanggalKeluar)}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{hitungMasaKerja(x.tanggalMasuk, x.tanggalKeluar)}</Cell>
+                    <Cell>
                       <Link className={styles["ak-button"]} href={"/kehadiran/pegawai?id=" + x.id}>
                         Lihat
                       </Link>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
           {!filteredPegawai.length ? (
             <div className={styles["ak-empty"]}>Tidak ada pegawai yang sesuai filter.</div>
           ) : null}
-        </section>
+        </TableCard>
         <section id="detail-pegawai" className={styles["ak-card"]}>
           {selected ? (
             <>
@@ -349,12 +374,6 @@ export default async function PegawaiPage({
                   </span>
                 </div>
               </div>
-              <nav className={styles["ak-profile-tabs"]}>
-                <a href="#biodata">Biodata</a>
-                <a href="#jabatan">Jabatan</a>
-                <a href="#dokumen">Dokumen</a>
-                <a href="#riwayat">Riwayat</a>
-              </nav>
               <h3 id="biodata">Informasi Pribadi</h3>
               <dl>
                 <div>
@@ -389,99 +408,17 @@ export default async function PegawaiPage({
                 </div>
               </dl>
               {canManage ? (
-                <details>
-                  <summary>Edit Data Pegawai</summary>
-                  <form action={simpanPegawaiAction} className={styles["ak-form"]}>
-                    <input type="hidden" name="id" value={selected.id} />
-                    <input type="hidden" name="perangkatId" value={selected.perangkatId ?? ""} />
-                    <label>
-                      Nama
-                      <input name="nama" defaultValue={selected.nama} required />
-                    </label>
-                    <label>
-                      NIP
-                      <input name="nip" defaultValue={selected.nip ?? ""} />
-                    </label>
-                    <label>
-                      NIK
-                      <input name="nik" defaultValue={selected.nik ?? ""} />
-                    </label>
-                    <label>
-                      Jabatan
-                      <input name="jabatan" defaultValue={selected.jabatan ?? ""} />
-                    </label>
-                    <label>
-                      Jenis Kelamin
-                      <select name="jenisKelamin" defaultValue={selected.jenisKelamin ?? ""}>
-                        <option value="">Pilih</option>
-                        <option value="male">Laki-laki</option>
-                        <option value="female">Perempuan</option>
-                      </select>
-                    </label>
-                    <label>
-                      Tempat Lahir
-                      <input name="tempatLahir" defaultValue={selected.tempatLahir ?? ""} />
-                    </label>
-                    <label>
-                      Tanggal Lahir
-                      <input
-                        name="tanggalLahir"
-                        type="date"
-                        defaultValue={selected.tanggalLahir ?? ""}
-                      />
-                    </label>
-                    <label>
-                      Telepon
-                      <input name="telepon" defaultValue={selected.telepon ?? ""} />
-                    </label>
-                    <label>
-                      Email
-                      <input name="email" type="email" defaultValue={selected.email ?? ""} />
-                    </label>
-                    <label>
-                      Pendidikan
-                      <input name="pendidikan" defaultValue={selected.pendidikan ?? ""} />
-                    </label>
-                    <label className={styles.wide}>
-                      Alamat
-                      <textarea name="alamat" rows={2} defaultValue={selected.alamat ?? ""} />
-                    </label>
-                    <label>
-                      Status Pegawai
-                      <select name="statusPegawai" defaultValue={selected.statusPegawai}>
-                        <option value="tetap">Tetap</option>
-                        <option value="kontrak">Kontrak</option>
-                        <option value="purna_tugas">Purna Tugas</option>
-                      </select>
-                    </label>
-                    <label>
-                      Status
-                      <select name="status" defaultValue={selected.status}>
-                        <option value="aktif">Aktif</option>
-                        <option value="nonaktif">Nonaktif</option>
-                      </select>
-                    </label>
-                    <label>
-                      Tanggal Masuk
-                      <input
-                        name="tanggalMasuk"
-                        type="date"
-                        defaultValue={selected.tanggalMasuk ?? ""}
-                      />
-                    </label>
-                    <label>
-                      Tanggal Keluar
-                      <input
-                        name="tanggalKeluar"
-                        type="date"
-                        defaultValue={selected.tanggalKeluar ?? ""}
-                      />
-                    </label>
-                    <button className={styles["ak-button"]} type="submit">
-                      Simpan Perubahan
-                    </button>
-                  </form>
-                </details>
+                <FormDialog
+                  aksi={simpanPegawaiFormAction}
+                  deskripsi={`Ubah data kepegawaian ${selected.nama}.`}
+                  judul="Ubah data pegawai"
+                  key={`pegawai-${selected.id}`}
+                  label="Edit Data Pegawai"
+                  labelSimpan="Simpan perubahan"
+                  varian="secondary"
+                >
+                  {formPegawai(selected, perangkat)}
+                </FormDialog>
               ) : null}
               <h3 id="jabatan">Riwayat Jabatan</h3>
               <div id="riwayat">
@@ -525,15 +462,16 @@ export default async function PegawaiPage({
                                   Keterangan
                                   <textarea name="keterangan" defaultValue={r.keterangan ?? ""} />
                                 </label>
-                                <button className={styles["ak-button"]}>Simpan Riwayat</button>
+                                <Button className={styles["ak-button"]}>Simpan Riwayat</Button>
                               </form>
                             </details>
-                            <form action={hapusRiwayatPegawaiAction} style={{ display: "inline" }}>
-                              <input type="hidden" name="id" value={r.id} />
-                              <button className={styles["ak-button"]} type="submit">
-                                Hapus
-                              </button>
-                            </form>
+                            <DialogHapusForm
+                              aksi={hapusRiwayatPegawaiAction}
+                              id={r.id}
+                              judul={`Hapus riwayat jabatan "${r.jabatan}"?`}
+                              keterangan="Riwayat jabatan pegawai akan dihapus permanen."
+                              labelAksi="Hapus riwayat"
+                            />
                           </>
                         ) : null}
                       </li>
@@ -571,7 +509,7 @@ export default async function PegawaiPage({
                         Keterangan
                         <textarea name="keterangan" />
                       </label>
-                      <button className={styles["ak-button"]}>Tambah Riwayat</button>
+                      <Button className={styles["ak-button"]}>Tambah Riwayat</Button>
                     </form>
                   </details>
                 ) : null}
@@ -583,12 +521,13 @@ export default async function PegawaiPage({
                     <li key={d.id}>
                       <a href={"/api/kepegawaian/dokumen/" + d.id}>{d.judul}</a> · {d.kategori}{" "}
                       {canManage ? (
-                        <form action={hapusDokumenPegawaiAction} style={{ display: "inline" }}>
-                          <input type="hidden" name="id" value={d.id} />
-                          <button className={styles["ak-button"]} type="submit">
-                            Hapus
-                          </button>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusDokumenPegawaiAction}
+                          id={d.id}
+                          judul={`Hapus dokumen "${d.judul}"?`}
+                          keterangan="Dokumen pegawai beserta berkasnya akan dihapus permanen."
+                          labelAksi="Hapus dokumen"
+                        />
                       ) : null}
                     </li>
                   ))}
@@ -636,7 +575,7 @@ export default async function PegawaiPage({
                         required
                       />
                     </label>
-                    <button className={styles["ak-button"]}>Unggah Dokumen</button>
+                    <Button className={styles["ak-button"]}>Unggah Dokumen</Button>
                   </form>
                 </details>
               ) : null}

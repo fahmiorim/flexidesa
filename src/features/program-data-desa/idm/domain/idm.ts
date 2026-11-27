@@ -17,9 +17,6 @@ export const idmFormSchema = z.object({
   id: z.coerce.number().int().positive().optional(),
 });
 
-export type IdmFormInput = z.input<typeof idmFormSchema>;
-export type IdmFormValues = z.infer<typeof idmFormSchema>;
-
 export interface IdmIndikatorDTO {
   id: number;
   villageId: number;
@@ -239,9 +236,6 @@ export const sdgsFormSchema = z.object({
     .max(100, "Skor maksimal 100."),
   keterangan: z.string().trim().max(2000).nullable().optional(),
 });
-
-export type SdgsFormInput = z.input<typeof sdgsFormSchema>;
-export type SdgsFormValues = z.infer<typeof sdgsFormSchema>;
 
 export interface SdgsDTO {
   id: number;

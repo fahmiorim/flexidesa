@@ -1,3 +1,4 @@
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { BarisLaporanBulanan } from "@/features/kependudukan/laporan-bulanan/domain/laporan-bulanan";
 
 const number = new Intl.NumberFormat("id-ID");
@@ -39,58 +40,58 @@ export function KopLaporanBulanan({
 /** Tabel 12 kolom Lampiran A-9, dipakai halaman laporan maupun cetak. */
 export function TabelLaporanBulanan({ baris }: { baris: readonly BarisLaporanBulanan[] }) {
   return (
-    <div className="table-scroll">
-      <table className="data-table laporan-bulanan-table">
-        <thead>
-          <tr>
-            <th rowSpan={3}>No</th>
-            <th rowSpan={3}>Perincian</th>
-            <th colSpan={7}>Penduduk</th>
-            <th colSpan={3} rowSpan={2}>
+    <TableScroll>
+      <Table className="laporan-bulanan-table">
+        <THead>
+          <Row>
+            <HeaderCell rowSpan={3}>No</HeaderCell>
+            <HeaderCell rowSpan={3}>Perincian</HeaderCell>
+            <HeaderCell colSpan={7}>Penduduk</HeaderCell>
+            <HeaderCell colSpan={3} rowSpan={2}>
               Keluarga (KK)
-            </th>
-          </tr>
-          <tr>
-            <th colSpan={2}>WNI</th>
-            <th colSpan={2}>WNA</th>
-            <th colSpan={3}>Jumlah</th>
-          </tr>
-          <tr>
-            <th>L</th>
-            <th>P</th>
-            <th>L</th>
-            <th>P</th>
-            <th>L</th>
-            <th>P</th>
-            <th>L+P</th>
-            <th>L</th>
-            <th>P</th>
-            <th>L+P</th>
-          </tr>
-        </thead>
-        <tbody>
+            </HeaderCell>
+          </Row>
+          <Row>
+            <HeaderCell colSpan={2}>WNI</HeaderCell>
+            <HeaderCell colSpan={2}>WNA</HeaderCell>
+            <HeaderCell colSpan={3}>Jumlah</HeaderCell>
+          </Row>
+          <Row>
+            <HeaderCell>L</HeaderCell>
+            <HeaderCell>P</HeaderCell>
+            <HeaderCell>L</HeaderCell>
+            <HeaderCell>P</HeaderCell>
+            <HeaderCell>L</HeaderCell>
+            <HeaderCell>P</HeaderCell>
+            <HeaderCell>L+P</HeaderCell>
+            <HeaderCell>L</HeaderCell>
+            <HeaderCell>P</HeaderCell>
+            <HeaderCell>L+P</HeaderCell>
+          </Row>
+        </THead>
+        <TBody>
           {baris.map((item, index) => (
-            <tr key={item.kode}>
-              <td>{index + 1}</td>
-              <td>{item.label}</td>
-              <td>{number.format(item.wniL)}</td>
-              <td>{number.format(item.wniP)}</td>
-              <td>{number.format(item.wnaL)}</td>
-              <td>{number.format(item.wnaP)}</td>
-              <td>{number.format(item.jmlL)}</td>
-              <td>{number.format(item.jmlP)}</td>
-              <td>
+            <Row key={item.kode}>
+              <Cell>{index + 1}</Cell>
+              <Cell>{item.label}</Cell>
+              <Cell>{number.format(item.wniL)}</Cell>
+              <Cell>{number.format(item.wniP)}</Cell>
+              <Cell>{number.format(item.wnaL)}</Cell>
+              <Cell>{number.format(item.wnaP)}</Cell>
+              <Cell>{number.format(item.jmlL)}</Cell>
+              <Cell>{number.format(item.jmlP)}</Cell>
+              <Cell>
                 <strong>{number.format(item.jml)}</strong>
-              </td>
-              <td>{number.format(item.kkL)}</td>
-              <td>{number.format(item.kkP)}</td>
-              <td>
+              </Cell>
+              <Cell>{number.format(item.kkL)}</Cell>
+              <Cell>{number.format(item.kkP)}</Cell>
+              <Cell>
                 <strong>{number.format(item.kk)}</strong>
-              </td>
-            </tr>
+              </Cell>
+            </Row>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TBody>
+      </Table>
+    </TableScroll>
   );
 }

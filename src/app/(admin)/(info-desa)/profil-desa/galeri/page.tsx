@@ -2,7 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   aksesGaleriAdmin,
   listGaleriKelolaAdminData,
@@ -191,43 +195,39 @@ export default async function GaleriAdminPage({
         </section>
       ) : null}
 
-      <section aria-label="Daftar album" className="pd-panel" id="daftar-album">
-        <div className="pd-panel-kepala">
-          <div>
-            <h2>Daftar Album</h2>
-            <p>
-              {angka(tayang)} tayang · {angka(albums.length - tayang)} nonaktif.
-            </p>
-          </div>
-          <div className="wilayah-toolbar">
+      <TableCard
+        actions={
+          <>
             <span className="wilayah-count-pill">{angka(albums.length)} album</span>
             {akses.bolehTambah ? <DialogAlbum /> : null}
-          </div>
-        </div>
-
+          </>
+        }
+        description={`${angka(tayang)} tayang · ${angka(albums.length - tayang)} nonaktif`}
+        title="Daftar Album"
+      >
         {albums.length ? (
-          <div className="modul-table-wrap">
-            <table className="modul-table pemerintah-table berita-tabel">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Album</th>
-                  <th>Kategori</th>
-                  <th>Status</th>
-                  <th>Terbit</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-table-wrap">
+            <Table className="modul-table pemerintah-table berita-tabel">
+              <THead>
+                <Row>
+                  <HeaderCell>No</HeaderCell>
+                  <HeaderCell>Album</HeaderCell>
+                  <HeaderCell>Kategori</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Terbit</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {albums.map((album, index) => {
                   const sampul = urlGambar(album.sampul);
                   return (
-                    <tr
+                    <Row
                       className={album.aktif ? undefined : "pemerintah-row-nonaktif"}
                       key={album.id}
                     >
-                      <td>{index + 1}</td>
-                      <td>
+                      <Cell>{index + 1}</Cell>
+                      <Cell>
                         <div className="berita-sel">
                           <span aria-hidden className="berita-thumb">
                             {sampul ? (
@@ -246,20 +246,20 @@ export default async function GaleriAdminPage({
                             </div>
                           </div>
                         </div>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span className="berita-kategori">{album.kategori ?? "Umum"}</span>
                         <small className="berita-baca">
                           {album.fotos.filter((foto) => foto.slider).length} slider
                         </small>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span className={`berita-status ${album.aktif ? "is-tayang" : "is-draft"}`}>
                           <i aria-hidden="true" />
                           {album.aktif ? "Tayang" : "Nonaktif"}
                         </span>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <span className="berita-tanggal">
                           {album.publishedAt
                             ? FORMAT_TANGGAL.format(album.publishedAt)
@@ -268,21 +268,18 @@ export default async function GaleriAdminPage({
                             {album.publishedAt ? "Diterbitkan" : "Menunggu publikasi"}
                           </small>
                         </span>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <div className="pd-aparat-aksi">
-                          <Link
-                            className="button button-ghost"
-                            href={`/profil-desa/galeri/${album.id}`}
-                          >
+                          <ButtonLink variant="ghost" href={`/profil-desa/galeri/${album.id}`}>
                             Kelola Foto
-                          </Link>
-                          <Link
-                            className="button button-ghost"
+                          </ButtonLink>
+                          <ButtonLink
+                            variant="ghost"
                             href={`/profil-desa/galeri?album=${album.id}#pratinjau-album`}
                           >
                             Pratinjau
-                          </Link>
+                          </ButtonLink>
                           {akses.bolehUbah ? <DialogAlbum item={album} /> : null}
                           {akses.bolehUbah ? (
                             <form action={ubahStatusAlbum}>
@@ -292,30 +289,28 @@ export default async function GaleriAdminPage({
                                 type="hidden"
                                 value={album.aktif ? "false" : "true"}
                               />
-                              <button className="button button-ghost" type="submit">
+                              <Button variant="ghost" type="submit">
                                 {album.aktif ? "Nonaktifkan" : "Tayangkan"}
-                              </button>
+                              </Button>
                             </form>
                           ) : null}
                           {akses.bolehHapus ? (
-                            <form action={hapusAlbum}>
-                              <input name="albumId" type="hidden" value={album.id} />
-                              <ConfirmSubmit
-                                className="button button-danger-ghost"
-                                message={`Hapus album "${album.nama}" beserta fotonya?`}
-                              >
-                                Hapus
-                              </ConfirmSubmit>
-                            </form>
+                            <DialogHapusForm
+                              aksi={hapusAlbum}
+                              hidden={{ albumId: album.id }}
+                              judul={`Hapus album "${album.nama}" beserta fotonya?`}
+                              keterangan="Album dan seluruh foto di dalamnya akan dihapus permanen."
+                              labelAksi="Hapus album"
+                            />
                           ) : null}
                         </div>
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   );
                 })}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <div className="berita-kosong">
             <span aria-hidden="true">▧</span>
@@ -323,73 +318,70 @@ export default async function GaleriAdminPage({
             <p>Klik &ldquo;Tambah Album&rdquo; untuk menambah album pertama.</p>
           </div>
         )}
-      </section>
+      </TableCard>
 
-      <section aria-label="Video galeri" className="pd-panel" id="daftar-video">
-        <div className="pd-panel-kepala">
-          <div>
-            <h2>Video Kegiatan</h2>
-            <p>{angka(videos.length)} video YouTube/Vimeo.</p>
-          </div>
-          <div className="wilayah-toolbar">
+      <TableCard
+        actions={
+          <>
             <span className="wilayah-count-pill">{angka(videos.length)} video</span>
             {akses.bolehUbah ? <DialogVideo /> : null}
-          </div>
-        </div>
+          </>
+        }
+        description={`${angka(videos.length)} video YouTube/Vimeo`}
+        title="Video Kegiatan"
+      >
         {videos.length ? (
-          <div className="modul-table-wrap">
-            <table className="modul-table pemerintah-table berita-tabel">
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Video</th>
-                  <th>Penyedia</th>
-                  <th>Publikasi</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-table-wrap">
+            <Table className="modul-table pemerintah-table berita-tabel">
+              <THead>
+                <Row>
+                  <HeaderCell>No</HeaderCell>
+                  <HeaderCell>Video</HeaderCell>
+                  <HeaderCell>Penyedia</HeaderCell>
+                  <HeaderCell>Publikasi</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {videos.map((video, index) => (
-                  <tr key={video.id}>
-                    <td>{index + 1}</td>
-                    <td>
+                  <Row key={video.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       <div className="berita-sel-isi">
                         <strong className="berita-sel-judul">{video.judul}</strong>
                       </div>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <span className="berita-kategori">{video.provider.toUpperCase()}</span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <span className="berita-tanggal">
                         {video.publishedAt
                           ? FORMAT_TANGGAL.format(video.publishedAt)
                           : "Belum terbit"}
                       </span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <div className="pd-aparat-aksi">
-                        <Link className="button button-ghost" href={video.url} target="_blank">
+                        <ButtonLink variant="ghost" href={video.url} target="_blank">
                           ↗ Buka
-                        </Link>
+                        </ButtonLink>
                         {akses.bolehHapus ? (
-                          <form action={hapusVideoGaleri}>
-                            <input name="videoId" type="hidden" value={video.id} />
-                            <ConfirmSubmit
-                              className="button button-danger-ghost"
-                              message={`Hapus video "${video.judul}"?`}
-                            >
-                              Hapus
-                            </ConfirmSubmit>
-                          </form>
+                          <DialogHapusForm
+                            aksi={hapusVideoGaleri}
+                            hidden={{ videoId: video.id }}
+                            judul={`Hapus video "${video.judul}"?`}
+                            keterangan="Tautan video akan dihapus permanen dari galeri desa."
+                            labelAksi="Hapus video"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <div className="berita-kosong">
             <span aria-hidden="true">▷</span>
@@ -397,7 +389,7 @@ export default async function GaleriAdminPage({
             <p>Klik &ldquo;Tambah Video&rdquo; untuk menambah video pertama.</p>
           </div>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

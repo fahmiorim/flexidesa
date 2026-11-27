@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Cell, HeaderCell, Row, Table, TBody, TFoot, THead } from "@/components/ui/table";
 import {
   DISABILITAS_RENTAN,
   DISABILITAS_RENTAN_LABELS,
@@ -42,9 +43,9 @@ function tautanPenduduk(row: BarisKelompokRentan, filter: FilterTautan): string 
 
 function Nilai({ value, href }: { value: number; href?: string }) {
   return (
-    <td className="kelompok-rentan-angka">
+    <Cell className="kelompok-rentan-angka">
       {href ? <Link href={href}>{angka.format(value)}</Link> : angka.format(value)}
-    </td>
+    </Cell>
   );
 }
 
@@ -66,62 +67,62 @@ export function TabelKelompokRentan({
   tautkan?: boolean;
 }) {
   return (
-    <table className="modul-table kelompok-rentan-table">
-      <thead>
-        <tr>
-          <th rowSpan={2} scope="col">
+    <Table className="kelompok-rentan-table">
+      <THead>
+        <Row>
+          <HeaderCell rowSpan={2} scope="col">
             Dusun
-          </th>
-          <th rowSpan={2} scope="col">
+          </HeaderCell>
+          <HeaderCell rowSpan={2} scope="col">
             RW
-          </th>
-          <th rowSpan={2} scope="col">
+          </HeaderCell>
+          <HeaderCell rowSpan={2} scope="col">
             RT
-          </th>
-          <th colSpan={2} scope="colgroup">
+          </HeaderCell>
+          <HeaderCell colSpan={2} scope="colgroup">
             KK
-          </th>
-          <th colSpan={KELOMPOK_UMUR_RENTAN.length} scope="colgroup">
+          </HeaderCell>
+          <HeaderCell colSpan={KELOMPOK_UMUR_RENTAN.length} scope="colgroup">
             Kondisi dan Kelompok Umur
-          </th>
-          <th colSpan={DISABILITAS_RENTAN.length + 1} scope="colgroup">
+          </HeaderCell>
+          <HeaderCell colSpan={DISABILITAS_RENTAN.length + 1} scope="colgroup">
             Cacat
-          </th>
-          <th colSpan={2} scope="colgroup">
+          </HeaderCell>
+          <HeaderCell colSpan={2} scope="colgroup">
             Sakit Menahun
-          </th>
-          <th rowSpan={2} scope="col">
+          </HeaderCell>
+          <HeaderCell rowSpan={2} scope="col">
             Hamil
-          </th>
-        </tr>
-        <tr>
-          <th scope="col">L</th>
-          <th scope="col">P</th>
+          </HeaderCell>
+        </Row>
+        <Row>
+          <HeaderCell scope="col">L</HeaderCell>
+          <HeaderCell scope="col">P</HeaderCell>
           {KELOMPOK_UMUR_RENTAN.map((umur) => (
-            <th key={umur.key} scope="col">
+            <HeaderCell key={umur.key} scope="col">
               {umur.label}
-            </th>
+            </HeaderCell>
           ))}
           {DISABILITAS_RENTAN.map((value) => (
-            <th key={value} scope="col">
+            <HeaderCell key={value} scope="col">
               {DISABILITAS_RENTAN_LABELS[value]}
-            </th>
+            </HeaderCell>
           ))}
-          <th scope="col">Tidak Cacat</th>
-          <th scope="col">L</th>
-          <th scope="col">P</th>
-        </tr>
-      </thead>
-      <tbody>
+          <HeaderCell scope="col">Tidak Cacat</HeaderCell>
+          <HeaderCell scope="col">L</HeaderCell>
+          <HeaderCell scope="col">P</HeaderCell>
+        </Row>
+      </THead>
+      <TBody>
         {rows.map((row) => {
           const tautan = (filter: FilterTautan) =>
             tautkan ? tautanPenduduk(row, filter) : undefined;
 
           return (
-            <tr key={row.regionId}>
-              <td>{row.dusun}</td>
-              <td>{row.rw}</td>
-              <td>{row.rt}</td>
+            <Row key={row.regionId}>
+              <Cell>{row.dusun}</Cell>
+              <Cell>{row.rw}</Cell>
+              <Cell>{row.rt}</Cell>
               <Nilai href={tautan({ gender: "male" })} value={row.lakiLaki} />
               <Nilai href={tautan({ gender: "female" })} value={row.perempuan} />
               {KELOMPOK_UMUR_RENTAN.map((umur) => (
@@ -144,13 +145,13 @@ export function TabelKelompokRentan({
                 value={row.sakitPerempuan}
               />
               <Nilai href={tautan({ hamil: "pregnant" })} value={row.hamil} />
-            </tr>
+            </Row>
           );
         })}
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colSpan={5}>Total</td>
+      </TBody>
+      <TFoot>
+        <Row>
+          <Cell colSpan={5}>Total</Cell>
           <Nilai value={total.bayi} />
           <Nilai value={total.balita} />
           <Nilai value={total.sd} />
@@ -164,8 +165,8 @@ export function TabelKelompokRentan({
           <Nilai value={total.sakitLakiLaki} />
           <Nilai value={total.sakitPerempuan} />
           <Nilai value={total.hamil} />
-        </tr>
-      </tfoot>
-    </table>
+        </Row>
+      </TFoot>
+    </Table>
   );
 }

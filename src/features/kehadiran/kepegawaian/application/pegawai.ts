@@ -71,7 +71,7 @@ export async function sinkronkanPegawaiPerangkat(villageId: number) {
 }
 
 export async function daftarPegawai() {
-  const { villageId } = await village("kepegawaian");
+  const { villageId } = await village("data-pegawai");
   await sinkronkanPegawaiPerangkat(villageId);
   return listPegawai(villageId);
 }
@@ -95,7 +95,7 @@ export async function simpanPegawai(input: {
   tanggalMasuk?: string | null;
   tanggalKeluar?: string | null;
 }) {
-  const { villageId } = await village("kepegawaian", "update");
+  const { villageId } = await village("data-pegawai", "update");
   if (!input.nama.trim()) throw new Error("Nama pegawai wajib diisi.");
   if (!["tetap", "kontrak", "purna_tugas"].includes(input.statusPegawai))
     throw new Error("Status kepegawaian tidak valid.");
@@ -147,12 +147,12 @@ export async function simpanPegawai(input: {
 }
 
 export async function daftarRiwayatPegawai(pegawaiId: number) {
-  const { villageId } = await village("kepegawaian");
+  const { villageId } = await village("data-pegawai");
   return listRiwayatPegawai(villageId, pegawaiId);
 }
 
 export async function opsiPerangkatBelumTerhubung() {
-  const { villageId } = await village("kepegawaian");
+  const { villageId } = await village("data-pegawai");
   const [officials, linked] = await Promise.all([
     listPerangkatAktifDenganJabatan(villageId),
     listPerangkatTerhubung(villageId),
@@ -172,7 +172,7 @@ export async function tambahRiwayatPegawai(input: {
   selesai?: string | null;
   keterangan?: string | null;
 }) {
-  const { villageId } = await village("kepegawaian", "update");
+  const { villageId } = await village("data-pegawai", "update");
   if (!input.jabatan.trim() || !input.mulai)
     throw new Error("Jabatan dan tanggal mulai wajib diisi.");
   if (input.selesai && input.selesai < input.mulai)
@@ -197,7 +197,7 @@ export async function simpanDokumenPegawai(input: {
   tanggal?: string | null;
   berkas: string;
 }) {
-  const { villageId } = await village("kepegawaian", "update");
+  const { villageId } = await village("data-pegawai", "update");
   if (!input.judul.trim() || !input.berkas)
     throw new Error("Judul dan berkas dokumen wajib diisi.");
   if (!(await getPegawai(villageId, input.pegawaiId))) throw new Error("Pegawai tidak ditemukan.");
@@ -212,17 +212,17 @@ export async function simpanDokumenPegawai(input: {
 }
 
 export async function daftarDokumenPegawai(pegawaiId: number) {
-  const { villageId } = await village("kepegawaian");
+  const { villageId } = await village("data-pegawai");
   return listDokumenPegawai(villageId, pegawaiId);
 }
 
 export async function hapusRiwayatPegawai(id: number) {
-  const { villageId } = await village("kepegawaian", "update");
+  const { villageId } = await village("data-pegawai", "update");
   await deleteRiwayatPegawai(villageId, id);
 }
 
 export async function hapusDokumenPegawai(id: number) {
-  const { villageId } = await village("kepegawaian", "update");
+  const { villageId } = await village("data-pegawai", "update");
   const doc = await getDokumenPegawai(villageId, id);
   if (!doc) throw new Error("Dokumen pegawai tidak ditemukan.");
   await deleteDokumenPegawai(villageId, id);
@@ -239,7 +239,7 @@ export async function ubahRiwayatPegawai(input: {
   selesai?: string | null;
   keterangan?: string | null;
 }) {
-  const { villageId } = await village("kepegawaian", "update");
+  const { villageId } = await village("data-pegawai", "update");
   if (!input.jabatan.trim() || !input.mulai)
     throw new Error("Jabatan dan tanggal mulai wajib diisi.");
   if (input.selesai && input.selesai < input.mulai)
@@ -259,7 +259,7 @@ export async function ubahRiwayatPegawai(input: {
 /** Isi bukti absensi untuk route unduhan; `null` bila tidak ada atau tidak berhak. */
 
 export async function bacaDokumenPegawaiData(id: number) {
-  const { villageId } = await village("kepegawaian");
+  const { villageId } = await village("data-pegawai");
   const document = await getDokumenPegawai(villageId, id);
   if (!document) return null;
   const isi = await bacaMedia(document.berkas);

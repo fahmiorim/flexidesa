@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getMasterReferensiSuratData } from "@/features/pelayanan-persuratan/surat/application/jenis-surat-use-cases";
 import {
   KLASIFIKASI_KODE_MAKS,
@@ -41,80 +45,76 @@ export default async function MasterReferensiSuratPage({
       <PageHeading
         judul={<>Master Referensi Surat</>}
         deskripsi={<>Kelola klasifikasi dan persyaratan surat.</>}
-        aksi={
-          <>
-            <div className="page-heading-actions">
-              <Link
-                href="/layanan-surat/persuratan/jenis-surat"
-                className="button button-secondary"
-              >
-                Kembali ke Jenis Surat
-              </Link>
-            </div>
-          </>
-        }
       />
       {params.berhasil ? (
         <div className="alert alert-info" role="status">
           Perubahan master referensi berhasil diproses.
         </div>
       ) : null}
-      <section className="modul-card">
-        <div className="beranda-card-head">
-          <div>
-            <h2 className="beranda-card-title">Klasifikasi Surat</h2>
-            <p className="modul-muted">{klasifikasi.length} klasifikasi terdaftar.</p>
-          </div>
-        </div>
-        {canCreateKlasifikasi ? (
-          <form
-            action={simpanKlasifikasiSuratAction}
-            className="modul-form-grid"
-            style={{ alignItems: "end", marginBottom: 20 }}
-          >
-            <label>
-              Kode klasifikasi
-              <input name="code" required maxLength={KLASIFIKASI_KODE_MAKS} placeholder="400" />
-            </label>
-            <label>
-              Nama klasifikasi
-              <input name="name" required maxLength={150} placeholder="Pemerintahan" />
-            </label>
-            <label>
-              Keterangan
-              <input
+      <TableCard
+        title="Klasifikasi Surat"
+        description={`${klasifikasi.length} klasifikasi terdaftar.`}
+        filter={
+          canCreateKlasifikasi ? (
+            <form
+              action={simpanKlasifikasiSuratAction}
+              className="modul-form-grid"
+              style={{ alignItems: "end" }}
+            >
+              <FormField
+                label="Kode klasifikasi"
+                name="code"
+                required
+                maxLength={KLASIFIKASI_KODE_MAKS}
+                placeholder="400"
+              />
+              <FormField
+                label="Nama klasifikasi"
+                name="name"
+                required
+                maxLength={150}
+                placeholder="Pemerintahan"
+              />
+              <FormField
+                label="Keterangan"
                 name="description"
                 maxLength={KLASIFIKASI_URAIAN_MAKS}
                 placeholder="Uraian singkat"
               />
-            </label>
-            <label className="modul-inline-check">
-              <input type="checkbox" name="isActive" defaultChecked /> Aktif
-            </label>
-            <button className="button button-primary" type="submit">
-              ＋ Tambah klasifikasi
-            </button>
-          </form>
-        ) : null}
+              <label className="modul-inline-check">
+                <input type="checkbox" name="isActive" defaultChecked /> Aktif
+              </label>
+              <Button variant="primary" type="submit">
+                ＋ Tambah klasifikasi
+              </Button>
+            </form>
+          ) : null
+        }
+        footer={
+          <p className="modul-muted">
+            Klasifikasi yang masih dipakai jenis surat tidak bisa dihapus.
+          </p>
+        }
+      >
         {klasifikasi.length === 0 ? (
           <p className="modul-muted">Belum ada klasifikasi.</p>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>Kode</th>
-                  <th>Nama</th>
-                  <th>Perbarui</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>Kode</HeaderCell>
+                  <HeaderCell>Nama</HeaderCell>
+                  <HeaderCell>Perbarui</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {klasifikasi.map((item) => (
-                  <tr key={item.id}>
-                    <td className="modul-mono">{item.code}</td>
-                    <td>{item.name}</td>
-                    <td>
+                  <Row key={item.id}>
+                    <Cell className="modul-mono">{item.code}</Cell>
+                    <Cell>{item.name}</Cell>
+                    <Cell>
                       {canUpdateKlasifikasi ? (
                         <form
                           action={simpanKlasifikasiSuratAction}
@@ -145,101 +145,103 @@ export default async function MasterReferensiSuratPage({
                             <input type="checkbox" name="isActive" defaultChecked={item.isActive} />{" "}
                             Aktif
                           </label>
-                          <button className="button button-secondary" type="submit">
+                          <Button variant="secondary" type="submit">
                             Simpan
-                          </button>
+                          </Button>
                         </form>
                       ) : (
                         <span className="modul-muted">—</span>
                       )}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {canDeleteKlasifikasi ? (
-                        <form action={hapusKlasifikasiSuratAction}>
-                          <input type="hidden" name="id" value={item.id} />
-                          <button className="button button-danger-ghost" type="submit">
-                            Hapus
-                          </button>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusKlasifikasiSuratAction}
+                          id={item.id}
+                          judul={`Hapus klasifikasi "${item.name}"?`}
+                          keterangan="Klasifikasi hanya dapat dihapus bila tidak dipakai surat lain."
+                          labelAksi="Hapus klasifikasi"
+                        />
                       ) : (
                         <span className="modul-muted">—</span>
                       )}
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
-        <p className="modul-muted">
-          Klasifikasi yang masih dipakai jenis surat tidak bisa dihapus.
-        </p>
-      </section>
-      <section className="modul-card">
-        <div className="beranda-card-head">
-          <div>
-            <h2 className="beranda-card-title">Persyaratan Dokumen</h2>
-            <p className="modul-muted">{syarat.length} persyaratan terdaftar.</p>
-          </div>
-        </div>
-        {canCreateSyarat ? (
-          <form
-            action={simpanSyaratSuratAction}
-            className="modul-form-grid"
-            style={{ alignItems: "end", marginBottom: 20 }}
-          >
-            <label>
-              Nama persyaratan
-              <input name="name" required maxLength={150} placeholder="Fotokopi Kartu Keluarga" />
-            </label>
-            <label>
-              Keterangan
-              <input
+      </TableCard>
+      <TableCard
+        title="Persyaratan Dokumen"
+        description={`${syarat.length} persyaratan terdaftar.`}
+        filter={
+          canCreateSyarat ? (
+            <form
+              action={simpanSyaratSuratAction}
+              className="modul-form-grid"
+              style={{ alignItems: "end" }}
+            >
+              <FormField
+                label="Nama persyaratan"
+                name="name"
+                required
+                maxLength={150}
+                placeholder="Fotokopi Kartu Keluarga"
+              />
+              <FormField
+                label="Keterangan"
                 name="description"
                 maxLength={255}
                 placeholder="Unggah dokumen yang masih berlaku"
               />
-            </label>
-            <label>
-              Urutan
-              <input name="sortOrder" type="number" min="0" max="9999" defaultValue="0" />
-            </label>
-            <label className="modul-inline-check">
-              <input type="checkbox" name="isActive" defaultChecked /> Aktif
-            </label>
-            <button className="button button-primary" type="submit">
-              ＋ Tambah persyaratan
-            </button>
-          </form>
-        ) : null}
+              <FormField
+                label="Urutan"
+                name="sortOrder"
+                type="number"
+                min={0}
+                max={9999}
+                defaultValue={0}
+              />
+              <label className="modul-inline-check">
+                <input type="checkbox" name="isActive" defaultChecked /> Aktif
+              </label>
+              <Button variant="primary" type="submit">
+                ＋ Tambah persyaratan
+              </Button>
+            </form>
+          ) : null
+        }
+      >
         {syarat.length === 0 ? (
           <p className="modul-muted">Belum ada persyaratan dokumen.</p>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>Persyaratan</th>
-                  <th>Keterangan</th>
-                  <th>Urutan</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>Persyaratan</HeaderCell>
+                  <HeaderCell>Keterangan</HeaderCell>
+                  <HeaderCell>Urutan</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {syarat.map((item) => (
-                  <tr key={item.id}>
-                    <td>
+                  <Row key={item.id}>
+                    <Cell>
                       <strong>{item.name}</strong>
-                    </td>
-                    <td>{item.description ?? "—"}</td>
-                    <td>{item.sortOrder}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{item.description ?? "—"}</Cell>
+                    <Cell>{item.sortOrder}</Cell>
+                    <Cell>
                       <span className="beranda-chip" data-tone={item.isActive ? "hijau" : "netral"}>
                         {item.isActive ? "Aktif" : "Nonaktif"}
                       </span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <div style={{ display: "grid", gap: 8, minWidth: 240 }}>
                         {canUpdateSyarat ? (
                           <form
@@ -276,32 +278,33 @@ export default async function MasterReferensiSuratPage({
                               />{" "}
                               Aktif
                             </label>
-                            <button className="button button-secondary" type="submit">
+                            <Button variant="secondary" type="submit">
                               Simpan
-                            </button>
+                            </Button>
                           </form>
                         ) : null}
                         {canDeleteSyarat ? (
-                          <form action={hapusSyaratSuratAction}>
-                            <input type="hidden" name="id" value={item.id} />
-                            <button className="button button-danger-ghost" type="submit">
-                              Hapus
-                            </button>
-                          </form>
+                          <DialogHapusForm
+                            aksi={hapusSyaratSuratAction}
+                            id={item.id}
+                            judul={`Hapus persyaratan "${item.name}"?`}
+                            keterangan="Persyaratan akan dihapus permanen dari daftar syarat surat."
+                            labelAksi="Hapus persyaratan"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
-        <p className="modul-muted">
+        <p className="modul-muted modul-card-note">
           Persyaratan yang sedang dipakai oleh jenis surat tidak dapat dihapus. Nonaktifkan jika
           tidak ingin digunakan lagi.
         </p>
-      </section>
+      </TableCard>
     </div>
   );
 }

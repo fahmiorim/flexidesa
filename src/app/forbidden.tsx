@@ -19,7 +19,10 @@ export default function Forbidden() {
       <section className="dashboard-section" aria-labelledby="forbidden-title">
         <span className="eyebrow">403 — Akses ditolak</span>
         <h1 id="forbidden-title">Anda tidak memiliki akses ke halaman ini</h1>
-        <p>Halaman ini hanya untuk pengelola platform.</p>
+        <p>
+          Akun Anda belum diberi izin untuk membuka halaman ini. Hubungi administrator desa bila
+          akses memang diperlukan.
+        </p>
         <div className="quick-links">
           <Link className="button button-primary" href="/beranda">
             Kembali ke beranda

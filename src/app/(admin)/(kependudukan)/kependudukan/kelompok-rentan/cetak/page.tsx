@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { ButtonLink } from "@/components/ui/button-link";
 import { TombolCetak } from "@/components/ui/tombol-cetak";
 import { getLaporanKelompokRentanData } from "@/features/kependudukan/statistik/application/kelompok-rentan-use-cases";
 
@@ -28,9 +28,9 @@ export default async function CetakLaporanKelompokRentanPage({
   return (
     <div className={styles.page}>
       <div className={styles.actions}>
-        <Link className="button button-secondary" href={kembali}>
+        <ButtonLink variant="secondary" href={kembali}>
           ← Kembali
-        </Link>
+        </ButtonLink>
         <TombolCetak />
       </div>
 

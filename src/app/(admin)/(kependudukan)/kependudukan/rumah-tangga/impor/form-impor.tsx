@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { imporRumahTanggaAction } from "@/features/kependudukan/rumah-tangga/application/rumah-tangga-import-use-cases";
 import { createIdleActionState } from "@/lib/action-state";
 
@@ -22,9 +23,9 @@ export function FormImporRtm() {
         </span>
       </label>
       <div className="penduduk-heading-actions">
-        <button className="button button-primary" disabled={pending} type="submit">
+        <Button variant="primary" disabled={pending} type="submit">
           {pending ? "Mengimpor…" : "Impor Rumah Tangga"}
-        </button>
+        </Button>
       </div>
       {state.status === "idle" ? null : (
         <p

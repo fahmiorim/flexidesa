@@ -31,9 +31,6 @@ export const alasanKeluarFormSchema = z.object({
     .transform((nilai) => (nilai === "" ? null : nilai)),
 });
 
-export type AlasanKeluarFormInput = z.input<typeof alasanKeluarFormSchema>;
-export type AlasanKeluarFormValues = z.infer<typeof alasanKeluarFormSchema>;
-
 export interface AlasanKeluarRow {
   id: number;
   alasan: string;

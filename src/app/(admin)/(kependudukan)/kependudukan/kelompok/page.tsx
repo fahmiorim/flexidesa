@@ -3,7 +3,10 @@ import Link from "next/link";
 
 import { hapusKelompokAction } from "@/app/(admin)/(kependudukan)/kependudukan/kelompok/actions";
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   getReferensiKelompok,
   listKategoriKelompok,
@@ -72,15 +75,9 @@ export default async function KelompokPage({
         </p>
       ) : null}
 
-      <section aria-label="Daftar kelompok" className="pd-panel" id="daftar-kelompok">
-        <div className="pd-panel-kepala">
-          <div>
-            <h2>Daftar Kelompok</h2>
-            <p>
-              {number.format(result.total)} kelompok · halaman {result.page} dari {result.pageCount}
-            </p>
-          </div>
-          <div className="wilayah-toolbar">
+      <TableCard
+        actions={
+          <>
             <div className="wilayah-toolbar-grup">
               {bolehKategori ? (
                 <KelolaKategoriKelompok
@@ -118,32 +115,34 @@ export default async function KelompokPage({
               kategori={referensi.kategori}
               tutupHref={tutupHref}
             />
-          </div>
-        </div>
-
+          </>
+        }
+        description={`${number.format(result.total)} kelompok · halaman ${result.page} dari ${result.pageCount}`}
+        title="Daftar Kelompok"
+      >
         <div>
           {result.rows.length === 0 ? (
             <p className="modul-empty">
               Belum ada kelompok. Tambahkan lewat tombol &ldquo;+ Tambah Kelompok&rdquo; di atas.
             </p>
           ) : (
-            <div className="modul-table-wrap">
-              <table className="modul-table pemerintah-table">
-                <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Kelompok</th>
-                    <th>Kategori</th>
-                    <th>Ketua</th>
-                    <th>Jumlah Anggota</th>
-                    <th>Aksi</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <TableScroll>
+              <Table className="pemerintah-table">
+                <THead>
+                  <Row>
+                    <HeaderCell>No</HeaderCell>
+                    <HeaderCell>Kelompok</HeaderCell>
+                    <HeaderCell>Kategori</HeaderCell>
+                    <HeaderCell>Ketua</HeaderCell>
+                    <HeaderCell>Jumlah Anggota</HeaderCell>
+                    <HeaderCell>Aksi</HeaderCell>
+                  </Row>
+                </THead>
+                <TBody>
                   {result.rows.map((row, index) => (
-                    <tr key={row.id}>
-                      <td>{(result.page - 1) * result.pageSize + index + 1}</td>
-                      <td>
+                    <Row key={row.id}>
+                      <Cell>{(result.page - 1) * result.pageSize + index + 1}</Cell>
+                      <Cell>
                         <div className="pemerintah-nama">
                           <span aria-hidden className="pd-aparat-avatar">
                             {inisial(row.name)}
@@ -154,78 +153,65 @@ export default async function KelompokPage({
                             </Link>
                           </div>
                         </div>
-                      </td>
-                      <td>
+                      </Cell>
+                      <Cell>
                         <strong className="pemerintah-jabatan">{row.categoryName ?? "—"}</strong>
                         {row.code ? (
                           <small className="pemerintah-jenis-jabatan">Kode {row.code}</small>
                         ) : null}
-                      </td>
-                      <td>{row.leaderName ?? "Belum ditetapkan"}</td>
-                      <td>{number.format(row.memberCount)}</td>
-                      <td>
+                      </Cell>
+                      <Cell>{row.leaderName ?? "Belum ditetapkan"}</Cell>
+                      <Cell>{number.format(row.memberCount)}</Cell>
+                      <Cell>
                         <div className="pd-aparat-aksi">
-                          <Link
-                            className="button button-ghost"
-                            href={`/kependudukan/kelompok/${row.id}`}
-                          >
+                          <ButtonLink variant="ghost" href={`/kependudukan/kelompok/${row.id}`}>
                             Rincian
-                          </Link>
+                          </ButtonLink>
                           {bolehUbah ? (
-                            <Link
-                              className="button button-ghost"
+                            <ButtonLink
+                              variant="ghost"
                               href={`/kependudukan/kelompok?edit=${row.id}${result.page > 1 ? `&page=${result.page}` : ""}`}
                             >
                               Ubah
-                            </Link>
+                            </ButtonLink>
                           ) : null}
                           {bolehHapus && row.memberCount === 0 ? (
-                            <ConfirmSubmit
-                              className="button button-danger-ghost"
-                              form={`hapus-kelompok-${row.id}`}
-                              message={`Hapus kelompok ${row.name}?`}
-                            >
-                              Hapus
-                            </ConfirmSubmit>
+                            <DialogHapusForm
+                              aksi={hapusKelompokAction}
+                              id={row.id}
+                              judul={`Hapus kelompok "${row.name}"?`}
+                              keterangan="Kelompok akan dihapus permanen. Kelompok yang masih memiliki anggota tidak dapat dihapus."
+                              labelAksi="Hapus kelompok"
+                            />
                           ) : null}
                         </div>
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </TBody>
+              </Table>
+            </TableScroll>
           )}
         </div>
-
-        {bolehHapus
-          ? result.rows
-              .filter((row) => row.memberCount === 0)
-              .map((row) => (
-                <form action={hapusKelompokAction} id={`hapus-kelompok-${row.id}`} key={row.id}>
-                  <input name="id" type="hidden" value={row.id} />
-                </form>
-              ))
-          : null}
 
         {result.pageCount > 1 ? (
           <nav aria-label="Navigasi halaman kelompok" className="pagination">
             {result.page > 1 ? (
-              <Link className="button button-secondary" href={halamanHref(result.page - 1)}>
+              <ButtonLink variant="secondary" href={halamanHref(result.page - 1)}>
                 ← Sebelumnya
-              </Link>
+              </ButtonLink>
             ) : null}
             <span>
               Halaman {result.page} dari {result.pageCount}
             </span>
             {result.page < result.pageCount ? (
-              <Link className="button button-secondary" href={halamanHref(result.page + 1)}>
+              <ButtonLink variant="secondary" href={halamanHref(result.page + 1)}>
                 Berikutnya →
-              </Link>
+              </ButtonLink>
             ) : null}
           </nav>
         ) : null}
-      </section>
+      </TableCard>
     </div>
   );
 }

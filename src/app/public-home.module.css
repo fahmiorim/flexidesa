@@ -49,6 +49,58 @@
   gap: 36px;
   padding: 14px 0 28px;
 }
+
+/*
+ * Varian hero per template. `data-varian` berasal dari token `layout` tema
+ * tenant; varian hanya mengubah komposisi, bukan data yang ditampilkan.
+ */
+.heroInner[data-varian="modern"] {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+  gap: 14px;
+  padding: 26px 0 34px;
+}
+.heroInner[data-varian="modern"] .leaderVisual {
+  order: -1;
+  width: 150px;
+  height: 168px;
+  align-self: center;
+}
+.heroInner[data-varian="modern"] .leaderCaption {
+  display: none;
+}
+.heroInner[data-varian="modern"] .heroContent {
+  max-width: 720px;
+  padding-bottom: 0;
+}
+.heroInner[data-varian="modern"] .heroActions {
+  justify-content: center;
+}
+
+.heroInner[data-varian="ringkas"] {
+  grid-template-columns: 1fr;
+  min-height: 240px;
+  padding: 24px 0 30px;
+}
+.heroInner[data-varian="ringkas"] .leaderVisual {
+  display: none;
+}
+.heroInner[data-varian="ringkas"] .heroContent {
+  max-width: 760px;
+  padding-bottom: 0;
+}
+
+.heroLeader {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 10px 0 0;
+  color: #dce9ff;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
 .leaderVisual {
   position: relative;
   align-self: end;
@@ -667,8 +719,23 @@
   color: #26365a;
   font-size: 18px;
 }
-.serviceBanner > a {
-  display: none;
+.bannerSkor {
+  color: #1a2b56;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+}
+.bannerLink {
+  width: fit-content;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #ffffffcc;
+  color: #5b2ad4;
+  font-size: 9px;
+  font-weight: 900;
+}
+.bannerLink:hover {
+  background: #fff;
 }
 .relatedLinks {
   margin: 4px 0 16px;

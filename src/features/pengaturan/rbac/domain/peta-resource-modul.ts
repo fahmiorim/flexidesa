@@ -161,6 +161,14 @@ export const PETA_RESOURCE_MODUL = {
   "permohonan-surat": {
     resource: RESOURCES.permohonanSurat,
   },
+  "verifikasi-surat": {
+    resource: RESOURCES.surat,
+    catatan: "Verifikasi memakai izin perubahan surat.",
+  },
+  "master-surat": {
+    resource: RESOURCES.klasifikasiSurat,
+    catatan: "Master referensi menggabungkan klasifikasi dan syarat surat.",
+  },
   "syarat-surat": {
     resource: RESOURCES.syaratSurat,
   },
@@ -179,7 +187,7 @@ export const PETA_RESOURCE_MODUL = {
   },
   arsip: {
     resource: RESOURCES.arsip,
-    catatan: "Menu masih placeholder `/segera/arsip`; resource disiapkan untuk fitur arsip.",
+    catatan: "Arsip surat desa; halaman tersedia di /layanan-surat/persuratan/arsip.",
   },
   bumindes: {
     resource: RESOURCES.bumindes,
@@ -199,6 +207,32 @@ export const PETA_RESOURCE_MODUL = {
   "website-pengaturan": {
     resource: RESOURCES.websitePengaturan,
   },
+  "website-konten": {
+    resource: RESOURCES.websiteKonten,
+    catatan: "Halaman konten memeriksa izin berita, agenda, galeri, dan slider masing-masing.",
+  },
+  "website-halaman": {
+    resource: RESOURCES.websiteHalaman,
+    catatan: "Halaman website memeriksa izin halaman, menu publik, dan widget.",
+  },
+  "mutasi-penduduk": {
+    resource: RESOURCES.mutasiPenduduk,
+    catatan: "Halaman mutasi memakai izin penduduk untuk baca dan ubah.",
+  },
+  "dokumen-keuangan": {
+    resource: RESOURCES.dokumenKeuangan,
+    catatan: "Dokumen laporan keuangan memakai izin laporan-keuangan.",
+  },
+  "pengajuan-layanan": {
+    resource: RESOURCES.pengajuanLayanan,
+  },
+  "analisis-survei": {
+    resource: RESOURCES.analisisSurvei,
+  },
+  "cuti-izin": {
+    resource: RESOURCES.cutiIzin,
+    catatan: "Pengajuan cuti memakai izin persetujuan-izin untuk keputusan.",
+  },
   berita: {
     resource: RESOURCES.berita,
   },
@@ -207,7 +241,7 @@ export const PETA_RESOURCE_MODUL = {
   },
   bantuan: {
     resource: RESOURCES.bantuan,
-    catatan: "Pengelolaan masih placeholder; data penerima memakai domain bantuan.",
+    catatan: "Halaman /satu-data/bantuan mengelola program dan peserta bantuan.",
   },
   "idm-sdgs": {
     resource: RESOURCES.idmSdgs,
@@ -232,7 +266,7 @@ export const PETA_RESOURCE_MODUL = {
   },
   lapak: {
     resource: RESOURCES.lapak,
-    catatan: "Menu masih placeholder `/segera/lapak`; model/repository sudah ada.",
+    catatan: "Halaman /pelayanan-publik/lapak mengelola lapak dan produknya.",
   },
   "pembangunan-aset": {
     resource: null,
@@ -240,7 +274,7 @@ export const PETA_RESOURCE_MODUL = {
       "Grup Pembangunan & Aset; proyek memakai resource pembangunan, aset memakai inventaris.",
   },
   "data-pegawai": {
-    resource: RESOURCES.kepegawaian,
+    resource: RESOURCES.dataPegawai,
   },
   absensi: {
     resource: RESOURCES.kehadiran,
@@ -249,53 +283,53 @@ export const PETA_RESOURCE_MODUL = {
     resource: RESOURCES.bumindes,
   },
   "buku-administrasi-pembangunan": {
-    resource: RESOURCES.bumindes,
-    catatan: "Menu masih placeholder `/segera/buku-administrasi-pembangunan`.",
+    resource: RESOURCES.pembangunan,
+    catatan: "Halaman /pembangunan/buku memakai use case pembangunan untuk merekap proyek.",
   },
   "buku-administrasi-lainnya": {
     resource: RESOURCES.bumindes,
   },
   "agenda-kegiatan": {
     resource: RESOURCES.agendaKegiatan,
-    catatan: "Menu masih placeholder; agenda desa dikelola lewat Website → Konten.",
+    catatan: "Agenda desa punya halaman sendiri di /profil-desa/website/agenda.",
   },
   apbdes: {
     resource: RESOURCES.apbdes,
   },
   pendapatan: {
     resource: RESOURCES.keuangan,
-    catatan: "Rincian pendapatan bagian dari APBDes; menu masih placeholder.",
+    catatan: "Halaman /keuangan/pendapatan menampilkan rincian akun 4 dari data APBDes.",
   },
   belanja: {
     resource: RESOURCES.keuangan,
-    catatan: "Rincian belanja bagian dari APBDes; menu masih placeholder.",
+    catatan: "Halaman /keuangan/belanja menampilkan rincian akun 5 dari data APBDes.",
   },
   pembiayaan: {
     resource: RESOURCES.keuangan,
-    catatan: "Rincian pembiayaan bagian dari APBDes; menu masih placeholder.",
+    catatan: "Halaman /keuangan/pembiayaan menampilkan rincian akun 6 dari data APBDes.",
   },
   penatausahaan: {
     resource: RESOURCES.keuangan,
-    catatan: "Menu penatausahaan masih placeholder.",
+    catatan: "Halaman /keuangan/penatausahaan mengelola jurnal kas dan saldo awal bank.",
   },
   "buku-kas-umum": {
     resource: RESOURCES.keuangan,
-    catatan: "Menu BKU masih placeholder.",
+    catatan: "Halaman /keuangan/buku-kas-umum menurunkan saldo berjalan dari jurnal.",
   },
   realisasi: {
     resource: RESOURCES.keuangan,
   },
   "perencanaan-pembangunan": {
     resource: RESOURCES.pembangunan,
-    catatan: "Menu perencanaan masih placeholder.",
+    catatan: "Menu izin saja: perencanaan & anggaran dikelola lewat /keuangan/kegiatan.",
   },
   "proyek-desa": {
     resource: RESOURCES.pembangunan,
-    catatan: "Menu proyek masih placeholder; kegiatan dikelola lewat /keuangan/kegiatan.",
+    catatan: "Menu izin saja: proyek dikelola lewat /keuangan/kegiatan.",
   },
   "aset-desa": {
     resource: RESOURCES.inventaris,
-    catatan: "Menu aset desa masih placeholder; data aset dikelola lewat inventaris.",
+    catatan: "Menu izin saja: aset desa dikelola lewat /inventaris.",
   },
   "mutasi-aset": {
     resource: RESOURCES.mutasiInventaris,
@@ -305,23 +339,23 @@ export const PETA_RESOURCE_MODUL = {
   },
   "peta-wilayah": {
     resource: RESOURCES.peta,
-    catatan: "Menu masih placeholder; peta dikelola lewat /pemetaan/peta.",
+    catatan: "Menu izin saja: peta dikelola lewat /pemetaan/peta.",
   },
   "data-pertanahan": {
     resource: RESOURCES.pertanahan,
-    catatan: "Menu masih placeholder.",
+    catatan: "Halaman /pemetaan/data-pertanahan mengelola persil desa.",
   },
   "batas-wilayah": {
     resource: RESOURCES.peta,
-    catatan: "Menu masih placeholder; batas desa diisi dari Identitas Desa.",
+    catatan: "Menu izin saja: batas desa diisi dari Identitas Desa dan area peta.",
   },
   "peta-penduduk": {
     resource: RESOURCES.peta,
-    catatan: "Menu masih placeholder.",
+    catatan: "Halaman /pemetaan/peta-penduduk menampilkan sebaran penduduk per dusun.",
   },
   "data-penerima-bantuan": {
     resource: RESOURCES.bantuan,
-    catatan: "Menu masih placeholder; data penerima ada di domain bantuan.",
+    catatan: "Menu izin saja: data penerima ada di halaman /satu-data/bantuan.",
   },
   potensi: {
     resource: RESOURCES.potensi,
@@ -331,11 +365,11 @@ export const PETA_RESOURCE_MODUL = {
   },
   "statistik-program-desa": {
     resource: null,
-    catatan: "Menu masih placeholder; belum ada operasi/resource khusus.",
+    catatan: "Halaman statistik program membaca statistik bantuan memakai resource bantuan.",
   },
   "aspirasi-warga": {
     resource: RESOURCES.pengaduan,
-    catatan: "Menu masih placeholder; aspirasi memakai domain pengaduan.",
+    catatan: "Menu izin saja: aspirasi diterima lewat alur pengaduan (/pengaduan-admin).",
   },
   "informasi-pelayanan": {
     resource: RESOURCES.layananPublik,
@@ -348,11 +382,11 @@ export const PETA_RESOURCE_MODUL = {
   },
   integrasi: {
     resource: RESOURCES.pengaturan,
-    catatan: "Menu masih placeholder; integrasi dikelola sebagai bagian Pengaturan Desa.",
+    catatan: "Menu membuka tab Integrasi di /pengaturan/desa?bagian=integrasi.",
   },
   "template-website": {
     resource: RESOURCES.websitePengaturan,
-    catatan: "Menu masih placeholder; template situs dikelola lewat Website → Pengaturan.",
+    catatan: "Menu membuka tab Tampilan (template situs) di /pengaturan/desa?bagian=tampilan.",
   },
   "log-aktivitas": {
     resource: RESOURCES.auditLog,

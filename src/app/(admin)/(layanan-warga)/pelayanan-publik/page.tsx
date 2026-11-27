@@ -1,6 +1,8 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { getLayananPageData } from "@/features/layanan-warga/pelayanan/application/layanan-use-cases";
 import { getPengajuanPageData } from "@/features/layanan-warga/pelayanan/application/pengajuan-use-cases";
 import { getSurveiPageData } from "@/features/layanan-warga/pelayanan/application/survei-use-cases";
@@ -34,9 +36,9 @@ export default async function Page() {
         deskripsi={<>Pantau layanan dan kepuasan warga.</>}
         aksi={
           <>
-            <Link className="button button-secondary" href="/pelayanan-publik/pengajuan">
+            <ButtonLink variant="secondary" href="/pelayanan-publik/pengajuan">
               Lihat Pengajuan →
-            </Link>
+            </ButtonLink>
           </>
         }
       />
@@ -96,30 +98,30 @@ export default async function Page() {
             </div>
             <Link href="/pelayanan-publik/pengajuan">Lihat semua →</Link>
           </div>
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>No. Tiket</th>
-                  <th>Pemohon</th>
-                  <th>Layanan</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>No. Tiket</HeaderCell>
+                  <HeaderCell>Pemohon</HeaderCell>
+                  <HeaderCell>Layanan</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {terbaru.map((row) => (
-                  <tr key={row.id}>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>
                       <strong>{row.nomorTiket}</strong>
-                    </td>
-                    <td>{row.namaPemohon}</td>
-                    <td>{row.namaLayanan ?? "Layanan tidak tersedia"}</td>
-                    <td>{statusLabel[row.status] ?? row.status}</td>
-                  </tr>
+                    </Cell>
+                    <Cell>{row.namaPemohon}</Cell>
+                    <Cell>{row.namaLayanan ?? "Layanan tidak tersedia"}</Cell>
+                    <Cell>{statusLabel[row.status] ?? row.status}</Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
           {terbaru.length === 0 ? <p className="modul-empty">Belum ada pengajuan.</p> : null}
         </section>
         <section className="modul-card">
@@ -163,26 +165,26 @@ export default async function Page() {
               <strong>{number(totalResponden)}</strong>
             </div>
           </div>
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>Survei</th>
-                  <th>Responden</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>Survei</HeaderCell>
+                  <HeaderCell>Responden</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {survei.rows.slice(0, 5).map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.judul}</td>
-                    <td>{number(row.totalResponden)}</td>
-                    <td>{row.aktif === 1 ? "Aktif" : "Nonaktif"}</td>
-                  </tr>
+                  <Row key={row.id}>
+                    <Cell>{row.judul}</Cell>
+                    <Cell>{number(row.totalResponden)}</Cell>
+                    <Cell>{row.aktif === 1 ? "Aktif" : "Nonaktif"}</Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
           {survei.rows.length === 0 ? (
             <p className="modul-empty">Belum ada survei yang dibuat.</p>
           ) : null}
@@ -190,15 +192,15 @@ export default async function Page() {
         <section className="modul-card">
           <h2>Akses Cepat</h2>
           <div className="quick-actions">
-            <Link className="button button-primary" href="/pelayanan-publik/layanan/baru">
+            <ButtonLink variant="primary" href="/pelayanan-publik/layanan/baru">
               ＋ Tambah Layanan
-            </Link>
-            <Link className="button button-secondary" href="/pelayanan-publik/pengajuan">
+            </ButtonLink>
+            <ButtonLink variant="secondary" href="/pelayanan-publik/pengajuan">
               Kelola Pengajuan
-            </Link>
-            <Link className="button button-secondary" href="/pelayanan-publik/survei/baru">
+            </ButtonLink>
+            <ButtonLink variant="secondary" href="/pelayanan-publik/survei/baru">
               ＋ Buat Survei
-            </Link>
+            </ButtonLink>
           </div>
         </section>
       </div>

@@ -12,7 +12,7 @@
 
 import sharp from "sharp";
 
-import { validasiUkuranLogo } from "@/features/pengaturan/pengaturan/domain/identitas-form";
+import { validasiUkuranLogo } from "@/features/info-desa/identitas-desa/domain/identitas-form";
 import { validationError } from "@/lib/errors";
 
 /** Format keluaran yang didukung transformasi; SVG/GIF dibiarkan apa adanya. */

@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 
 import { tambahTerdataAction } from "@/app/(admin)/(kependudukan)/kependudukan/penduduk/suplemen/actions";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   cariSasaranSuplemenData,
   getFormTerdataData,
@@ -91,9 +94,9 @@ export default async function TambahTerdataPage({
               />
             </label>
             <div className="penduduk-filter-aksi">
-              <button className="button button-primary" type="submit">
+              <Button variant="primary" type="submit">
                 Cari
-              </button>
+              </Button>
             </div>
           </form>
 
@@ -106,18 +109,18 @@ export default async function TambahTerdataPage({
           ) : (
             <form method="get">
               <input name="aksi" type="hidden" value={aksi} />
-              <div className="modul-scroll">
-                <table className="modul-table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Pilih</th>
-                      <th scope="col">{sasaranPenduduk ? "Warga" : "Keluarga"}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              <TableScroll>
+                <Table>
+                  <THead>
+                    <Row>
+                      <HeaderCell scope="col">Pilih</HeaderCell>
+                      <HeaderCell scope="col">{sasaranPenduduk ? "Warga" : "Keluarga"}</HeaderCell>
+                    </Row>
+                  </THead>
+                  <TBody>
                     {kandidat.map((opsi) => (
-                      <tr key={opsi.id}>
-                        <td>
+                      <Row key={opsi.id}>
+                        <Cell>
                           <input
                             aria-label={`Pilih ${opsi.text}`}
                             name="sasaranId"
@@ -125,20 +128,20 @@ export default async function TambahTerdataPage({
                             type="radio"
                             value={opsi.id}
                           />
-                        </td>
-                        <td>{opsi.text}</td>
-                      </tr>
+                        </Cell>
+                        <Cell>{opsi.text}</Cell>
+                      </Row>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </TBody>
+                </Table>
+              </TableScroll>
               <div className="suplemen-form-actions">
-                <Link className="button button-secondary" href={rincianHref}>
+                <ButtonLink variant="secondary" href={rincianHref}>
                   Batal
-                </Link>
-                <button className="button button-primary" type="submit">
+                </ButtonLink>
+                <Button variant="primary" type="submit">
                   Lanjut
-                </button>
+                </Button>
               </div>
             </form>
           )}

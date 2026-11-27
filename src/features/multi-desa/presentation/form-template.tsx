@@ -6,6 +6,8 @@ import { useActionState, useEffect, useState } from "react";
 import {
   KATEGORI_TEMPLATE,
   LABEL_KATEGORI_TEMPLATE,
+  LABEL_VARIAN_LAYOUT,
+  VARIAN_LAYOUT,
   type KategoriTemplate,
   type TokenTemplate,
 } from "@/features/multi-desa/domain/template-website";
@@ -52,6 +54,10 @@ const AWAL: IsianTemplate = {
     fontHeading: "sans",
     radius: "sedang",
     style: "terang",
+    layout: "klasik",
+    judulHero: "Sistem Informasi Desa",
+    subHero: "",
+    taglineFooter: "",
   },
 };
 
@@ -302,7 +308,66 @@ export function FormTemplate({
                   <option value="gelap">Gelap</option>
                 </select>
               </label>
+              <label className="form-field">
+                <span className="form-label">Susunan halaman</span>
+                <select
+                  className="form-input"
+                  name="layout"
+                  onChange={(event) =>
+                    ubahToken("layout", event.target.value as TokenTemplate["layout"])
+                  }
+                  value={tokens.layout}
+                >
+                  {VARIAN_LAYOUT.map((varian) => (
+                    <option key={varian} value={varian}>
+                      {LABEL_VARIAN_LAYOUT[varian]}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
+
+            <label className="form-field">
+              <span className="form-label">Judul hero</span>
+              <input
+                className="form-input"
+                maxLength={120}
+                name="judulHero"
+                onChange={(event) => ubahToken("judulHero", event.target.value)}
+                placeholder="Sistem Informasi Desa"
+                value={tokens.judulHero}
+              />
+              <span className="form-help">Kosongkan untuk memakai judul bawaan komponen.</span>
+              <GalatField pesan={fieldErrors["tokens.judulHero"]?.[0]} />
+            </label>
+
+            <label className="form-field">
+              <span className="form-label">Subjudul hero</span>
+              <textarea
+                className="form-input"
+                maxLength={400}
+                name="subHero"
+                onChange={(event) => ubahToken("subHero", event.target.value)}
+                placeholder="Kosong = teks berbasis nama desa"
+                rows={2}
+                value={tokens.subHero}
+              />
+              <GalatField pesan={fieldErrors["tokens.subHero"]?.[0]} />
+            </label>
+
+            <label className="form-field">
+              <span className="form-label">Tagline footer</span>
+              <textarea
+                className="form-input"
+                maxLength={400}
+                name="taglineFooter"
+                onChange={(event) => ubahToken("taglineFooter", event.target.value)}
+                placeholder="Kosong = tagline bawaan komponen"
+                rows={2}
+                value={tokens.taglineFooter}
+              />
+              <GalatField pesan={fieldErrors["tokens.taglineFooter"]?.[0]} />
+            </label>
           </div>
         </section>
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { DataDns } from "@/features/multi-desa/domain/status-dns";
 import { AUDIT_EVENT_LABELS, type AuditEvent } from "@/features/pengaturan/audit/domain/audit";
 
@@ -155,30 +156,30 @@ export function DnsRecords({ dns, ringkas = false }: { dns: DataDns; ringkas?: b
   }
 
   return (
-    <div className="domain-detail-table-wrap">
-      <table className="tenant-table domain-record-table">
-        <thead>
-          <tr>
-            <th>Tipe</th>
-            <th>Nama Host</th>
-            <th>Nilai / Tujuan</th>
-            {ringkas ? null : <th>TTL</th>}
-          </tr>
-        </thead>
-        <tbody>
+    <TableScroll className="domain-detail-table-wrap">
+      <Table className="tenant-table domain-record-table">
+        <THead>
+          <Row>
+            <HeaderCell>Tipe</HeaderCell>
+            <HeaderCell>Nama Host</HeaderCell>
+            <HeaderCell>Nilai / Tujuan</HeaderCell>
+            {ringkas ? null : <HeaderCell>TTL</HeaderCell>}
+          </Row>
+        </THead>
+        <TBody>
           {records.map((record) => (
-            <tr key={record.key}>
-              <td>
+            <Row key={record.key}>
+              <Cell>
                 <Badge tone="info">{record.tipe}</Badge>
-              </td>
-              <td>{record.host}</td>
-              <td className="domain-record-value">{record.nilai}</td>
-              {ringkas ? null : <td className="domain-detail-muted">Tidak disimpan</td>}
-            </tr>
+              </Cell>
+              <Cell>{record.host}</Cell>
+              <Cell className="domain-record-value">{record.nilai}</Cell>
+              {ringkas ? null : <Cell className="domain-detail-muted">Tidak disimpan</Cell>}
+            </Row>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TBody>
+      </Table>
+    </TableScroll>
   );
 }
 
@@ -193,29 +194,29 @@ export function RiwayatTable({ rows }: { rows: readonly RiwayatDomainRow[] }) {
   }
 
   return (
-    <div className="domain-detail-table-wrap">
-      <table className="tenant-table domain-history-table">
-        <thead>
-          <tr>
-            <th>Tanggal &amp; Waktu</th>
-            <th>Aktivitas</th>
-            <th>Detail</th>
-            <th>Oleh</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableScroll className="domain-detail-table-wrap">
+      <Table className="tenant-table domain-history-table">
+        <THead>
+          <Row>
+            <HeaderCell>Tanggal &amp; Waktu</HeaderCell>
+            <HeaderCell>Aktivitas</HeaderCell>
+            <HeaderCell>Detail</HeaderCell>
+            <HeaderCell>Oleh</HeaderCell>
+          </Row>
+        </THead>
+        <TBody>
           {rows.map((row) => (
-            <tr key={row.id}>
-              <td>{tanggalWaktu.format(row.createdAt)}</td>
-              <td>
+            <Row key={row.id}>
+              <Cell>{tanggalWaktu.format(row.createdAt)}</Cell>
+              <Cell>
                 <Badge tone="info">{labelPeristiwa(row.event)}</Badge>
-              </td>
-              <td>{detailPeristiwa(row)}</td>
-              <td>{row.actorName ?? "Sistem"}</td>
-            </tr>
+              </Cell>
+              <Cell>{detailPeristiwa(row)}</Cell>
+              <Cell>{row.actorName ?? "Sistem"}</Cell>
+            </Row>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TBody>
+      </Table>
+    </TableScroll>
   );
 }

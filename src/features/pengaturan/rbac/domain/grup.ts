@@ -31,8 +31,3 @@ export interface ModulePermissionRow {
   update: boolean;
   delete: boolean;
 }
-
-export interface RoleDetail {
-  role: RoleDTO;
-  permissions: ModulePermissionRow[];
-}

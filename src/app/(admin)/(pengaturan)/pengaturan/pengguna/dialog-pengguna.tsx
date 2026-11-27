@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useId, useRef } from "react";
 
+import { Button } from "@/components/ui/button";
 import { GalatField, PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import type { PenggunaDTO, RoleOption } from "@/features/pengaturan/pengguna/domain/pengguna";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
@@ -186,16 +187,12 @@ export function DialogPengguna<T>({
           <PesanDialog state={state} />
 
           <div className="platform-dialog-actions">
-            <button
-              className="button button-secondary"
-              onClick={() => dialogRef.current?.close()}
-              type="button"
-            >
+            <Button variant="secondary" onClick={() => dialogRef.current?.close()} type="button">
               Batal
-            </button>
-            <button className="button button-primary" disabled={pending} type="submit">
-              {pending ? "Menyimpan..." : ubah ? "Simpan perubahan" : "Tambah pengguna"}
-            </button>
+            </Button>
+            <Button loading={pending} type="submit" variant="primary">
+              {ubah ? "Simpan perubahan" : "Tambah pengguna"}
+            </Button>
           </div>
         </form>
       </dialog>

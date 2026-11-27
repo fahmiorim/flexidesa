@@ -34,11 +34,6 @@ export async function getJamKerjaData(): Promise<JamKerjaRow[]> {
 }
 
 /** Baris yang sedang disunting; `null` bila tidak ada atau milik desa lain. */
-export async function getJamKerjaUntukUbah(id: number): Promise<JamKerjaRow | null> {
-  const user = await requirePermission(JAM_KERJA_RESOURCE, "update");
-  const villageId = await resolveVillageId(user);
-  return findJamKerja(villageId, id);
-}
 
 /**
  * Ubah jam kerja satu hari.

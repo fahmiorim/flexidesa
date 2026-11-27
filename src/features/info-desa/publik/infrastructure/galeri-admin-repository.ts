@@ -141,15 +141,6 @@ export async function cariAlbumBySlug(villageId: number, slug: string) {
   return row;
 }
 
-export async function cariAlbumById(villageId: number, id: number) {
-  const [row] = await db
-    .select({ id: galeriAlbum.id, sampul: galeriAlbum.sampul })
-    .from(galeriAlbum)
-    .where(and(eq(galeriAlbum.villageId, villageId), eq(galeriAlbum.id, id)))
-    .limit(1);
-  return row;
-}
-
 export async function buatAlbum(
   villageId: number,
   data: {
@@ -202,15 +193,6 @@ export async function listGambarFotoByAlbum(villageId: number, albumId: number) 
     .select({ gambar: galeriFoto.gambar })
     .from(galeriFoto)
     .where(and(eq(galeriFoto.villageId, villageId), eq(galeriFoto.albumId, albumId)));
-}
-
-export async function ambilGambarFoto(villageId: number, id: number) {
-  const [row] = await db
-    .select({ gambar: galeriFoto.gambar })
-    .from(galeriFoto)
-    .where(and(eq(galeriFoto.villageId, villageId), eq(galeriFoto.id, id)))
-    .limit(1);
-  return row;
 }
 
 export async function buatFoto(

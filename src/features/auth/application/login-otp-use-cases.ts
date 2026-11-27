@@ -11,11 +11,7 @@ import {
   PANJANG_OTP,
   POLA_KODE_OTP,
 } from "../domain/login-otp";
-import {
-  getLoginOtpContext,
-  getOtpLoginAktif,
-  getOtpLoginTarget,
-} from "../infrastructure/auth-repository";
+import { getLoginOtpContext } from "../infrastructure/auth-repository";
 import {
   catatPercobaanLogin,
   findKodeLoginAktif,
@@ -24,9 +20,6 @@ import {
 } from "../infrastructure/login-otp-repository";
 
 /** Status OTP login akun sesi; `userId` harus berasal dari sesi, bukan input klien. */
-export async function getStatusOtpLoginAktif(userId: string): Promise<boolean> {
-  return getOtpLoginAktif(userId);
-}
 
 const PESAN_GENERIK =
   "Jika akun ini memerlukan kode OTP, kode telah dikirim ke nomor WhatsApp atau email terdaftar.";
@@ -123,12 +116,3 @@ export async function verifikasiKodeLogin(userId: string, kode: string): Promise
 }
 
 /** Apakah akun ini bisa memakai OTP (punya nomor HP atau email). */
-export async function siapkanOtpLogin(
-  userId: string,
-): Promise<{ bisa: boolean; target: string | null }> {
-  const row = await getOtpLoginTarget(userId);
-  if (!row) return { bisa: false, target: null };
-
-  const target = row.phone ?? row.email;
-  return { bisa: Boolean(target), target };
-}

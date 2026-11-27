@@ -83,8 +83,6 @@ export const KOLOM_EKSPOR_PENDUDUK = [
   "ket",
 ] as const;
 
-export type KolomEksporPenduduk = (typeof KOLOM_EKSPOR_PENDUDUK)[number];
-
 function teks(nilai: string | null | undefined): string {
   return nilai ?? "";
 }

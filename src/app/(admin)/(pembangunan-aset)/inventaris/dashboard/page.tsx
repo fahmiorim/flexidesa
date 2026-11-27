@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { formatRupiah } from "@/features/keuangan-desa/keuangan/domain/keuangan";
 import {
   getInventarisPageData,
@@ -90,15 +91,6 @@ export default async function InventarisDashboardPage() {
           <small>Rusak atau sedang diperbaiki</small>
         </article>
       </section>
-      <nav className={styles.tabs}>
-        <Link className={styles.active} href="/inventaris/dashboard">
-          Dashboard
-        </Link>
-        <Link href="/inventaris">Daftar Inventaris</Link>
-        <Link href="/inventaris/pengelolaan">Pengelolaan Aset</Link>
-        <Link href="/inventaris/laporan">Laporan &amp; Statistik</Link>
-        <Link href="/inventaris/mutasi">Mutasi &amp; Pemeliharaan</Link>
-      </nav>
       <div className={styles.grid}>
         <section className={styles.panel}>
           <div className={styles.panelHead}>
@@ -221,40 +213,40 @@ export default async function InventarisDashboardPage() {
             Lihat Semua →
           </Link>
         </div>
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Kode Inventaris</th>
-                <th>Nama Barang</th>
-                <th>Kategori</th>
-                <th>Lokasi</th>
-                <th>Kondisi</th>
-                <th>Nilai</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll className={styles.tableWrap}>
+          <Table className={styles.table}>
+            <THead>
+              <Row>
+                <HeaderCell>Kode Inventaris</HeaderCell>
+                <HeaderCell>Nama Barang</HeaderCell>
+                <HeaderCell>Kategori</HeaderCell>
+                <HeaderCell>Lokasi</HeaderCell>
+                <HeaderCell>Kondisi</HeaderCell>
+                <HeaderCell>Nilai</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {rows.slice(0, 5).map((x) => (
-                <tr key={x.id}>
-                  <td>{x.nomorInventaris ?? "—"}</td>
-                  <td>
+                <Row key={x.id}>
+                  <Cell>{x.nomorInventaris ?? "—"}</Cell>
+                  <Cell>
                     <Link href={"/inventaris/" + x.id}>{x.namaBarang}</Link>
-                  </td>
-                  <td>{x.kategoriNama ?? "—"}</td>
-                  <td>{x.lokasi ?? "—"}</td>
-                  <td>
+                  </Cell>
+                  <Cell>{x.kategoriNama ?? "—"}</Cell>
+                  <Cell>{x.lokasi ?? "—"}</Cell>
+                  <Cell>
                     <span
                       className={`${styles.tag} ${x.kondisi === "baik" ? styles.good : styles.warn}`}
                     >
                       {INVENTARIS_KONDISI_LABELS[x.kondisi]}
                     </span>
-                  </td>
-                  <td>{formatRupiah(x.nilaiAkhir ?? "0")}</td>
-                </tr>
+                  </Cell>
+                  <Cell>{formatRupiah(x.nilaiAkhir ?? "0")}</Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       </section>
       <section className={styles.panel}>
         <div className={styles.panelHead}>

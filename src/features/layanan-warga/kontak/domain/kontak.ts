@@ -35,16 +35,4 @@ export const catatAnggotaGrupSchema = z.object({
   keterangan: z.string().optional().or(z.literal("")),
 });
 
-export type CatatAnggotaGrupInput = z.infer<typeof catatAnggotaGrupSchema>;
-
 /** Baris anggota grup untuk UI. */
-export interface AnggotaGrupRow {
-  id: number;
-  kontakId: number;
-  nama: string;
-  telepon: string | null;
-  email: string | null;
-  telegram: string | null;
-  peran: string | null;
-  keterangan: string | null;
-}

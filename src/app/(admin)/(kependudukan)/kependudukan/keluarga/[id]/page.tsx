@@ -7,7 +7,10 @@ import {
   lepasAnggotaKeluargaAction,
 } from "@/app/(admin)/(kependudukan)/kependudukan/keluarga/actions";
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { getKeluargaDetail } from "@/features/kependudukan/keluarga/application/use-cases";
 import {
   AKSI_LOG_LABELS,
@@ -160,34 +163,31 @@ export default async function DetailKeluargaPage({
                 </p>
               </div>
               {bolehTambahPenduduk ? (
-                <Link
-                  className="button button-primary"
-                  href={`/kependudukan/penduduk/baru?familyId=${id}`}
-                >
+                <ButtonLink variant="primary" href={`/kependudukan/penduduk/baru?familyId=${id}`}>
                   + Tambah Anggota
-                </Link>
+                </ButtonLink>
               ) : null}
             </div>
             {detail.members.length ? (
-              <div className="modul-scroll">
-                <table className="modul-table penduduk-table keluarga-member-table">
-                  <thead>
-                    <tr>
-                      <th scope="col">No</th>
-                      <th scope="col">Anggota</th>
-                      <th scope="col">NIK</th>
-                      <th scope="col">JK</th>
-                      <th scope="col">Hubungan</th>
-                      <th scope="col">Status</th>
-                      <th scope="col">RTM</th>
-                      <th scope="col">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              <TableScroll>
+                <Table className="penduduk-table keluarga-member-table">
+                  <THead>
+                    <Row>
+                      <HeaderCell scope="col">No</HeaderCell>
+                      <HeaderCell scope="col">Anggota</HeaderCell>
+                      <HeaderCell scope="col">NIK</HeaderCell>
+                      <HeaderCell scope="col">JK</HeaderCell>
+                      <HeaderCell scope="col">Hubungan</HeaderCell>
+                      <HeaderCell scope="col">Status</HeaderCell>
+                      <HeaderCell scope="col">RTM</HeaderCell>
+                      <HeaderCell scope="col">Aksi</HeaderCell>
+                    </Row>
+                  </THead>
+                  <TBody>
                     {detail.members.map((member, index) => (
-                      <tr key={member.id}>
-                        <td className="penduduk-nomor">{index + 1}</td>
-                        <td>
+                      <Row key={member.id}>
+                        <Cell className="penduduk-nomor">{index + 1}</Cell>
+                        <Cell>
                           <div className="penduduk-identitas">
                             <span
                               aria-hidden="true"
@@ -206,28 +206,28 @@ export default async function DetailKeluargaPage({
                               {member.name}
                             </Link>
                           </div>
-                        </td>
-                        <td>
+                        </Cell>
+                        <Cell>
                           <span className="penduduk-nik">{member.nationalId ?? "—"}</span>
-                        </td>
-                        <td>{member.gender === "male" ? "L" : "P"}</td>
-                        <td>{member.relationName ?? "Belum ditentukan"}</td>
-                        <td>
+                        </Cell>
+                        <Cell>{member.gender === "male" ? "L" : "P"}</Cell>
+                        <Cell>{member.relationName ?? "Belum ditentukan"}</Cell>
+                        <Cell>
                           <span
                             className="beranda-chip"
                             data-tone={member.lifeStatus === "alive" ? "hijau" : "oranye"}
                           >
                             {LIFE_STATUS_LABELS[member.lifeStatus]}
                           </span>
-                        </td>
-                        <td>
+                        </Cell>
+                        <Cell>
                           {member.rtmNumber ? (
                             <span className="modul-mono">{member.rtmNumber}</span>
                           ) : (
                             <span className="modul-muted">Belum ada</span>
                           )}
-                        </td>
-                        <td>
+                        </Cell>
+                        <Cell>
                           <div className="keluarga-row-actions">
                             <Link
                               className="penduduk-aksi"
@@ -252,17 +252,17 @@ export default async function DetailKeluargaPage({
                             <form action={lepasAnggotaKeluargaAction} className="inline-form">
                               <input name="id" type="hidden" value={member.id} />
                               <input name="familyId" type="hidden" value={id} />
-                              <button className="button button-danger" type="submit">
+                              <Button variant="danger" type="submit">
                                 Lepas
-                              </button>
+                              </Button>
                             </form>
                           ) : null}
-                        </td>
-                      </tr>
+                        </Cell>
+                      </Row>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </TBody>
+                </Table>
+              </TableScroll>
             ) : (
               <p className="modul-empty">
                 Belum ada anggota pada KK ini. Tambahkan anggota atau lengkapi data keluarga.
@@ -304,44 +304,35 @@ export default async function DetailKeluargaPage({
             <p>Cetak, ubah, atau proses keluarga ini.</p>
             <div className="keluarga-action-list">
               {bolehUbahKk ? (
-                <Link
-                  className="button button-secondary"
-                  href={`/kependudukan/keluarga/${id}/ubah`}
-                >
+                <ButtonLink variant="secondary" href={`/kependudukan/keluarga/${id}/ubah`}>
                   Ubah Data KK
-                </Link>
+                </ButtonLink>
               ) : null}
-              <Link
-                className="button button-primary"
+              <ButtonLink
+                variant="primary"
                 href={`/kependudukan/keluarga/${id}/pdf`}
                 target="_blank"
               >
                 Cetak KK
-              </Link>
-              <Link
-                className="button button-secondary"
-                href={`/kependudukan/keluarga/${id}/pdf?unduh=1`}
-              >
+              </ButtonLink>
+              <ButtonLink variant="secondary" href={`/kependudukan/keluarga/${id}/pdf?unduh=1`}>
                 Unduh KK
-              </Link>
+              </ButtonLink>
               {bolehPecah ? (
-                <Link
-                  className="button button-secondary"
-                  href={`/kependudukan/keluarga/${id}/pecah`}
-                >
+                <ButtonLink variant="secondary" href={`/kependudukan/keluarga/${id}/pecah`}>
                   Pecah KK
-                </Link>
+                </ButtonLink>
               ) : null}
               {bolehHapusKk && detail.members.length === 0 ? (
-                <form action={hapusKeluargaAction}>
-                  <input name="id" type="hidden" value={id} />
-                  <ConfirmSubmit
-                    className="button button-danger button-block"
-                    message="Hapus Kartu Keluarga kosong ini?"
-                  >
-                    Hapus KK Kosong
-                  </ConfirmSubmit>
-                </form>
+                <DialogHapusForm
+                  aksi={hapusKeluargaAction}
+                  id={id}
+                  judul={`Hapus Kartu Keluarga ${detail.keluarga?.number ?? ""}?`}
+                  keterangan="Kartu Keluarga kosong ini akan dihapus permanen. Pastikan tidak ada anggota yang masih tercatat."
+                  label="Hapus KK Kosong"
+                  labelAksi="Hapus KK"
+                  varian="danger"
+                />
               ) : null}
             </div>
           </section>

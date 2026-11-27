@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ubahRiwayatAction } from "@/app/(admin)/(kependudukan)/kependudukan/mutasi-penduduk/actions";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getRiwayatPendudukById } from "@/features/kependudukan/penduduk/application/riwayat-penduduk-use-cases";
 import { PENDUDUK_RESOURCE } from "@/features/kependudukan/penduduk/domain/penduduk";
 import {
@@ -36,9 +37,9 @@ export default async function UbahRiwayatPage({ params }: { params: Promise<{ id
 
   return (
     <div className="modul-page data-kependudukan-page">
-      <Link className="button button-secondary" href="/kependudukan/mutasi-penduduk">
+      <ButtonLink variant="secondary" href="/kependudukan/mutasi-penduduk">
         ← Kembali
-      </Link>
+      </ButtonLink>
       <PageHeading
         judul={<>Ubah Catatan Mutasi</>}
         deskripsi={<>{row.residentName ?? "Data penduduk tidak tersedia"}</>}
@@ -173,12 +174,12 @@ export default async function UbahRiwayatPage({ params }: { params: Promise<{ id
             </label>
           </div>
           <div className="penduduk-heading-actions">
-            <Link className="button button-secondary" href="/kependudukan/mutasi-penduduk">
+            <ButtonLink variant="secondary" href="/kependudukan/mutasi-penduduk">
               Batal
-            </Link>
-            <button className="button button-primary" type="submit">
+            </ButtonLink>
+            <Button variant="primary" type="submit">
               Simpan Perubahan
-            </button>
+            </Button>
           </div>
         </form>
       </section>

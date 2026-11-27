@@ -5,17 +5,9 @@
  * dilaporkan agar operator dapat memperbaiki sumbernya sebelum mengimpor.
  */
 
-import type { KolomImpor } from "@/lib/spreadsheet";
-
 import { KLASIFIKASI_KODE_MAKS } from "./surat";
 
 export type KunciImporKlasifikasi = "kode" | "nama" | "keterangan";
-
-export const KOLOM_IMPOR_KLASIFIKASI: readonly KolomImpor<KunciImporKlasifikasi>[] = [
-  { kunci: "kode", label: "Kode", alias: ["code", "kode klasifikasi"], wajib: true },
-  { kunci: "nama", label: "Nama", alias: ["name", "uraian", "nama klasifikasi"], wajib: true },
-  { kunci: "keterangan", label: "Keterangan", alias: ["description", "catatan"] },
-];
 
 export interface BarisKlasifikasiImpor {
   kode: string;

@@ -2,6 +2,8 @@
 
 import { useId, useRef, type ReactNode } from "react";
 
+import { Button } from "@/components/ui/button";
+
 import styles from "./stunting.module.css";
 
 /**
@@ -27,13 +29,9 @@ export function DialogPanduan({
 
   return (
     <>
-      <button
-        className="button button-secondary"
-        onClick={() => ref.current?.showModal()}
-        type="button"
-      >
+      <Button variant="secondary" onClick={() => ref.current?.showModal()} type="button">
         {label}
-      </button>
+      </Button>
 
       <dialog
         aria-labelledby={judulId}
@@ -61,13 +59,9 @@ export function DialogPanduan({
         <div className={styles.panduanBody}>{children}</div>
 
         <div className="platform-dialog-actions">
-          <button
-            className="button button-secondary"
-            onClick={() => ref.current?.close()}
-            type="button"
-          >
+          <Button variant="secondary" onClick={() => ref.current?.close()} type="button">
             Tutup
-          </button>
+          </Button>
         </div>
       </dialog>
     </>

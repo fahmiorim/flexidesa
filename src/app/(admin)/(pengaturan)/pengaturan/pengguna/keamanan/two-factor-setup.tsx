@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 
 import styles from "./keamanan.module.css";
@@ -139,13 +140,19 @@ export function TwoFactorSetup({
               onChange={(e) => setPassword(e.target.value)}
             />
           </label>
-          <button type="button" disabled={busy || !password} onClick={generateBackup}>
+          <Button
+            disabled={busy || !password}
+            loading={busy}
+            onClick={generateBackup}
+            type="button"
+            variant="secondary"
+          >
             Buat kode cadangan baru
-          </button>
+          </Button>
           {!required ? (
-            <button type="button" disabled={busy || !password} onClick={disable}>
+            <Button disabled={busy || !password} onClick={disable} type="button" variant="danger">
               Nonaktifkan 2FA
-            </button>
+            </Button>
           ) : null}
         </div>
         {backup.length ? (
@@ -156,13 +163,14 @@ export function TwoFactorSetup({
                 <code key={v}>{v}</code>
               ))}
             </div>
-            <button
-              type="button"
+            <Button
               className={styles.copyCodes}
               onClick={() => navigator.clipboard.writeText(backup.join("\n"))}
+              type="button"
+              variant="secondary"
             >
               Salin kode cadangan
-            </button>
+            </Button>
           </>
         ) : null}
         {error ? (
@@ -204,9 +212,9 @@ export function TwoFactorSetup({
               onChange={(e) => setPassword(e.target.value)}
             />
           </label>
-          <button type="button" disabled={busy || !password} onClick={start}>
-            {busy ? "Memproses..." : "Aktifkan 2FA"}
-          </button>
+          <Button disabled={busy || !password} loading={busy} onClick={start} type="button">
+            Aktifkan 2FA
+          </Button>
         </div>
       ) : (
         <>
@@ -232,16 +240,22 @@ export function TwoFactorSetup({
               <code key={v}>{v}</code>
             ))}
           </div>
-          <button
-            type="button"
+          <Button
             className={styles.copyCodes}
             onClick={() => navigator.clipboard.writeText(backup.join("\n"))}
+            type="button"
+            variant="secondary"
           >
             Salin kode cadangan
-          </button>
-          <button type="button" disabled={busy || code.length !== 6} onClick={verify}>
-            {busy ? "Memverifikasi..." : "Verifikasi & Aktifkan"}
-          </button>
+          </Button>
+          <Button
+            disabled={busy || code.length !== 6}
+            loading={busy}
+            onClick={verify}
+            type="button"
+          >
+            Verifikasi &amp; Aktifkan
+          </Button>
         </>
       )}
       {error ? (

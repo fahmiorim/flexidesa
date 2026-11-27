@@ -6,9 +6,6 @@ import { db } from "@/db";
 import { residents, users } from "@/db/schema";
 
 /** Catat waktu login terakhir pengguna. */
-export async function touchLastLogin(userId: string): Promise<void> {
-  await db.update(users).set({ lastLoginAt: new Date() }).where(eq(users.id, userId));
-}
 
 /**
  * Status akun yang menentukan tujuan setelah login.
@@ -16,25 +13,6 @@ export async function touchLastLogin(userId: string): Promise<void> {
  * Dibaca langsung dari DB (bukan dari cookie) agar `residentId`/`mustChangePin`
  * selalu mutakhir, termasuk setelah operator mereset PIN.
  */
-export async function getAccountLoginContext(userId: string): Promise<{
-  active: boolean;
-  residentId: number | null;
-  mustChangePin: boolean;
-  villageId: number | null;
-} | null> {
-  const [row] = await db
-    .select({
-      active: users.active,
-      residentId: users.residentId,
-      mustChangePin: users.mustChangePin,
-      villageId: users.villageId,
-    })
-    .from(users)
-    .where(eq(users.id, userId))
-    .limit(1);
-
-  return row ?? null;
-}
 
 /** Konteks minimum untuk menentukan apakah login memerlukan OTP. */
 export interface LoginOtpContext {
@@ -88,8 +66,4 @@ export async function getOtpLoginAktif(userId: string): Promise<boolean> {
     .limit(1);
 
   return row?.otpLoginAktif ?? false;
-}
-
-export async function setOtpLoginAktif(userId: string, aktif: boolean): Promise<void> {
-  await db.update(users).set({ otpLoginAktif: aktif }).where(eq(users.id, userId));
 }

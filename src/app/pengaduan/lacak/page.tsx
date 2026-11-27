@@ -16,6 +16,7 @@ export default async function LacakPengaduanPage() {
   return (
     <PublicShell
       villageName={desa.namaDesa ?? "Pemerintah Desa"}
+      villageId={desa.id}
       brandLabel="Pengaduan Masyarakat"
       navigation={await getNavPublik(desa.id)}
     >

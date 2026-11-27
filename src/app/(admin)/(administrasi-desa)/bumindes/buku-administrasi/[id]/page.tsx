@@ -2,6 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getBukuDetailData } from "@/features/administrasi-desa/bumindes/application/buku-umum";
 import { formatTanggalIndonesia } from "@/features/administrasi-desa/bumindes/domain/buku-resmi";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
@@ -9,17 +14,65 @@ import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { requirePermission } from "@/lib/dal";
 import { todayIsoDate } from "@/lib/forms";
 
-import { hapusItemBukuAction, simpanItemBukuAction } from "../actions";
+import { hapusItemBukuAction } from "../actions";
 import styles from "../bumindes.module.css";
+import { simpanItemBukuFormAction } from "./form-actions";
 
 export const metadata = { title: "Lembar Buku Administrasi" };
 
 type Props = {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ edit?: string; saved?: string; deleted?: string }>;
+  searchParams: Promise<{ saved?: string; deleted?: string }>;
 };
 
 const tanggal = (value: string | null) => (value ? formatTanggalIndonesia(value) || value : "—");
+
+type ItemRow =
+  Awaited<ReturnType<typeof getBukuDetailData>> extends { items: (infer T)[] } | null ? T : never;
+
+function formItem(bukuId: number, nomorDefault: number, item: ItemRow | null) {
+  return (
+    <div className="modul-form-grid">
+      <input name="bukuId" type="hidden" value={bukuId} />
+      {item ? <input name="id" type="hidden" value={item.id} /> : null}
+      <FormField
+        defaultValue={item?.nomorUrut ?? nomorDefault}
+        label="Nomor urut"
+        min={1}
+        name="nomorUrut"
+        required
+        type="number"
+      />
+      <FormField
+        defaultValue={item ? (item.tanggal ?? "") : todayIsoDate()}
+        label="Tanggal"
+        name="tanggal"
+        type="date"
+      />
+      <FormField
+        containerClassName="form-field-full"
+        defaultValue={item?.uraian ?? ""}
+        kind="textarea"
+        label="Uraian"
+        maxLength={500}
+        name="uraian"
+        placeholder="Tuliskan isi catatan buku..."
+        required
+        rows={3}
+      />
+      <FormField
+        containerClassName="form-field-full"
+        defaultValue={item?.keterangan ?? ""}
+        kind="textarea"
+        label="Keterangan"
+        maxLength={2000}
+        name="keterangan"
+        placeholder="Keterangan tambahan (opsional)"
+        rows={2}
+      />
+    </div>
+  );
+}
 
 export default async function DetailBukuAdministrasiPage({ params, searchParams }: Props) {
   const [{ id: idParam }, query] = await Promise.all([params, searchParams]);
@@ -34,14 +87,6 @@ export default async function DetailBukuAdministrasiPage({ params, searchParams 
   const bisaTambah = hasPermission(user.permissions, RESOURCES.bumindes, "create");
   const bisaUbah = hasPermission(user.permissions, RESOURCES.bumindes, "update");
   const bisaHapus = hasPermission(user.permissions, RESOURCES.bumindes, "delete");
-
-  const editId = query.edit ? Number(query.edit) : null;
-  const editItem =
-    editId !== null && Number.isSafeInteger(editId)
-      ? (items.find((item) => item.id === editId) ?? null)
-      : null;
-  const bisaIsi = editItem ? bisaUbah : bisaTambah;
-  const nomorForm = editItem?.nomorUrut ?? nomorUrutBerikutnya;
 
   return (
     <main className={styles.page}>
@@ -91,141 +136,83 @@ export default async function DetailBukuAdministrasiPage({ params, searchParams 
         </span>
       </div>
 
-      <section className={styles.panel} aria-labelledby="daftar-catatan">
-        <div className={styles.panelHead}>
-          <div>
-            <h2 id="daftar-catatan">Daftar catatan</h2>
-            <p>
-              Catatan disusun menurut nomor urut. Gunakan tombol ubah atau hapus pada setiap baris.
-            </p>
-          </div>
-          {bisaTambah && !editItem ? (
-            <a className={styles.secondary} href="#form-buku">
-              ＋ Tambah catatan
-            </a>
-          ) : null}
-        </div>
-
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>Tanggal</th>
-                <th>Uraian</th>
-                <th>Keterangan</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
+      <TableCard
+        actions={
+          bisaTambah ? (
+            <FormDialog
+              aksi={simpanItemBukuFormAction}
+              deskripsi="Nomor urut harus unik di dalam buku ini."
+              judul="Tambah catatan"
+              label="＋ Tambah catatan"
+              labelSimpan="Tambah catatan"
+            >
+              {formItem(buku.id, nomorUrutBerikutnya, null)}
+            </FormDialog>
+          ) : null
+        }
+        description="Catatan disusun menurut nomor urut."
+        title="Daftar catatan"
+      >
+        <TableScroll className={styles.tableWrap}>
+          <Table className={styles.table}>
+            <THead>
+              <Row>
+                <HeaderCell>No.</HeaderCell>
+                <HeaderCell>Tanggal</HeaderCell>
+                <HeaderCell>Uraian</HeaderCell>
+                <HeaderCell>Keterangan</HeaderCell>
+                <HeaderCell>Aksi</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {items.length === 0 ? (
-                <tr>
-                  <td className={styles.empty} colSpan={5}>
+                <Row>
+                  <Cell className={styles.empty} colSpan={5}>
                     Belum ada catatan pada buku ini.
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ) : (
                 items.map((item) => (
-                  <tr key={item.id}>
-                    <td className={styles.number}>{item.nomorUrut}</td>
-                    <td>{tanggal(item.tanggal)}</td>
-                    <td className={styles.uraian}>{item.uraian}</td>
-                    <td className={styles.keterangan}>{item.keterangan ?? "—"}</td>
-                    <td>
+                  <Row key={item.id}>
+                    <Cell className={styles.number}>{item.nomorUrut}</Cell>
+                    <Cell>{tanggal(item.tanggal)}</Cell>
+                    <Cell className={styles.uraian}>{item.uraian}</Cell>
+                    <Cell className={styles.keterangan}>{item.keterangan ?? "—"}</Cell>
+                    <Cell>
                       <div className={styles.rowActions}>
-                        {bisaUbah ? <Link href={`?edit=${item.id}#form-buku`}>Ubah</Link> : null}
+                        {bisaUbah ? (
+                          <FormDialog
+                            aksi={simpanItemBukuFormAction}
+                            deskripsi={`Ubah catatan nomor ${item.nomorUrut}.`}
+                            judul="Ubah catatan"
+                            label="Ubah"
+                            labelSimpan="Simpan perubahan"
+                            varian="secondary"
+                          >
+                            {formItem(buku.id, nomorUrutBerikutnya, item)}
+                          </FormDialog>
+                        ) : null}
                         {bisaHapus ? (
-                          <details>
-                            <summary className={styles.summaryDanger}>Hapus</summary>
-                            <div className={styles.confirmBox}>
-                              <form action={hapusItemBukuAction}>
-                                <input name="id" type="hidden" value={item.id} />
-                                <button className={styles.danger} type="submit">
-                                  Ya, hapus
-                                </button>
-                              </form>
-                              <small>Catatan yang dihapus tidak dapat dikembalikan.</small>
-                            </div>
-                          </details>
+                          <DialogHapusForm
+                            aksi={hapusItemBukuAction}
+                            id={item.id}
+                            judul={`Hapus catatan nomor ${item.nomorUrut}?`}
+                            keterangan="Catatan yang dihapus tidak dapat dikembalikan."
+                            labelAksi="Hapus catatan"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))
               )}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section className={styles.panel} id="form-buku" aria-labelledby="judul-form">
-        <div className={styles.panelHead}>
-          <div>
-            <h2 id="judul-form">
-              {editItem ? `Ubah catatan nomor ${editItem.nomorUrut}` : "Tambah catatan"}
-            </h2>
-            <p>
-              {editItem
-                ? "Perubahan disimpan langsung ke buku desa."
-                : "Nomor urut harus unik di dalam buku ini."}
-            </p>
-          </div>
-        </div>
-
-        {bisaIsi ? (
-          <form action={simpanItemBukuAction} className={styles.form}>
-            <input name="bukuId" type="hidden" value={buku.id} />
-            {editItem ? <input name="id" type="hidden" value={editItem.id} /> : null}
-            <div className={styles.formRow}>
-              <label>
-                Nomor urut
-                <input defaultValue={nomorForm} min={1} name="nomorUrut" required type="number" />
-              </label>
-              <label>
-                Tanggal
-                <input
-                  defaultValue={editItem ? (editItem.tanggal ?? "") : todayIsoDate()}
-                  name="tanggal"
-                  type="date"
-                />
-              </label>
-            </div>
-            <label>
-              Uraian
-              <textarea
-                defaultValue={editItem?.uraian ?? ""}
-                maxLength={500}
-                name="uraian"
-                placeholder="Tuliskan isi catatan buku..."
-                required
-                rows={3}
-              />
-            </label>
-            <label>
-              Keterangan
-              <textarea
-                defaultValue={editItem?.keterangan ?? ""}
-                maxLength={2000}
-                name="keterangan"
-                placeholder="Keterangan tambahan (opsional)"
-                rows={2}
-              />
-            </label>
-            <div className={styles.formActions}>
-              <button className={styles.primary} type="submit">
-                {editItem ? "Simpan perubahan" : "Tambah catatan"}
-              </button>
-              {editItem ? (
-                <Link className={styles.ghost} href={`/bumindes/buku-administrasi/${buku.id}`}>
-                  Batal
-                </Link>
-              ) : null}
-            </div>
-          </form>
-        ) : (
+            </TBody>
+          </Table>
+        </TableScroll>
+        {!bisaUbah && !bisaHapus && !bisaTambah ? (
           <p className={styles.muted}>Anda hanya memiliki akses baca untuk buku ini.</p>
-        )}
-      </section>
+        ) : null}
+      </TableCard>
     </main>
   );
 }

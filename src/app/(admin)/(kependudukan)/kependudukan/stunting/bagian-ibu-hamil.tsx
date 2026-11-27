@@ -1,4 +1,7 @@
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   STATUS_KEHAMILAN,
   type IbuHamilRow,
@@ -113,9 +116,9 @@ export function BagianIbuHamil({
             ))}
           </select>
         </label>
-        <button className="button button-secondary" type="submit">
+        <Button variant="secondary" type="submit">
           Terapkan
-        </button>
+        </Button>
       </form>
 
       {bolehUbah ? (
@@ -232,9 +235,9 @@ export function BagianIbuHamil({
             </fieldset>
 
             <div className="penduduk-heading-actions">
-              <button className="button button-primary" type="submit">
+              <Button variant="primary" type="submit">
                 {diubah ? "Simpan Perubahan" : "Simpan Pemantauan"}
-              </button>
+              </Button>
             </div>
           </form>
         </details>
@@ -246,75 +249,73 @@ export function BagianIbuHamil({
           <p>Pastikan posyandu dan KIA sudah diisi sebelum menambah pemantauan.</p>
         </div>
       ) : (
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th rowSpan={2}>No.</th>
-                <th rowSpan={2}>Aksi</th>
-                <th rowSpan={2}>No KIA</th>
-                <th rowSpan={2}>Nama Ibu</th>
-                <th rowSpan={2}>Posyandu</th>
-                <th rowSpan={2}>Tanggal Periksa</th>
-                <th rowSpan={2}>Status Kehamilan</th>
-                <th colSpan={2}>Usia Kehamilan dan Persalinan</th>
-                <th colSpan={8}>Status Penerimaan Indikator</th>
-              </tr>
-              <tr>
-                <th>Usia (Bulan)</th>
-                <th>Tanggal Melahirkan</th>
+        <TableScroll>
+          <Table>
+            <THead>
+              <Row>
+                <HeaderCell rowSpan={2}>No.</HeaderCell>
+                <HeaderCell rowSpan={2}>Aksi</HeaderCell>
+                <HeaderCell rowSpan={2}>No KIA</HeaderCell>
+                <HeaderCell rowSpan={2}>Nama Ibu</HeaderCell>
+                <HeaderCell rowSpan={2}>Posyandu</HeaderCell>
+                <HeaderCell rowSpan={2}>Tanggal Periksa</HeaderCell>
+                <HeaderCell rowSpan={2}>Status Kehamilan</HeaderCell>
+                <HeaderCell colSpan={2}>Usia Kehamilan dan Persalinan</HeaderCell>
+                <HeaderCell colSpan={8}>Status Penerimaan Indikator</HeaderCell>
+              </Row>
+              <Row>
+                <HeaderCell>Usia (Bulan)</HeaderCell>
+                <HeaderCell>Tanggal Melahirkan</HeaderCell>
                 {INDIKATOR.map((item) => (
-                  <th key={item.key}>{item.label}</th>
+                  <HeaderCell key={item.key}>{item.label}</HeaderCell>
                 ))}
-              </tr>
-            </thead>
-            <tbody>
+              </Row>
+            </THead>
+            <TBody>
               {baris.map((row, index) => {
                 const kia = kiaNama.get(row.kiaId);
                 return (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       <div className={styles.rowActions}>
                         {bolehUbah ? (
-                          <a
-                            className="button button-ghost"
+                          <ButtonLink
+                            variant="ghost"
                             href={`/kependudukan/stunting?tab=ibu-hamil&ubah=${row.id}`}
                           >
                             Ubah
-                          </a>
+                          </ButtonLink>
                         ) : null}
                         {bolehHapus ? (
-                          <form action={hapusIbuHamilAction}>
-                            <input name="id" type="hidden" value={row.id} />
-                            <ConfirmSubmit
-                              className="button button-danger"
-                              message="Hapus data pemantauan ibu hamil ini?"
-                            >
-                              Hapus
-                            </ConfirmSubmit>
-                          </form>
+                          <DialogHapusForm
+                            aksi={hapusIbuHamilAction}
+                            id={row.id}
+                            judul="Hapus data pemantauan ibu hamil ini?"
+                            keterangan="Data pemantauan ibu hamil akan dihapus permanen."
+                            labelAksi="Hapus data"
+                          />
                         ) : null}
                       </div>
-                    </td>
-                    <td>{kia?.noKia ?? "—"}</td>
-                    <td>{kia?.ibuName ?? "—"}</td>
-                    <td>{posyanduNama.get(row.posyanduId) ?? "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{kia?.noKia ?? "—"}</Cell>
+                    <Cell>{kia?.ibuName ?? "—"}</Cell>
+                    <Cell>{posyanduNama.get(row.posyanduId) ?? "—"}</Cell>
+                    <Cell>
                       {formatTanggal(tanggalPeriksaEfektif(row.tanggalPeriksa, row.createdAt))}
-                    </td>
-                    <td>{labelKehamilan(row.statusKehamilan)}</td>
-                    <td>{row.usiaKehamilan ?? "—"}</td>
-                    <td>{row.tanggalMelahirkan ?? "—"}</td>
+                    </Cell>
+                    <Cell>{labelKehamilan(row.statusKehamilan)}</Cell>
+                    <Cell>{row.usiaKehamilan ?? "—"}</Cell>
+                    <Cell>{row.tanggalMelahirkan ?? "—"}</Cell>
                     {INDIKATOR.map((item) => (
-                      <td key={item.key}>{row[item.key] ? "Ya" : "Tidak"}</td>
+                      <Cell key={item.key}>{row[item.key] ? "Ya" : "Tidak"}</Cell>
                     ))}
-                  </tr>
+                  </Row>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       )}
     </section>
   );

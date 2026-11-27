@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 
 import { ubahKeluargaAction } from "@/app/(admin)/(kependudukan)/kependudukan/keluarga/actions";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
 import {
   getKeluargaDetail,
   getKeluargaFormReference,
@@ -114,12 +116,12 @@ export default async function UbahKeluargaPage({ params }: { params: Promise<{ i
             </select>
           </label>
           <div className="penduduk-heading-actions">
-            <Link className="button button-secondary" href={`/kependudukan/keluarga/${id}`}>
+            <ButtonLink variant="secondary" href={`/kependudukan/keluarga/${id}`}>
               Batal
-            </Link>
-            <button className="button button-primary" type="submit">
+            </ButtonLink>
+            <Button variant="primary" type="submit">
               Simpan Perubahan
-            </button>
+            </Button>
           </div>
         </form>
       </section>

@@ -12,7 +12,6 @@ import {
   bukuResmiCsv,
   namaBerkasBuku,
   tabelItemBuku,
-  tabelMutasiPenduduk,
 } from "@/features/administrasi-desa/bumindes/domain/buku-resmi";
 import {
   KETERANGAN_SINKRONISASI_PENDUDUK,
@@ -263,47 +262,4 @@ export async function sinkronisasiBumindesDariPenduduk(): Promise<{
     pesan: `Sinkronisasi selesai untuk ${jumlahBuku} buku`,
     detail,
   };
-}
-
-export async function getBukuMutasiPendudukCetakData() {
-  const user = await requirePermission(RESOURCES.bumindes, "read");
-  const villageId = await resolveVillageId(user);
-  // Ambil data dari modul penduduk/mutasi jika tersedia; fallback ringkas dari items B3
-  const buku = await getBumindesBuku(
-    villageId,
-    (await ensureBumindesBuku(villageId)).find((b) => b.kodeBuku === "B3")?.id ?? 0,
-  );
-  const desa = await getIdentitasByVillage(villageId);
-  if (!buku) {
-    return { desa, tabel: tabelMutasiPenduduk("B3", "BUKU DATA MUTASI PENDUDUK", []) };
-  }
-  const items = await listBumindesItem(villageId, buku.id);
-  const baris = items.map((item, idx) => ({
-    nomorUrut: item.nomorUrut || idx + 1,
-    tanggal: item.tanggal,
-    jenisMutasi: item.uraian,
-    keterangan: item.keterangan,
-  }));
-  return { desa, tabel: tabelMutasiPenduduk("B3", "BUKU DATA MUTASI PENDUDUK", baris) };
-}
-
-export async function exportBukuMutasiPendudukCsvData() {
-  const user = await requirePermission(RESOURCES.bumindes, "read");
-  const villageId = await resolveVillageId(user);
-  const daftar = await ensureBumindesBuku(villageId);
-  const buku = daftar.find((b) => b.kodeBuku === "B3");
-  const desa = await getIdentitasByVillage(villageId);
-  if (!buku) {
-    const tabel = tabelMutasiPenduduk("B3", "BUKU DATA MUTASI PENDUDUK", []);
-    return { csv: bukuResmiCsv(tabel), filename: namaBerkasBuku("B3", desa?.namaDesa ?? null) };
-  }
-  const items = await listBumindesItem(villageId, buku.id);
-  const baris = items.map((item, idx) => ({
-    nomorUrut: item.nomorUrut || idx + 1,
-    tanggal: item.tanggal,
-    jenisMutasi: item.uraian,
-    keterangan: item.keterangan,
-  }));
-  const tabel = tabelMutasiPenduduk("B3", "BUKU DATA MUTASI PENDUDUK", baris);
-  return { csv: bukuResmiCsv(tabel), filename: namaBerkasBuku("B3", desa?.namaDesa ?? null) };
 }

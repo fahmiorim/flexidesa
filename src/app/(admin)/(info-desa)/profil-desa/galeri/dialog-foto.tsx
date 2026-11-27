@@ -26,7 +26,7 @@ export function DialogFoto({ item }: { item: FotoDialogItem }) {
       aksi={simpanFotoFormAction}
       deskripsi="Perbarui foto."
       judul="Ubah Foto"
-      kelasTombol="button button-ghost"
+      varian="ghost"
       label="Ubah"
       labelSimpan="Simpan Perubahan"
     >

@@ -20,6 +20,8 @@ vi.mock("@/features/multi-desa/infrastructure/template-website-repository", () =
   ubahTemplateWebsite: vi.fn(),
   setStatusTemplateWebsite: vi.fn(),
   distribusikanVersiTemplate: vi.fn(),
+  listDesaUntukTemplate: vi.fn(async () => [{ id: 1, namaDesa: "Kwala Gunung" }]),
+  terapkanTemplateKeDesaRepo: vi.fn(),
 }));
 
 const token = {
@@ -32,6 +34,10 @@ const token = {
   fontHeading: "serif",
   radius: "sedang",
   style: "terang",
+  layout: "klasik",
+  judulHero: "",
+  subHero: "",
+  taglineFooter: "",
 } as const;
 
 const template = {

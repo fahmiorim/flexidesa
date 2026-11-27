@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { StatusTemplate } from "@/features/multi-desa/domain/template-website";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
@@ -143,24 +144,24 @@ export function FormDistribusiTemplate({
         </div>
       </div>
 
-      <div className="tenant-table-scroll">
-        <table className="tenant-table">
-          <thead>
-            <tr>
-              <th scope="col">
+      <TableScroll className="tenant-table-scroll">
+        <Table className="tenant-table">
+          <THead>
+            <Row>
+              <HeaderCell scope="col">
                 <span className="sr-only">Pilih</span>
-              </th>
-              <th scope="col">Desa</th>
-              <th scope="col">Domain</th>
-              <th scope="col">Tema</th>
-              <th scope="col">Versi</th>
-              <th scope="col">Diperbarui</th>
-            </tr>
-          </thead>
-          <tbody>
+              </HeaderCell>
+              <HeaderCell scope="col">Desa</HeaderCell>
+              <HeaderCell scope="col">Domain</HeaderCell>
+              <HeaderCell scope="col">Tema</HeaderCell>
+              <HeaderCell scope="col">Versi</HeaderCell>
+              <HeaderCell scope="col">Diperbarui</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
             {penggunaan.map((item) => (
-              <tr key={item.villageId}>
-                <td>
+              <Row key={item.villageId}>
+                <Cell>
                   <input
                     aria-label={`Pilih ${item.namaDesa ?? "desa"}`}
                     checked={dipilih.includes(item.villageId)}
@@ -175,13 +176,15 @@ export function FormDistribusiTemplate({
                     type="checkbox"
                     value={item.villageId}
                   />
-                </td>
-                <td>
+                </Cell>
+                <Cell>
                   <strong>{item.namaDesa ?? "Tanpa nama"}</strong>
-                </td>
-                <td>{item.domain ?? <span className="tenant-secondary">Belum ada domain</span>}</td>
-                <td>{item.themeNama}</td>
-                <td>
+                </Cell>
+                <Cell>
+                  {item.domain ?? <span className="tenant-secondary">Belum ada domain</span>}
+                </Cell>
+                <Cell>{item.themeNama}</Cell>
+                <Cell>
                   <span
                     className={
                       item.versi === versi ? "template-version" : "template-version is-warning"
@@ -189,13 +192,13 @@ export function FormDistribusiTemplate({
                   >
                     v{item.versi}
                   </span>
-                </td>
-                <td>{item.diperbaruiPada}</td>
-              </tr>
+                </Cell>
+                <Cell>{item.diperbaruiPada}</Cell>
+              </Row>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
 
       <input name="id" type="hidden" value={id} />
       <div className="template-distribution-foot">
@@ -209,6 +212,63 @@ export function FormDistribusiTemplate({
         </button>
       </div>
 
+      {state.status === "error" ? (
+        <p className="alert alert-error" role="alert">
+          {state.message}
+        </p>
+      ) : null}
+      {state.status === "success" ? (
+        <p className="alert alert-info" role="status">
+          {state.message}
+        </p>
+      ) : null}
+    </form>
+  );
+}
+
+/** Ganti template aktif satu desa (mis. Kwala Gunung) dari Super Admin. */
+export function FormGantiTemplateDesa({
+  aksi,
+  id,
+  desa,
+}: {
+  aksi: AksiDistribusi;
+  id: number;
+  desa: { id: number; namaDesa: string | null }[];
+}) {
+  const router = useRouter();
+  const [state, formAction, pending] = useActionState(
+    aksi,
+    createIdleActionState<{ jumlah: number }>(),
+  );
+
+  useEffect(() => {
+    if (state.status === "success") router.refresh();
+  }, [router, state]);
+
+  return (
+    <form action={formAction} className="template-distribution">
+      <p className="form-help">
+        Terapkan template ini sebagai tema aktif satu desa. Situs publik desa langsung memakai token
+        template ini.
+      </p>
+      <label className="form-field">
+        <span className="form-label">Desa</span>
+        <select className="form-input" name="villageId" required defaultValue="">
+          <option value="" disabled>
+            — Pilih desa —
+          </option>
+          {desa.map((item) => (
+            <option key={item.id} value={item.id}>
+              {item.namaDesa ?? `Desa #${item.id}`}
+            </option>
+          ))}
+        </select>
+      </label>
+      <input name="id" type="hidden" value={id} />
+      <button className="button button-primary" disabled={pending} type="submit">
+        {pending ? "Menerapkan..." : "Terapkan ke desa"}
+      </button>
       {state.status === "error" ? (
         <p className="alert alert-error" role="alert">
           {state.message}

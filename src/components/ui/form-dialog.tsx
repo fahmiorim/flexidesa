@@ -6,6 +6,9 @@ import { useActionState, useEffect, useId, useRef, type ReactNode } from "react"
 import { PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
+import { Button, type ButtonVariant } from "./button";
+import { tutupDialog } from "./dialog-motion";
+
 type Props = {
   aksi: (state: ActionState<null>, formData: FormData) => Promise<ActionState<null>>;
   judul: string;
@@ -13,8 +16,8 @@ type Props = {
   label: string;
   labelSimpan: string;
   children: ReactNode;
-  varian?: "primary" | "secondary" | "ghost";
-  /** Kelas tombol pemicu bila halaman memakai CSS module sendiri. */
+  varian?: ButtonVariant;
+  /** Kelas tombol pemicu kustom (mis. CSS module halaman). Deprecated: pakai `varian`. */
   kelasTombol?: string;
   /** Buka dialog otomatis, dipakai saat halaman dimuat dengan parameter ubah. */
   bukaAwal?: boolean;
@@ -54,25 +57,31 @@ export function FormDialog({
   useEffect(() => {
     if (state.status !== "success") return;
     formRef.current?.reset();
-    dialogRef.current?.close();
+    tutupDialog(dialogRef.current);
     if (!tutupHref) router.refresh();
   }, [state, router, tutupHref]);
 
   return (
     <>
-      <button
-        className={kelasTombol ?? `button button-${varian}`}
-        onClick={() => dialogRef.current?.showModal()}
-        type="button"
-      >
-        {label}
-      </button>
+      {kelasTombol ? (
+        <button
+          className={kelasTombol}
+          onClick={() => dialogRef.current?.showModal()}
+          type="button"
+        >
+          {label}
+        </button>
+      ) : (
+        <Button variant={varian} onClick={() => dialogRef.current?.showModal()} type="button">
+          {label}
+        </Button>
+      )}
 
       <dialog
         aria-labelledby={`${id}-judul`}
         className="platform-dialog pemerintahan-dialog"
         onClick={(event) => {
-          if (event.target === dialogRef.current) dialogRef.current.close();
+          if (event.target === dialogRef.current) tutupDialog(dialogRef.current);
         }}
         onClose={() => {
           if (tutupHref) router.replace(tutupHref);
@@ -87,7 +96,7 @@ export function FormDialog({
           <button
             aria-label="Tutup dialog"
             className="platform-dialog-close"
-            onClick={() => dialogRef.current?.close()}
+            onClick={() => tutupDialog(dialogRef.current)}
             type="button"
           >
             ✕
@@ -98,16 +107,16 @@ export function FormDialog({
           {children}
           <PesanDialog state={state} />
           <div className="platform-dialog-actions">
-            <button
-              className="button button-secondary"
-              onClick={() => dialogRef.current?.close()}
+            <Button
+              variant="secondary"
+              onClick={() => tutupDialog(dialogRef.current)}
               type="button"
             >
               Batal
-            </button>
-            <button className="button button-primary" disabled={pending} type="submit">
-              {pending ? "Menyimpan..." : labelSimpan}
-            </button>
+            </Button>
+            <Button variant="primary" loading={pending} type="submit">
+              {labelSimpan}
+            </Button>
           </div>
         </form>
       </dialog>

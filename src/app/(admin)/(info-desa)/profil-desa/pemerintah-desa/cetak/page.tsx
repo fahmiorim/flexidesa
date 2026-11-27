@@ -1,5 +1,4 @@
-import Link from "next/link";
-
+import { ButtonLink } from "@/components/ui/button-link";
 import { JudulCetak, KopCetak, TandaTanganCetak } from "@/components/ui/cetak-dokumen";
 import { TombolCetak } from "@/components/ui/tombol-cetak";
 import { getKopCetakData } from "@/features/info-desa/pemerintahan/application/lembaga";
@@ -31,21 +30,15 @@ export default async function CetakPemerintahDesaPage() {
           <p>Daftar aparat pemerintah desa untuk dicetak.</p>
         </div>
         <div className="page-heading-actions">
-          <Link className="button button-ghost" href="/profil-desa/pemerintah-desa">
+          <ButtonLink variant="ghost" href="/profil-desa/pemerintah-desa">
             Kembali
-          </Link>
-          <Link
-            className="button button-ghost"
-            href="/profil-desa/pemerintah-desa/cetak/ekspor-xlsx"
-          >
+          </ButtonLink>
+          <ButtonLink variant="ghost" href="/profil-desa/pemerintah-desa/cetak/ekspor-xlsx">
             Unduh XLSX
-          </Link>
-          <Link
-            className="button button-ghost"
-            href="/profil-desa/pemerintah-desa/cetak/ekspor-pdf"
-          >
+          </ButtonLink>
+          <ButtonLink variant="ghost" href="/profil-desa/pemerintah-desa/cetak/ekspor-pdf">
             Unduh PDF
-          </Link>
+          </ButtonLink>
           <TombolCetak />
         </div>
       </header>

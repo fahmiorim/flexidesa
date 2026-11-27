@@ -20,7 +20,6 @@ import {
 import {
   getPermohonan,
   hapusPermohonan,
-  kembalikanPermohonan,
   listPermohonan,
   prosesPermohonan,
   tautkanSuratPermohonan,
@@ -275,25 +274,3 @@ export async function hapusPermohonanMassalData(
 }
 
 /** Kembalikan permohonan ke status 0 dengan alasan. */
-export async function kembalikanPermohonanAdminData(id: number, alasan: string): Promise<void> {
-  const user = await requirePermission(RESOURCES.permohonanSurat, "update");
-  const villageId = await resolveVillageId(user);
-
-  if (alasan.trim() === "") {
-    throw validationError("Alasan wajib diisi.");
-  }
-
-  const sebelum = await getPermohonan(villageId, id);
-  if (!sebelum) throw notFound("Permohonan tidak ditemukan.");
-
-  await kembalikanPermohonan(villageId, id, alasan.trim());
-  await notifyPermohonanStatusChange({
-    villageId,
-    residentId: sebelum.residentId,
-    noAntrian: sebelum.noAntrian,
-    statusLama: sebelum.status,
-    statusBaru: 0,
-    alasan: alasan.trim(),
-    noHpAktif: sebelum.noHpAktif,
-  });
-}

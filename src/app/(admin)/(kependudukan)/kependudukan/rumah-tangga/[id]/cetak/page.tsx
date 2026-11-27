@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ButtonLink } from "@/components/ui/button-link";
 import { TombolCetak } from "@/components/ui/tombol-cetak";
 import { getIdentitas } from "@/features/info-desa/desa/application/get-identitas";
 import { getRumahTanggaDetail } from "@/features/kependudukan/rumah-tangga/application/use-cases";
@@ -30,9 +30,9 @@ export default async function CetakKartuRumahTanggaPage({
   return (
     <div className={styles.printPage}>
       <div className={styles.printActions}>
-        <Link className="button button-secondary" href={`/kependudukan/rumah-tangga/${id}`}>
+        <ButtonLink variant="secondary" href={`/kependudukan/rumah-tangga/${id}`}>
           ← Kembali
-        </Link>
+        </ButtonLink>
         <TombolCetak />
       </div>
 

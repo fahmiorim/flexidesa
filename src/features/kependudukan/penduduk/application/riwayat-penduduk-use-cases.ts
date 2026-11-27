@@ -31,7 +31,6 @@ import {
 import {
   getKonteksMutasi,
   getRiwayatById,
-  getRiwayatByResident,
   listRiwayatPenduduk,
   listRiwayatPendudukExport,
   simpanPendudukBaruDanMutasi,
@@ -52,12 +51,6 @@ export async function listRiwayatExport(params: ListRiwayatParams) {
   const user = await requirePermission(PENDUDUK_RESOURCE, "read");
   const villageId = await resolveVillageId(user);
   return listRiwayatPendudukExport(villageId, params);
-}
-
-export async function getRiwayatByPendudukId(residentId: number) {
-  const user = await requirePermission(PENDUDUK_RESOURCE, "read");
-  const villageId = await resolveVillageId(user);
-  return getRiwayatByResident(villageId, residentId);
 }
 
 export async function getRiwayatPendudukById(id: number) {

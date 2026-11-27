@@ -17,8 +17,6 @@ export const JAM_KERJA_RESOURCE = RESOURCES.jamKerja;
 /** Urutan hari yang dipakai OpenSID (Carbon `dayName`). */
 export const NAMA_HARI = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"] as const;
 
-export type NamaHari = (typeof NAMA_HARI)[number];
-
 /** Panjang maksimal keterangan; sama dengan `maxlength="300"` form OpenSID. */
 export const KETERANGAN_JAM_KERJA_MAKS = 300;
 
@@ -44,9 +42,6 @@ export const jamKerjaFormSchema = z
     message: "Jam keluar tidak boleh lebih kecil dari jam masuk.",
     path: ["jamKeluar"],
   });
-
-export type JamKerjaFormInput = z.input<typeof jamKerjaFormSchema>;
-export type JamKerjaFormValues = z.infer<typeof jamKerjaFormSchema>;
 
 /** Satu baris jam kerja untuk UI. */
 export interface JamKerjaRow {

@@ -13,11 +13,6 @@ import { formatMoney, toMinor } from "@/features/keuangan-desa/keuangan/domain/k
 export const PEMBUKUAN_JENIS = ["pendapatan", "belanja"] as const;
 export type PembukuanJenis = (typeof PEMBUKUAN_JENIS)[number];
 
-export const PEMBUKUAN_JENIS_LABELS: Readonly<Record<PembukuanJenis, string>> = {
-  pendapatan: "Pendapatan",
-  belanja: "Belanja",
-};
-
 export const pembukuanFormSchema = z.object({
   tanggal: z.iso.date("Tanggal transaksi tidak valid."),
   keterangan: z
@@ -31,8 +26,6 @@ export const pembukuanFormSchema = z.object({
     .max(999999999999, "Jumlah terlalu besar."),
   jenis: z.enum(PEMBUKUAN_JENIS, { error: "Jenis transaksi tidak valid." }),
 });
-
-export type PembukuanInput = z.infer<typeof pembukuanFormSchema>;
 
 /** Satu baris buku kas manual. */
 export interface PembukuanBaris {

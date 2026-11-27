@@ -4,9 +4,8 @@ import { inArray } from "drizzle-orm";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { db } from "@/db";
-import { villages } from "@/db/schema";
+import { agendaKegiatan, villages } from "@/db/schema";
 import {
-  createAgenda,
   listAgendaPublik,
   listAgendaPublikRentang,
 } from "@/features/info-desa/agenda/infrastructure/agenda-repository";
@@ -42,54 +41,62 @@ beforeAll(async () => {
     throw new Error("Seed uji gagal: desa tidak terbentuk");
   }
 
-  await createAgenda(desaA, {
-    judul: `Arsip ${RUN}`,
-    mulai: "2024-03-10",
-    selesai: null,
-    jamMulai: null,
-    jamSelesai: null,
-    kategori: "umum",
-    status: "selesai",
-    lokasi: null,
-    deskripsi: null,
-    tayang: true,
-  });
-  await createAgenda(desaA, {
-    judul: `Kegiatan November ${RUN}`,
-    mulai: "2026-11-20",
-    selesai: null,
-    jamMulai: "09:00",
-    jamSelesai: "12:00",
-    kategori: "pemerintahan",
-    status: "berlangsung",
-    lokasi: "Balai Desa",
-    deskripsi: null,
-    tayang: true,
-  });
-  await createAgenda(desaA, {
-    judul: `Draf ${RUN}`,
-    mulai: "2026-11-21",
-    selesai: null,
-    jamMulai: null,
-    jamSelesai: null,
-    kategori: "umum",
-    status: "rencana",
-    lokasi: null,
-    deskripsi: null,
-    tayang: false,
-  });
-  await createAgenda(desaB, {
-    judul: `Kegiatan Desa B ${RUN}`,
-    mulai: "2026-11-20",
-    selesai: null,
-    jamMulai: null,
-    jamSelesai: null,
-    kategori: "umum",
-    status: "rencana",
-    lokasi: null,
-    deskripsi: null,
-    tayang: true,
-  });
+  // Baris disemai langsung ke tabel agar test tidak bergantung pada jalur tulis
+  // admin yang sudah dihapus; yang diuji adalah pembacaan publik.
+  await db.insert(agendaKegiatan).values([
+    {
+      villageId: desaA,
+      judul: `Arsip ${RUN}`,
+      mulai: "2024-03-10",
+      selesai: null,
+      jamMulai: null,
+      jamSelesai: null,
+      kategori: "umum",
+      status: "selesai",
+      lokasi: null,
+      deskripsi: null,
+      tayang: true,
+    },
+    {
+      villageId: desaA,
+      judul: `Kegiatan November ${RUN}`,
+      mulai: "2026-11-20",
+      selesai: null,
+      jamMulai: "09:00",
+      jamSelesai: "12:00",
+      kategori: "pemerintahan",
+      status: "berlangsung",
+      lokasi: "Balai Desa",
+      deskripsi: null,
+      tayang: true,
+    },
+    {
+      villageId: desaA,
+      judul: `Draf ${RUN}`,
+      mulai: "2026-11-21",
+      selesai: null,
+      jamMulai: null,
+      jamSelesai: null,
+      kategori: "umum",
+      status: "rencana",
+      lokasi: null,
+      deskripsi: null,
+      tayang: false,
+    },
+    {
+      villageId: desaB,
+      judul: `Kegiatan Desa B ${RUN}`,
+      mulai: "2026-11-20",
+      selesai: null,
+      jamMulai: null,
+      jamSelesai: null,
+      kategori: "umum",
+      status: "rencana",
+      lokasi: null,
+      deskripsi: null,
+      tayang: true,
+    },
+  ]);
 
   fixture = { desaA, desaB };
 });

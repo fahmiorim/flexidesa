@@ -45,11 +45,6 @@ export async function getHariLiburData(): Promise<HariLiburRow[]> {
 }
 
 /** Baris yang sedang disunting; `null` bila tidak ada atau milik desa lain. */
-export async function getHariLiburUntukUbah(id: number): Promise<HariLiburRow | null> {
-  const user = await requirePermission(HARI_LIBUR_RESOURCE, "update");
-  const villageId = await resolveVillageId(user);
-  return findHariLibur(villageId, id);
-}
 
 /** Tambah satu hari libur; tanggal unik per desa seperti `kehadiran_hari_libur`. */
 export async function tambahHariLibur(input: unknown): Promise<{ id: number }> {

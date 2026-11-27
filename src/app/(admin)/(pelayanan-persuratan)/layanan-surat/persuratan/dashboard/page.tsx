@@ -3,6 +3,9 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Card, CardBody, CardHeader } from "@/components/ui/card";
+import { StatCard, StatGrid } from "@/components/ui/stat-card";
 import {
   dashboardAktivitasTerbaru,
   dashboardPermohonanTerbaru,
@@ -32,13 +35,19 @@ function Panel({
   action?: { label: string; href: string };
 }) {
   return (
-    <section className="beranda-card" style={{ minWidth: 0 }}>
-      <div className="beranda-card-head">
-        <h2 className="beranda-card-title">{title}</h2>
-        {action ? <Link href={action.href}>{action.label} →</Link> : null}
-      </div>
-      {children}
-    </section>
+    <Card variant="panel" style={{ minWidth: 0 }}>
+      <CardHeader
+        aksi={
+          action ? (
+            <ButtonLink href={action.href} variant="secondary">
+              {action.label}
+            </ButtonLink>
+          ) : null
+        }
+        title={title}
+      />
+      <CardBody>{children}</CardBody>
+    </Card>
   );
 }
 
@@ -65,56 +74,36 @@ export default async function DashboardAdministrasiSuratPage() {
         deskripsi={<>Ringkasan permohonan, penerbitan, dan aktivitas pelayanan surat desa.</>}
       />
 
-      <div className="beranda-kpi-grid">
-        <article className="beranda-card beranda-kpi" data-tone="ungu">
-          <span className="beranda-kpi-icon" aria-hidden="true">
-            ▤
-          </span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Total Permohonan</span>
-            <strong className="beranda-kpi-value">{formatAngka(stats.permohonan)}</strong>
-            <span className="beranda-chip" data-tone="ungu">
-              Seluruh periode
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="hijau">
-          <span className="beranda-kpi-icon" aria-hidden="true">
-            ✓
-          </span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Menunggu Tindakan</span>
-            <strong className="beranda-kpi-value">{formatAngka(pending)}</strong>
-            <span className="beranda-chip" data-tone="biru">
-              Perlu ditinjau petugas
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="biru">
-          <span className="beranda-kpi-icon" aria-hidden="true">
-            ↗
-          </span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Di luar antrean</span>
-            <strong className="beranda-kpi-value">{formatAngka(other)}</strong>
-            <span className="beranda-chip" data-tone="netral">
-              Status selain menunggu
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="jingga">
-          <span className="beranda-kpi-icon" aria-hidden="true">
-            ▥
-          </span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Permohonan Bulan Ini</span>
-            <strong className="beranda-kpi-value">{formatAngka(latestTotal)}</strong>
-            <span className="beranda-chip" data-tone="netral">
-              Bulan berjalan
-            </span>
-          </div>
-        </article>
-      </div>
+      <StatGrid columns={4}>
+        <StatCard
+          icon="▤"
+          label="Total Permohonan"
+          utama
+          note="Seluruh periode"
+          value={formatAngka(stats.permohonan)}
+        />
+        <StatCard
+          icon="✓"
+          label="Menunggu Tindakan"
+          note="Perlu ditinjau petugas"
+          tone="hijau"
+          value={formatAngka(pending)}
+        />
+        <StatCard
+          icon="↗"
+          label="Di luar antrean"
+          note="Status selain menunggu"
+          tone="biru"
+          value={formatAngka(other)}
+        />
+        <StatCard
+          icon="▥"
+          label="Permohonan Bulan Ini"
+          note="Bulan berjalan"
+          tone="oranye"
+          value={formatAngka(latestTotal)}
+        />
+      </StatGrid>
 
       <div className="beranda-grid">
         <Panel

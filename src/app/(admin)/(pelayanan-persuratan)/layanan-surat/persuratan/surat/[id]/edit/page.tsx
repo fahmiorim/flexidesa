@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
@@ -51,16 +50,6 @@ export default async function UbahKonsepSuratPage({
       <PageHeading
         judul={<>Ubah Konsep Surat</>}
         deskripsi={<>Perbarui data surat sebelum diajukan ke proses verifikasi.</>}
-        aksi={
-          <>
-            <Link
-              href={`/layanan-surat/persuratan/surat/${id}`}
-              className="button button-secondary"
-            >
-              ← Kembali ke detail
-            </Link>
-          </>
-        }
       />
       {query.error ? (
         <div className="alert alert-error" role="alert" style={{ marginBottom: 16 }}>

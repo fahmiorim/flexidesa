@@ -17,7 +17,6 @@ import {
   parseSyaratIds,
   type SyaratSuratDTO,
 } from "@/features/pelayanan-persuratan/surat/domain/isian";
-import type { BarisKlasifikasiImpor } from "@/features/pelayanan-persuratan/surat/domain/klasifikasi-berkas";
 import type {
   JenisSuratDTO,
   JenisSuratInput,
@@ -117,46 +116,6 @@ export async function updateKlasifikasi(
  * Dijalankan dalam satu transaksi agar kegagalan di tengah berkas tidak
  * meninggalkan data setengah jadi.
  */
-export async function importKlasifikasi(
-  villageId: number,
-  rows: readonly BarisKlasifikasiImpor[],
-): Promise<{ ditambahkan: number; diperbarui: number }> {
-  let ditambahkan = 0;
-  let diperbarui = 0;
-
-  await db.transaction(async (tx) => {
-    for (const row of rows) {
-      const [existing] = await tx
-        .select({ id: letterClassifications.id })
-        .from(letterClassifications)
-        .where(
-          and(
-            eq(letterClassifications.villageId, villageId),
-            eq(letterClassifications.code, row.kode),
-          ),
-        )
-        .limit(1);
-
-      if (existing) {
-        await tx
-          .update(letterClassifications)
-          .set({ name: row.nama, description: row.keterangan })
-          .where(eq(letterClassifications.id, existing.id));
-        diperbarui += 1;
-      } else {
-        await tx.insert(letterClassifications).values({
-          villageId,
-          code: row.kode,
-          name: row.nama,
-          description: row.keterangan,
-        });
-        ditambahkan += 1;
-      }
-    }
-  });
-
-  return { ditambahkan, diperbarui };
-}
 
 /**
  * Hapus klasifikasi surat.

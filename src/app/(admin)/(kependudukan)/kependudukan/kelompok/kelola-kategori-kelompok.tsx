@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useId, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { DialogHapus } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import { createIdleActionState } from "@/lib/action-state";
 
-import { hapusKategoriModalAction, simpanKategoriFormAction } from "./actions";
+import { hapusKategoriDialogAction, simpanKategoriFormAction } from "./actions";
 
 export interface KategoriKelolaItem {
   id: number;
@@ -57,12 +59,12 @@ function FormKategori({
       </label>
       <PesanDialog state={state} />
       <div className="platform-dialog-actions">
-        <button className="button button-secondary" onClick={onBatal} type="button">
+        <Button variant="secondary" onClick={onBatal} type="button">
           Kembali ke daftar
-        </button>
-        <button className="button button-primary" disabled={pending} type="submit">
-          {pending ? "Menyimpan..." : item ? "Simpan Perubahan" : "Simpan Kategori"}
-        </button>
+        </Button>
+        <Button loading={pending} type="submit" variant="primary">
+          {item ? "Simpan Perubahan" : "Simpan Kategori"}
+        </Button>
       </div>
     </form>
   );
@@ -154,67 +156,64 @@ export function KelolaKategoriKelompok({
                   <div className="jabatan-toolbar">
                     <span className="jabatan-count">{kategori.length} kategori</span>
                     {bolehUbah ? (
-                      <button
-                        className="button button-primary"
+                      <Button
+                        variant="primary"
                         onClick={() => setTampilan({ jenis: "form", item: null })}
                         type="button"
                       >
                         Tambah Kategori
-                      </button>
+                      </Button>
                     ) : null}
                   </div>
 
                   {kategori.length ? (
-                    <div className="modul-table-wrap">
-                      <table className="modul-table jabatan-table">
-                        <thead>
-                          <tr>
-                            <th>No</th>
-                            <th>Kategori</th>
-                            <th>Deskripsi</th>
-                            <th>Kelompok</th>
-                            <th>Aksi</th>
-                          </tr>
-                        </thead>
-                        <tbody>
+                    <TableScroll>
+                      <Table className="jabatan-table">
+                        <THead>
+                          <Row>
+                            <HeaderCell>No</HeaderCell>
+                            <HeaderCell>Kategori</HeaderCell>
+                            <HeaderCell>Deskripsi</HeaderCell>
+                            <HeaderCell>Kelompok</HeaderCell>
+                            <HeaderCell>Aksi</HeaderCell>
+                          </Row>
+                        </THead>
+                        <TBody>
                           {kategori.map((item, index) => (
-                            <tr key={item.id}>
-                              <td>{index + 1}</td>
-                              <td>
+                            <Row key={item.id}>
+                              <Cell>{index + 1}</Cell>
+                              <Cell>
                                 <strong>{item.nama}</strong>
-                              </td>
-                              <td>{item.deskripsi ?? "—"}</td>
-                              <td>{item.jumlahKelompok} kelompok</td>
-                              <td>
+                              </Cell>
+                              <Cell>{item.deskripsi ?? "—"}</Cell>
+                              <Cell>{item.jumlahKelompok} kelompok</Cell>
+                              <Cell>
                                 <div className="pemerintahan-row-actions">
                                   {bolehUbah ? (
-                                    <button
-                                      className="button button-ghost"
+                                    <Button
+                                      variant="ghost"
                                       onClick={() => setTampilan({ jenis: "form", item })}
                                       type="button"
                                     >
                                       Ubah
-                                    </button>
+                                    </Button>
                                   ) : null}
                                   {item.jumlahKelompok ? <small>Masih dipakai</small> : null}
                                   {bolehHapus && !item.jumlahKelompok ? (
-                                    <form action={hapusKategoriModalAction}>
-                                      <input name="id" type="hidden" value={item.id} />
-                                      <ConfirmSubmit
-                                        className="button button-danger-ghost"
-                                        message={`Hapus kategori ${item.nama}?`}
-                                      >
-                                        Hapus
-                                      </ConfirmSubmit>
-                                    </form>
+                                    <DialogHapus
+                                      aksi={hapusKategoriDialogAction}
+                                      id={String(item.id)}
+                                      judul={`Hapus kategori "${item.nama}"?`}
+                                      keterangan="Kategori akan dihapus permanen. Kategori yang masih dipakai kelompok tidak dapat dihapus."
+                                    />
                                   ) : null}
                                 </div>
-                              </td>
-                            </tr>
+                              </Cell>
+                            </Row>
                           ))}
-                        </tbody>
-                      </table>
-                    </div>
+                        </TBody>
+                      </Table>
+                    </TableScroll>
                   ) : (
                     <p className="modul-empty">
                       Belum ada kategori. Tambahkan kategori pertama agar kelompok dapat didata.

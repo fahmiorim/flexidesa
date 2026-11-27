@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getPengaduanKehadiranData } from "@/features/kehadiran/kehadiran/application/pengaduan-kehadiran-use-cases";
 import { KETERANGAN_MAKS } from "@/features/kehadiran/kehadiran/domain/pengaduan-kehadiran";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { verifySession } from "@/lib/dal";
 
-import { ubahPengaduanKehadiranAction } from "./actions";
+import { ubahPengaduanKehadiranFormAction } from "./form-actions";
 
 export const metadata: Metadata = { title: "Pengaduan Kehadiran" };
 
@@ -49,16 +53,14 @@ export default async function PengaduanKehadiranPage({
         </p>
       ) : null}
 
-      <section className="platform-card data-panel">
-        <header>
-          <h2>Daftar Pengaduan</h2>
-          <p>
-            {rows.length === 0
-              ? "Belum ada laporan kehadiran dari warga."
-              : `${rows.length} laporan kehadiran tercatat.`}
-          </p>
-        </header>
-
+      <TableCard
+        description={
+          rows.length === 0
+            ? "Belum ada laporan kehadiran dari warga."
+            : `${rows.length} laporan kehadiran tercatat.`
+        }
+        title="Daftar Pengaduan"
+      >
         {rows.length === 0 ? (
           <div className="modul-empty">
             <strong>Belum ada pengaduan kehadiran.</strong>
@@ -68,58 +70,60 @@ export default async function PengaduanKehadiranPage({
             </p>
           </div>
         ) : (
-          <div className="table-scroll">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th scope="col">No</th>
-                  <th scope="col">Aksi</th>
-                  <th scope="col">Waktu</th>
-                  <th scope="col">Pelapor</th>
-                  <th scope="col">Terlapor</th>
-                  <th scope="col">Keterangan</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">No</HeaderCell>
+                  <HeaderCell scope="col">Aksi</HeaderCell>
+                  <HeaderCell scope="col">Waktu</HeaderCell>
+                  <HeaderCell scope="col">Pelapor</HeaderCell>
+                  <HeaderCell scope="col">Terlapor</HeaderCell>
+                  <HeaderCell scope="col">Keterangan</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row, index) => (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>
                       {bolehUbah ? (
-                        <details className="pemerintahan-row-edit">
-                          <summary>Ubah</summary>
-                          <form action={ubahPengaduanKehadiranAction} className="wilayah-form">
+                        <FormDialog
+                          aksi={ubahPengaduanKehadiranFormAction}
+                          deskripsi={`Ubah keterangan pengaduan dari ${row.pelapor ?? "pelapor"}.`}
+                          judul="Ubah keterangan pengaduan"
+                          label="Ubah"
+                          labelSimpan="Simpan"
+                          varian="secondary"
+                        >
+                          <div className="modul-form-grid">
                             <input name="id" type="hidden" value={row.id} />
-                            <label className="form-field">
-                              <span className="form-label">Keterangan</span>
-                              <textarea
-                                className="form-input"
-                                defaultValue={row.keterangan ?? ""}
-                                maxLength={KETERANGAN_MAKS}
-                                name="keterangan"
-                                rows={3}
-                              />
-                            </label>
-                            <button className="button button-primary" type="submit">
-                              Simpan
-                            </button>
-                          </form>
-                        </details>
+                            <FormField
+                              containerClassName="form-field-full"
+                              defaultValue={row.keterangan ?? ""}
+                              kind="textarea"
+                              label="Keterangan"
+                              maxLength={KETERANGAN_MAKS}
+                              name="keterangan"
+                              rows={3}
+                            />
+                          </div>
+                        </FormDialog>
                       ) : (
                         <span className="modul-muted">—</span>
                       )}
-                    </td>
-                    <td>{waktuLaporan(row.waktu)}</td>
-                    <td>{row.pelapor ?? "-"}</td>
-                    <td>{row.terlapor ?? "-"}</td>
-                    <td>{row.keterangan ?? "-"}</td>
-                  </tr>
+                    </Cell>
+                    <Cell>{waktuLaporan(row.waktu)}</Cell>
+                    <Cell>{row.pelapor ?? "-"}</Cell>
+                    <Cell>{row.terlapor ?? "-"}</Cell>
+                    <Cell>{row.keterangan ?? "-"}</Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

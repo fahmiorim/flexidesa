@@ -1,5 +1,3 @@
-import { z } from "zod";
-
 export const STATISTIK_BANTUAN_KINDS = ["program", "sasaran"] as const;
 
 export type StatistikBantuanKind = (typeof STATISTIK_BANTUAN_KINDS)[number];
@@ -44,12 +42,3 @@ export interface StatistikBantuanResult {
   perPage: number;
   pageCount: number;
 }
-
-export const statistikBantuanParamsSchema = z.object({
-  kind: z.enum(STATISTIK_BANTUAN_KINDS),
-  programSlug: z.string().optional(),
-  sasaran: z.number().int().optional(),
-  search: z.string().optional(),
-  page: z.number().int().positive().optional(),
-  perPage: z.number().int().positive().optional(),
-});

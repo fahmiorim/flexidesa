@@ -23,8 +23,6 @@ export type ActionState<T = null> =
     }
   | { readonly status: "error"; readonly message: string; readonly fieldErrors?: FieldErrors };
 
-export const idleActionState: ActionState<null> = { status: "idle" };
-
 /** Buat idle state dengan tipe data generik untuk menghindari cast `as any`. */
 export function createIdleActionState<T = null>(): ActionState<T> {
   return { status: "idle" };

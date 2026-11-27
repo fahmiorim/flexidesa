@@ -1,4 +1,4 @@
-import { TIPE_PETA_DEFAULT, type TipePeta } from "@/features/info-desa/wilayah/domain/wilayah";
+import { type TipePeta } from "@/features/info-desa/wilayah/domain/wilayah";
 import { parseGeoJsonRings } from "@/features/pertanahan-gis/gis/domain/peta-cetak";
 
 export interface TilePeta {
@@ -204,8 +204,3 @@ export function titikKeGpx(lat: number, lng: number, nama: string): string {
 }
 
 /** Tipe peta untuk tile; nilai kosong/lama memakai default. */
-export function tileUntuk(nilai: string | null | undefined): TilePeta {
-  return TILE_PETA[
-    nilai === "osm" || nilai === "carto" || nilai === "carto-dark" ? nilai : TIPE_PETA_DEFAULT
-  ];
-}

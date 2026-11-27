@@ -15,7 +15,6 @@ import {
   getDesaKelola,
   hapusDomainDesa,
   jadikanDomainUtama,
-  listDomainDesa,
   listSemuaDomain,
   resetAdminDesa as resetAdminDesaRepo,
   setKuotaMediaDesa,
@@ -71,12 +70,6 @@ export async function daftarSemuaDomain(): Promise<DomainDesaRow[]> {
 }
 
 /** Daftar alias domain milik desa. */
-export async function daftarDomainDesa(input: unknown): Promise<DomainDesaRow[]> {
-  await requireSuperAdmin();
-  const villageId = villageIdSchema.parse(input);
-  await pastikanDesaAda(villageId);
-  return listDomainDesa(villageId);
-}
 
 /** Aktifkan atau nonaktifkan desa (arsip lunak). */
 export async function ubahStatusDesa(input: unknown): Promise<{ active: boolean }> {

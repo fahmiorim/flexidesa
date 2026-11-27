@@ -7,7 +7,7 @@ import { modules, rolePermissions, roles, villages } from "@/db/schema";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * Migrasi `0006_rbac_batas_tenant_dan_slug_global.sql` menjaga dua aturan yang
+ * Migrasi tunggal `0000_baseline.sql` menjaga dua aturan yang
  * tidak dapat dinyatakan sebagai unique index biasa:
  *
  * 1. `role_permissions` tidak boleh menautkan role dan modul dari dua tenant

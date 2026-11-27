@@ -391,10 +391,12 @@
 
 .barFill {
   display: block;
+  width: 100%;
   height: 100%;
   border-radius: 20px;
   background: linear-gradient(90deg, #8a35ff, #4e12e9);
-  transition: width 0.2s ease;
+  transform-origin: left center;
+  transition: transform 0.2s ease;
 }
 
 .pieWrap {

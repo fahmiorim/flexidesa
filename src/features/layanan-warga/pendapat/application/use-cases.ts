@@ -6,28 +6,7 @@ import {
   pendapatFilename,
   type PendapatEksporRow,
 } from "@/features/layanan-warga/pendapat/domain/pendapat-berkas";
-import {
-  createPendapat,
-  deletePendapat,
-  listPendapat,
-  rekapPendapat,
-} from "@/features/layanan-warga/pendapat/infrastructure/pendapat-repository";
-
-export async function getRekapPendapatUseCase(villageId: number) {
-  return rekapPendapat(villageId);
-}
-
-export async function listPendapatUseCase(villageId: number, page = 1, perPage = 20) {
-  return listPendapat(villageId, page, perPage);
-}
-
-export async function createPendapatUseCase(input: Parameters<typeof createPendapat>[0]) {
-  return createPendapat(input);
-}
-
-export async function deletePendapatUseCase(id: number, villageId: number) {
-  await deletePendapat(id, villageId);
-}
+import { listPendapat } from "@/features/layanan-warga/pendapat/infrastructure/pendapat-repository";
 
 /** Ekspor seluruh pendapat warga desa sebagai CSV. */
 export async function exportPendapatUseCase(

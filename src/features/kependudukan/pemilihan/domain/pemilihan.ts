@@ -1,26 +1,11 @@
 import { z } from "zod";
 
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
-
-export const PEMILIHAN_RESOURCE = RESOURCES.pemilihan;
-
 export const pemilihanSchema = z.object({
   tahun: z.coerce.number().int().min(2000).max(2100),
   jenis: z.string().trim().min(1).max(50),
   tanggal: z.string().optional().nullable(),
   keterangan: z.string().trim().max(2000).optional().nullable(),
 });
-
-export type PemilihanInput = z.infer<typeof pemilihanSchema>;
-
-export interface PemilihanDTO {
-  id: number;
-  villageId: number;
-  tahun: number;
-  jenis: string;
-  tanggal: string | null;
-  keterangan: string | null;
-}
 
 /** Skema validasi kandidat pemilihan (nomor urut & suara berupa angka). */
 export const kandidatSchema = z.object({
@@ -37,8 +22,6 @@ export const kandidatSchema = z.object({
     .min(0, "Jumlah suara tidak boleh negatif.")
     .max(10_000_000, "Jumlah suara terlalu besar."),
 });
-
-export type KandidatInput = z.infer<typeof kandidatSchema>;
 
 /** Kandidat sebuah pemilihan. */
 export interface KandidatDTO {

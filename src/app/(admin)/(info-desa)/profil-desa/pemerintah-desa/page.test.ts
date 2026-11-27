@@ -22,15 +22,16 @@ vi.mock("@/components/shell/page-heading", () => ({
 }));
 
 vi.mock("@/components/ui/confirm-submit", () => ({ ConfirmSubmit: () => null }));
-vi.mock("@/components/ui/dialog-hapus", () => ({ DialogHapus: () => null }));
+vi.mock("@/components/ui/dialog-hapus", () => ({
+  DialogHapus: () => null,
+  DialogHapusForm: () => null,
+}));
 vi.mock("@/components/ui/form-dialog", () => ({
   FormDialog: ({ label }: { label: string }) => label,
 }));
+vi.mock("@/components/ui/hapus-terpilih", () => ({ HapusTerpilih: () => null }));
 vi.mock("@/features/info-desa/pemerintahan/presentation/kelola-jabatan-dialog", () => ({
   KelolaJabatanDialog: () => "Kelola Jabatan",
-}));
-vi.mock("@/features/info-desa/pemerintahan/presentation/form-langkah", () => ({
-  FormLangkah: () => null,
 }));
 vi.mock("@/features/info-desa/pemerintahan/presentation/foto-perangkat-input", () => ({
   FotoPerangkatInput: () => null,

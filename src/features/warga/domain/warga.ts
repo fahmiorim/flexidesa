@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 /** Panjang PIN warga (angka saja). */
-export const PANJANG_PIN = 6;
 
 /** PIN harus tepat 6 digit angka. */
 export const pinSchema = z
@@ -28,10 +27,6 @@ export const ubahPinSchema = z
 export type UbahPinInput = z.infer<typeof ubahPinSchema>;
 
 /** Kredensial yang ditampilkan sekali setelah akun dibuat/direset. */
-export interface KredensialWarga {
-  username: string;
-  pin: string;
-}
 
 /** Akun warga yang ditautkan ke satu penduduk. */
 export interface WargaAccountSummary {

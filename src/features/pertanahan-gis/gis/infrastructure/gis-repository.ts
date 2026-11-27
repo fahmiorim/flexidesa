@@ -3,24 +3,13 @@ import "server-only";
 import { and, asc, desc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import {
-  areas,
-  cdesa,
-  cdesaMutasi,
-  cdesaRincian,
-  garis,
-  gisSimbol,
-  persil,
-  points,
-  polygons,
-} from "@/db/schema";
+import { areas, cdesa, cdesaMutasi, garis, gisSimbol, persil, points, polygons } from "@/db/schema";
 import type {
   AreaDTO,
   AreaFormInput,
   CdesaDTO,
   CdesaMutasiDTO,
   CdesaMutasiInput,
-  CdesaRincianDTO,
   GarisDTO,
   GarisFormInput,
   PersilDTO,
@@ -571,25 +560,6 @@ export async function findGarisById(villageId: number, id: number): Promise<Gari
     enabled: row.enabled,
     sortOrder: row.sortOrder,
   };
-}
-
-export async function listCdesaRincian(
-  villageId: number,
-  cdesaId: number,
-): Promise<CdesaRincianDTO[]> {
-  const rows = await db
-    .select()
-    .from(cdesaRincian)
-    .where(and(eq(cdesaRincian.villageId, villageId), eq(cdesaRincian.cdesaId, cdesaId)))
-    .orderBy(asc(cdesaRincian.id));
-  return rows.map((r) => ({
-    id: r.id,
-    cdesaId: r.cdesaId,
-    nama: r.nama,
-    alamat: r.alamat,
-    dllb: r.dllb,
-    sortOrder: r.sortOrder,
-  }));
 }
 
 // --- CDesa Mutasi ---------------------------------------------------------

@@ -135,7 +135,6 @@ export const batasWilayahSchema = z.object({
 });
 
 export type WilayahFormInput = z.infer<typeof wilayahFormSchema>;
-export type UbahWilayahInput = z.infer<typeof ubahWilayahSchema>;
 export type PetaKantorInput = z.infer<typeof petaKantorSchema>;
 export type BatasWilayahInput = z.infer<typeof batasWilayahSchema>;
 

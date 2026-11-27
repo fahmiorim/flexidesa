@@ -121,14 +121,11 @@ describe("template bawaan yang dikirim", () => {
   it("menghapus modul menu tanpa padanan OpenSID dari template dan izin", () => {
     const dihapus = [
       "dashboard-kependudukan",
-      "mutasi-penduduk",
       "kehadiran-dashboard",
       "absensi-pegawai",
       "kepegawaian",
-      "cuti-izin",
       "surat-daftar",
       "arsip-surat",
-      "master-surat",
       "tte",
       "inventaris-dashboard",
       "inventaris-pengelolaan",
@@ -139,21 +136,16 @@ describe("template bawaan yang dikirim", () => {
       "keuangan-dashboard",
       "realisasi-keuangan",
       "kegiatan-keuangan",
-      "dokumen-keuangan",
-      "analisis-survei",
       "simbol-peta",
       "grup-kontak",
       "umpan-balik",
       "pengaturan-desa-lanjutan",
       "audit-log",
       "website-dashboard",
-      "website-halaman",
-      "website-konten",
       "website-dokumen",
       "potensi-desa",
       "layanan-publik",
       "katalog-layanan",
-      "pengajuan-layanan",
       "survei-layanan",
     ];
     const slugModul = new Set(template.modules.map((modul) => modul.slug));
@@ -179,6 +171,17 @@ describe("template bawaan yang dikirim", () => {
       "hubung-warga": true,
       "admin-web": true,
       "buku-tamu": true,
+      // Menunya sudah tercakup halaman lain (peta, kegiatan, inventaris, bantuan);
+      // modul izinnya tetap ada agar grant lama tidak yatim.
+      "peta-wilayah": true,
+      "batas-wilayah": true,
+      "proyek-desa": true,
+      "aset-desa": true,
+      "data-penerima-bantuan": true,
+      // Perencanaan & aspirasi memakai alur yang sudah ada (/keuangan/kegiatan,
+      // pengaduan); modul izinnya tetap ada agar grant lama tidak yatim.
+      "perencanaan-pembangunan": true,
+      "aspirasi-warga": true,
     };
 
     for (const modul of template.modules) {
@@ -281,6 +284,17 @@ describe("template bawaan yang dikirim", () => {
       ["inventaris", "/inventaris"],
       ["bumindes", "/bumindes/buku-administrasi?golongan=A"],
       ["pengaduan", "/pengaduan-admin"],
+      ["agenda-kegiatan", "/profil-desa/website/agenda"],
+      ["arsip", "/layanan-surat/persuratan/arsip"],
+      ["mutasi-penduduk", "/kependudukan/mutasi-penduduk"],
+      ["dokumen-keuangan", "/keuangan/dokumen"],
+      ["website-konten", "/profil-desa/website/konten"],
+      ["website-halaman", "/profil-desa/website/halaman"],
+      ["pengajuan-layanan", "/pelayanan-publik/pengajuan"],
+      ["analisis-survei", "/pelayanan-publik/survei"],
+      ["cuti-izin", "/kehadiran/cuti-izin"],
+      ["verifikasi-surat", "/layanan-surat/persuratan/verifikasi"],
+      ["master-surat", "/layanan-surat/persuratan/master"],
     ]);
 
     for (const [slug, url] of halaman) {
@@ -310,6 +324,7 @@ describe("template bawaan yang dikirim", () => {
       "laporan-penduduk",
       "laporan-bulanan",
       "laporan-kelompok-rentan",
+      "mutasi-penduduk",
     ]);
     expect(grup("layanan-surat")).toEqual([
       "permohonan-surat",
@@ -321,6 +336,8 @@ describe("template bawaan yang dikirim", () => {
       "surat-masuk",
       "surat-keluar",
       "surat-dinas",
+      "verifikasi-surat",
+      "master-surat",
     ]);
     expect(grup("kehadiran")).toEqual([
       "data-pegawai",
@@ -331,6 +348,7 @@ describe("template bawaan yang dikirim", () => {
       "hari-libur",
       "jam-kerja",
       "alasan-keluar",
+      "cuti-izin",
     ]);
     expect(grup("keuangan")).toEqual([
       "apbdes",
@@ -341,6 +359,7 @@ describe("template bawaan yang dikirim", () => {
       "buku-kas-umum",
       "realisasi",
       "laporan-keuangan",
+      "dokumen-keuangan",
     ]);
     expect(grup("sekretariat")).toEqual([
       "bumindes",
@@ -377,6 +396,8 @@ describe("template bawaan yang dikirim", () => {
       "berita",
       "galeri",
       "dokumen",
+      "website-konten",
+      "website-halaman",
       "website-pengaturan",
     ]);
     expect(grup("admin-web")).toEqual([]);
@@ -392,6 +413,8 @@ describe("template bawaan yang dikirim", () => {
       "aspirasi-warga",
       "lapak",
       "informasi-pelayanan",
+      "pengajuan-layanan",
+      "analisis-survei",
     ]);
     expect(grup("satu-data")).toEqual([
       "bantuan",

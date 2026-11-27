@@ -91,14 +91,6 @@ export async function deleteKontakGrup(id: number, villageId: number) {
     .where(and(eq(kontakGrup.id, id), eq(kontakGrup.villageId, villageId)));
 }
 
-export async function listAnggotaGrup(villageId: number, grupId: number) {
-  return db
-    .select()
-    .from(anggotaGrupKontak)
-    .where(and(eq(anggotaGrupKontak.villageId, villageId), eq(anggotaGrupKontak.grupId, grupId)))
-    .orderBy(desc(anggotaGrupKontak.id));
-}
-
 export async function addAnggotaGrup(input: typeof anggotaGrupKontak.$inferInsert) {
   const [res] = await db.insert(anggotaGrupKontak).values(input);
   const result = res as { insertId: bigint | number };

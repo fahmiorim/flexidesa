@@ -40,33 +40,3 @@ export async function cariDokumenById(villageId: number, id: number) {
     .limit(1);
   return row;
 }
-
-export async function cariDokumenBySlug(villageId: number, slug: string) {
-  const [row] = await db
-    .select({ id: dokumenPublik.id })
-    .from(dokumenPublik)
-    .where(and(eq(dokumenPublik.villageId, villageId), eq(dokumenPublik.slug, slug)))
-    .limit(1);
-  return row;
-}
-
-export async function ubahDokumen(
-  villageId: number,
-  id: number,
-  data: {
-    nama: string;
-    slug: string;
-    kategori: string;
-    jenis: string | null;
-    nomor: string | null;
-    tahun: number | null;
-    berkas: string | null;
-    tautan: string | null;
-    keterangan: string | null;
-  },
-) {
-  await db
-    .update(dokumenPublik)
-    .set(data)
-    .where(and(eq(dokumenPublik.villageId, villageId), eq(dokumenPublik.id, id)));
-}

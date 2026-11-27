@@ -4,7 +4,7 @@ import { and, asc, count, desc, eq, isNull } from "drizzle-orm";
 
 import { db } from "@/db";
 import { residents } from "@/db/schema/resident";
-import { wargaPesan, type NewWargaPesan } from "@/db/schema/warga-pesan";
+import { wargaPesan } from "@/db/schema/warga-pesan";
 
 import {
   pengirimPesan,
@@ -77,12 +77,6 @@ export async function listPesanPercakapan(villageId: number): Promise<PesanPerca
     createdAt: row.createdAt,
     dibacaOperatorPada: row.dibacaOperatorPada,
   }));
-}
-
-export async function createPesanWarga(data: NewWargaPesan): Promise<number> {
-  const [row] = await db.insert(wargaPesan).values(data).$returningId();
-  if (!row) throw new Error("Gagal menyimpan pesan warga.");
-  return row.id;
 }
 
 /** Tandai balasan operator sebagai sudah dibaca warga. */

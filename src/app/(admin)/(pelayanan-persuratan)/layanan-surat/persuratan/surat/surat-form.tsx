@@ -1,8 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FieldShell, FormField } from "@/components/ui/form-field";
 import type { IsianField } from "@/features/pelayanan-persuratan/surat/domain/isian";
 import { LABEL_FIELD_PENDUDUK_LUAR } from "@/features/pelayanan-persuratan/surat/domain/pengaturan-surat";
 import type { PendudukLuarSurat } from "@/features/pelayanan-persuratan/surat/domain/pengikut";
@@ -79,7 +81,7 @@ export function SuratForm({
   };
 
   return (
-    <form action={action} className="modul-card" style={{ padding: 22, display: "grid", gap: 20 }}>
+    <form action={action} className="modul-card form-card-stack">
       {initial?.id ? <input type="hidden" name="id" value={initial.id} /> : null}
       {initial?.pengikut.map((residentId) => (
         <input key={residentId} type="hidden" name="pengikut" value={residentId} />
@@ -95,64 +97,53 @@ export function SuratForm({
         </p>
       </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))",
-          gap: 16,
-        }}
-      >
-        <label style={{ display: "grid", gap: 7, fontSize: 12, fontWeight: 700 }}>
-          Jenis surat <span style={{ color: "#dc2626" }}>*</span>
-          <select
-            name="typeId"
-            required
-            value={typeId}
-            onChange={(event) => setTypeId(event.target.value)}
-          >
-            {jenis.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name} ({item.code})
-              </option>
-            ))}
-          </select>
-        </label>
-        <label style={{ display: "grid", gap: 7, fontSize: 12, fontWeight: 700 }}>
-          Penduduk / pemohon
-          <select
-            name="residentId"
-            required={selected?.requiresResident ?? false}
-            defaultValue={initial?.residentId?.toString() ?? "none"}
-          >
-            <option value="none" disabled={selected?.requiresResident ?? false}>
-              {selected?.requiresResident ? "Pilih penduduk (wajib)" : "Tanpa penduduk terkait"}
-            </option>
-            {penduduk.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.name} · {item.nationalId}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label style={{ display: "grid", gap: 7, fontSize: 12, fontWeight: 700 }}>
-          Tanggal surat <span style={{ color: "#dc2626" }}>*</span>
-          <input
-            type="date"
-            name="letterDate"
-            required
-            defaultValue={initial?.letterDate ?? tanggalDefault}
-          />
-        </label>
-        <label style={{ display: "grid", gap: 7, fontSize: 12, fontWeight: 700 }}>
-          Keperluan
-          <input
-            type="text"
-            name="purpose"
-            maxLength={255}
-            defaultValue={initial?.purpose ?? ""}
-            placeholder="Contoh: Persyaratan administrasi"
-          />
-        </label>
+      <div className="modul-form-grid">
+        <FormField
+          label="Jenis surat *"
+          kind="select"
+          name="typeId"
+          required
+          value={typeId}
+          onChange={(event) => setTypeId(event.target.value)}
+          options={jenis.map((item) => ({
+            value: String(item.id),
+            label: `${item.name} (${item.code})`,
+          }))}
+        />
+        <FormField
+          label="Penduduk / pemohon"
+          kind="select"
+          name="residentId"
+          required={selected?.requiresResident ?? false}
+          defaultValue={initial?.residentId?.toString() ?? "none"}
+          options={[
+            {
+              value: "none",
+              label: selected?.requiresResident
+                ? "Pilih penduduk (wajib)"
+                : "Tanpa penduduk terkait",
+              disabled: selected?.requiresResident ?? false,
+            },
+            ...penduduk.map((item) => ({
+              value: String(item.id),
+              label: `${item.name} · ${item.nationalId}`,
+            })),
+          ]}
+        />
+        <FormField
+          label="Tanggal surat *"
+          name="letterDate"
+          type="date"
+          required
+          defaultValue={initial?.letterDate ?? tanggalDefault}
+        />
+        <FormField
+          label="Keperluan"
+          name="purpose"
+          maxLength={255}
+          defaultValue={initial?.purpose ?? ""}
+          placeholder="Contoh: Persyaratan administrasi"
+        />
       </div>
 
       {selected && selected.fields.length > 0 ? (
@@ -168,77 +159,78 @@ export function SuratForm({
             <h2 className="beranda-card-title">Isian Tambahan</h2>
             <p className="modul-muted">Isian ini mengikuti format jenis surat yang dipilih.</p>
           </div>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,260px),1fr))",
-              gap: 14,
-            }}
-          >
-            {selected.fields.map((field) => (
-              <label
-                key={field.kode}
-                style={{
-                  display: "grid",
-                  gap: 7,
-                  fontSize: 12,
-                  fontWeight: 700,
-                  gridColumn: field.tipe === "textarea" ? "1 / -1" : undefined,
-                }}
-              >
-                {field.label}
-                {field.required ? <span style={{ color: "#dc2626" }}> *</span> : null}
-                {field.tipe === "textarea" ? (
-                  <textarea
-                    name={`isian.${field.kode}`}
+          <div className="modul-form-grid">
+            {selected.fields.map((field) => {
+              const fieldName = `isian.${field.kode}`;
+              const fieldLabel = `${field.label}${field.required ? " *" : ""}`;
+              if (field.tipe === "checkbox") {
+                return (
+                  <FieldShell key={field.kode} label={fieldLabel} id={fieldName}>
+                    <span className="form-check-inline">
+                      <input type="hidden" name={fieldName} value="" />
+                      <input
+                        id={fieldName}
+                        type="checkbox"
+                        name={fieldName}
+                        value="true"
+                        required={field.required}
+                        defaultChecked={
+                          initial?.isiSurat[field.kode] === "Ya" ||
+                          initial?.isiSurat[field.kode] === "true"
+                        }
+                      />
+                      <span className="modul-muted">
+                        {field.placeholder ?? "Centang jika sesuai"}
+                      </span>
+                    </span>
+                  </FieldShell>
+                );
+              }
+              if (field.tipe === "textarea") {
+                return (
+                  <FormField
+                    key={field.kode}
+                    label={fieldLabel}
+                    kind="textarea"
+                    name={fieldName}
                     required={field.required}
                     rows={3}
                     maxLength={4000}
-                    defaultValue={initial?.isiSurat[field.kode] ?? ""}
-                    placeholder={field.placeholder ?? ""}
-                  />
-                ) : field.tipe === "select" ? (
-                  <select
-                    name={`isian.${field.kode}`}
-                    required={field.required}
-                    defaultValue={initial?.isiSurat[field.kode] ?? ""}
-                  >
-                    <option value="">Pilih {field.label.toLowerCase()}</option>
-                    {field.opsi.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                ) : field.tipe === "checkbox" ? (
-                  <span style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 38 }}>
-                    <input type="hidden" name={`isian.${field.kode}`} value="" />
-                    <input
-                      type="checkbox"
-                      name={`isian.${field.kode}`}
-                      value="true"
-                      required={field.required}
-                      defaultChecked={
-                        initial?.isiSurat[field.kode] === "Ya" ||
-                        initial?.isiSurat[field.kode] === "true"
-                      }
-                    />
-                    <span className="modul-muted">
-                      {field.placeholder ?? "Centang jika sesuai"}
-                    </span>
-                  </span>
-                ) : (
-                  <input
-                    type={field.tipe === "number" || field.tipe === "date" ? field.tipe : "text"}
-                    name={`isian.${field.kode}`}
-                    required={field.required}
-                    maxLength={field.tipe === "text" ? 255 : undefined}
                     placeholder={field.placeholder ?? ""}
                     defaultValue={initial?.isiSurat[field.kode] ?? ""}
+                    containerClassName="form-field-full"
                   />
-                )}
-              </label>
-            ))}
+                );
+              }
+              if (field.tipe === "select") {
+                return (
+                  <FormField
+                    key={field.kode}
+                    label={fieldLabel}
+                    kind="select"
+                    name={fieldName}
+                    required={field.required}
+                    defaultValue={initial?.isiSurat[field.kode] ?? ""}
+                    options={[
+                      { value: "", label: `Pilih ${field.label.toLowerCase()}` },
+                      ...field.opsi.map((option) => ({ value: option, label: option })),
+                    ]}
+                  />
+                );
+              }
+              return (
+                <FormField
+                  key={field.kode}
+                  label={fieldLabel}
+                  name={fieldName}
+                  required={field.required}
+                  maxLength={field.tipe === "text" ? 255 : undefined}
+                  placeholder={field.placeholder ?? ""}
+                  defaultValue={initial?.isiSurat[field.kode] ?? ""}
+                  type={field.tipe === "number" || field.tipe === "date" ? field.tipe : "text"}
+                />
+              );
+            })}
           </div>
         </section>
       ) : null}
@@ -280,75 +272,54 @@ export function SuratForm({
               }}
             >
               <strong style={{ fontSize: 12 }}>Orang {index + 1}</strong>
-              <button
-                className="button button-secondary"
+              <Button
+                variant="secondary"
                 onClick={() => setLuar((sebelum) => sebelum.filter((_, i) => i !== index))}
                 type="button"
               >
                 Hapus
-              </button>
+              </Button>
             </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,220px),1fr))",
-                gap: 12,
-              }}
-            >
-              <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700 }}>
-                Nama <span style={{ color: "#dc2626" }}>*</span>
-                <input
-                  maxLength={100}
-                  onChange={(event) => ubahLuar(index, "nama", event.target.value)}
-                  required
-                  value={baris.nama}
-                />
-              </label>
+            <div className="modul-form-grid">
+              <FormField
+                label="Nama *"
+                maxLength={100}
+                onChange={(event) => ubahLuar(index, "nama", event.target.value)}
+                required
+                value={baris.nama}
+              />
               {fieldPendudukLuar.map((field) => (
-                <label
+                <FormField
                   key={field}
-                  style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700 }}
-                >
-                  {LABEL_ISIAN_LUAR[field]}
-                  <input
-                    maxLength={200}
-                    onChange={(event) => ubahLuar(index, field, event.target.value)}
-                    type={field === "tanggalLahir" ? "date" : "text"}
-                    value={baris[field]}
-                  />
-                </label>
+                  label={LABEL_ISIAN_LUAR[field]}
+                  maxLength={200}
+                  onChange={(event) => ubahLuar(index, field, event.target.value)}
+                  type={field === "tanggalLahir" ? "date" : "text"}
+                  value={baris[field]}
+                />
               ))}
             </div>
           </div>
         ))}
 
         <div>
-          <button
-            className="button button-secondary"
+          <Button
+            variant="secondary"
             onClick={() => setLuar((sebelum) => [...sebelum, barisLuarKosong()])}
             type="button"
           >
             ＋ Tambah penduduk luar
-          </button>
+          </Button>
         </div>
       </section>
 
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 10,
-          justifyContent: "flex-end",
-          paddingTop: 16,
-          borderTop: "1px solid var(--color-border)",
-        }}
-      >
-        <Link href="/layanan-surat/persuratan/surat" className="button button-secondary">
+      <div className="form-actions form-actions-top">
+        <ButtonLink variant="secondary" href="/layanan-surat/persuratan/surat">
           Batal
-        </Link>
-        <button type="submit" className="button button-primary" disabled={jenis.length === 0}>
+        </ButtonLink>
+        <Button variant="primary" type="submit" disabled={jenis.length === 0}>
           {initial ? "Simpan Perubahan" : "Simpan sebagai Konsep"}
-        </button>
+        </Button>
       </div>
     </form>
   );

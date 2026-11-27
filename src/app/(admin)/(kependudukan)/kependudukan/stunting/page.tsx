@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { StatCard, StatGrid } from "@/components/ui/stat-card";
 import { muatStuntingData } from "@/features/kependudukan/kesehatan/application/kia-use-cases";
 import {
   buildSkorcardKonvergensi,
@@ -96,34 +97,29 @@ export default async function StuntingPage({
         deskripsi={<>Posyandu, pemantauan ibu dan anak, serta rekap stunting.</>}
       />
 
-      <section aria-label="Ringkasan stunting" className="data-kependudukan-kpis">
-        <article className="data-kpi data-kpi-primary">
-          <span>Posyandu</span>
-          <strong>{number.format(posyandu.length)}</strong>
-          <small>Posyandu terdaftar</small>
-        </article>
-        <article className="data-kpi">
-          <span>Buku KIA</span>
-          <strong>{number.format(kia.length)}</strong>
-          <small>Ibu dan anak terdaftar</small>
-        </article>
-        <article className="data-kpi">
-          <span>Pemantauan Ibu Hamil</span>
-          <strong>{number.format(ibuHamil.length)}</strong>
-          <small>
-            {number.format(ibuHamilBulanIni)} periksa bulan ini ·{" "}
-            {number.format(skorcard.jumlahKekRisti)} KEK/risti
-          </small>
-        </article>
-        <article className="data-kpi">
-          <span>Pemantauan Anak</span>
-          <strong>{number.format(anak.length)}</strong>
-          <small>
-            {number.format(anakBulanIni)} periksa bulan ini · {number.format(rekapKia.stunting)}{" "}
-            terindikasi stunting
-          </small>
-        </article>
-      </section>
+      <StatGrid ariaLabel="Ringkasan stunting" columns={4}>
+        <StatCard
+          label="Posyandu"
+          note="Posyandu terdaftar"
+          utama
+          value={number.format(posyandu.length)}
+        />
+        <StatCard
+          label="Buku KIA"
+          note="Ibu dan anak terdaftar"
+          value={number.format(kia.length)}
+        />
+        <StatCard
+          label="Pemantauan Ibu Hamil"
+          note={`${number.format(ibuHamilBulanIni)} periksa bulan ini · ${number.format(skorcard.jumlahKekRisti)} KEK/risti`}
+          value={number.format(ibuHamil.length)}
+        />
+        <StatCard
+          label="Pemantauan Anak"
+          note={`${number.format(anakBulanIni)} periksa bulan ini · ${number.format(rekapKia.stunting)} terindikasi stunting`}
+          value={number.format(anak.length)}
+        />
+      </StatGrid>
 
       <nav aria-label="Navigasi modul stunting" className={styles.tabs}>
         {TABS.map((item) => (

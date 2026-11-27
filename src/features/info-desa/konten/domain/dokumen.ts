@@ -14,19 +14,6 @@ export const DOKUMEN_RESOURCE = RESOURCES.dokumenPublik;
 export type { DokumenKategori };
 
 /** Baris dokumen yang aman dikirim ke komponen klien. */
-export interface DokumenRow {
-  id: number;
-  nama: string;
-  slug: string;
-  kategori: string;
-  jenis: string | null;
-  nomor: string | null;
-  tahun: number | null;
-  berkas: string | null;
-  tautan: string | null;
-  keterangan: string | null;
-  aktif: boolean;
-}
 
 const tautanSchema = z
   .string()
@@ -68,4 +55,3 @@ export const dokumenPublikFormSchema = z
     path: ["berkas"],
     message: "Dokumen aktif harus memiliki berkas atau tautan.",
   });
-export type DokumenPublikFormInput = z.infer<typeof dokumenPublikFormSchema>;

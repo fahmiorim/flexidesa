@@ -2,6 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
+import { StatCard, StatGrid } from "@/components/ui/stat-card";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { listSuratWithMeta } from "@/features/pelayanan-persuratan/surat/application/daftar-surat";
 import {
   LETTER_STATUS_LABELS,
@@ -74,157 +80,94 @@ export default async function SuratPage({ searchParams }: { searchParams: Search
       <PageHeading
         judul={<>Pembuatan & Pengelolaan Surat</>}
         deskripsi={<>Kelola surat resmi desa dan penerbitannya.</>}
-        aksi={
-          <>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-              <Link href="/layanan-surat/persuratan/dashboard" className="button button-secondary">
-                Dashboard Surat
-              </Link>
-              <Link href="/layanan-surat/persuratan/verifikasi" className="button button-secondary">
-                Verifikasi Surat
-              </Link>
-              <Link
-                href="/layanan-surat/persuratan/jenis-surat"
-                className="button button-secondary"
-              >
-                Template & Jenis Surat
-              </Link>
-              <Link href="/layanan-surat/persuratan/arsip" className="button button-secondary">
-                Arsip & Riwayat
-              </Link>
-              <Link href="/layanan-surat/persuratan/surat/baru" className="button button-primary">
-                ＋ Buat Surat Baru
-              </Link>
-            </div>
-          </>
-        }
       />
 
-      <div className="beranda-kpi-grid">
-        <article className="beranda-card beranda-kpi" data-tone="ungu">
-          <span className="beranda-kpi-icon" aria-hidden="true">
-            ▤
-          </span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Total Surat</span>
-            <strong className="beranda-kpi-value">
-              {hasil.recap.reduce((sum, item) => sum + item.total, 0).toLocaleString("id-ID")}
-            </strong>
-            <span className="beranda-chip" data-tone="ungu">
-              Seluruh periode
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="biru">
-          <span className="beranda-kpi-icon" aria-hidden="true">
-            ◷
-          </span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Konsep</span>
-            <strong className="beranda-kpi-value">{draft.toLocaleString("id-ID")}</strong>
-            <span className="beranda-chip" data-tone="netral">
-              Belum diajukan
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="ungu">
-          <span className="beranda-kpi-icon" aria-hidden="true">
-            ⇄
-          </span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Menunggu Verifikasi</span>
-            <strong className="beranda-kpi-value">{verifikasi.toLocaleString("id-ID")}</strong>
-            <span className="beranda-chip" data-tone="ungu">
-              Antrean persetujuan
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="hijau">
-          <span className="beranda-kpi-icon" aria-hidden="true">
-            ✓
-          </span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Surat Terbit</span>
-            <strong className="beranda-kpi-value">{terbit.toLocaleString("id-ID")}</strong>
-            <span className="beranda-chip" data-tone="hijau">
-              Siap dicetak
-            </span>
-          </div>
-        </article>
-        <article className="beranda-card beranda-kpi" data-tone="jingga">
-          <span className="beranda-kpi-icon" aria-hidden="true">
-            ×
-          </span>
-          <div className="beranda-kpi-body">
-            <span className="beranda-kpi-label">Dibatalkan</span>
-            <strong className="beranda-kpi-value">{batal.toLocaleString("id-ID")}</strong>
-            <span className="beranda-chip" data-tone="merah">
-              Tidak diterbitkan
-            </span>
-          </div>
-        </article>
-      </div>
+      <StatGrid columns={4}>
+        <StatCard
+          icon="▤"
+          label="Total Surat"
+          utama
+          note="Seluruh periode"
+          value={hasil.recap.reduce((sum, item) => sum + item.total, 0).toLocaleString("id-ID")}
+        />
+        <StatCard
+          icon="◷"
+          label="Konsep"
+          note="Belum diajukan"
+          tone="biru"
+          value={draft.toLocaleString("id-ID")}
+        />
+        <StatCard
+          icon="⇄"
+          label="Menunggu Verifikasi"
+          note="Antrean persetujuan"
+          value={verifikasi.toLocaleString("id-ID")}
+        />
+        <StatCard
+          icon="✓"
+          label="Surat Terbit"
+          note="Siap dicetak"
+          tone="hijau"
+          value={terbit.toLocaleString("id-ID")}
+        />
+        <StatCard
+          icon="×"
+          label="Dibatalkan"
+          note="Tidak diterbitkan"
+          tone="merah"
+          value={batal.toLocaleString("id-ID")}
+        />
+      </StatGrid>
 
-      <section className="modul-card" style={{ marginBottom: 18 }}>
-        <div className="beranda-card-head">
-          <div>
-            <h2 className="beranda-card-title">Cari & Filter Surat</h2>
-            <p className="modul-muted">
-              Cari nomor surat, jenis surat, nama penduduk, atau keperluan.
-            </p>
-          </div>
-          <Link href="/layanan-surat/persuratan/surat" className="modul-muted">
-            Reset filter
-          </Link>
-        </div>
-        <form
-          method="get"
-          action="/layanan-surat/persuratan/surat"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit,minmax(200px,1fr))",
-            gap: 12,
-            alignItems: "end",
-          }}
-        >
-          <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700 }}>
-            Kata kunci
-            <input
-              type="search"
+      <TableCard
+        title="Daftar Surat"
+        description={`${total.toLocaleString("id-ID")} surat ditemukan · ${hasil.pageSize} data per halaman`}
+        actions={
+          <>
+            <ButtonLink size="sm" variant="secondary" href="/layanan-surat/persuratan/dashboard">
+              Dashboard
+            </ButtonLink>
+            <ButtonLink size="sm" variant="secondary" href="/layanan-surat/persuratan/verifikasi">
+              Verifikasi
+            </ButtonLink>
+            <ButtonLink size="sm" variant="secondary" href="/layanan-surat/persuratan/jenis-surat">
+              Template
+            </ButtonLink>
+            <ButtonLink size="sm" variant="secondary" href="/layanan-surat/persuratan/arsip">
+              Arsip
+            </ButtonLink>
+            <ButtonLink size="sm" href="/layanan-surat/persuratan/surat/baru">
+              ＋ Buat Surat Baru
+            </ButtonLink>
+          </>
+        }
+        filter={
+          <form method="get" action="/layanan-surat/persuratan/surat" className="modul-filter-row">
+            <FormField
+              label="Kata kunci"
               name="q"
+              type="search"
               maxLength={100}
               defaultValue={filter.search}
               placeholder="Nomor, jenis, nama pemohon..."
             />
-          </label>
-          <label style={{ display: "grid", gap: 6, fontSize: 12, fontWeight: 700 }}>
-            Status surat
-            <select name="status" defaultValue={filter.status ?? ""}>
-              <option value="">Semua status</option>
-              {LETTER_STATUSES.map((status) => (
-                <option key={status} value={status}>
-                  {LETTER_STATUS_LABELS[status]}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div style={{ display: "flex", gap: 8 }}>
-            <button className="button button-primary" type="submit">
-              Terapkan Filter
-            </button>
-          </div>
-        </form>
-      </section>
-
-      <section className="modul-card">
-        <div className="beranda-card-head">
-          <div>
-            <h2 className="beranda-card-title">Daftar Surat</h2>
-            <p className="modul-muted">
-              {total.toLocaleString("id-ID")} surat ditemukan · {hasil.pageSize} data per halaman
-            </p>
-          </div>
-        </div>
+            <FormField
+              label="Status surat"
+              kind="select"
+              name="status"
+              defaultValue={filter.status ?? ""}
+              options={[
+                { value: "", label: "Semua status" },
+                ...LETTER_STATUSES.map((status) => ({
+                  value: status,
+                  label: LETTER_STATUS_LABELS[status],
+                })),
+              ]}
+            />
+            <Button type="submit">Terapkan Filter</Button>
+          </form>
+        }
+      >
         {hasil.rows.length === 0 ? (
           <div
             style={{
@@ -240,45 +183,45 @@ export default async function SuratPage({ searchParams }: { searchParams: Search
             </span>
             <strong>Belum ada surat pada filter ini</strong>
             <p className="modul-muted">Buat surat baru atau ubah kata kunci pencarian.</p>
-            <Link href="/layanan-surat/persuratan/surat/baru" className="button button-primary">
+            <ButtonLink variant="primary" href="/layanan-surat/persuratan/surat/baru">
               Buat Surat Baru
-            </Link>
+            </ButtonLink>
           </div>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th scope="col">Nomor Surat</th>
-                  <th scope="col">Jenis Surat</th>
-                  <th scope="col">Pemohon</th>
-                  <th scope="col">Tanggal</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">TTE</th>
-                  <th scope="col">Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">Nomor Surat</HeaderCell>
+                  <HeaderCell scope="col">Jenis Surat</HeaderCell>
+                  <HeaderCell scope="col">Pemohon</HeaderCell>
+                  <HeaderCell scope="col">Tanggal</HeaderCell>
+                  <HeaderCell scope="col">Status</HeaderCell>
+                  <HeaderCell scope="col">TTE</HeaderCell>
+                  <HeaderCell scope="col">Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {hasil.rows.map((row) => (
-                  <tr key={row.id}>
-                    <td className="modul-mono">{row.number ?? "Belum bernomor"}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell className="modul-mono">{row.number ?? "Belum bernomor"}</Cell>
+                    <Cell>
                       <strong>{row.typeName}</strong>
                       {row.purpose ? <span className="modul-muted">{row.purpose}</span> : null}
-                    </td>
-                    <td>{row.residentName ?? "—"}</td>
-                    <td>{FORMAT_TANGGAL.format(new Date(`${row.letterDate}T00:00:00`))}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.residentName ?? "—"}</Cell>
+                    <Cell>{FORMAT_TANGGAL.format(new Date(`${row.letterDate}T00:00:00`))}</Cell>
+                    <Cell>
                       <span className="beranda-chip" data-tone={chipStatus(row.status)}>
                         {LETTER_STATUS_LABELS[row.status]}
                       </span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <span className="beranda-chip" data-tone={row.tte ? "hijau" : "netral"}>
                         {row.tte ? "Tertanda" : "—"}
                       </span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <Link
                         href={`/layanan-surat/persuratan/surat/${row.id}`}
                         style={{
@@ -289,12 +232,12 @@ export default async function SuratPage({ searchParams }: { searchParams: Search
                       >
                         Detail →
                       </Link>
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
         {hasil.pageCount > 1 ? (
           <div
@@ -312,19 +255,19 @@ export default async function SuratPage({ searchParams }: { searchParams: Search
             </span>
             <div style={{ display: "flex", gap: 8 }}>
               {hasil.page > 1 ? (
-                <Link className="button button-secondary" href={hrefPage(hasil.page - 1)}>
+                <ButtonLink variant="secondary" href={hrefPage(hasil.page - 1)}>
                   Sebelumnya
-                </Link>
+                </ButtonLink>
               ) : null}
               {hasil.page < hasil.pageCount ? (
-                <Link className="button button-secondary" href={hrefPage(hasil.page + 1)}>
+                <ButtonLink variant="secondary" href={hrefPage(hasil.page + 1)}>
                   Berikutnya
-                </Link>
+                </ButtonLink>
               ) : null}
             </div>
           </div>
         ) : null}
-      </section>
+      </TableCard>
     </div>
   );
 }

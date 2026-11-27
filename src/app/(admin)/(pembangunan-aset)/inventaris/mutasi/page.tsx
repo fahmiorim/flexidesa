@@ -1,6 +1,9 @@
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { formatRupiah } from "@/features/keuangan-desa/keuangan/domain/keuangan";
 import { getPemeliharaanPageData } from "@/features/pembangunan-aset/inventaris/application/inventaris-use-cases";
 import {
@@ -74,15 +77,6 @@ export default async function MutasiPemeliharaanPage({ searchParams }: Props) {
         </article>
       </section>
       <nav className={styles.tabs}>
-        <Link href="/inventaris/dashboard">Dashboard</Link>
-        <Link href="/inventaris">Daftar Inventaris</Link>
-        <Link href="/inventaris/pengelolaan">Pengelolaan Aset</Link>
-        <Link className={styles.active} href="/inventaris/mutasi">
-          Mutasi &amp; Pemeliharaan
-        </Link>
-        <Link href="/inventaris/laporan">Laporan &amp; Statistik</Link>
-      </nav>
-      <nav className={styles.tabs}>
         <a href="#riwayat-mutasi">Riwayat Mutasi</a>
         <a href="#pengajuan-mutasi">Mutasi Aset</a>
         <Link href="/inventaris/mutasi?jenis=hapus#pengajuan-mutasi">Penghapusan Aset</Link>
@@ -100,81 +94,85 @@ export default async function MutasiPemeliharaanPage({ searchParams }: Props) {
           </div>
         </div>
         <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Kode Inventaris</th>
-                <th>Nama Aset</th>
-                <th>Jenis Mutasi</th>
-                <th>Detail</th>
-                <th>Pengaju</th>
-                <th>Status</th>
-                <th>Verifikasi / Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.mutasi.map((m) => {
-                const step = nextMutasiStep(m);
-                const allowed = step !== null && data.approverSteps.includes(step);
-                return (
-                  <tr key={m.id}>
-                    <td>{dateLabel(m.tanggalMutasi)}</td>
-                    <td>{m.nomorInventaris ?? "—"}</td>
-                    <td>{m.namaBarang ?? "Aset dihapus"}</td>
-                    <td>{MUTASI_JENIS_LABELS[m.jenis]}</td>
-                    <td>
-                      {m.lokasiBaru ??
-                        (m.kondisiBaru
-                          ? INVENTARIS_KONDISI_LABELS[m.kondisiBaru]
-                          : (m.alasan ?? "—"))}
-                    </td>
-                    <td>{m.diajukanOleh ?? "—"}</td>
-                    <td>
-                      <span
-                        className={`${styles.tag} ${
-                          m.status === "disetujui"
-                            ? styles.good
-                            : m.status === "ditolak"
-                              ? styles.bad
-                              : styles.warn
-                        }`}
-                      >
-                        {MUTASI_STATUS_LABELS[m.status]}
-                      </span>
-                    </td>
-                    <td>
-                      {m.status === "diajukan" && allowed ? (
-                        <div className={styles.actions}>
-                          <form action={setujuiMutasiInventarisAction}>
-                            <input type="hidden" name="id" value={m.id} />
-                            <button className={styles.primary}>
-                              Setujui · {MUTASI_STEP_LABELS[step]}
-                            </button>
-                          </form>
-                          <form action={tolakMutasiInventarisAction}>
-                            <input type="hidden" name="id" value={m.id} />
-                            <input
-                              name="catatanPenolakan"
-                              placeholder="Alasan penolakan"
-                              required
-                            />
-                            <button className={styles.secondary}>Tolak</button>
-                          </form>
-                        </div>
-                      ) : (
-                        <span className={styles.muted}>
-                          {m.status === "diajukan"
-                            ? "Menunggu " + (step ? MUTASI_STEP_LABELS[step] : "verifikasi")
-                            : (m.disetujuiOleh ?? m.catatanPenolakan ?? "—")}
+          <TableScroll>
+            <Table className={styles.table}>
+              <THead>
+                <Row>
+                  <HeaderCell>Tanggal</HeaderCell>
+                  <HeaderCell>Kode Inventaris</HeaderCell>
+                  <HeaderCell>Nama Aset</HeaderCell>
+                  <HeaderCell>Jenis Mutasi</HeaderCell>
+                  <HeaderCell>Detail</HeaderCell>
+                  <HeaderCell>Pengaju</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Verifikasi / Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
+                {data.mutasi.map((m) => {
+                  const step = nextMutasiStep(m);
+                  const allowed = step !== null && data.approverSteps.includes(step);
+                  return (
+                    <Row key={m.id}>
+                      <Cell>{dateLabel(m.tanggalMutasi)}</Cell>
+                      <Cell>{m.nomorInventaris ?? "—"}</Cell>
+                      <Cell>{m.namaBarang ?? "Aset dihapus"}</Cell>
+                      <Cell>{MUTASI_JENIS_LABELS[m.jenis]}</Cell>
+                      <Cell>
+                        {m.lokasiBaru ??
+                          (m.kondisiBaru
+                            ? INVENTARIS_KONDISI_LABELS[m.kondisiBaru]
+                            : (m.alasan ?? "—"))}
+                      </Cell>
+                      <Cell>{m.diajukanOleh ?? "—"}</Cell>
+                      <Cell>
+                        <span
+                          className={`${styles.tag} ${
+                            m.status === "disetujui"
+                              ? styles.good
+                              : m.status === "ditolak"
+                                ? styles.bad
+                                : styles.warn
+                          }`}
+                        >
+                          {MUTASI_STATUS_LABELS[m.status]}
                         </span>
-                      )}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+                      </Cell>
+                      <Cell>
+                        {m.status === "diajukan" && allowed ? (
+                          <div className={styles.actions}>
+                            <form action={setujuiMutasiInventarisAction}>
+                              <input type="hidden" name="id" value={m.id} />
+                              <Button className={styles.primary} variant="primary">
+                                Setujui · {MUTASI_STEP_LABELS[step]}
+                              </Button>
+                            </form>
+                            <form action={tolakMutasiInventarisAction}>
+                              <input type="hidden" name="id" value={m.id} />
+                              <input
+                                name="catatanPenolakan"
+                                placeholder="Alasan penolakan"
+                                required
+                              />
+                              <Button className={styles.secondary} variant="secondary">
+                                Tolak
+                              </Button>
+                            </form>
+                          </div>
+                        ) : (
+                          <span className={styles.muted}>
+                            {m.status === "diajukan"
+                              ? "Menunggu " + (step ? MUTASI_STEP_LABELS[step] : "verifikasi")
+                              : (m.disetujuiOleh ?? m.catatanPenolakan ?? "—")}
+                          </span>
+                        )}
+                      </Cell>
+                    </Row>
+                  );
+                })}
+              </TBody>
+            </Table>
+          </TableScroll>
           {data.mutasi.length === 0 ? (
             <p className={styles.empty}>Belum ada riwayat mutasi aset.</p>
           ) : null}
@@ -250,7 +248,9 @@ export default async function MutasiPemeliharaanPage({ searchParams }: Props) {
               Keterangan Tambahan
               <textarea name="keterangan" rows={2} />
             </label>
-            <button className={styles.primary}>Kirim Pengajuan</button>
+            <Button className={styles.primary} variant="primary">
+              Kirim Pengajuan
+            </Button>
           </form>
         </section>
       ) : null}
@@ -333,14 +333,19 @@ export default async function MutasiPemeliharaanPage({ searchParams }: Props) {
                             <option value="rusak_berat">Rusak Berat</option>
                             <option value="dalam_perbaikan">Dalam Perbaikan</option>
                           </select>
-                          <button className={styles.secondary}>Perbarui</button>
+                          <Button className={styles.secondary} variant="secondary">
+                            Perbarui
+                          </Button>
                         </form>
                       ) : null}
                       {data.canManage ? (
-                        <form action={hapusJadwalPemeliharaanAction}>
-                          <input type="hidden" name="id" value={x.id} />
-                          <button className={styles.secondary}>Hapus</button>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusJadwalPemeliharaanAction}
+                          id={x.id}
+                          judul={`Hapus jadwal pemeliharaan "${x.jenis} · ${x.namaBarang ?? "Aset"}"?`}
+                          keterangan="Jadwal pemeliharaan akan dihapus permanen dari riwayat aset."
+                          labelAksi="Hapus jadwal"
+                        />
                       ) : null}
                     </div>
                   </article>
@@ -388,7 +393,9 @@ export default async function MutasiPemeliharaanPage({ searchParams }: Props) {
                   Deskripsi
                   <textarea name="deskripsi" rows={3} />
                 </label>
-                <button className={styles.primary}>Tambah Jadwal</button>
+                <Button className={styles.primary} variant="primary">
+                  Tambah Jadwal
+                </Button>
               </form>
             </div>
           ) : null}

@@ -2,6 +2,9 @@
 
 import { useState, useTransition } from "react";
 
+import { Button } from "@/components/ui/button";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+
 import { tinjauRegistrasiWargaAction } from "./actions";
 
 interface Row {
@@ -47,58 +50,58 @@ export function RegistrasiWargaConsole({ rows }: { rows: Row[] }) {
 
   return (
     <div className="platform-card" style={{ padding: 24 }}>
-      <div className="tenant-table-scroll">
-        <table className="tenant-table">
-          <thead>
-            <tr>
-              <th>Waktu</th>
-              <th>Nama &amp; NIK</th>
-              <th>Kontak</th>
-              <th>Status</th>
-              <th>Catatan</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
+      <TableScroll className="tenant-table-scroll">
+        <Table className="tenant-table">
+          <THead>
+            <Row>
+              <HeaderCell>Waktu</HeaderCell>
+              <HeaderCell>Nama &amp; NIK</HeaderCell>
+              <HeaderCell>Kontak</HeaderCell>
+              <HeaderCell>Status</HeaderCell>
+              <HeaderCell>Catatan</HeaderCell>
+              <HeaderCell>Aksi</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
             {rows.map((row) => {
               const result = hasil[row.id];
               return (
-                <tr key={row.id}>
-                  <td>
+                <Row key={row.id}>
+                  <Cell>
                     {new Intl.DateTimeFormat("id-ID", {
                       dateStyle: "medium",
                       timeStyle: "short",
                     }).format(new Date(row.createdAt))}
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     <strong>{row.nama}</strong>
                     <br />
                     <small>••••••••{row.nik.slice(-4)}</small>
-                  </td>
-                  <td>{row.noHp || "—"}</td>
-                  <td>
+                  </Cell>
+                  <Cell>{row.noHp || "—"}</Cell>
+                  <Cell>
                     <span className="status-badge">{row.status}</span>
-                  </td>
-                  <td>{row.catatan || "—"}</td>
-                  <td>
+                  </Cell>
+                  <Cell>{row.catatan || "—"}</Cell>
+                  <Cell>
                     {row.status === "menunggu" ? (
                       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                        <button
-                          className="button button-primary"
+                        <Button
+                          variant="primary"
                           type="button"
                           disabled={isPending}
                           onClick={() => proses(row.id, "setujui")}
                         >
                           {pending === row.id ? "Memproses..." : "Setujui"}
-                        </button>
-                        <button
-                          className="button button-secondary"
+                        </Button>
+                        <Button
+                          variant="secondary"
                           type="button"
                           disabled={isPending}
                           onClick={() => proses(row.id, "tolak")}
                         >
                           Tolak
-                        </button>
+                        </Button>
                       </div>
                     ) : (
                       "Selesai"
@@ -120,18 +123,18 @@ export function RegistrasiWargaConsole({ rows }: { rows: Row[] }) {
                         ) : null}
                       </div>
                     ) : null}
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               );
             })}
             {rows.length === 0 ? (
-              <tr>
-                <td colSpan={6}>Belum ada pengajuan pendaftaran warga.</td>
-              </tr>
+              <Row>
+                <Cell colSpan={6}>Belum ada pengajuan pendaftaran warga.</Cell>
+              </Row>
             ) : null}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
     </div>
   );
 }

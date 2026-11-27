@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 /**
  * Batas error modul penduduk.
  *
@@ -18,9 +20,9 @@ export default function PendudukError({
         <span className="eyebrow">Data Penduduk</span>
         <h1>Data penduduk tidak dapat dimuat</h1>
         <p>Terjadi kesalahan saat mengambil data.</p>
-        <button className="button button-primary" onClick={reset} type="button">
+        <Button variant="primary" onClick={reset} type="button">
           Coba lagi
-        </button>
+        </Button>
       </section>
     </div>
   );

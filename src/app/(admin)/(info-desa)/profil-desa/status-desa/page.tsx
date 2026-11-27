@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Fragment } from "react";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { getStatusDesaData } from "@/features/info-desa/status-desa/application/status-desa-use-cases";
 import {
   dimensiDariKode,
@@ -69,12 +71,12 @@ export default async function StatusDesaPage({
           <>
             {bolehLihatIdm ? (
               <div className="page-heading-actions">
-                <Link className="button button-secondary" href={`/desa/idm?tahun=${tahun}`}>
+                <ButtonLink variant="secondary" href={`/desa/idm?tahun=${tahun}`}>
                   Lihat IDM &amp; SDGs
-                </Link>
-                <Link className="button button-secondary" href={`/desa/idm/ekspor?tahun=${tahun}`}>
+                </ButtonLink>
+                <ButtonLink variant="secondary" href={`/desa/idm/ekspor?tahun=${tahun}`}>
                   Unduh CSV
-                </Link>
+                </ButtonLink>
               </div>
             ) : null}
           </>
@@ -180,9 +182,9 @@ export default async function StatusDesaPage({
                 ))}
               </select>
             </label>
-            <button className="button button-primary" type="submit">
+            <Button variant="primary" type="submit">
               Tampilkan
-            </button>
+            </Button>
           </form>
           <p>
             {tahunTersedia.length
@@ -236,9 +238,9 @@ export default async function StatusDesaPage({
             <p>Skor tiap dimensi dihitung dari rata-rata indikator yang berkode dimensi.</p>
           </div>
           {bolehLihatIdm ? (
-            <Link className="button button-ghost" href={`/desa/idm?tahun=${tahun}`}>
+            <ButtonLink variant="ghost" href={`/desa/idm?tahun=${tahun}`}>
               Rincian indikator
-            </Link>
+            </ButtonLink>
           ) : null}
         </div>
         <div className="sd-dimensi-grid">
@@ -267,41 +269,41 @@ export default async function StatusDesaPage({
           <span className="pd-panel-jumlah">{indikator.length} baris</span>
         </summary>
         {indikator.length ? (
-          <div className="modul-scroll sd-tabel">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th className="modul-angka">No</th>
-                  <th>Kode</th>
-                  <th>Indikator</th>
-                  <th className="modul-angka">Skor</th>
-                  <th>Keterangan</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll sd-tabel">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell className="modul-angka">No</HeaderCell>
+                  <HeaderCell>Kode</HeaderCell>
+                  <HeaderCell>Indikator</HeaderCell>
+                  <HeaderCell className="modul-angka">Skor</HeaderCell>
+                  <HeaderCell>Keterangan</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {grupIndikator.map((grup) => (
                   <Fragment key={grup.kunci}>
-                    <tr className="sd-tabel-grup">
-                      <td colSpan={5}>
+                    <Row className="sd-tabel-grup">
+                      <Cell colSpan={5}>
                         {grup.judul} — {grup.baris.length} indikator
-                      </td>
-                    </tr>
+                      </Cell>
+                    </Row>
                     {grup.baris.map((row, index) => (
-                      <tr key={row.id}>
-                        <td className="modul-angka">{index + 1}</td>
-                        <td>
+                      <Row key={row.id}>
+                        <Cell className="modul-angka">{index + 1}</Cell>
+                        <Cell>
                           <strong>{row.kode}</strong>
-                        </td>
-                        <td>{row.nama}</td>
-                        <td className="modul-angka">{row.skor ?? "—"}</td>
-                        <td className="sd-tabel-keterangan">{row.keterangan ?? "—"}</td>
-                      </tr>
+                        </Cell>
+                        <Cell>{row.nama}</Cell>
+                        <Cell className="modul-angka">{row.skor ?? "—"}</Cell>
+                        <Cell className="sd-tabel-keterangan">{row.keterangan ?? "—"}</Cell>
+                      </Row>
                     ))}
                   </Fragment>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <p className="modul-empty">Belum ada indikator IDM untuk tahun ini.</p>
         )}

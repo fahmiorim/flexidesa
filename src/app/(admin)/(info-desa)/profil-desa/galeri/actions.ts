@@ -7,7 +7,6 @@ import {
   hapusFotoGaleriAdmin,
   hapusVideoGaleriAdmin,
   jadikanSampulGaleriAdmin,
-  simpanMetadataAlbumAdmin,
   tambahAlbumGaleriAdmin,
   tambahVideoGaleriAdmin,
   ubahAlbumGaleriAdmin,
@@ -129,28 +128,6 @@ function videoProvider(value: string): { url: string; provider: "youtube" | "vim
   } catch {
     return null;
   }
-}
-
-export async function simpanMetadataAlbum(form: FormData) {
-  const id = Number(field(form, "albumId"));
-  const kategori = field(form, "kategori").slice(0, 80) || null;
-  const publishedAt = tanggal(form, "publishedAt");
-  if (!Number.isSafeInteger(id) || id < 1) {
-    throw new Error("Data album atau tanggal publikasi tidak valid.");
-  }
-  await simpanMetadataAlbumAdmin(id, kategori, publishedAt);
-  revalidasi();
-}
-
-export async function tambahAlbum(form: FormData) {
-  await tambahAlbumGaleriAdmin({
-    nama: field(form, "nama"),
-    keterangan: field(form, "keterangan"),
-    kategori: field(form, "kategori") || null,
-    publishedAt: tanggal(form, "publishedAt"),
-    urut: Number(field(form, "urut") || "0"),
-  });
-  revalidasi();
 }
 
 export async function ubahAlbum(form: FormData) {

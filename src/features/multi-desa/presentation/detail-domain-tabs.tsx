@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { DetailDomainPlatform } from "@/features/multi-desa/application/pemantauan-domain-use-cases";
 import { LABEL_STATUS_DNS } from "@/features/multi-desa/domain/status-dns";
 import type { DomainDesaRow } from "@/features/multi-desa/infrastructure/kelola-desa-repository";
@@ -92,20 +93,20 @@ function DaftarAlias({
   domainId: number;
 }) {
   return (
-    <div className="domain-detail-table-wrap">
-      <table className="tenant-table domain-alias-table">
-        <thead>
-          <tr>
-            <th>Domain</th>
-            <th>Peran</th>
-            <th>Ditambahkan</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableScroll className="domain-detail-table-wrap">
+      <Table className="tenant-table domain-alias-table">
+        <THead>
+          <Row>
+            <HeaderCell>Domain</HeaderCell>
+            <HeaderCell>Peran</HeaderCell>
+            <HeaderCell>Ditambahkan</HeaderCell>
+            <HeaderCell>Aksi</HeaderCell>
+          </Row>
+        </THead>
+        <TBody>
           {aliases.map((alias) => (
-            <tr key={alias.id}>
-              <td>
+            <Row key={alias.id}>
+              <Cell>
                 <a
                   className="domain-detail-link"
                   href={`https://${alias.domain}`}
@@ -115,14 +116,14 @@ function DaftarAlias({
                   {alias.domain}
                   <span aria-hidden="true">↗</span>
                 </a>
-              </td>
-              <td>
+              </Cell>
+              <Cell>
                 <Badge tone={alias.isPrimary ? "success" : "neutral"}>
                   {alias.isPrimary ? "Utama" : "Alias"}
                 </Badge>
-              </td>
-              <td>{tanggalAtau(alias.createdAt)}</td>
-              <td>
+              </Cell>
+              <Cell>{tanggalAtau(alias.createdAt)}</Cell>
+              <Cell>
                 {alias.id === domainId ? (
                   <span className="domain-detail-muted">Sedang dilihat</span>
                 ) : alias.isPrimary ? (
@@ -132,12 +133,12 @@ function DaftarAlias({
                     Lihat detail
                   </Link>
                 )}
-              </td>
-            </tr>
+              </Cell>
+            </Row>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TBody>
+      </Table>
+    </TableScroll>
   );
 }
 

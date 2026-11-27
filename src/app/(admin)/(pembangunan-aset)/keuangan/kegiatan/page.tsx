@@ -2,6 +2,9 @@ import Link from "next/link";
 
 import styles from "@/app/(admin)/(keuangan-desa)/keuangan/keuangan.module.css";
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { listPembangunan } from "@/features/pembangunan-aset/pembangunan/application/use-cases";
 import {
   formatAnggaran,
@@ -123,61 +126,63 @@ export default async function KegiatanPage({ searchParams }: Props) {
             <option value="selesai">Selesai</option>
             <option value="dibatalkan">Dibatalkan</option>
           </select>
-          <button className={styles.primaryButton} type="submit">
+          <Button className={styles.primaryButton} variant="primary" type="submit">
             Filter
-          </button>
+          </Button>
           <Link href="/keuangan/kegiatan">Reset</Link>
         </form>
         {data.rows.length ? (
-          <div className={styles.tableWrap}>
-            <table className={styles.dataTable}>
-              <thead>
-                <tr>
-                  <th>No.</th>
-                  <th>Nama Kegiatan</th>
-                  <th>Lokasi</th>
-                  <th>Tahun</th>
-                  <th className={styles.number}>Anggaran</th>
-                  <th>Progres</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className={styles.tableWrap}>
+            <Table className={styles.dataTable}>
+              <THead>
+                <Row>
+                  <HeaderCell>No.</HeaderCell>
+                  <HeaderCell>Nama Kegiatan</HeaderCell>
+                  <HeaderCell>Lokasi</HeaderCell>
+                  <HeaderCell>Tahun</HeaderCell>
+                  <HeaderCell className={styles.number}>Anggaran</HeaderCell>
+                  <HeaderCell>Progres</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {data.rows.map((row, i) => (
-                  <tr key={row.id}>
-                    <td>{i + 1}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>{i + 1}</Cell>
+                    <Cell>
                       <Link href={"/keuangan/kegiatan/" + row.id} className={styles.rowLink}>
                         {row.judul}
                       </Link>
-                    </td>
-                    <td>{row.lokasi || "—"}</td>
-                    <td>{row.tahunAnggaran}</td>
-                    <td className={styles.number}>{formatAnggaran(row.anggaran)}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.lokasi || "—"}</Cell>
+                    <Cell>{row.tahunAnggaran}</Cell>
+                    <Cell className={styles.number}>{formatAnggaran(row.anggaran)}</Cell>
+                    <Cell>
                       <div className={styles.progress}>
                         <i style={{ width: row.progres + "%" }} />
                       </div>
                       <small>{row.progres}%</small>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <span className={styles.status}>{statusPembangunanLabel(row.status)}</span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <Link href={"/keuangan/kegiatan/" + row.id}>Detail</Link>
-                      <form action={hapusKegiatanPembangunanAction}>
-                        <input type="hidden" name="id" value={row.id} />
-                        <button className={styles.textButton} type="submit">
-                          Hapus
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
+                      <DialogHapusForm
+                        aksi={hapusKegiatanPembangunanAction}
+                        id={row.id}
+                        judul={`Hapus kegiatan "${row.judul}"?`}
+                        keterangan="Kegiatan, dokumentasi, dan rincian anggarannya akan dihapus permanen."
+                        labelAksi="Hapus kegiatan"
+                        varian="danger-ghost"
+                      />
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         ) : (
           <p className={styles.empty}>Tidak ada kegiatan yang cocok dengan filter.</p>
         )}
@@ -321,9 +326,9 @@ export default async function KegiatanPage({ searchParams }: Props) {
             Hasil / manfaat
             <textarea name="hasil" rows={2} />
           </label>
-          <button className={styles.primaryButton} type="submit">
+          <Button className={styles.primaryButton} variant="primary" type="submit">
             Simpan Kegiatan
-          </button>
+          </Button>
         </form>
       </details>
       <section className={styles.panel} id="peta">

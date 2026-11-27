@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
 /**
@@ -181,34 +182,34 @@ export function PenggunaPlatformConsole({
 }) {
   return (
     <>
-      <div className="tenant-table-scroll">
-        <table className="tenant-table">
-          <thead>
-            <tr>
-              <th scope="col">Nama</th>
-              <th scope="col">Username</th>
-              <th scope="col">Role</th>
-              <th scope="col">Status</th>
-              <th scope="col">Sesi</th>
-              <th scope="col">Login terakhir</th>
-              <th scope="col">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
+      <TableScroll className="tenant-table-scroll">
+        <Table className="tenant-table">
+          <THead>
+            <Row>
+              <HeaderCell scope="col">Nama</HeaderCell>
+              <HeaderCell scope="col">Username</HeaderCell>
+              <HeaderCell scope="col">Role</HeaderCell>
+              <HeaderCell scope="col">Status</HeaderCell>
+              <HeaderCell scope="col">Sesi</HeaderCell>
+              <HeaderCell scope="col">Login terakhir</HeaderCell>
+              <HeaderCell scope="col">Aksi</HeaderCell>
+            </Row>
+          </THead>
+          <TBody>
             {pengguna.length > 0 ? (
               pengguna.map((item) => (
                 <BarisPengguna aksi={aksi} idSaya={idSaya} key={item.id} pengguna={item} />
               ))
             ) : (
-              <tr>
-                <td className="tenant-empty" colSpan={7}>
+              <Row>
+                <Cell className="tenant-empty" colSpan={7}>
                   Belum ada akun platform. Tambahkan pengguna pertama lewat tombol di atas.
-                </td>
-              </tr>
+                </Cell>
+              </Row>
             )}
-          </tbody>
-        </table>
-      </div>
+          </TBody>
+        </Table>
+      </TableScroll>
     </>
   );
 }

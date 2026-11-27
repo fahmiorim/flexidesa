@@ -29,10 +29,6 @@ export function laporanTipeLabel(tipe: string): string {
 }
 
 /** Semester laporan; `1` = Januari–Juni, `2` = Juli–Desember. */
-export const SEMESTER_OPTIONS: readonly { value: number; label: string }[] = [
-  { value: 1, label: "Semester I (Januari–Juni)" },
-  { value: 2, label: "Semester II (Juli–Desember)" },
-];
 
 export function semesterLabel(semester: number): string {
   return semester === 2 ? "Semester II" : semester === 1 ? "Semester I" : `Semester ${semester}`;

@@ -6,12 +6,6 @@ import { optionalDigits } from "@/lib/forms";
 export const TIPE_SOAL = ["text", "number", "choice"] as const;
 export type TipeSoal = (typeof TIPE_SOAL)[number];
 
-export const TIPE_SOAL_LABELS: Record<TipeSoal, string> = {
-  text: "Isian",
-  number: "Angka",
-  choice: "Pilihan Ganda",
-};
-
 export const JUDUL_MAX = 200;
 export const DESKRIPSI_MAX = 2000;
 export const PERTANYAAN_MAX = 500;
@@ -114,12 +108,6 @@ export function serializeSkorPilihan(peta: Readonly<Record<string, number>>): st
 }
 
 /** Isian teks skor untuk formulir, satu baris per pilihan. */
-export function formatSkorPilihanForm(
-  pilihan: readonly string[],
-  peta: Readonly<Record<string, number>>,
-): string {
-  return pilihan.map((label) => `${label}=${peta[label] ?? 0}`).join("\n");
-}
 
 /** Tanggal opsional berformat `YYYY-MM-DD`. */
 const tanggalOpsional = z

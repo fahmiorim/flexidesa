@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { ButtonLink } from "@/components/ui/button-link";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { ambilAuditPlatform } from "@/features/multi-desa/application/audit-platform-use-cases";
 import { daftarSemuaDomain } from "@/features/multi-desa/application/kelola-desa-use-cases";
 import { daftarPenggunaPlatform } from "@/features/multi-desa/application/pengguna-platform-use-cases";
@@ -131,12 +132,12 @@ export default async function SuperAdminPage() {
       <PlatformPageHeader
         actions={
           <>
-            <Link className="button button-secondary" href="/super-admin/audit">
+            <ButtonLink variant="secondary" href="/super-admin/audit">
               Lihat audit
-            </Link>
-            <Link className="button button-primary" href="/super-admin/tenant">
+            </ButtonLink>
+            <ButtonLink variant="primary" href="/super-admin/tenant">
               Kelola tenant
-            </Link>
+            </ButtonLink>
           </>
         }
         path="/super-admin"
@@ -212,9 +213,9 @@ export default async function SuperAdminPage() {
       <div className="platform-dashboard-secondary">
         <PlatformCard
           actions={
-            <Link className="button button-secondary" href="/super-admin/template">
+            <ButtonLink variant="secondary" href="/super-admin/template">
               Kelola tema
-            </Link>
+            </ButtonLink>
           }
           description="Pilihan tema publik yang benar-benar dipakai tenant saat ini."
           title="Ringkasan tema publik"
@@ -243,9 +244,9 @@ export default async function SuperAdminPage() {
 
         <PlatformCard
           actions={
-            <Link className="button button-secondary" href="/super-admin/template">
+            <ButtonLink variant="secondary" href="/super-admin/template">
               Lihat tema
-            </Link>
+            </ButtonLink>
           }
           description="Lima tema teratas berdasarkan jumlah tenant yang memakainya."
           title="Tema paling populer"
@@ -268,9 +269,9 @@ export default async function SuperAdminPage() {
         <div className="platform-dashboard-main">
           <PlatformCard
             actions={
-              <Link className="button button-secondary" href="/super-admin/tenant">
+              <ButtonLink variant="secondary" href="/super-admin/tenant">
                 Semua tenant
-              </Link>
+              </ButtonLink>
             }
             description="Pendaftaran tenant kumulatif enam bulan terakhir, dihitung dari tanggal tenant dibuat."
             title="Pertumbuhan tenant"
@@ -294,57 +295,57 @@ export default async function SuperAdminPage() {
 
           <PlatformCard
             actions={
-              <Link className="button button-secondary" href="/super-admin/tenant">
+              <ButtonLink variant="secondary" href="/super-admin/tenant">
                 Kelola semua tenant
-              </Link>
+              </ButtonLink>
             }
             description="Lima desa yang paling akhir didaftarkan."
             flush
             title="Tenant terbaru"
           >
             {terbaru.length > 0 ? (
-              <div className="tenant-table-scroll">
-                <table className="tenant-table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Desa</th>
-                      <th scope="col">Domain</th>
-                      <th scope="col">Pengguna</th>
-                      <th scope="col">Penduduk</th>
-                      <th scope="col">Terdaftar</th>
-                      <th scope="col">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              <TableScroll className="tenant-table-scroll">
+                <Table className="tenant-table">
+                  <THead>
+                    <Row>
+                      <HeaderCell scope="col">Desa</HeaderCell>
+                      <HeaderCell scope="col">Domain</HeaderCell>
+                      <HeaderCell scope="col">Pengguna</HeaderCell>
+                      <HeaderCell scope="col">Penduduk</HeaderCell>
+                      <HeaderCell scope="col">Terdaftar</HeaderCell>
+                      <HeaderCell scope="col">Status</HeaderCell>
+                    </Row>
+                  </THead>
+                  <TBody>
                     {terbaru.map((item) => (
-                      <tr key={item.id}>
-                        <td>
+                      <Row key={item.id}>
+                        <Cell>
                           <strong>{item.name || "Tanpa nama"}</strong>
                           <span className="tenant-secondary">Kode: {item.code || "—"}</span>
-                        </td>
-                        <td>
+                        </Cell>
+                        <Cell>
                           {item.domain || <span className="tenant-secondary">Belum diatur</span>}
-                        </td>
-                        <td>{angka.format(item.pengguna)}</td>
-                        <td>{angka.format(item.penduduk)}</td>
-                        <td>{tanggal.format(new Date(item.createdAt))}</td>
-                        <td>
+                        </Cell>
+                        <Cell>{angka.format(item.pengguna)}</Cell>
+                        <Cell>{angka.format(item.penduduk)}</Cell>
+                        <Cell>{tanggal.format(new Date(item.createdAt))}</Cell>
+                        <Cell>
                           <PlatformStatus
                             aktif={item.active}
                             label={item.active ? "Aktif" : "Nonaktif"}
                           />
-                        </td>
-                      </tr>
+                        </Cell>
+                      </Row>
                     ))}
-                  </tbody>
-                </table>
-              </div>
+                  </TBody>
+                </Table>
+              </TableScroll>
             ) : (
               <PlatformEmpty
                 action={
-                  <Link className="button button-primary" href="/super-admin/tenant">
+                  <ButtonLink variant="primary" href="/super-admin/tenant">
                     Daftarkan desa pertama
-                  </Link>
+                  </ButtonLink>
                 }
                 description="Mulai dengan membuat tenant desa, lalu tetapkan domain dan administrator desanya."
                 title="Belum ada tenant desa"
@@ -380,9 +381,9 @@ export default async function SuperAdminPage() {
                       <strong>{baris.judul}</strong>
                       <p>{baris.keterangan}</p>
                     </div>
-                    <Link className="button button-secondary" href={baris.href}>
+                    <ButtonLink variant="secondary" href={baris.href}>
                       {baris.aksi}
-                    </Link>
+                    </ButtonLink>
                   </li>
                 ))}
               </ul>
@@ -396,9 +397,9 @@ export default async function SuperAdminPage() {
 
           <PlatformCard
             actions={
-              <Link className="button button-secondary" href="/super-admin/audit">
+              <ButtonLink variant="secondary" href="/super-admin/audit">
                 Semua aktivitas
-              </Link>
+              </ButtonLink>
             }
             description="Peristiwa terakhir lintas desa dan platform."
             title="Aktivitas terbaru"

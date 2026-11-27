@@ -57,8 +57,6 @@ export const penggunaPlatformBaruSchema = z.object({
     .max(72, "Sandi maksimal 72 karakter."),
 });
 
-export type PenggunaPlatformBaruInput = z.infer<typeof penggunaPlatformBaruSchema>;
-
 const statusSchema = z.object({
   id: idSchema,
   active: z

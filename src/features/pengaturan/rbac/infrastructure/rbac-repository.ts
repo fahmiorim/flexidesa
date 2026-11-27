@@ -143,22 +143,6 @@ export async function listRoles(villageId: number | null): Promise<RoleRecord[]>
     .orderBy(roles.createdAt, roles.name);
 }
 
-export async function getRoleBySlug(
-  slug: string,
-  villageId: number | null,
-): Promise<RoleRecord | null> {
-  const tenantFilter =
-    villageId === null
-      ? isNull(roles.villageId)
-      : or(eq(roles.villageId, villageId), isNull(roles.villageId));
-  const [row] = await db
-    .select(roleColumns)
-    .from(roles)
-    .where(and(eq(roles.slug, slug), tenantFilter))
-    .limit(1);
-  return row ?? null;
-}
-
 export async function getRoleById(
   id: number,
   villageId: number | null,
@@ -173,16 +157,6 @@ export async function getRoleById(
     .where(and(eq(roles.id, id), tenantFilter))
     .limit(1);
   return row ?? null;
-}
-
-export async function clearRolePermissions(roleId: number, villageId: number): Promise<void> {
-  const [role] = await db
-    .select({ id: roles.id })
-    .from(roles)
-    .where(and(eq(roles.id, roleId), eq(roles.villageId, villageId)))
-    .limit(1);
-  if (!role) throw new Error("Grup akses tidak ditemukan pada desa aktif.");
-  await db.delete(rolePermissions).where(eq(rolePermissions.roleId, roleId));
 }
 
 export async function createRole(input: {

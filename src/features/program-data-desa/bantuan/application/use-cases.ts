@@ -14,10 +14,8 @@ import {
   type BantuanDetail,
   type BantuanDTO,
   type BantuanFormInput,
-  type PesertaBantuanRow,
   type PesertaFormInput,
   type PesertaReferenceData,
-  type SasaranOption,
 } from "@/features/program-data-desa/bantuan/domain/bantuan";
 import {
   normalisasiKode,
@@ -34,9 +32,8 @@ import {
   findBantuanById,
   findKelompokSasaran,
   findPendudukSasaran,
-  insertBantuan,
-  insertPeserta,
-  listBantuanDiterimaWarga,
+  insertBantuan as insertBantuanRow,
+  insertPeserta as insertPesertaRow,
   listBantuan as listBantuanRows,
   listKelompokSasaran,
   listKeluargaSasaran,
@@ -50,8 +47,8 @@ import {
   updatePeserta as updatePesertaRow,
   type BantuanListResult,
 } from "@/features/program-data-desa/bantuan/infrastructure/bantuan-repository";
-import { requirePermission, requireWargaAktif } from "@/lib/dal";
-import { conflict, notFound, validationError } from "@/lib/errors";
+import { requirePermission } from "@/lib/dal";
+import { conflict, notFound } from "@/lib/errors";
 
 /**
  * Lapisan aplikasi (use case) untuk bantuan sosial.
@@ -73,13 +70,6 @@ export async function listBantuan(params: ListBantuanParams): Promise<BantuanLis
   const villageId = await resolveVillageId(user);
 
   return listBantuanRows({ villageId, ...params });
-}
-
-/** Penerimaan yang tercatat untuk warga aktif; identitas selalu dari sesi. */
-export async function getBantuanDiterimaWargaData(): Promise<BantuanDTO[]> {
-  const user = await requireWargaAktif();
-  const villageId = await resolveVillageId(user);
-  return listBantuanDiterimaWarga(villageId, user.residentId);
 }
 
 /**
@@ -113,13 +103,13 @@ async function getScopedProgram(villageId: number, id: number): Promise<BantuanD
   return program;
 }
 
-export async function createBantuan(input: BantuanFormInput): Promise<{ id: number }> {
+/** Tambah program bantuan baru. */
+export async function createBantuan(input: BantuanFormInput): Promise<number> {
   const user = await requirePermission(BANTUAN_RESOURCE, "create");
   const villageId = await resolveVillageId(user);
 
   const slug = await slugBebas(villageId, input.nama, null);
-  const id = await insertBantuan(villageId, slug, input);
-  return { id };
+  return insertBantuanRow(villageId, slug, input);
 }
 
 export async function updateBantuan(id: number, input: BantuanFormInput): Promise<void> {
@@ -200,24 +190,6 @@ async function getReferenceKandidat(
   return reference;
 }
 
-/** Peserta sebuah program (dimuat ulang oleh UI setelah perubahan). */
-export async function listPesertaBantuan(programId: number): Promise<PesertaBantuanRow[]> {
-  const user = await requirePermission(BANTUAN_RESOURCE, "read");
-  const villageId = await resolveVillageId(user);
-
-  const program = await getScopedProgram(villageId, programId);
-  return listPesertaProgram(villageId, program);
-}
-
-/** Kandidat sasaran terbaru untuk program (dipakai setelah peserta ditambah). */
-export async function getPesertaReference(programId: number): Promise<PesertaReferenceData> {
-  const user = await requirePermission(BANTUAN_RESOURCE, "read");
-  const villageId = await resolveVillageId(user);
-
-  const program = await getScopedProgram(villageId, programId);
-  return getReferenceKandidat(villageId, program);
-}
-
 /**
  * Tambahkan seorang peserta ke program.
  *
@@ -226,45 +198,21 @@ export async function getPesertaReference(programId: number): Promise<PesertaRef
  * sasaran yang sudah menjadi peserta. Data kartu yang dibiarkan kosong diisi
  * dari data master sebagai nilai awal.
  */
-export async function addPeserta(
-  programId: number,
-  input: PesertaFormInput,
-): Promise<{ id: number }> {
-  const user = await requirePermission(BANTUAN_RESOURCE, "create");
+export async function tambahPeserta(programId: number, input: PesertaFormInput): Promise<void> {
+  const user = await requirePermission(BANTUAN_RESOURCE, "update");
   const villageId = await resolveVillageId(user);
 
   const program = await getScopedProgram(villageId, programId);
-
-  if (input.programId !== null && input.programId !== programId) {
-    throw validationError("Program peserta tidak sesuai.");
+  if (input.sasaranId === null || input.sasaranId === undefined) {
+    throw new Error("Pilih sasaran penerima bantuan terlebih dahulu.");
+  }
+  const sudahTerdaftar = await listPesertaSasaranIds(villageId, programId, program.sasaran);
+  if (sudahTerdaftar.includes(input.sasaranId)) {
+    throw conflict("Sasaran ini sudah menjadi peserta pada program tersebut.");
   }
 
-  const sasaranId = input.sasaranId;
-  if (sasaranId === null) {
-    throw validationError("Pilih sasaran peserta terlebih dahulu.", {
-      sasaranId: ["Pilih sasaran peserta terlebih dahulu."],
-    });
-  }
-
-  const reference = await getReferenceKandidat(villageId, program);
-  const kandidat = pilihKandidat(reference, program.sasaran);
-  if (!kandidat.some((option) => option.id === sasaranId)) {
-    throw validationError("Sasaran yang dipilih tidak tersedia untuk program ini.", {
-      sasaranId: ["Sasaran yang dipilih tidak tersedia untuk program ini."],
-    });
-  }
-
-  const lengkap = await lengkapiKartu(villageId, program.sasaran, sasaranId, input);
-  await insertPeserta(villageId, programId, program.sasaran, sasaranId, lengkap);
-
-  return { id: sasaranId };
-}
-
-function pilihKandidat(reference: PesertaReferenceData, sasaran: number): SasaranOption[] {
-  if (sasaran === SASARAN_KELUARGA) return reference.keluarga;
-  if (sasaran === SASARAN_RUMAH_TANGGA) return reference.rumahTangga;
-  if (sasaran === SASARAN_KELOMPOK) return reference.kelompok;
-  return reference.penduduk;
+  const lengkap = await lengkapiKartu(villageId, program.sasaran, input.sasaranId, input);
+  await insertPesertaRow(villageId, programId, program.sasaran, input.sasaranId, lengkap);
 }
 
 /**
@@ -328,7 +276,7 @@ function wilayahLabel(wilayah: {
 }
 
 /** Keluarkan seorang peserta dari program. */
-export async function removePeserta(programId: number, pesertaId: number): Promise<void> {
+export async function hapusPeserta(programId: number, pesertaId: number): Promise<void> {
   const user = await requirePermission(BANTUAN_RESOURCE, "delete");
   const villageId = await resolveVillageId(user);
 
@@ -356,19 +304,12 @@ export async function updatePeserta(
 }
 
 /** Hapus semua peserta sebuah program (pembersihan massal). */
-export async function deleteAllPeserta(programId: number): Promise<number> {
+export async function hapusSemuaPeserta(programId: number): Promise<void> {
   const user = await requirePermission(BANTUAN_RESOURCE, "delete");
   const villageId = await resolveVillageId(user);
 
   await getScopedProgram(villageId, programId);
-  return deleteAllPesertaByProgram(villageId, programId);
-}
-
-/** Jenis sasaran sebuah program (dipakai untuk memilih kolom template impor). */
-export async function getSasaranProgram(programId: number): Promise<number> {
-  const user = await requirePermission(BANTUAN_RESOURCE, "read");
-  const villageId = await resolveVillageId(user);
-  return (await getScopedProgram(villageId, programId)).sasaran;
+  await deleteAllPesertaByProgram(villageId, programId);
 }
 
 /** Ringkasan hasil impor peserta untuk umpan balik ke pengguna. */
@@ -419,7 +360,7 @@ export async function imporPesertaBantuan(
     });
 
     const lengkap = await lengkapiKartu(villageId, program.sasaran, item.id, input);
-    await insertPeserta(villageId, programId, program.sasaran, item.id, lengkap);
+    await insertPesertaRow(villageId, programId, program.sasaran, item.id, lengkap);
     diimpor += 1;
   }
 

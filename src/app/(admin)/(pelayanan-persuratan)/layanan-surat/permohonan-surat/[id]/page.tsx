@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
-import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
 import {
   labelKanalNotifikasi,
   labelStatusPengiriman,
@@ -90,13 +91,6 @@ export default async function DetailPermohonanSuratPage({
       <PageHeading
         judul={<>Detail Permohonan</>}
         deskripsi={<>Periksa data dan syarat permohonan surat.</>}
-        aksi={
-          <>
-            <Link href="/layanan-surat/permohonan-surat" className="button button-secondary">
-              ← Kembali ke daftar
-            </Link>
-          </>
-        }
       />
 
       {pesan ? (
@@ -209,12 +203,12 @@ export default async function DetailPermohonanSuratPage({
                     <strong style={{ display: "block", fontSize: 13 }}>{item.nama}</strong>
                     <span className="modul-muted">{item.namaAsli}</span>
                   </div>
-                  <a
-                    className="button button-secondary"
+                  <ButtonLink
+                    variant="secondary"
                     href={`/layanan-surat/permohonan-surat/${id}/syarat/${item.id}`}
                   >
                     Unduh
-                  </a>
+                  </ButtonLink>
                 </li>
               ))}
             </ul>
@@ -364,33 +358,33 @@ export default async function DetailPermohonanSuratPage({
             {status === 0 ? (
               <form action={mulaiPemeriksaanPermohonanAction}>
                 <input type="hidden" name="id" value={id} />
-                <button type="submit" className="button button-primary">
+                <Button variant="primary" type="submit">
                   Mulai Pemeriksaan
-                </button>
+                </Button>
               </form>
             ) : null}
             {status === 2 ? (
               <form action={tandaiSiapDiambilAction}>
                 <input type="hidden" name="id" value={id} />
-                <button type="submit" className="button button-primary">
+                <Button variant="primary" type="submit">
                   Tandai Siap Diambil
-                </button>
+                </Button>
               </form>
             ) : null}
             {status === 3 ? (
               <form action={tandaiPermohonanDiambilAction}>
                 <input type="hidden" name="id" value={id} />
-                <button type="submit" className="button button-primary">
+                <Button variant="primary" type="submit">
                   Tandai Sudah Diambil
-                </button>
+                </Button>
               </form>
             ) : null}
             {status === 1 && permohonan.letterId === null && canCreateLetter ? (
               <form action={buatKonsepSuratPermohonanAction}>
                 <input type="hidden" name="id" value={id} />
-                <button type="submit" className="button button-primary">
+                <Button variant="primary" type="submit">
                   Buat Konsep & Ajukan Verifikasi
-                </button>
+                </Button>
               </form>
             ) : null}
             {status !== 4 && status !== 5 ? (
@@ -418,9 +412,9 @@ export default async function DetailPermohonanSuratPage({
                       placeholder="Jelaskan dokumen atau data yang perlu diperbaiki."
                     />
                   </label>
-                  <button type="submit" className="button button-secondary">
+                  <Button variant="secondary" type="submit">
                     Kembalikan ke Warga
-                  </button>
+                  </Button>
                 </form>
                 <form
                   action={batalkanPermohonanAction}
@@ -445,22 +439,21 @@ export default async function DetailPermohonanSuratPage({
                       placeholder="Tuliskan alasan pembatalan permohonan."
                     />
                   </label>
-                  <button type="submit" className="button button-danger-ghost">
+                  <Button variant="danger-ghost" type="submit">
                     Batalkan Permohonan
-                  </button>
+                  </Button>
                 </form>
               </>
             ) : null}
             {status === 5 && canDelete ? (
-              <form action={hapusPermohonanAction}>
-                <input type="hidden" name="id" value={id} />
-                <ConfirmSubmit
-                  className="button button-danger-ghost"
-                  message="Hapus permohonan yang dibatalkan ini secara permanen? Berkas persyaratan juga akan dihapus."
-                >
-                  Hapus Permohonan
-                </ConfirmSubmit>
-              </form>
+              <DialogHapusForm
+                aksi={hapusPermohonanAction}
+                id={id}
+                judul="Hapus permohonan yang dibatalkan ini?"
+                keterangan="Permohonan dihapus permanen bersama berkas persyaratannya."
+                label="Hapus Permohonan"
+                labelAksi="Hapus permohonan"
+              />
             ) : null}
           </div>
         </section>

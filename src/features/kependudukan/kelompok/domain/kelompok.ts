@@ -32,10 +32,6 @@ export const KELOMPOK_TIPE_LABELS: Readonly<Record<KelompokTipe, string>> = {
   kelompok: "Kelompok Masyarakat",
 };
 
-export const KELOMPOK_TIPE_SHORT_LABELS: Readonly<Record<KelompokTipe, string>> = {
-  kelompok: "Kelompok",
-};
-
 /** Label tipe, atau "-" bila tak dikenal. */
 export function kelompokTipeLabel(tipe: string | null): string {
   if (tipe === "kelompok") return KELOMPOK_TIPE_LABELS[tipe];
@@ -247,11 +243,6 @@ export interface KelompokReferenceData {
  */
 export const KELOMPOK_STATUS_FILTERS = ["aktif", "tidak-aktif"] as const;
 export type KelompokStatusFilter = (typeof KELOMPOK_STATUS_FILTERS)[number];
-
-export const KELOMPOK_STATUS_LABELS: Readonly<Record<KelompokStatusFilter, string>> = {
-  aktif: "Aktif",
-  "tidak-aktif": "Tidak Aktif",
-};
 
 /** Status bawaan daftar kelompok (paritas OpenSID: ketua masih hidup). */
 export const KELOMPOK_STATUS_DEFAULT: KelompokStatusFilter = "aktif";

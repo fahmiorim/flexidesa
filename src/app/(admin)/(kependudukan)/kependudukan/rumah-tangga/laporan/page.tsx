@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { StatCard, StatGrid } from "@/components/ui/stat-card";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   getLaporanRumahTangga,
   getRtmFilterOptions,
@@ -41,37 +45,36 @@ export default async function LaporanRumahTanggaPage({
         aksi={
           <>
             <div className="page-heading-actions">
-              <Link className="button button-primary" href={exportHref}>
+              <ButtonLink variant="primary" href={exportHref}>
                 Ekspor CSV
-              </Link>
+              </ButtonLink>
             </div>
           </>
         }
       />
 
-      <section className="data-kependudukan-kpis">
-        <article className="data-kpi data-kpi-primary">
-          <span>Rumah Tangga</span>
-          <strong>{number.format(hasil.rekap.totalRtm)} RTM</strong>
-          <small>{hasil.namaDesa ?? "Desa aktif"}</small>
-        </article>
-        <article className="data-kpi">
-          <span>Anggota</span>
-          <strong>{number.format(hasil.rekap.totalAnggota)} orang</strong>
-          <small>Seluruh anggota yang terhubung</small>
-        </article>
-        <article className="data-kpi">
-          <span>Rata-rata</span>
-          <strong>
-            {number.format(
-              hasil.rekap.totalRtm === 0
-                ? 0
-                : Number((hasil.rekap.totalAnggota / hasil.rekap.totalRtm).toFixed(1)),
-            )}
-          </strong>
-          <small>Anggota per rumah tangga</small>
-        </article>
-      </section>
+      <StatGrid>
+        <StatCard
+          label="Rumah Tangga"
+          note={hasil.namaDesa ?? "Desa aktif"}
+          utama
+          value={`${number.format(hasil.rekap.totalRtm)} RTM`}
+        />
+        <StatCard
+          label="Anggota"
+          note="Seluruh anggota yang terhubung"
+          value={`${number.format(hasil.rekap.totalAnggota)} orang`}
+        />
+        <StatCard
+          label="Rata-rata"
+          note="Anggota per rumah tangga"
+          value={number.format(
+            hasil.rekap.totalRtm === 0
+              ? 0
+              : Number((hasil.rekap.totalAnggota / hasil.rekap.totalRtm).toFixed(1)),
+          )}
+        />
+      </StatGrid>
 
       <section className="platform-card data-panel">
         <header>
@@ -106,13 +109,13 @@ export default async function LaporanRumahTanggaPage({
               </option>
             ))}
           </select>
-          <button className="button button-secondary" type="submit">
+          <Button variant="secondary" type="submit">
             Terapkan
-          </button>
+          </Button>
           {query ? (
-            <Link className="button button-secondary" href="/kependudukan/rumah-tangga/laporan">
+            <ButtonLink variant="secondary" href="/kependudukan/rumah-tangga/laporan">
               Reset
-            </Link>
+            </ButtonLink>
           ) : null}
         </form>
       </section>
@@ -152,32 +155,32 @@ function RecapTable({
   }
 
   return (
-    <div className="table-scroll">
-      <table className="data-table">
-        <thead>
-          <tr>
-            <th>Kelompok</th>
-            <th>RTM</th>
-            <th>Anggota</th>
-            <th>Persentase</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableScroll>
+      <Table>
+        <THead>
+          <Row>
+            <HeaderCell>Kelompok</HeaderCell>
+            <HeaderCell>RTM</HeaderCell>
+            <HeaderCell>Anggota</HeaderCell>
+            <HeaderCell>Persentase</HeaderCell>
+          </Row>
+        </THead>
+        <TBody>
           {rows.map((row) => (
-            <tr key={row.label}>
-              <td>{row.label}</td>
-              <td>{number.format(row.jumlahRtm)}</td>
-              <td>{number.format(row.jumlahAnggota)}</td>
-              <td>
+            <Row key={row.label}>
+              <Cell>{row.label}</Cell>
+              <Cell>{number.format(row.jumlahRtm)}</Cell>
+              <Cell>{number.format(row.jumlahAnggota)}</Cell>
+              <Cell>
                 <div className={styles.percentage}>
                   <span style={{ width: `${Math.min(100, Math.max(0, row.percentage))}%` }} />
                 </div>
                 {row.percentage.toLocaleString("id-ID")}%
-              </td>
-            </tr>
+              </Cell>
+            </Row>
           ))}
-        </tbody>
-      </table>
-    </div>
+        </TBody>
+      </Table>
+    </TableScroll>
   );
 }

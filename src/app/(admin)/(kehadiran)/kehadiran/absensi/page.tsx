@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   daftarAbsensi,
   daftarKehadiranBulanan,
@@ -11,8 +17,9 @@ import { hasPermission } from "@/features/pengaturan/rbac/application/authorizat
 import { verifySession } from "@/lib/dal";
 
 import styles from "../absensi-kepegawaian.module.css";
-import { absensiManualAction, simpanPengaturanKehadiranAction } from "../actions";
+import { simpanPengaturanKehadiranAction } from "../actions";
 import { AbsensiMandiri } from "./absensi-mandiri";
+import { absensiManualFormAction } from "./form-actions";
 
 export const metadata: Metadata = { title: "Absensi Pegawai" };
 
@@ -94,14 +101,6 @@ export default async function AbsensiPage({
         judul={<>Absensi Pegawai</>}
         deskripsi={<>Kelola dan pantau kehadiran perangkat desa serta staf secara terpusat.</>}
       />
-      <nav className={styles["ak-subnav"]} aria-label="Navigasi absensi">
-        <a className={styles["selected"]} href="#rekap">
-          ▦ Rekap Kehadiran
-        </a>
-        <a href="#kalender">◷ Riwayat Absensi</a>
-        <a href="#rekap">♙ Absensi Manual</a>
-        <a href="#pengaturan">⚙ Pengaturan Absensi</a>
-      </nav>
       {statusMandiri ? (
         <AbsensiMandiri attendance={statusMandiri} wajibGps={setting.wajibGps !== false} />
       ) : null}
@@ -129,89 +128,89 @@ export default async function AbsensiPage({
         </article>
       </section>
       <div className={styles["ak-grid"]}>
-        <section id="rekap" className={styles["ak-card"]}>
-          <div className={styles["ak-card-heading-row"]}>
-            <div>
-              <h2>Rekap Absensi Pegawai</h2>
-              <p>Daftar kehadiran pegawai untuk tanggal yang dipilih.</p>
-            </div>
-            <a
-              className={styles["ak-button"]}
-              href={"/kehadiran/absensi/ekspor?tanggal=" + tanggal}
-            >
-              ↓ CSV Harian
-            </a>
-            <a
-              className={styles["ak-button"]}
-              href={"/kehadiran/absensi/ekspor-bulanan?tahun=" + tahun + "&bulan=" + bulan}
-            >
-              ↓ CSV Bulanan
-            </a>
-            <a
-              className={styles["ak-button"]}
-              href={"/kehadiran/absensi/ekspor-xlsx?tahun=" + tahun + "&bulan=" + bulan}
-            >
-              ↓ Excel
-            </a>
-            <a
-              className={styles["ak-button"]}
-              href={"/kehadiran/absensi/ekspor-pdf?tahun=" + tahun + "&bulan=" + bulan}
-            >
-              ↓ PDF
-            </a>
-          </div>
-          <form className={styles["ak-filter"]} method="get">
-            <label>
-              Cari pegawai
-              <input type="search" name="q" placeholder="Nama pegawai..." defaultValue={query} />
-            </label>
-            <label>
-              Tanggal
-              <input type="date" name="tanggal" defaultValue={tanggal} />
-            </label>
-            <label>
-              Jabatan
-              <select name="jabatan" defaultValue={jabatanFilter}>
-                <option value="">Semua Jabatan</option>
-                {jabatanOptions.map((name) => (
-                  <option key={name} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label>
-              Status
-              <select name="status" defaultValue={statusFilter}>
-                <option value="">Semua Status</option>
-                <option value="hadir">Hadir</option>
-                <option value="izin">Izin</option>
-                <option value="cuti">Cuti</option>
-                <option value="tidak_hadir">Tidak Hadir</option>
-              </select>
-            </label>
-            <button className={styles["ak-button"]} type="submit">
-              ⌕ Filter
-            </button>
-          </form>
-          <div className={styles["ak-table-wrap"]}>
-            <table className={styles["ak-table"]}>
-              <thead>
-                <tr>
-                  <th>No.</th>
-                  <th>Nama Pegawai</th>
-                  <th>Jabatan</th>
-                  <th>Jam Masuk</th>
-                  <th>Jam Pulang</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+        <TableCard
+          actions={
+            <>
+              <ButtonLink href={"/kehadiran/absensi/ekspor?tanggal=" + tanggal} variant="secondary">
+                ↓ CSV Harian
+              </ButtonLink>
+              <ButtonLink
+                href={"/kehadiran/absensi/ekspor-bulanan?tahun=" + tahun + "&bulan=" + bulan}
+                variant="secondary"
+              >
+                ↓ CSV Bulanan
+              </ButtonLink>
+              <ButtonLink
+                href={"/kehadiran/absensi/ekspor-xlsx?tahun=" + tahun + "&bulan=" + bulan}
+                variant="secondary"
+              >
+                ↓ Excel
+              </ButtonLink>
+              <ButtonLink
+                href={"/kehadiran/absensi/ekspor-pdf?tahun=" + tahun + "&bulan=" + bulan}
+                variant="secondary"
+              >
+                ↓ PDF
+              </ButtonLink>
+            </>
+          }
+          description="Daftar kehadiran pegawai untuk tanggal yang dipilih."
+          filter={
+            <form className={styles["ak-filter"]} method="get">
+              <FormField
+                defaultValue={query}
+                label="Cari pegawai"
+                name="q"
+                placeholder="Nama pegawai..."
+                type="search"
+              />
+              <FormField defaultValue={tanggal} label="Tanggal" name="tanggal" type="date" />
+              <FormField
+                defaultValue={jabatanFilter}
+                kind="select"
+                label="Jabatan"
+                name="jabatan"
+                options={[
+                  { value: "", label: "Semua Jabatan" },
+                  ...jabatanOptions.map((name) => ({ value: name, label: name })),
+                ]}
+              />
+              <FormField
+                defaultValue={statusFilter}
+                kind="select"
+                label="Status"
+                name="status"
+                options={[
+                  { value: "", label: "Semua Status" },
+                  { value: "hadir", label: "Hadir" },
+                  { value: "izin", label: "Izin" },
+                  { value: "cuti", label: "Cuti" },
+                  { value: "tidak_hadir", label: "Tidak Hadir" },
+                ]}
+              />
+              <Button type="submit">⌕ Filter</Button>
+            </form>
+          }
+          title="Rekap Absensi Pegawai"
+        >
+          <TableScroll className={styles["ak-table-wrap"]}>
+            <Table className={styles["ak-table"]}>
+              <THead>
+                <Row>
+                  <HeaderCell>No.</HeaderCell>
+                  <HeaderCell>Nama Pegawai</HeaderCell>
+                  <HeaderCell>Jabatan</HeaderCell>
+                  <HeaderCell>Jam Masuk</HeaderCell>
+                  <HeaderCell>Jam Pulang</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {filteredRows.map((row, i) => (
-                  <tr key={row.pegawaiId}>
-                    <td>{i + 1}</td>
-                    <td>
+                  <Row key={row.pegawaiId}>
+                    <Cell>{i + 1}</Cell>
+                    <Cell>
                       <span className={styles["ak-person"]}>
                         <span>
                           {row.nama
@@ -223,11 +222,11 @@ export default async function AbsensiPage({
                         </span>
                         <b>{row.nama}</b>
                       </span>
-                    </td>
-                    <td>{row.jabatan ?? "—"}</td>
-                    <td>{row.jamMasuk ?? "—"}</td>
-                    <td>{row.jamKeluar ?? "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.jabatan ?? "—"}</Cell>
+                    <Cell>{row.jamMasuk ?? "—"}</Cell>
+                    <Cell>{row.jamKeluar ?? "—"}</Cell>
+                    <Cell>
                       <span
                         className={`${styles["ak-badge"]} ${styles[row.status ?? "tidak_hadir"] ?? ""}`}
                       >
@@ -239,7 +238,7 @@ export default async function AbsensiPage({
                         Number(setting.jamMasuk.slice(0, 2)) * 60 +
                           Number(setting.jamMasuk.slice(3, 5)) +
                           (setting.toleransiTerlambatMenit ?? 0) ? (
-                        <small style={{ display: "block", color: "#b45309" }}>Terlambat</small>
+                        <small className={styles.terlambat}>Terlambat</small>
                       ) : null}
                       {row.fotoMasuk ? (
                         <a
@@ -252,57 +251,60 @@ export default async function AbsensiPage({
                           · Bukti selfie
                         </a>
                       ) : null}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {canManage ? (
-                        <details>
-                          <summary>Ubah</summary>
-                          <form action={absensiManualAction} className={styles["ak-form"]}>
-                            <input type="hidden" name="pegawaiId" value={row.pegawaiId} />
-                            <input type="hidden" name="tanggal" value={tanggal} />
-                            <label>
-                              Jam Masuk
-                              <input
-                                type="time"
-                                name="jamMasuk"
-                                defaultValue={row.jamMasuk ?? ""}
-                              />
-                            </label>
-                            <label>
-                              Jam Pulang
-                              <input
-                                type="time"
-                                name="jamKeluar"
-                                defaultValue={row.jamKeluar ?? ""}
-                              />
-                            </label>
-                            <label>
-                              Status
-                              <select name="status" defaultValue={row.status ?? "tidak_hadir"}>
-                                <option value="hadir">Hadir</option>
-                                <option value="izin">Izin</option>
-                                <option value="cuti">Cuti</option>
-                                <option value="tidak_hadir">Tidak Hadir</option>
-                              </select>
-                            </label>
-                            <label>
-                              Catatan
-                              <input name="catatan" defaultValue={row.catatan ?? ""} />
-                            </label>
-                            <button className={styles["ak-button"]} type="submit">
-                              Simpan Absensi
-                            </button>
-                          </form>
-                        </details>
+                        <FormDialog
+                          aksi={absensiManualFormAction}
+                          deskripsi={`Isi absensi ${row.nama} untuk tanggal ${tanggal}.`}
+                          judul="Ubah absensi"
+                          label="Ubah"
+                          labelSimpan="Simpan absensi"
+                          varian="secondary"
+                        >
+                          <div className="modul-form-grid">
+                            <input name="pegawaiId" type="hidden" value={row.pegawaiId} />
+                            <input name="tanggal" type="hidden" value={tanggal} />
+                            <FormField
+                              defaultValue={row.jamMasuk ?? ""}
+                              label="Jam masuk"
+                              name="jamMasuk"
+                              type="time"
+                            />
+                            <FormField
+                              defaultValue={row.jamKeluar ?? ""}
+                              label="Jam pulang"
+                              name="jamKeluar"
+                              type="time"
+                            />
+                            <FormField
+                              defaultValue={row.status ?? "tidak_hadir"}
+                              kind="select"
+                              label="Status"
+                              name="status"
+                              options={[
+                                { value: "hadir", label: "Hadir" },
+                                { value: "izin", label: "Izin" },
+                                { value: "cuti", label: "Cuti" },
+                                { value: "tidak_hadir", label: "Tidak Hadir" },
+                              ]}
+                            />
+                            <FormField
+                              defaultValue={row.catatan ?? ""}
+                              label="Catatan"
+                              name="catatan"
+                            />
+                          </div>
+                        </FormDialog>
                       ) : (
                         <span>—</span>
                       )}
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
           {!filteredRows.length ? (
             <div className={styles["ak-empty"]}>
               {rows.length
@@ -310,7 +312,7 @@ export default async function AbsensiPage({
                 : "Belum ada pegawai aktif. Tambahkan pegawai terlebih dahulu."}
             </div>
           ) : null}
-        </section>
+        </TableCard>
         <div className={styles["ak-side-stack"]}>
           <section id="kalender" className={styles["ak-card"]}>
             <h2>Kalender Kehadiran</h2>
@@ -496,9 +498,9 @@ export default async function AbsensiPage({
                 )}
               </div>
             </div>
-            <button className={styles["ak-button"]} type="submit">
+            <Button className={styles["ak-button"]} type="submit">
               Simpan Pengaturan
-            </button>
+            </Button>
           </form>
         ) : (
           <p>Akun ini hanya memiliki akses baca pengaturan absensi.</p>

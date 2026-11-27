@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+
 import styles from "./pengaturan-desa.module.css";
 
 type TteData = {
@@ -302,35 +304,35 @@ export function IntegrationManager() {
             </button>
           </div>
         )}
-        <div className={styles.tableWrap}>
-          <table>
-            <thead>
-              <tr>
-                <th>Nama</th>
-                <th>Prefix</th>
-                <th>Limit</th>
-                <th>Status</th>
-                <th>Terakhir Dipakai</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
+        <TableScroll className={styles.tableWrap}>
+          <Table>
+            <THead>
+              <Row>
+                <HeaderCell>Nama</HeaderCell>
+                <HeaderCell>Prefix</HeaderCell>
+                <HeaderCell>Limit</HeaderCell>
+                <HeaderCell>Status</HeaderCell>
+                <HeaderCell>Terakhir Dipakai</HeaderCell>
+                <HeaderCell>Aksi</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {keys.map((k) => (
-                <tr key={k.id}>
-                  <td>{k.name}</td>
-                  <td>
+                <Row key={k.id}>
+                  <Cell>{k.name}</Cell>
+                  <Cell>
                     <code>{k.prefix}</code>
-                  </td>
-                  <td>{k.rateLimit}/menit</td>
-                  <td>
+                  </Cell>
+                  <Cell>{k.rateLimit}/menit</Cell>
+                  <Cell>
                     <span className={k.active ? styles.statusOn : styles.statusOff}>
                       {k.active ? "Aktif" : "Nonaktif"}
                     </span>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     {k.lastUsedAt ? new Date(k.lastUsedAt).toLocaleString("id-ID") : "Belum pernah"}
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     {k.active ? (
                       <button
                         className={styles.textDanger}
@@ -342,17 +344,17 @@ export function IntegrationManager() {
                     ) : (
                       "—"
                     )}
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ))}
               {keys.length === 0 && (
-                <tr>
-                  <td colSpan={6}>Belum ada kunci API.</td>
-                </tr>
+                <Row>
+                  <Cell colSpan={6}>Belum ada kunci API.</Cell>
+                </Row>
               )}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
       </section>
     </div>
   );

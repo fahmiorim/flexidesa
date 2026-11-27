@@ -14,26 +14,6 @@ export const pelangganFormSchema = z.object({
   keteranganLangganan: z.string().trim().optional().nullable(),
 });
 
-export type PelangganFormInput = z.input<typeof pelangganFormSchema>;
-export type PelangganFormValues = z.infer<typeof pelangganFormSchema>;
-
-export interface PelangganDTO {
-  id: number;
-  villageId: number;
-  nama: string;
-  kontak: string | null;
-  alamat: string | null;
-  keterangan: string | null;
-  statusLangganan: string | null;
-  tanggalMulai: Date | null;
-  tanggalSelesai: Date | null;
-  noKerjasama: string | null;
-  keteranganLangganan: string | null;
-  dokumenKerjasama: string | null;
-  dokumenNama: string | null;
-  dokumenMime: string | null;
-}
-
 /** MIME yang diterima untuk dokumen kerja sama pelanggan. */
 export const MIME_DOKUMEN_KERJASAMA = ["application/pdf", "image/jpeg", "image/png"] as const;
 

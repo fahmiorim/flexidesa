@@ -1,6 +1,8 @@
-import Link from "next/link";
-
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { klasifikasiSkor } from "@/features/layanan-warga/analisis/domain/skor";
 import {
   getHasilSurveiData,
@@ -39,15 +41,6 @@ export default async function Page({
       <PageHeading
         judul={<>Survei & Kepuasan Masyarakat</>}
         deskripsi={<>Kelola survei kepuasan layanan desa.</>}
-        aksi={
-          <>
-            {data.canCreate ? (
-              <Link className="button button-primary" href="/pelayanan-publik/survei/baru">
-                ＋ Buat Survei Baru
-              </Link>
-            ) : null}
-          </>
-        }
       />
       <div className="dashboard-stats">
         <article className="modul-card">
@@ -71,18 +64,6 @@ export default async function Page({
           <small>Seluruh formulir survei</small>
         </article>
       </div>
-      <nav className="quick-actions" aria-label="Navigasi survei">
-        <span className="button button-primary">Dashboard Survei</span>
-        <Link className="button button-secondary" href="#daftar-survei">
-          Kelola Survei
-        </Link>
-        <Link className="button button-secondary" href="#hasil-survei">
-          Hasil Survei
-        </Link>
-        <Link className="button button-secondary" href="#ulasan">
-          Ulasan & Saran
-        </Link>
-      </nav>
       <div className="dashboard-grid">
         <section className="modul-card">
           <h2>Komposisi Penilaian Kepuasan</h2>
@@ -164,121 +145,122 @@ export default async function Page({
           </p>
         )}
       </section>
-      <section className="modul-card" id="hasil-survei">
-        <div className="page-heading">
-          <div>
-            <h2>Hasil Survei per Program</h2>
-            <p>Rekap responden dan indeks kepuasan berdasarkan survei.</p>
-          </div>
-        </div>
-        <div className="modul-scroll">
-          <table className="modul-table">
-            <thead>
-              <tr>
-                <th>Nama Survei</th>
-                <th>Responden</th>
-                <th>IKM (0–100)</th>
-                <th>Kategori</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
+      <TableCard
+        description="Rekap responden dan indeks kepuasan berdasarkan survei."
+        title="Hasil Survei per Program"
+      >
+        <TableScroll className="modul-scroll">
+          <Table className="modul-table">
+            <THead>
+              <Row>
+                <HeaderCell>Nama Survei</HeaderCell>
+                <HeaderCell>Responden</HeaderCell>
+                <HeaderCell>IKM (0–100)</HeaderCell>
+                <HeaderCell>Kategori</HeaderCell>
+                <HeaderCell>Aksi</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {results.map((row) => (
-                <tr key={row.row.id}>
-                  <td>
+                <Row key={row.row.id}>
+                  <Cell>
                     <strong>{row.row.judul}</strong>
                     <br />
                     <small>
                       {row.row.mulai ?? "Tanpa batas"} – {row.row.selesai ?? "Tanpa batas"}
                     </small>
-                  </td>
-                  <td>{row.totalResponden.toLocaleString("id-ID")}</td>
-                  <td>{row.average === null ? "—" : row.average.toFixed(1)}</td>
-                  <td>{row.klasifikasi}</td>
-                  <td>
-                    <Link
-                      className="button button-secondary"
+                  </Cell>
+                  <Cell>{row.totalResponden.toLocaleString("id-ID")}</Cell>
+                  <Cell>{row.average === null ? "—" : row.average.toFixed(1)}</Cell>
+                  <Cell>{row.klasifikasi}</Cell>
+                  <Cell>
+                    <ButtonLink
+                      variant="secondary"
                       href={"/pelayanan-publik/survei/" + row.row.id + "/hasil"}
                     >
                       Lihat hasil
-                    </Link>
-                  </td>
-                </tr>
+                    </ButtonLink>
+                  </Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
         {results.length === 0 ? <p className="modul-empty">Belum ada hasil survei.</p> : null}
-      </section>
-      <section className="modul-card" id="daftar-survei">
-        <div className="page-heading">
-          <div>
-            <h2>Kelola Survei</h2>
-            <p>Atur periode, sasaran, pertanyaan, dan status publikasi survei.</p>
-          </div>
-        </div>
-        <div className="modul-scroll">
-          <table className="modul-table">
-            <thead>
-              <tr>
-                <th>Nama Survei</th>
-                <th>Periode</th>
-                <th>Soal</th>
-                <th>Responden</th>
-                <th>Status</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
+      </TableCard>
+      <TableCard
+        actions={
+          data.canCreate ? (
+            <ButtonLink variant="primary" href="/pelayanan-publik/survei/baru">
+              ＋ Buat Survei Baru
+            </ButtonLink>
+          ) : null
+        }
+        description="Atur periode, sasaran, pertanyaan, dan status publikasi survei."
+        title="Kelola Survei"
+      >
+        <TableScroll className="modul-scroll">
+          <Table className="modul-table">
+            <THead>
+              <Row>
+                <HeaderCell>Nama Survei</HeaderCell>
+                <HeaderCell>Periode</HeaderCell>
+                <HeaderCell>Soal</HeaderCell>
+                <HeaderCell>Responden</HeaderCell>
+                <HeaderCell>Status</HeaderCell>
+                <HeaderCell>Aksi</HeaderCell>
+              </Row>
+            </THead>
+            <TBody>
               {data.rows.map((row) => (
-                <tr key={row.id}>
-                  <td>
+                <Row key={row.id}>
+                  <Cell>
                     <strong>{row.judul}</strong>
                     <br />
                     <small>{row.sasaran ?? "Semua masyarakat"}</small>
-                  </td>
-                  <td>
+                  </Cell>
+                  <Cell>
                     {row.mulai ?? "Tanpa batas"} – {row.selesai ?? "Tanpa batas"}
-                  </td>
-                  <td>{row.totalSoal}</td>
-                  <td>{row.totalResponden}</td>
-                  <td>{row.aktif === 1 ? "Aktif" : "Nonaktif"}</td>
-                  <td>
-                    <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                      <Link
-                        className="button button-secondary"
-                        href={"/pelayanan-publik/survei/" + row.id}
-                      >
+                  </Cell>
+                  <Cell>{row.totalSoal}</Cell>
+                  <Cell>{row.totalResponden}</Cell>
+                  <Cell>{row.aktif === 1 ? "Aktif" : "Nonaktif"}</Cell>
+                  <Cell>
+                    <div className="table-actions">
+                      <ButtonLink variant="secondary" href={"/pelayanan-publik/survei/" + row.id}>
                         Detail & Pertanyaan
-                      </Link>
+                      </ButtonLink>
                       {data.canUpdate ? (
-                        <Link
-                          className="button button-secondary"
+                        <ButtonLink
+                          variant="secondary"
                           href={"/pelayanan-publik/survei/" + row.id + "/edit"}
                         >
                           Ubah
-                        </Link>
+                        </ButtonLink>
                       ) : null}
                       {data.canDelete ? (
-                        <form action={hapusSurveiAction}>
-                          <input type="hidden" name="id" value={row.id} />
-                          <button className="button button-danger-ghost">Hapus</button>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusSurveiAction}
+                          id={row.id}
+                          judul={`Hapus survei "${row.judul}"?`}
+                          keterangan="Survei, pertanyaan, dan jawaban responden akan dihapus permanen."
+                          labelAksi="Hapus survei"
+                        />
                       ) : null}
                     </div>
-                  </td>
-                </tr>
+                  </Cell>
+                </Row>
               ))}
-            </tbody>
-          </table>
-        </div>
+            </TBody>
+          </Table>
+        </TableScroll>
         {data.rows.length === 0 ? (
           <p className="modul-empty">
             Belum ada survei. Buat survei pertama untuk mulai mengumpulkan penilaian masyarakat.
           </p>
         ) : null}
-        <p>Menampilkan {data.rows.length} survei.</p>
-      </section>
+        <p className="modul-empty">Menampilkan {data.rows.length} survei.</p>
+      </TableCard>
       <section className="modul-card" id="ulasan">
         <h2>Ulasan & Saran Masyarakat</h2>
         {comments.length ? (

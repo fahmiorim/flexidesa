@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { DialogHapusForm } from "@/components/ui/dialog-hapus";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { getSyaratSuratPageData } from "@/features/pelayanan-persuratan/surat/application/jenis-surat-use-cases";
 
 import { hapusSyaratSuratAction, simpanSyaratSuratAction } from "./actions";
@@ -22,18 +26,6 @@ export default async function SyaratSuratPage({ searchParams }: { searchParams: 
       <PageHeading
         judul={<>Daftar Persyaratan Surat</>}
         deskripsi={<>Kelola persyaratan pengajuan surat.</>}
-        aksi={
-          <>
-            <div className="page-heading-actions">
-              <Link
-                href="/layanan-surat/persuratan/jenis-surat"
-                className="button button-secondary"
-              >
-                Kembali ke Pengaturan Surat
-              </Link>
-            </div>
-          </>
-        }
       />
 
       {params.berhasil ? (
@@ -44,79 +36,81 @@ export default async function SyaratSuratPage({ searchParams }: { searchParams: 
         </div>
       ) : null}
 
-      <section className="modul-card">
-        <div className="beranda-card-head">
-          <div>
-            <h2 className="beranda-card-title">Persyaratan dokumen</h2>
-            <p className="modul-muted">
-              {syarat.length} persyaratan terdaftar · {aktif} aktif
-            </p>
-          </div>
-        </div>
-
-        {canCreate ? (
-          <form
-            action={simpanSyaratSuratAction}
-            className="modul-form-grid"
-            style={{ alignItems: "end", marginBottom: 20 }}
-          >
-            <label>
-              Nama persyaratan
-              <input name="name" required maxLength={150} placeholder="Fotokopi Kartu Keluarga" />
-            </label>
-            <label>
-              Keterangan
-              <input
+      <TableCard
+        title="Persyaratan dokumen"
+        description={`${syarat.length} persyaratan terdaftar · ${aktif} aktif`}
+        filter={
+          canCreate ? (
+            <form action={simpanSyaratSuratAction} className="modul-form-grid form-grid-end">
+              <FormField
+                label="Nama persyaratan"
+                name="name"
+                required
+                maxLength={150}
+                placeholder="Fotokopi Kartu Keluarga"
+              />
+              <FormField
+                label="Keterangan"
                 name="description"
                 maxLength={255}
                 placeholder="Unggah dokumen yang masih berlaku"
               />
-            </label>
-            <label>
-              Urutan
-              <input name="sortOrder" type="number" min={0} max={9999} defaultValue={0} />
-            </label>
-            <label className="modul-inline-check">
-              <input type="checkbox" name="isActive" defaultChecked /> Aktif
-            </label>
-            <button className="button button-primary" type="submit">
-              ＋ Tambah Persyaratan
-            </button>
-          </form>
-        ) : null}
-
+              <FormField
+                label="Urutan"
+                name="sortOrder"
+                type="number"
+                min={0}
+                max={9999}
+                defaultValue={0}
+              />
+              <label className="modul-inline-check">
+                <input type="checkbox" name="isActive" defaultChecked /> Aktif
+              </label>
+              <Button variant="primary" type="submit">
+                ＋ Tambah Persyaratan
+              </Button>
+            </form>
+          ) : null
+        }
+        footer={
+          <p className="modul-muted">
+            Persyaratan yang masih dipakai jenis surat tidak dapat dihapus. Lepaskan dari jenis
+            surat terlebih dahulu.
+          </p>
+        }
+      >
         {syarat.length === 0 ? (
-          <p className="modul-muted">Belum ada persyaratan dokumen.</p>
+          <p className="modul-muted table-card-empty">Belum ada persyaratan dokumen.</p>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>Urutan</th>
-                  <th>Persyaratan</th>
-                  <th>Status</th>
-                  <th>Perbarui</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>Urutan</HeaderCell>
+                  <HeaderCell>Persyaratan</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Perbarui</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {syarat.map((item) => (
-                  <tr key={item.id}>
-                    <td className="modul-mono">{item.sortOrder}</td>
-                    <td>
+                  <Row key={item.id}>
+                    <Cell className="modul-mono">{item.sortOrder}</Cell>
+                    <Cell>
                       <strong>{item.name}</strong>
                       {item.description ? (
                         <p className="modul-muted" style={{ margin: 0 }}>
                           {item.description}
                         </p>
                       ) : null}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       <span className="beranda-chip" data-tone={item.isActive ? "hijau" : "netral"}>
                         {item.isActive ? "Aktif" : "Nonaktif"}
                       </span>
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {canUpdate ? (
                         <form
                           action={simpanSyaratSuratAction}
@@ -148,37 +142,34 @@ export default async function SyaratSuratPage({ searchParams }: { searchParams: 
                             <input type="checkbox" name="isActive" defaultChecked={item.isActive} />{" "}
                             Aktif
                           </label>
-                          <button className="button button-secondary" type="submit">
+                          <Button variant="secondary" type="submit">
                             Simpan
-                          </button>
+                          </Button>
                         </form>
                       ) : (
                         <span className="modul-muted">—</span>
                       )}
-                    </td>
-                    <td>
+                    </Cell>
+                    <Cell>
                       {canDelete ? (
-                        <form action={hapusSyaratSuratAction}>
-                          <input type="hidden" name="id" value={item.id} />
-                          <button className="button button-danger-ghost" type="submit">
-                            Hapus
-                          </button>
-                        </form>
+                        <DialogHapusForm
+                          aksi={hapusSyaratSuratAction}
+                          id={item.id}
+                          judul={`Hapus persyaratan "${item.name}"?`}
+                          keterangan="Persyaratan akan dihapus permanen dari daftar syarat surat."
+                          labelAksi="Hapus persyaratan"
+                        />
                       ) : (
                         <span className="modul-muted">—</span>
                       )}
-                    </td>
-                  </tr>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
-        <p className="modul-muted">
-          Persyaratan yang masih dipakai jenis surat tidak dapat dihapus. Lepaskan dari jenis surat
-          terlebih dahulu.
-        </p>
-      </section>
+      </TableCard>
     </div>
   );
 }

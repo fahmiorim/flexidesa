@@ -515,35 +515,6 @@ export async function suratNumberExistsWithAgenda(
  *
  * Hanya metadata yang aman dibagikan; data pribadi pemohon tidak ikut.
  */
-export async function findSuratByNumber(
-  villageId: number,
-  number: string,
-): Promise<{
-  id: number;
-  number: string;
-  typeName: string;
-  status: LetterStatus;
-  letterDate: string;
-  issuedAt: Date | null;
-  tte: boolean | null;
-} | null> {
-  const [row] = await db
-    .select({
-      id: letters.id,
-      number: letters.number,
-      typeName: letters.typeName,
-      status: letters.status,
-      letterDate: letters.letterDate,
-      issuedAt: letters.issuedAt,
-      tte: letters.tte,
-    })
-    .from(letters)
-    .where(and(eq(letters.villageId, villageId), eq(letters.number, number)))
-    .limit(1);
-
-  if (!row || !row.number) return null;
-  return { ...row, number: row.number };
-}
 
 export interface ListLetterNumberArchiveParams {
   q?: string;

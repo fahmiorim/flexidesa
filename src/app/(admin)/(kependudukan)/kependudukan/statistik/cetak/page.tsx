@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
+import { ButtonLink } from "@/components/ui/button-link";
 import { TombolCetak } from "@/components/ui/tombol-cetak";
 import {
   getStatistikKependudukanCetakData,
@@ -54,12 +54,9 @@ export default async function CetakStatistikKependudukanPage({
       {otomatis ? <CetakOtomatis /> : null}
 
       <div className={styles.actions}>
-        <Link
-          className="button button-secondary"
-          href={`/kependudukan/statistik?${kembaliQuery.toString()}`}
-        >
+        <ButtonLink variant="secondary" href={`/kependudukan/statistik?${kembaliQuery.toString()}`}>
           ← Kembali ke Statistik
-        </Link>
+        </ButtonLink>
         <TombolCetak />
       </div>
 

@@ -1,9 +1,6 @@
 import { z } from "zod";
 
-import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
-
 /** Slug resource RBAC untuk pusat umpan balik. */
-export const UMPAN_BALIK_RESOURCE = RESOURCES.umpanBalik;
 
 export const UMPAN_BALIK_STATUS = ["baru", "dibaca", "ditindaklanjuti"] as const;
 export type UmpanBalikStatus = (typeof UMPAN_BALIK_STATUS)[number];
@@ -39,12 +36,8 @@ export const umpanBalikSchema = z.object({
     .max(2000, "Pesan maksimal 2000 karakter."),
 });
 
-export type UmpanBalikInput = z.infer<typeof umpanBalikSchema>;
-
 /** Ubah status dari panel admin. */
 export const ubahStatusUmpanBalikSchema = z.object({
   id: z.coerce.number().int().positive(),
   status: z.enum(UMPAN_BALIK_STATUS),
 });
-
-export type UbahStatusUmpanBalikInput = z.infer<typeof ubahStatusUmpanBalikSchema>;

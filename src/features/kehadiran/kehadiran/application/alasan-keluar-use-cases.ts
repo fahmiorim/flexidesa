@@ -37,11 +37,6 @@ export async function getAlasanKeluarData(): Promise<AlasanKeluarRow[]> {
 }
 
 /** Baris yang sedang disunting; `null` bila tidak ada atau milik desa lain. */
-export async function getAlasanKeluarUntukUbah(id: number): Promise<AlasanKeluarRow | null> {
-  const user = await requirePermission(ALASAN_KELUAR_RESOURCE, "update");
-  const villageId = await resolveVillageId(user);
-  return findAlasanKeluar(villageId, id);
-}
 
 /**
  * Tambah satu alasan keluar.

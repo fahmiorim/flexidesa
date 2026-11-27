@@ -264,14 +264,6 @@ export async function bacaBerkasPengajuanAdminData(id: number, berkasId: number)
     throw notFound("Berkas PDF tidak valid.");
   return { bytes, namaAsli: row.namaAsli };
 }
-export async function listBerkasPengajuanWargaData(id: number) {
-  const user = await requireWargaAktif();
-  const villageId = await resolveVillageId(user);
-  const detail = await getPengajuanLayanan(villageId, id);
-  if (!detail || detail.request.residentId !== user.residentId)
-    throw notFound("Pengajuan tidak ditemukan.");
-  return listBerkasPengajuan(villageId, id);
-}
 export async function bacaBerkasPengajuanWargaData(id: number, berkasId: number) {
   const user = await requireWargaAktif();
   const villageId = await resolveVillageId(user);

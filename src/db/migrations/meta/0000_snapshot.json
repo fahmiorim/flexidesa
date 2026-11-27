@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "105cae45-a6d3-4e3c-8228-616ccb559661",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "6c72bd48-c419-41dd-a0d9-60e76903c8e4",
+  "prevId": "4092749b-198e-4988-9901-5e2b6d478a15",
   "tables": {
     "agenda_kegiatan": {
       "name": "agenda_kegiatan",
@@ -4881,6 +4881,34 @@
         },
         "batas_desa": {
           "name": "batas_desa",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tahun_berdiri": {
+          "name": "tahun_berdiri",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tujuan_pembangunan": {
+          "name": "tujuan_pembangunan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "nilai_dasar": {
+          "name": "nilai_dasar",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "arah_kebijakan": {
+          "name": "arah_kebijakan",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -11659,6 +11687,130 @@
       "uniqueConstraints": {},
       "checkConstraint": {}
     },
+    "sarana_prasarana": {
+      "name": "sarana_prasarana",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "village_id": {
+          "name": "village_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "nama": {
+          "name": "nama",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "kategori": {
+          "name": "kategori",
+          "type": "varchar(40)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'lainnya'"
+        },
+        "lokasi": {
+          "name": "lokasi",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "keterangan": {
+          "name": "keterangan",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "aktif": {
+          "name": "aktif",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "urut": {
+          "name": "urut",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "sarana_prasarana_village_id_uq": {
+          "name": "sarana_prasarana_village_id_uq",
+          "columns": [
+            "village_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "sarana_prasarana_village_active_idx": {
+          "name": "sarana_prasarana_village_active_idx",
+          "columns": [
+            "village_id",
+            "aktif",
+            "urut"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "sarana_prasarana_village_fk": {
+          "name": "sarana_prasarana_village_fk",
+          "tableFrom": "sarana_prasarana",
+          "tableTo": "villages",
+          "columnsFrom": [
+            "village_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "sarana_prasarana_id": {
+          "name": "sarana_prasarana_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
     "inventaris": {
       "name": "inventaris",
       "columns": {
@@ -17069,6 +17221,13 @@
         "border": {
           "name": "border",
           "type": "varchar(25)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "luas_ha": {
+          "name": "luas_ha",
+          "type": "decimal(12,2)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

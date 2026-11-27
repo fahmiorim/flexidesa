@@ -48,12 +48,10 @@ import {
   type HasilHapusMassalKelompok,
   type KelompokListResult,
 } from "@/features/kependudukan/kelompok/infrastructure/kelompok-repository";
-import { listPendudukOptions } from "@/features/kependudukan/penduduk/application/kontrak";
 import { recordAuditEvent } from "@/features/pengaturan/audit/application/audit-use-cases";
 import { AUDIT_EVENTS } from "@/features/pengaturan/audit/domain/audit";
 import { requirePermission } from "@/lib/dal";
 import { conflict, notFound, validationError } from "@/lib/errors";
-import type { LabelOption } from "@/lib/forms";
 
 /**
  * Lapisan aplikasi (use case) untuk kelompok, lembaga, dan kategorinya.
@@ -140,16 +138,6 @@ export async function getReferensiKelompok(
 }
 
 /** Pilihan penduduk desa (untuk ketua saat membuat kelompok). */
-export async function getPendudukKelompok(): Promise<LabelOption[]> {
-  const user = await requirePermission(KELOMPOK_RESOURCE, "read");
-  const villageId = await resolveVillageId(user);
-
-  const penduduk = await listPendudukOptions(villageId);
-  return penduduk.map((row) => ({
-    id: row.id,
-    label: row.nationalId ? `${row.name} — ${row.nationalId}` : row.name,
-  }));
-}
 
 /** Penduduk yang belum menjadi anggota kelompok (untuk dialog anggota). */
 export async function listAnggotaKandidat(kelompokId: number) {

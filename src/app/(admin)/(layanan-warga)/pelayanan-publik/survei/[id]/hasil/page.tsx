@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { ButtonLink } from "@/components/ui/button-link";
 import { getHasilSurveiData } from "@/features/layanan-warga/pelayanan/application/survei-use-cases";
 
 export const metadata: Metadata = { title: "Hasil Survei" };
@@ -25,15 +25,15 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
         aksi={
           <>
             <div className="page-heading-actions">
-              <Link className="button button-secondary" href={"/pelayanan-publik/survei/" + id}>
+              <ButtonLink variant="secondary" href={"/pelayanan-publik/survei/" + id}>
                 Kembali ke survei
-              </Link>
-              <a
-                className="button button-primary"
+              </ButtonLink>
+              <ButtonLink
+                variant="primary"
                 href={"/pelayanan-publik/survei/" + id + "/hasil/ekspor"}
               >
                 Ekspor CSV
-              </a>
+              </ButtonLink>
             </div>
           </>
         }

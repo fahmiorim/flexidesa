@@ -3,6 +3,10 @@ import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
 import { ConfirmSubmit } from "@/components/ui/confirm-submit";
+import { FormDialog } from "@/components/ui/form-dialog";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import {
   formatRentang,
   JENIS_PENGAJUAN_IZIN,
@@ -12,7 +16,8 @@ import {
 } from "@/features/kehadiran/kehadiran/domain/pengajuan-izin";
 import { getPengajuanIzinData } from "@/features/kehadiran/kepegawaian/application/pengajuan-izin-use-cases";
 
-import { ajukanPengajuanIzinAction, batalkanPengajuanIzinAction } from "./actions";
+import { batalkanPengajuanIzinAction } from "./actions";
+import { ajukanPengajuanIzinFormAction } from "./form-actions";
 
 export const metadata: Metadata = { title: "Pengajuan Izin" };
 
@@ -58,140 +63,113 @@ export default async function PengajuanIzinPage({
         </p>
       ) : null}
 
-      {bolehAjukan ? (
-        <section className="platform-card data-panel">
-          <header>
-            <h2>Ajukan Izin</h2>
-            <p>
-              Lampiran surat dokter wajib untuk jenis Sakit. Durasi dihitung dari hari kerja sesuai
-              pengaturan hari libur desa.
-            </p>
-          </header>
-
-          <form action={ajukanPengajuanIzinAction} className="form-stack">
-            <div className="modul-form-grid">
-              {data.bolehPilihPegawai ? (
-                <label className="form-field">
-                  <span className="form-label">Nama Pegawai</span>
-                  <select className="form-input" name="pegawaiId" required>
-                    {data.pegawai.map((item) => (
-                      <option key={item.id} value={item.id}>
-                        {item.nama}
-                        {item.jabatan ? ` — ${item.jabatan}` : ""}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-              ) : (
-                <label className="form-field">
-                  <span className="form-label">Nama Pegawai</span>
-                  <input
-                    className="form-input"
+      <TableCard
+        actions={
+          bolehAjukan ? (
+            <FormDialog
+              aksi={ajukanPengajuanIzinFormAction}
+              deskripsi="Lampiran surat dokter wajib untuk jenis Sakit. Durasi dihitung dari hari kerja sesuai pengaturan hari libur desa."
+              judul="Ajukan izin"
+              label="＋ Ajukan Izin"
+              labelSimpan="Kirim pengajuan"
+            >
+              <div className="modul-form-grid">
+                {data.bolehPilihPegawai ? (
+                  <FormField
+                    kind="select"
+                    label="Nama pegawai"
+                    name="pegawaiId"
+                    options={data.pegawai.map((item) => ({
+                      value: String(item.id),
+                      label: `${item.nama}${item.jabatan ? ` — ${item.jabatan}` : ""}`,
+                    }))}
+                    required
+                  />
+                ) : (
+                  <FormField
+                    label="Nama pegawai"
                     readOnly
                     value={data.pegawaiAkun?.nama ?? "Akun belum tertaut ke pegawai"}
                   />
-                </label>
-              )}
-
-              <label className="form-field">
-                <span className="form-label">Jenis Izin</span>
-                <select className="form-input" defaultValue="izin" name="jenis" required>
-                  {JENIS_PENGAJUAN_IZIN.map((item) => (
-                    <option key={item.nilai} value={item.nilai}>
-                      {item.label}
-                    </option>
-                  ))}
-                </select>
-                <span className="form-help">
-                  {JENIS_PENGAJUAN_IZIN.map((item) => `${item.label}: ${item.keterangan}`).join(
-                    ". ",
-                  )}
-                  .
-                </span>
-              </label>
-
-              <label className="form-field">
-                <span className="form-label">Tanggal Mulai</span>
-                <input className="form-input" min={hariIni} name="mulai" required type="date" />
-              </label>
-
-              <label className="form-field">
-                <span className="form-label">Tanggal Selesai</span>
-                <input className="form-input" min={hariIni} name="selesai" required type="date" />
-              </label>
-
-              <label className="form-field">
-                <span className="form-label">Keterangan</span>
-                <textarea
-                  className="form-input"
+                )}
+                <FormField
+                  defaultValue="izin"
+                  helpText={`${JENIS_PENGAJUAN_IZIN.map(
+                    (item) => `${item.label}: ${item.keterangan}`,
+                  ).join(". ")}.`}
+                  kind="select"
+                  label="Jenis izin"
+                  name="jenis"
+                  options={JENIS_PENGAJUAN_IZIN.map((item) => ({
+                    value: item.nilai,
+                    label: item.label,
+                  }))}
+                  required
+                />
+                <FormField label="Tanggal mulai" min={hariIni} name="mulai" required type="date" />
+                <FormField
+                  label="Tanggal selesai"
+                  min={hariIni}
+                  name="selesai"
+                  required
+                  type="date"
+                />
+                <FormField
+                  containerClassName="form-field-full"
+                  kind="textarea"
+                  label="Keterangan"
                   maxLength={KETERANGAN_PENGAJUAN_MAKS}
                   name="keterangan"
                   placeholder="Jelaskan alasan pengajuan izin"
                   required
                   rows={3}
                 />
-              </label>
-
-              <label className="form-field">
-                <span className="form-label">Lampiran Pendukung</span>
-                <input
+                <FormField
                   accept=".pdf,image/jpeg,image/png,image/webp"
-                  className="form-input"
+                  containerClassName="form-field-full"
+                  helpText="PDF/JPG/PNG/WEBP, maksimal 10 MB. Wajib untuk jenis Sakit."
+                  label="Lampiran pendukung"
                   name="lampiran"
                   type="file"
                 />
-                <span className="form-help">
-                  PDF/JPG/PNG/WEBP, maksimal 10 MB. Wajib untuk jenis Sakit.
-                </span>
-              </label>
-            </div>
-
-            <div className="penduduk-heading-actions">
-              <button className="button button-primary" type="submit">
-                Kirim Pengajuan
-              </button>
-            </div>
-          </form>
-        </section>
-      ) : null}
-
-      <section className="platform-card data-panel">
-        <header>
-          <h2>Pengajuan Saya</h2>
-          <p>
-            {data.rows.length === 0
-              ? "Belum ada pengajuan pada tahun ini."
-              : `${data.rows.length} pengajuan pada tahun ${data.tahun}.`}
-          </p>
-        </header>
-
+              </div>
+            </FormDialog>
+          ) : null
+        }
+        description={
+          data.rows.length === 0
+            ? "Belum ada pengajuan pada tahun ini."
+            : `${data.rows.length} pengajuan pada tahun ${data.tahun}.`
+        }
+        title="Pengajuan Saya"
+      >
         {data.rows.length === 0 ? (
           <div className="modul-empty">
             <strong>Belum ada pengajuan izin.</strong>
             <p>Pengajuan yang Anda kirim akan tampil di sini beserta status keputusannya.</p>
           </div>
         ) : (
-          <div className="table-scroll">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th scope="col">No.</th>
-                  <th scope="col">Jenis</th>
-                  <th scope="col">Tanggal</th>
-                  <th scope="col">Durasi</th>
-                  <th scope="col">Keterangan</th>
-                  <th scope="col">Status</th>
-                  {bolehBatalkan ? <th scope="col">Aksi</th> : null}
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll>
+            <Table>
+              <THead>
+                <Row>
+                  <HeaderCell scope="col">No.</HeaderCell>
+                  <HeaderCell scope="col">Jenis</HeaderCell>
+                  <HeaderCell scope="col">Tanggal</HeaderCell>
+                  <HeaderCell scope="col">Durasi</HeaderCell>
+                  <HeaderCell scope="col">Keterangan</HeaderCell>
+                  <HeaderCell scope="col">Status</HeaderCell>
+                  {bolehBatalkan ? <HeaderCell scope="col">Aksi</HeaderCell> : null}
+                </Row>
+              </THead>
+              <TBody>
                 {data.rows.map((row, index) => (
-                  <tr key={row.id}>
-                    <td>{index + 1}</td>
-                    <td>{labelJenisPengajuan(row.jenis)}</td>
-                    <td>{formatRentang(row.mulai, row.selesai)}</td>
-                    <td>{row.durasi} hari kerja</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell>{index + 1}</Cell>
+                    <Cell>{labelJenisPengajuan(row.jenis)}</Cell>
+                    <Cell>{formatRentang(row.mulai, row.selesai)}</Cell>
+                    <Cell>{row.durasi} hari kerja</Cell>
+                    <Cell>
                       {row.keterangan}
                       {row.lampiran ? (
                         <>
@@ -205,37 +183,34 @@ export default async function PengajuanIzinPage({
                           <span className="form-help">Catatan: {row.catatan}</span>
                         </>
                       ) : null}
-                    </td>
-                    <td>{labelStatusPengajuan(row.status)}</td>
+                    </Cell>
+                    <Cell>{labelStatusPengajuan(row.status)}</Cell>
                     {bolehBatalkan ? (
-                      <td>
+                      <Cell>
                         {row.status === "menunggu" ? (
                           <form action={batalkanPengajuanIzinAction}>
                             <input name="id" type="hidden" value={row.id} />
-                            <ConfirmSubmit
-                              className="button button-ghost"
-                              message="Batalkan pengajuan izin ini?"
-                            >
+                            <ConfirmSubmit variant="ghost" message="Batalkan pengajuan izin ini?">
                               Batalkan
                             </ConfirmSubmit>
                           </form>
                         ) : (
                           "—"
                         )}
-                      </td>
+                      </Cell>
                     ) : null}
-                  </tr>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
 
-        <p className="form-help">
+        <p className="modul-muted">
           Keputusan pengajuan dilakukan pada menu{" "}
           <Link href="/kehadiran/persetujuan-izin">Persetujuan Izin</Link>.
         </p>
-      </section>
+      </TableCard>
     </div>
   );
 }

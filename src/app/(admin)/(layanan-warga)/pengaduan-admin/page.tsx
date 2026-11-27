@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
+import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { TableCard } from "@/components/ui/table-card";
 import { listPengaduanData } from "@/features/layanan-warga/pengaduan/application/use-cases";
 import {
   hitungStatistikPengaduan,
@@ -43,9 +47,9 @@ export default async function PengaduanAdminPage({
         deskripsi={<>Tindak lanjuti pengaduan masyarakat.</>}
         aksi={
           <>
-            <Link className="button button-secondary" href="/pengaduan">
+            <ButtonLink variant="secondary" href="/pengaduan">
               Lihat halaman publik
-            </Link>
+            </ButtonLink>
           </>
         }
       />
@@ -72,80 +76,81 @@ export default async function PengaduanAdminPage({
           <strong>{statistik.selesai.toLocaleString("id-ID")}</strong>
         </article>
       </div>
-      <section className="modul-card">
-        <form method="get" className="modul-filter-row">
-          <label className="modul-field">
-            Cari tiket / judul / pelapor
-            <input
-              name="cari"
+      <TableCard
+        description={`${rows.length.toLocaleString("id-ID")} pengaduan ditampilkan.`}
+        filter={
+          <form method="get" className="modul-filter-row">
+            <FormField
               defaultValue={params.cari ?? ""}
+              label="Cari tiket / judul / pelapor"
+              name="cari"
               placeholder="PGD-..., jalan rusak..."
             />
-          </label>
-          <label className="modul-field">
-            Status
-            <select name="status" defaultValue={status ?? ""}>
-              <option value="">Semua status</option>
-              {STATUS_PENGADUAN.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="modul-field">
-            Kategori
-            <select name="kategori" defaultValue={kategori ?? ""}>
-              <option value="">Semua kategori</option>
-              {KATEGORI_PENGADUAN.map((item) => (
-                <option key={item.value} value={item.value}>
-                  {item.label}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="modul-form-actions">
-            <button className="button button-primary" type="submit">
-              Terapkan
-            </button>
-            <Link className="button button-secondary" href="/pengaduan-admin">
-              Reset
-            </Link>
-          </div>
-        </form>
+            <FormField
+              defaultValue={status ?? ""}
+              kind="select"
+              label="Status"
+              name="status"
+              options={[
+                { value: "", label: "Semua status" },
+                ...STATUS_PENGADUAN.map((item) => ({ value: item.value, label: item.label })),
+              ]}
+            />
+            <FormField
+              defaultValue={kategori ?? ""}
+              kind="select"
+              label="Kategori"
+              name="kategori"
+              options={[
+                { value: "", label: "Semua kategori" },
+                ...KATEGORI_PENGADUAN.map((item) => ({ value: item.value, label: item.label })),
+              ]}
+            />
+            <div className="modul-form-actions">
+              <Button variant="primary" type="submit">
+                Terapkan
+              </Button>
+              <ButtonLink variant="secondary" href="/pengaduan-admin">
+                Reset
+              </ButtonLink>
+            </div>
+          </form>
+        }
+        title="Daftar Pengaduan"
+      >
         {rows.length === 0 ? (
           <p className="modul-empty">Tidak ada pengaduan yang cocok dengan filter.</p>
         ) : (
-          <div className="modul-scroll">
-            <table className="modul-table">
-              <thead>
-                <tr>
-                  <th>Tiket</th>
-                  <th>Judul</th>
-                  <th>Pelapor</th>
-                  <th>Kategori</th>
-                  <th>Masuk</th>
-                  <th>Status</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
+          <TableScroll className="modul-scroll">
+            <Table className="modul-table">
+              <THead>
+                <Row>
+                  <HeaderCell>Tiket</HeaderCell>
+                  <HeaderCell>Judul</HeaderCell>
+                  <HeaderCell>Pelapor</HeaderCell>
+                  <HeaderCell>Kategori</HeaderCell>
+                  <HeaderCell>Masuk</HeaderCell>
+                  <HeaderCell>Status</HeaderCell>
+                  <HeaderCell>Aksi</HeaderCell>
+                </Row>
+              </THead>
+              <TBody>
                 {rows.map((row) => (
-                  <tr key={row.id}>
-                    <td className="modul-mono">{row.nomorTiket}</td>
-                    <td>
+                  <Row key={row.id}>
+                    <Cell className="modul-mono">{row.nomorTiket}</Cell>
+                    <Cell>
                       <strong>{row.judul}</strong>
                       {row.petugasNama ? (
                         <span className="modul-muted">Ditangani {row.petugasNama}</span>
                       ) : null}
-                    </td>
-                    <td>{row.namaPelapor}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.namaPelapor}</Cell>
+                    <Cell>
                       {KATEGORI_PENGADUAN.find((item) => item.value === row.kategori)?.label ??
                         "Umum"}
-                    </td>
-                    <td>{row.createdAt ? FORMAT_TANGGAL.format(row.createdAt) : "—"}</td>
-                    <td>
+                    </Cell>
+                    <Cell>{row.createdAt ? FORMAT_TANGGAL.format(row.createdAt) : "—"}</Cell>
+                    <Cell>
                       <span
                         className="beranda-chip"
                         data-tone={
@@ -158,19 +163,19 @@ export default async function PengaduanAdminPage({
                       >
                         {labelStatus(row.status)}
                       </span>
-                    </td>
-                    <td>
-                      <Link className="button button-secondary" href={`/pengaduan-admin/${row.id}`}>
+                    </Cell>
+                    <Cell>
+                      <ButtonLink variant="secondary" href={`/pengaduan-admin/${row.id}`}>
                         Detail
-                      </Link>
-                    </td>
-                  </tr>
+                      </ButtonLink>
+                    </Cell>
+                  </Row>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TBody>
+            </Table>
+          </TableScroll>
         )}
-      </section>
+      </TableCard>
     </div>
   );
 }

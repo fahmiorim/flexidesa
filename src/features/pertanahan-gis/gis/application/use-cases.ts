@@ -4,6 +4,7 @@ import {
   getIdentitasFromRequest,
   resolveVillageId,
 } from "@/features/info-desa/desa/application/resolve-village";
+import { getRincianStatistikPublik } from "@/features/info-desa/desa/application/statistik-rinci-publik";
 import { hapusMedia } from "@/features/media/infrastructure/media-storage";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
@@ -17,19 +18,12 @@ import {
   POLYGON_RESOURCE,
   SIMBOL_RESOURCE,
   validasiGeojsonPolygon,
-  type AreaDTO,
   type AreaFormInput,
-  type CdesaDTO,
-  type CdesaMutasiDTO,
-  type GarisDTO,
   type GarisFormInput,
-  type PersilDTO,
   type PersilFormInput,
-  type PointDTO,
   type PointFormInput,
   type PolygonDTO,
   type PolygonFormInput,
-  type SimbolDTO,
   type SimbolFormInput,
 } from "@/features/pertanahan-gis/gis/domain/gis";
 import {
@@ -49,22 +43,17 @@ import {
   findPersilById as repoFindPersilById,
   findPolygonById as repoFindPolygonById,
   insertArea as repoInsertArea,
-  insertCdesa as repoInsertCdesa,
   insertCdesaMutasi as repoInsertCdesaMutasi,
-  insertGaris as repoInsertGaris,
   insertPersil as repoInsertPersil,
   insertPoint as repoInsertPoint,
   insertPolygon as repoInsertPolygon,
   insertSimbol as repoInsertSimbol,
   listAllPolygons as repoListAllPolygons,
   listAreas as repoListAreas,
-  listCdesa as repoListCdesa,
-  listCdesaMutasi as repoListCdesaMutasi,
   listGaris as repoListGaris,
   listPersil as repoListPersil,
   listPoints as repoListPoints,
   listPolygons as repoListPolygons,
-  listSimbol as repoListSimbol,
   updateArea as repoUpdateArea,
   updateCdesa as repoUpdateCdesa,
   updateCdesaMutasi as repoUpdateCdesaMutasi,
@@ -139,12 +128,6 @@ export async function deletePolygon(id: number): Promise<void> {
 }
 
 // --- Area ------------------------------------------------------------------
-
-export async function listAreaUseCases(): Promise<AreaDTO[]> {
-  const user = await requirePermission(AREA_RESOURCE, "read");
-  const resolvedVillageId = await resolveVillageId(user);
-  return repoListAreas(resolvedVillageId);
-}
 
 export async function createArea(input: AreaFormInput): Promise<{ id: number }> {
   const user = await requireUser();
@@ -263,23 +246,6 @@ export async function hapusLayerPeta(id: number): Promise<void> {
 
 // --- Garis -----------------------------------------------------------------
 
-export async function listGarisUseCases(): Promise<GarisDTO[]> {
-  const user = await requirePermission(GARIS_RESOURCE, "read");
-  const resolvedVillageId = await resolveVillageId(user);
-  return repoListGaris(resolvedVillageId);
-}
-
-export async function createGaris(input: GarisFormInput): Promise<{ id: number }> {
-  const user = await requirePermission(GARIS_RESOURCE, "create");
-  const resolvedVillageId = await resolveVillageId(user);
-  if (input.refLine !== null && input.refLine !== undefined) {
-    const parent = await repoFindGarisById(resolvedVillageId, input.refLine);
-    if (!parent) throw notFound("Garis induk tidak ditemukan.");
-  }
-  const id = await repoInsertGaris(resolvedVillageId, input);
-  return { id };
-}
-
 export async function updateGaris(id: number, input: GarisFormInput): Promise<void> {
   const user = await requirePermission(GARIS_RESOURCE, "update");
   const villageId = await resolveVillageId(user);
@@ -302,12 +268,6 @@ export async function deleteGaris(id: number): Promise<void> {
 }
 
 // --- Point -----------------------------------------------------------------
-
-export async function listPointUseCases(): Promise<PointDTO[]> {
-  const user = await requirePermission(POINT_RESOURCE, "read");
-  const resolvedVillageId = await resolveVillageId(user);
-  return repoListPoints(resolvedVillageId);
-}
 
 export async function createPoint(input: PointFormInput): Promise<{ id: number }> {
   const user = await requirePermission(POINT_RESOURCE, "create");
@@ -342,12 +302,6 @@ export async function deletePoint(id: number): Promise<void> {
 
 // --- Simbol ----------------------------------------------------------------
 
-export async function listSimbolUseCases(): Promise<SimbolDTO[]> {
-  await requireUser();
-  await requirePermission(SIMBOL_RESOURCE, "read");
-  return repoListSimbol();
-}
-
 export async function createSimbol(input: SimbolFormInput): Promise<{ id: number }> {
   await requireUser();
   await requirePermission(SIMBOL_RESOURCE, "create");
@@ -367,12 +321,43 @@ export async function deleteSimbol(id: number): Promise<void> {
   await repoDeleteSimbol(id);
 }
 
+/**
+ * Sebaran penduduk per wilayah untuk halaman peta penduduk.
+ *
+ * Angka diambil dari kontrak rincian statistik milik fitur desa (bukan
+ * repository-nya), sehingga kepemilikan query tetap di satu tempat.
+ */
+export async function getPetaPenduduk() {
+  const user = await requirePermission(RESOURCES.peta, "read");
+  const villageId = await resolveVillageId(user);
+
+  const rincian = await getRincianStatistikPublik(villageId);
+  const total = rincian.perDusun.reduce((jumlah, row) => jumlah + row.total, 0);
+
+  return {
+    perDusun: rincian.perDusun,
+    total,
+    lakiLaki: rincian.perDusun.reduce((jumlah, row) => jumlah + row.lakiLaki, 0),
+    perempuan: rincian.perDusun.reduce((jumlah, row) => jumlah + row.perempuan, 0),
+  };
+}
+
 // --- Persil & Pertanahan ---------------------------------------------------
 
-export async function listPersilUseCases(): Promise<PersilDTO[]> {
+/** Data pertanahan (persil) desa beserta izin pengguna untuk halaman admin. */
+export async function getDataPertanahan() {
   const user = await requirePermission(PERTANAHAN_RESOURCE, "read");
-  const resolvedVillageId = await resolveVillageId(user);
-  return repoListPersil(resolvedVillageId);
+  const villageId = await resolveVillageId(user);
+
+  const rows = await repoListPersil(villageId);
+  return {
+    rows,
+    akses: {
+      bolehTambah: hasPermission(user.permissions, PERTANAHAN_RESOURCE, "create"),
+      bolehUbah: hasPermission(user.permissions, PERTANAHAN_RESOURCE, "update"),
+      bolehHapus: hasPermission(user.permissions, PERTANAHAN_RESOURCE, "delete"),
+    },
+  };
 }
 
 export async function createPersil(input: PersilFormInput): Promise<{ id: number }> {
@@ -399,31 +384,6 @@ export async function deletePersil(id: number): Promise<void> {
 }
 
 // --- CDesa (Laporan Pertanahan) -------------------------------------------
-
-export async function listCdesaUseCases(): Promise<CdesaDTO[]> {
-  const user = await requirePermission(PERTANAHAN_RESOURCE, "read");
-  const resolvedVillageId = await resolveVillageId(user);
-  return repoListCdesa(resolvedVillageId);
-}
-
-export async function createCdesa(input: unknown): Promise<{ id: number }> {
-  const user = await requirePermission(PERTANAHAN_RESOURCE, "create");
-  const resolvedVillageId = await resolveVillageId(user);
-  const parsed = cdesaSchema.parse(input);
-  const id = await repoInsertCdesa(resolvedVillageId, {
-    id: 0,
-    villageId: resolvedVillageId,
-    nomor: parsed.nomor,
-    nomorPersil: parsed.nomorPersil ?? null,
-    nomorSertifikat: parsed.nomorSertifikat ?? null,
-    tanggal: parsed.tanggal ?? null,
-    namaPemegang: parsed.namaPemegang ?? null,
-    luas: parsed.luas,
-    keterangan: parsed.keterangan ?? null,
-    sortOrder: parsed.sortOrder,
-  });
-  return { id };
-}
 
 export async function updateCdesa(id: number, input: unknown): Promise<void> {
   const user = await requirePermission(PERTANAHAN_RESOURCE, "update");
@@ -454,12 +414,6 @@ export async function deleteCdesa(id: number): Promise<void> {
 }
 
 // --- CDesa Mutasi ---------------------------------------------------------
-
-export async function listCdesaMutasiUseCases(): Promise<CdesaMutasiDTO[]> {
-  const user = await requirePermission(PERTANAHAN_RESOURCE, "read");
-  const resolvedVillageId = await resolveVillageId(user);
-  return repoListCdesaMutasi(resolvedVillageId);
-}
 
 export async function createCdesaMutasi(input: unknown): Promise<{ id: number }> {
   const user = await requirePermission(PERTANAHAN_RESOURCE, "create");

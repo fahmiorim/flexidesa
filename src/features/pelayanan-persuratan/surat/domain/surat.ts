@@ -35,7 +35,6 @@ export const VERIFICATION_STEPS = ["operator", "sekdes", "kades"] as const;
 export type VerificationStep = (typeof VERIFICATION_STEPS)[number];
 
 export const VERIFICATION_STATUS = ["pending", "approved", "rejected"] as const;
-export type VerificationStatus = (typeof VERIFICATION_STATUS)[number];
 
 export const VERIFICATION_STEP_LABELS: Readonly<Record<VerificationStep, string>> = {
   operator: "Operator",
@@ -342,33 +341,6 @@ export function buildKlgPlaceholders(
 }
 
 /** Kode placeholder anggota keluarga yang tersedia (untuk bantuan di UI). */
-export const KLG_PLACEHOLDER_CODES = [
-  "no",
-  "nik",
-  "nama",
-  "jenis_kelamin",
-  "tempat_lahir",
-  "tempatlahir",
-  "tanggal_lahir",
-  "tanggallahir",
-  "ttl",
-  "tempat_tgl_lahir",
-  "usia",
-  "agama",
-  "pendidikan",
-  "pendidikan_kk",
-  "pendidikan_sedang",
-  "pekerjaan",
-  "status_kawin",
-  "hubungan_kk",
-  "alamat",
-  "warga_negara",
-  "golongan_darah",
-  "nama_ayah",
-  "nik_ayah",
-  "nama_ibu",
-  "nik_ibu",
-] as const;
 
 /**
  * Tambah bulan ke tanggal ISO (dipakai untuk masa berlaku surat).
@@ -872,33 +844,6 @@ export interface SuratDetail extends SuratListRow {
   verificationToken: string | null;
 }
 
-export interface SuratMasukDTO {
-  id: number;
-  agendaNumber: number;
-  receivedDate: string;
-  letterNumber: string;
-  letterDate: string | null;
-  sender: string | null;
-  classificationId: number | null;
-  classificationName: string | null;
-  summary: string | null;
-  disposition: string | null;
-  archiveLocation: string | null;
-}
-
-export interface SuratKeluarDTO {
-  id: number;
-  agendaNumber: number;
-  letterNumber: string;
-  letterDate: string;
-  recipient: string | null;
-  classificationId: number | null;
-  classificationName: string | null;
-  summary: string | null;
-  sentDate: string | null;
-  archiveLocation: string | null;
-}
-
 /** Baris surat dinas. */
 export interface SuratDinasDTO {
   id: number;
@@ -915,15 +860,7 @@ export interface SuratDinasDTO {
   archiveLocation: string | null;
 }
 
-export interface Option {
-  value: string;
-  label: string;
-}
-
 /** Placeholder contoh untuk ditampilkan di formulir jenis surat. */
-export function placeholderHelp(): string {
-  return SURAT_PLACEHOLDERS.map((item) => `[${item.key}]`).join(", ");
-}
 
 // ── Token verifikasi publik ──────────────────
 

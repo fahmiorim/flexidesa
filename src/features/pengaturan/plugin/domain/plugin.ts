@@ -32,8 +32,6 @@ export const PLUGIN_MANIFEST: readonly PluginManifest[] = [
   },
 ] as const;
 
-export const PLUGIN_SLUGS = PLUGIN_MANIFEST.map((plugin) => plugin.slug);
-
 export function cariPlugin(slug: string): PluginManifest | undefined {
   return PLUGIN_MANIFEST.find((plugin) => plugin.slug === slug);
 }
