@@ -286,9 +286,11 @@ UI lama `/super-admin/template/baru` tidak boleh membuat slug bebas yang tidak a
 - [x] Consumer runtime ditemukan untuk warna/pintasan di `PublicSiteHeader`/`PublicShell`/`GalleryShell`, statistik/jam di footer atau layout Natra, fallback foto di `/galeri` dan `/pembangunan`, serta kedua opsi page-size.
 - [x] `jam=0` menyembunyikan jam sidebar Natra: `NatraLayout` memeriksa `opsi.jam` sebelum memanggil `widgets.jam`.
 - [x] Pagination untuk kedua opsi `jumlah_*_perhalaman`: `/pembangunan` (`?tahun=&page=`) dan `/pengaduan` (`?page=`) menampilkan batas per halaman + navigasi Sebelumnya/Berikutnya, sehingga data di luar halaman pertama tetap terjangkau.
-- [ ] Uji menu aktif, responsive, fallback aset, dan alur publik pada tema Natra di browser.
+- [x] Smoke SSR Natra di tenant dev sementara (Limau Manis, `natra@1.0.0`): `/`, `/pembangunan`, `/pengaduan`, `/galeri`, `/statistik`, `/profil`, `/dokumen` → 200, `data-tema="natra"`, widget `jam`+`statistik` tampil, `--public-primary:#e64946` dari `warna_dasar`. Uji toggle: `jam/statistik_desa/pintasan_masuk=0` menghilangkan kedua widget dan tautan `/masuk`. Tema dikembalikan ke snapshot semula (rollback identik). Smoke browser visual interaktif (klik/responsive viewport) belum dilakukan — hanya SSR.
+- [x] Pagination diuji dengan data nyata: seed sementara 5 proyek + 5 pengaduan publik (Limau Manis, page-size 2) → `Halaman 1/2/3 dari 3` dengan irisan benar di `/pembangunan` dan `/pengaduan`; `?page=99` dijepit ke halaman terakhir dan `?tahun=` dipertahankan pada tautan. Seed dihapus (sisa 0).
+- [x] Aksesibilitas/isolasi: tidak ada `transition`/`animation` pada CSS tema (reduced-motion terpenuhi secara inheren + aturan global `prefers-reduced-motion`); `focus-visible` global mencakup `a/button/input` termasuk navigasi sidebar & pagination; tiap paket hanya mengimpor `theme.module.css` miliknya (tanpa impor silang Esensi↔Natra).
 
-**Status:** consumer opsi dan pagination tersedia di source; verifikasi browser dan data nyata belum dilakukan.
+**Status:** consumer opsi, pagination, dan smoke SSR Natra terbukti dengan data nyata; smoke browser interaktif belum dilakukan.
 
 ### Task 5: Integrasi registry ke route publik
 
@@ -336,6 +338,7 @@ UI lama `/super-admin/template/baru` tidak boleh membuat slug bebas yang tidak a
 - [x] `npm run lint` lulus.
 - [x] `npm run check` lulus penuh: typecheck, ESLint, Prettier, dan 307 file test / 2.507 test.
 - [x] `NODE_ENV=production npm run build` exit 0; 250/250 halaman diprerender. `.env` lokal menetapkan `NODE_ENV=development`, jadi build release harus memakai environment production.
+- [x] Uji tulis + rollback backfill di DB dev (`desa_dev_baru`): `--eksekusi` menulis `templateOptions` (2 baris aktif), dry-run ulang identik, rollback ke snapshot byte-identik. Smoke SSR Natra (tenant sementara) + pagination data nyata (seed 5+5, page-size 2 → 3 halaman benar) + toggle opsi `=0` + a11y/isolasi source semuanya lulus; seed & tema dikembalikan bersih.
 - [x] Browser desktop memverifikasi landing platform, login Super Admin, dan provisioning tenant melalui SSH tunnel.
 - [ ] Uji browser publik/mobile/aksesibilitas belum dilakukan; DNS `flexides.id` belum resolve, TLS tepercaya dan akses publik masih menunggu konfigurasi DNS.
 - [ ] Jangan tandai rilis publik selesai sebelum DNS/TLS, rollback, dan review seluruh surface lulus.
