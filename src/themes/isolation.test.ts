@@ -19,20 +19,27 @@ describe("isolasi aset tema", () => {
     ["arunika", "src/themes/arunika/1.0.0/layout.tsx", "./theme.module.css"],
     ["cakrawala", "src/themes/cakrawala/1.0.0/layout.tsx", "./cakrawala-v2.module.css"],
     ["samudra", "src/themes/samudra/1.0.0/layout.tsx", "./theme.module.css"],
-  ])("%s memuat stylesheet modul dari paketnya sendiri", (_slug, layoutPath, importPath) => {
-    const layout = source(layoutPath);
-    expect(layout).toContain(`from "${importPath}"`);
-  });
+  ])(
+    "%s memuat stylesheet modul dari paketnya sendiri",
+    (_slug, layoutPath, importPath) => {
+      const layout = source(layoutPath);
+      expect(layout).toContain(`from "${importPath}"`);
+    },
+  );
 
   it.each([
     ["cakrawala", "src/themes/cakrawala/1.0.0/layout.tsx", "./cakrawala-publik.css"],
     ["samudra", "src/themes/samudra/1.0.0/layout.tsx", "./samudra-publik.css"],
-  ])("%s memuat stylesheet halaman publik dari paketnya sendiri", (slug, layoutPath, importPath) => {
-    const layout = source(layoutPath);
-    expect(layout).toContain(`import "${importPath}";`);
-    expect(existsSync(join(ROOT, layoutPath.replace("layout.tsx", importPath.replace("./", ""))))).toBe(true);
-    expect(source("src/app/layout.tsx")).not.toContain(`themes/${slug}/`);
-  });
+  ])(
+    "%s memuat stylesheet halaman publik dari paketnya sendiri",
+    (slug, layoutPath, importPath) => {
+      const layout = source(layoutPath);
+      expect(layout).toContain(`import "${importPath}";`);
+      const stylesheetPath = layoutPath.replace("layout.tsx", importPath.replace("./", ""));
+      expect(existsSync(join(ROOT, stylesheetPath))).toBe(true);
+      expect(source("src/app/layout.tsx")).not.toContain(`themes/${slug}/`);
+    },
+  );
 
   it("aset preview katalog tetap berada di public/themes per tema", () => {
     for (const slug of ["arunika", "cakrawala", "samudra"]) {
