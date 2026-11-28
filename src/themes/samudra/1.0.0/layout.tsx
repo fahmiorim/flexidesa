@@ -1,3 +1,5 @@
+import "./samudra-publik.css";
+
 import type { ThemeLayoutProps } from "../../types";
 import styles from "./theme.module.css";
 
