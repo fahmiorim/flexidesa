@@ -122,3 +122,16 @@
   .themeRoot :global([class*="kolofon"]) { padding: 24px 18px; }
   .themeRoot :global([class*="kolofonIsi"]) { grid-template-columns: 1fr; }
 }
+
+/* Order beranda mengikuti alur pengunjung: layanan, angka, kabar, sambutan, profil. */
+.themeRoot :global([data-native="cakrawala"]) { display: flex; flex-direction: column; }
+.themeRoot :global([data-native="cakrawala"] > [class*="layanan"]) { order: 1; }
+.themeRoot :global([data-native="cakrawala"] > [class*="edisi"]) { order: 2; }
+.themeRoot :global([data-native="cakrawala"] > [class*="muka"]) { order: 3; }
+.themeRoot :global([data-native="cakrawala"] > [class*="sambutan"]) { order: 4; }
+.themeRoot :global([data-native="cakrawala"] > [class*="profil"]) { order: 5; }
+:global(body:has(main[data-tema="cakrawala"]) [class*="header"]) { background: #fff; }
+@media(max-width:760px) {
+  :global(body:has(main[data-tema="cakrawala"]) [class*="headerInner"]) { flex-wrap: wrap; gap: 10px; padding-block: 10px; }
+  :global(body:has(main[data-tema="cakrawala"]) [class*="nav"]) { max-width: 100%; overflow-x: auto; justify-content: flex-start; }
+}
