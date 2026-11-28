@@ -52,7 +52,7 @@ function validasiProduk(input: unknown) {
   return hasil.data;
 }
 
-export interface ListLapakParams {
+interface ListLapakParams {
   q?: string;
   kategori?: string;
   page?: number;

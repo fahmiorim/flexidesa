@@ -40,7 +40,7 @@ describe("hariLiburFormSchema", () => {
     ).toBe(false);
   });
 
-  it("membatasi keterangan 300 karakter seperti formulir OpenSID", () => {
+  it("membatasi keterangan 300 karakter", () => {
     expect(
       hariLiburFormSchema.safeParse({ tanggal: "2026-12-25", keterangan: "x".repeat(300) }).success,
     ).toBe(true);

@@ -29,7 +29,7 @@ import { requirePermission } from "@/lib/dal";
 import { conflict, notFound, validationError } from "@/lib/errors";
 
 /** Data berkas yang sudah dibaca dari `FormData` (sudah lolos validasi). */
-export interface BerkasLaporanInput {
+interface BerkasLaporanInput {
   nama: string;
   tipe: string;
   isi: Uint8Array;
@@ -196,16 +196,6 @@ export async function deleteLaporanKeuanganDokumen(id: number) {
 }
 
 /** Satu berkas + metadata yang sudah dibaca dari `FormData` untuk diimpor. */
-export interface ImporDokumenBerkasInput {
-  nama: string;
-  /** Tipe MIME berkas. */
-  mime: string;
-  isi: Uint8Array;
-  judul: string;
-  jenis: string;
-  tahun: number;
-  semester: number;
-}
 
 /**
  * Impor banyak dokumen laporan periodik sekaligus.

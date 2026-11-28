@@ -7,7 +7,7 @@
  */
 
 /** Prefix rute publik yang memang memiliki halaman turunan publik. */
-export const PUBLIC_PATHS = [
+const PUBLIC_PATHS = [
   "/desa",
   "/masuk",
   "/masuk-admin",
@@ -42,7 +42,7 @@ export const PUBLIC_PATHS = [
  * untuk `/layanan` dan `/profil`: hanya halaman katalog/profil publik yang
  * diizinkan, bukan rute lain yang kebetulan memakai prefix tersebut.
  */
-export const PUBLIC_EXACT_PATHS = [
+const PUBLIC_EXACT_PATHS = [
   "/agenda",
   "/pengumuman",
   "/profil",
@@ -70,7 +70,7 @@ export const PUBLIC_EXACT_PATHS = [
  * Berkas metadata yang harus selalu dapat diambil mesin pencari/perayap tanpa
  * sesi. Tidak boleh dialihkan ke halaman masuk.
  */
-export const PUBLIC_FILES = [
+const PUBLIC_FILES = [
   "/sitemap.xml",
   "/robots.txt",
   "/manifest.webmanifest",
@@ -84,7 +84,7 @@ export const PUBLIC_FILES = [
  * `/pembangunan/[slug]` publik, tetapi `/pembangunan/buku` adalah area admin
  * (buku administrasi pembangunan), sehingga prefix tidak boleh dibuka semua.
  */
-export const PUBLIC_DYNAMIC_PATHS: readonly RegExp[] = [/^\/pembangunan\/(?!buku(?:\/|$))[^/]+$/];
+const PUBLIC_DYNAMIC_PATHS: readonly RegExp[] = [/^\/pembangunan\/(?!buku(?:\/|$))[^/]+$/];
 
 export function isPublicPath(pathname: string): boolean {
   if (pathname === "/") return true;

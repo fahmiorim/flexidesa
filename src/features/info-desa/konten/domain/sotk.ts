@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import type { PerangkatAdmin } from "./perangkat";
 
 /**
@@ -9,7 +11,7 @@ import type { PerangkatAdmin } from "./perangkat";
  * perangkat lain sebagai staf terurut. Fungsi murni agar mudah diuji.
  */
 
-export interface SotkNode {
+interface SotkNode {
   id: number;
   nama: string;
   jabatan: string | null;
@@ -18,7 +20,7 @@ export interface SotkNode {
   urut: number;
 }
 
-export interface SotkBagan {
+interface SotkBagan {
   kepala: SotkNode | null;
   sekretaris: SotkNode | null;
   staf: SotkNode[];

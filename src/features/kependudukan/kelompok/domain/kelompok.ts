@@ -28,7 +28,7 @@ export const KATEGORI_KELOMPOK_RESOURCE = RESOURCES.kelompok;
 export const KELOMPOK_TIPE = ["kelompok"] as const;
 export type KelompokTipe = (typeof KELOMPOK_TIPE)[number];
 
-export const KELOMPOK_TIPE_LABELS: Readonly<Record<KelompokTipe, string>> = {
+const KELOMPOK_TIPE_LABELS: Readonly<Record<KelompokTipe, string>> = {
   kelompok: "Kelompok Masyarakat",
 };
 
@@ -48,15 +48,15 @@ export function isKelompokTipe(value: string): value is KelompokTipe {
 /**
  * Jabatan dalam kelompok.
  *
- * Angka dipertahankan sama seperti katalog rujukan (`JabatanKelompokEnum`),
+ * Angka mengikuti katalog jabatan (`JabatanKelompokEnum`),
  * termasuk loncatan ke `90` untuk anggota biasa.
  */
 export const JABATAN_KELOMPOK = [1, 2, 3, 4, 90] as const;
-export type JabatanKelompok = (typeof JABATAN_KELOMPOK)[number];
+type JabatanKelompok = (typeof JABATAN_KELOMPOK)[number];
 
 export const JABATAN_KETUA: JabatanKelompok = 1;
 
-export const JABATAN_LABELS: Readonly<Record<JabatanKelompok, string>> = {
+const JABATAN_LABELS: Readonly<Record<JabatanKelompok, string>> = {
   1: "Ketua",
   2: "Wakil Ketua",
   3: "Sekretaris",
@@ -183,7 +183,7 @@ export interface KelompokAnggotaPublik {
   memberNumber: string | null;
 }
 
-export interface RingkasanAnggotaPublik {
+interface RingkasanAnggotaPublik {
   jumlah: number;
   ketua: string | null;
   anggota: KelompokAnggotaPublik[];
@@ -233,19 +233,19 @@ export interface KelompokReferenceData {
 // --- Filter daftar kelompok ------------------------------------------------
 
 /**
- * Status kelompok menurut kondisi ketua (paritas OpenSID).
+ * Status kelompok menurut kondisi ketua.
  *
  * - `aktif` → ketua masih hidup.
  * - `tidak-aktif` → ketua ada tetapi sudah tidak hidup.
  *
- * Halaman daftar OpenSID memakai `aktif` sebagai bawaan; tombol Bersihkan
+ * Halaman daftar memakai `aktif` sebagai bawaan; tombol Bersihkan
  * mengembalikan filter ke bawaan itu.
  */
-export const KELOMPOK_STATUS_FILTERS = ["aktif", "tidak-aktif"] as const;
-export type KelompokStatusFilter = (typeof KELOMPOK_STATUS_FILTERS)[number];
+const KELOMPOK_STATUS_FILTERS = ["aktif", "tidak-aktif"] as const;
+type KelompokStatusFilter = (typeof KELOMPOK_STATUS_FILTERS)[number];
 
-/** Status bawaan daftar kelompok (paritas OpenSID: ketua masih hidup). */
-export const KELOMPOK_STATUS_DEFAULT: KelompokStatusFilter = "aktif";
+/** Status bawaan daftar kelompok (ketua masih hidup). */
+const KELOMPOK_STATUS_DEFAULT: KelompokStatusFilter = "aktif";
 
 export interface KelompokFilter {
   search: string;
@@ -269,7 +269,7 @@ export function filterKelompokKosong(): KelompokFilter {
 /**
  * Ubah query string halaman menjadi filter kelompok tervalidasi.
  *
- * Status memakai bawaan `aktif` bila parameter tidak ada (paritas OpenSID);
+ * Status memakai bawaan `aktif` bila parameter tidak ada;
  * nilai `semua` berarti tanpa saringan status. Nilai tak dikenal diabaikan.
  */
 export function parseFilterKelompok(params: Record<string, NilaiParam>): KelompokFilter {

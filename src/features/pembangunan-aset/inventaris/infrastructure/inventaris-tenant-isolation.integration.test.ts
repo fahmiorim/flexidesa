@@ -24,7 +24,7 @@ import { validasiDatabaseUji } from "@/testing/db-test-guard";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-034 Batch 3 — isolasi tenant modul inventaris.
+ * Isolasi tenant modul inventaris.
  *
  * Dua celah yang diuji:
  * 1. `listInventaris`/`listMutasi` melakukan LEFT JOIN hanya dengan `id`,
@@ -33,7 +33,7 @@ import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
  *    API publik).
  * 2. `saveInventaris` meneruskan `kategoriId` dari input apa adanya, sehingga
  *    kategori desa lain dapat ditautkan bila validasi application layer hilang.
- *    Sejak Batch 4C-2b database juga menolak pasangan ini lewat composite FK;
+ *    Database juga menolak pasangan ini lewat composite FK;
  *    baris legacy untuk pengujian baca disisipkan dengan pengecekan FK mati.
  *
  * Izin tidak sedang diuji di sini; `requirePermission` dimock agar desa aktif
@@ -86,7 +86,7 @@ function idDari(baris: { id: number } | undefined, label: string): number {
 /**
  * Sisipkan mutasi legacy desa A yang menunjuk inventaris desa B.
  *
- * Setelah migration Batch 3, composite FK menolak pasangan ini pada jalur
+ * Composite FK menolak pasangan ini pada jalur
  * normal. Baris dibuat dengan pengecekan FK dimatikan untuk mereproduksi data
  * yang dibuat sebelum constraint terpasang; pengecualian selalu dikembalikan di
  * blok `finally`.
@@ -112,7 +112,7 @@ async function sisipMutasiLegacy(params: {
 /**
  * Sisipkan aset legacy desa A yang menunjuk kategori desa B.
  *
- * Composite FK Batch 4C-2b menolak pasangan ini pada jalur normal. Baris dibuat
+ * Composite FK menolak pasangan ini pada jalur normal. Baris dibuat
  * dengan pengecekan FK dimatikan untuk mereproduksi data yang dibuat sebelum
  * constraint terpasang; pengecualian selalu dikembalikan di blok `finally`.
  */
@@ -280,6 +280,10 @@ beforeAll(async () => {
     mustChangePin: false,
     passwordExpired: false,
     mustEnrollTwoFactor: false,
+    realActorId: "pengguna-uji",
+    impersonating: false,
+    impersonationTargetUserId: null,
+    impersonationExpiresAt: null,
     permissions: { isSuperadmin: false, levelByResource: new Map(), actionByResource: new Map() },
   };
 

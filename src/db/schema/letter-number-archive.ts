@@ -49,4 +49,3 @@ export const letterNumberArchive = mysqlTable(
   ],
 );
 
-export type LetterNumberArchive = typeof letterNumberArchive.$inferSelect;

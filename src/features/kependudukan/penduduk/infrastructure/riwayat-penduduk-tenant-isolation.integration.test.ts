@@ -24,7 +24,7 @@ import { validasiDatabaseUji } from "@/testing/db-test-guard";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-007 — isolasi tenant riwayat mutasi penduduk.
+ * Isolasi tenant riwayat mutasi penduduk.
  *
  * Desa A dan B dipakai untuk membuktikan bahwa identitas penduduk hanya
  * dibaca dari `residents` pada desa yang sama dengan `resident_mutations`.
@@ -77,7 +77,7 @@ function dataUji(): Fixture {
 /**
  * Sisipkan satu baris legacy lintas desa.
  *
- * AUD-002 memasang composite FK yang menolak relasi seperti ini pada jalur
+ * Composite FK menolak relasi seperti ini pada jalur
  * normal. Fixture di bawah sengaja mereproduksi data yang dibuat **sebelum**
  * constraint terpasang, karena migration tidak melakukan backfill dan data
  * legacy tersebut tetap harus aman saat dibaca. Pengecualian FK hanya berlaku
@@ -209,7 +209,7 @@ afterAll(async () => {
   if (fixture === null) return;
   const desaIds = [fixture.desaA, fixture.desaB];
 
-  // AUD-002 membuat FK composite bersifat RESTRICT. Hapus anak lebih dahulu
+  // FK composite bersifat RESTRICT. Hapus anak lebih dahulu
   // agar cleanup tidak bergantung pada urutan cascade antar-tenant.
   await db.delete(residentMutations).where(inArray(residentMutations.villageId, desaIds));
   await db.delete(residents).where(inArray(residents.villageId, desaIds));
@@ -217,7 +217,7 @@ afterAll(async () => {
   await db.delete(villages).where(inArray(villages.id, desaIds));
 });
 
-describe("AUD-007 daftar dan count riwayat", () => {
+describe("Daftar dan count riwayat", () => {
   it("menampilkan identitas penduduk desa sendiri dan menyembunyikan identitas lintas desa", async () => {
     const { desaA, mutasiValidA, mutasiLegacyA } = dataUji();
 
@@ -295,7 +295,7 @@ describe("AUD-007 daftar dan count riwayat", () => {
   });
 });
 
-describe("AUD-007 ekspor dan riwayat per penduduk", () => {
+describe("Ekspor dan riwayat per penduduk", () => {
   it("ekspor tidak membawa identitas penduduk desa lain", async () => {
     const { desaA, mutasiValidA, mutasiLegacyA } = dataUji();
 
@@ -327,7 +327,7 @@ describe("AUD-007 ekspor dan riwayat per penduduk", () => {
   });
 });
 
-describe("AUD-007 jalur tulis mutasi", () => {
+describe("Jalur tulis mutasi", () => {
   it("mencatat kelahiran dan kematian dengan villageId penduduk dan mutasi yang sama", async () => {
     const { desaA } = dataUji();
     sesi.villageId = desaA;

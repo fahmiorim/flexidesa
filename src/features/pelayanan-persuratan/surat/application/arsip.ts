@@ -21,7 +21,7 @@ import {
 import { listLetterNumberArchive } from "@/features/pelayanan-persuratan/surat/infrastructure/surat-repository";
 import { requirePermission } from "@/lib/dal";
 
-export interface ArsipNomorFilter {
+interface ArsipNomorFilter {
   search: string;
   year?: number;
   typeId?: number;

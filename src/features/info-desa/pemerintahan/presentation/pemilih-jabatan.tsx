@@ -17,7 +17,7 @@ interface Props {
 /**
  * Pemilih jabatan aparat desa.
  *
- * OpenSID mengizinkan beberapa pamong berbagi satu jabatan (mis. staf), jadi
+ * Beberapa pamong boleh berbagi satu jabatan (mis. staf), jadi
  * pemilihan tidak diblokir. Sebagai gantinya, jabatan yang sudah dipegang
  * aparat aktif ditandai dan pilihan ganda diberi peringatan agar operator
  * tidak tanpa sengaja merangkap jabatan struktural.

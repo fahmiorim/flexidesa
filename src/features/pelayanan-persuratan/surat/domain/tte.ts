@@ -37,7 +37,7 @@ import {
 } from "./tte-jaringan";
 
 /** Mode adapter yang dikenal. `manual` menandai surat setelah ttd basah. */
-export type ModeTte = "nonaktif" | "manual" | "bsre";
+type ModeTte = "nonaktif" | "manual" | "bsre";
 
 export interface KonfigTte {
   mode: ModeTte;
@@ -77,7 +77,7 @@ export interface KonfigTteTersimpan {
  * `tte_config` yang sudah ada tidak rusak, tetapi nilainya **diabaikan**:
  * verifikasi sertifikat TLS selalu aktif.
  */
-export const konfigTteTersimpanSchema = z.object({
+const konfigTteTersimpanSchema = z.object({
   provider: z.literal("bsre").default("bsre"),
   mode: z.enum(["nonaktif", "manual", "bsre"]).default("nonaktif"),
   api: z.string().trim().max(300).default(""),
@@ -128,7 +128,7 @@ export const KONFIG_TTE_DEFAULT: KonfigTteTersimpan = {
   aktif: false,
 };
 
-export interface PermintaanTte {
+interface PermintaanTte {
   villageId: number;
   suratId: number;
   /** Nomor surat, untuk metadata arsip hasil TTE. */
@@ -601,7 +601,7 @@ export function buatKlienBsre(deps: DependensiTte): KlienTte {
  * Mengirim permintaan ringan ke endpoint health/versi provider untuk
  * memverifikasi bahwa kredensial dan URL valid tanpa menandatangani surat.
  */
-export interface HasilTestKoneksi {
+interface HasilTestKoneksi {
   ok: boolean;
   /** Respons status provider atau pesan galat. */
   pesan: string;

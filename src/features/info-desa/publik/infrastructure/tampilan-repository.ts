@@ -87,7 +87,7 @@ export async function deleteMenuPublik(villageId: number, id: number): Promise<v
 
 /* ---------------------------------------------------------------- widget */
 
-export interface WidgetRingkas {
+interface WidgetRingkas {
   id: number;
   judul: string | null;
   isi: string | null;
@@ -97,7 +97,7 @@ export interface WidgetRingkas {
   aktif: boolean;
 }
 
-export interface WidgetInput {
+interface WidgetInput {
   judul: string | null;
   isi: string | null;
   jenis: number;

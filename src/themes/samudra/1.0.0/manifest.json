@@ -1,0 +1,7 @@
+{
+  "slug": "samudra",
+  "version": "1.0.0",
+  "kompatibilitas": "hero tengah, header lengket, tanpa sidebar",
+  "surfaces": ["beranda", "profil", "konten", "data", "media", "layanan"],
+  "preview": "/themes/samudra/preview.svg"
+}

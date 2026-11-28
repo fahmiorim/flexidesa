@@ -10,7 +10,7 @@ export const ARSIP_PER_HALAMAN = 25;
 /** Batas aman ekspor sekali unduh. */
 export const ARSIP_MAKS_EKSPOR = 5000;
 
-export interface ArsipNomorEksporRow {
+interface ArsipNomorEksporRow {
   number: string;
   typeName: string;
   sequence: number;

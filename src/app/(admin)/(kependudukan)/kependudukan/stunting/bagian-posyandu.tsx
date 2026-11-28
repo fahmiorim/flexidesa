@@ -10,7 +10,7 @@ import styles from "./stunting.module.css";
 /**
  * Tab Posyandu — daftar posyandu desa.
  *
- * Field mengikuti form OpenSID (`posyandu_form.blade.php`): nama dan alamat.
+ * Field: nama dan alamat.
  * Nama ketua dan nama bidan ditambahkan karena kolomnya sudah ada di FlexiDesa dan
  * dipakai sebagai kontak posyandu.
  */

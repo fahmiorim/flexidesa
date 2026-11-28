@@ -3,8 +3,11 @@ import type { ReactNode } from "react";
 
 import { AdminSidebar } from "@/components/shell/admin-sidebar";
 import { AdminTopbar } from "@/components/shell/admin-topbar";
+import { ImpersonationBanner } from "@/components/shell/impersonation-banner";
 import { getNamaDesaUseCase } from "@/features/info-desa/desa/application/use-cases";
+import { getKonteksImpersonasi } from "@/features/multi-desa/application/impersonasi-use-cases";
 import { isSuperAdminUser } from "@/features/multi-desa/application/provisioning-use-cases";
+import { keluarImpersonasiAction } from "@/app/(admin)/super-admin/pengguna-desa/actions";
 import { getMenuForUser } from "@/features/navigation/application/get-menu";
 import {
   DEFAULT_RESOURCE,
@@ -29,9 +32,10 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
     redirect("/masuk-admin");
   }
 
-  const [villageName, menu] = await Promise.all([
+  const [villageName, menu, konteksImpersonasi] = await Promise.all([
     user.villageId === null ? Promise.resolve(null) : getNamaDesaUseCase(user.villageId),
     getMenuForUser(user),
+    getKonteksImpersonasi().catch(() => null),
   ]);
 
   return (
@@ -48,6 +52,9 @@ export default async function AdminLayout({ children }: Readonly<{ children: Rea
         data-desa={isPlatformAdmin ? undefined : "true"}
       >
         <AdminTopbar isPlatformAdmin={isPlatformAdmin} name={user.name} />
+        {konteksImpersonasi ? (
+          <ImpersonationBanner aksiKeluar={keluarImpersonasiAction} konteks={konteksImpersonasi} />
+        ) : null}
         <main className="admin-content">
           <div className="admin-page">{children}</div>
         </main>

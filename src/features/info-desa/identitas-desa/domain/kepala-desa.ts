@@ -1,5 +1,5 @@
 /** Data perangkat yang diperlukan untuk identitas kepala desa. */
-export type PerangkatKepalaDesa = {
+type PerangkatKepalaDesa = {
   nama: string;
   gelarDepan: string | null;
   gelarBelakang: string | null;

@@ -9,7 +9,7 @@
  *   sebagai `.jpg` dan tidak pernah dieksekusi.
  */
 
-export interface JenisMedia {
+interface JenisMedia {
   mime: string;
   ekstensi: string;
   maksByte: number;
@@ -27,13 +27,13 @@ export const JENIS_MEDIA: Record<string, JenisMedia> = {
   "application/pdf": { mime: "application/pdf", ekstensi: "pdf", maksByte: 20 * MB },
 };
 
-export type HasilValidasiMedia = { ok: true; jenis: JenisMedia } | { ok: false; pesan: string };
+type HasilValidasiMedia = { ok: true; jenis: JenisMedia } | { ok: false; pesan: string };
 
 /** CSP untuk dokumen media aktif (SVG) yang disajikan inline. */
 export const CSP_MEDIA_SANDBOX = "default-src 'none'; style-src 'unsafe-inline'; sandbox";
 
 /** Kategori media yang boleh disajikan lewat route publik. */
-export const KATEGORI_MEDIA_PUBLIK = [
+const KATEGORI_MEDIA_PUBLIK = [
   "berita",
   "galeri",
   "slider",
@@ -47,7 +47,7 @@ export function isKategoriMediaPublik(kategori: string): boolean {
 }
 
 /** MIME yang diizinkan untuk berkas syarat permohonan warga. */
-export const MIME_SYARAT_PERMOHONAN = [
+const MIME_SYARAT_PERMOHONAN = [
   "image/jpeg",
   "image/png",
   "image/webp",

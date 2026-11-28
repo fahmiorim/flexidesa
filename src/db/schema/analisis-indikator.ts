@@ -40,5 +40,3 @@ export const analisisIndikator = mysqlTable(
   ],
 );
 
-export type AnalisisIndikator = typeof analisisIndikator.$inferSelect;
-export type NewAnalisisIndikator = typeof analisisIndikator.$inferInsert;

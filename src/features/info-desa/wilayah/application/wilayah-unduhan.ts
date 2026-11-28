@@ -15,7 +15,7 @@ import {
  * per tingkat penelusuran (dusun, atau RW/RT di bawah satu induk).
  */
 
-export interface WilayahUnduhanInput {
+interface WilayahUnduhanInput {
   rows: readonly WilayahDenganJumlah[];
   namaDesa: string;
   judul: string;

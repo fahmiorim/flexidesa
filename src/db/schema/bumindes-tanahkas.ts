@@ -73,5 +73,3 @@ export const bumindesTanahKasMutasi = mysqlTable(
   ],
 );
 
-export type BumindesTanahKas = typeof bumindesTanahKas.$inferSelect;
-export type BumindesTanahKasMutasi = typeof bumindesTanahKasMutasi.$inferSelect;

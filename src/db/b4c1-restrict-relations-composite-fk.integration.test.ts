@@ -7,7 +7,7 @@ import { berita, beritaKategori, jabatanPerangkat, perangkatDesa, villages } fro
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-034 Batch 4C-1: dua relasi `SET NULL` tanpa jalur hapus parent di
+ * Dua relasi `SET NULL` tanpa jalur hapus parent di
  * aplikasi kini dijaga composite FK `RESTRICT`.
  *
  * Konsekuensi yang disengaja: menghapus kategori/jabatan yang masih dirujuk
@@ -107,7 +107,7 @@ afterAll(async () => {
   await db.delete(villages).where(inArray(villages.id, desaIds));
 });
 
-describe("AUD-034 B4C-1 composite tenant FK", () => {
+describe("Composite tenant FK", () => {
   it("berjalan pada MySQL 8", async () => {
     const versi = (await db.execute(sql`SELECT VERSION() AS versi`)) as unknown as [
       Array<{ versi: string }>,

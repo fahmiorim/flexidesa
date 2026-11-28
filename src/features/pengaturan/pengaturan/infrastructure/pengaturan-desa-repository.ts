@@ -121,7 +121,7 @@ function bacaObjek(raw: string | null): Record<string, unknown> {
 /**
  * Aktifkan template terbit sebagai tema desa, pertahankan opsi tema sebelumnya.
  *
- * `templateOptions` (opsi paket ala OpenSID) sudah dimigrasikan pemanggil ke
+ * `templateOptions` (opsi paket tema) sudah dimigrasikan pemanggil ke
  * schema slug/versi baru; bila tidak dikirim, nilai tenant lama dipertahankan
  * agar penggantian tema tidak menghapus opsi yang masih berlaku.
  */

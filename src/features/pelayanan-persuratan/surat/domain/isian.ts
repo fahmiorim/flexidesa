@@ -12,8 +12,7 @@ import { SURAT_PLACEHOLDERS } from "./surat";
  */
 
 /** Awalan nama field isian pada formulir surat (`isian.<kode>`). */
-export const ISIAN_TIPES = ["text", "textarea", "number", "date", "select", "checkbox"] as const;
-export type IsianTipe = (typeof ISIAN_TIPES)[number];
+const ISIAN_TIPES = ["text", "textarea", "number", "date", "select", "checkbox"] as const;
 
 const kodeIsianSchema = z
   .string()
@@ -25,7 +24,7 @@ const kodeIsianSchema = z
     "Kode isian hanya boleh huruf kecil, angka, dan garis bawah (mis. nama_proyek).",
   );
 
-export const isianFieldSchema = z.object({
+const isianFieldSchema = z.object({
   kode: kodeIsianSchema,
   label: z.string().trim().min(1, "Label isian wajib diisi.").max(150),
   tipe: z.enum(ISIAN_TIPES),
@@ -37,7 +36,7 @@ export const isianFieldSchema = z.object({
 export type IsianField = z.infer<typeof isianFieldSchema>;
 
 /** Placeholder bawaan yang tidak boleh dipakai sebagai kode isian kustom. */
-export const RESERVED_ISIAN_KODES: ReadonlySet<string> = new Set([
+const RESERVED_ISIAN_KODES: ReadonlySet<string> = new Set([
   ...SURAT_PLACEHOLDERS.map((item) => item.key),
   "format_nomor_surat",
   "mulai_berlaku",

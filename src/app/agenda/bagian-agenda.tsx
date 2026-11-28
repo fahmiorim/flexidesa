@@ -29,16 +29,6 @@ export const KATEGORI = [
   "pemerintahan",
 ];
 
-export function plainText(value: string | null): string {
-  return (value ?? "")
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 export function dateParts(value: string) {
   const [year = 1970, month = 1, day = 1] = value.split("-").map(Number);
   const date = new Date(Date.UTC(year, month - 1, day));

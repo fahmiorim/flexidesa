@@ -35,7 +35,7 @@ function layoutTersimpan(raw: string | null | undefined): Record<string, unknown
   }
 }
 
-/** Baca margin tersimpan (JSON cm) dengan nilai bawaan OpenSID. */
+/** Baca margin tersimpan (JSON cm) dengan nilai bawaan. */
 function marginTersimpan(raw: string | null | undefined) {
   if (!raw) return { ...MARGIN_SURAT_DEFAULT };
   try {

@@ -52,9 +52,9 @@ describe("submenuPlatformAktif", () => {
 });
 
 describe("MENU_PLATFORM", () => {
-  it("memuat sembilan menu konsol dengan tautan unik", () => {
-    expect(MENU_PLATFORM).toHaveLength(9);
-    expect(new Set(MENU_PLATFORM.map((item) => item.href)).size).toBe(9);
+  it("memuat menu konsol lengkap dengan tautan unik", () => {
+    expect(MENU_PLATFORM).toHaveLength(11);
+    expect(new Set(MENU_PLATFORM.map((item) => item.href)).size).toBe(11);
     expect(MENU_PLATFORM[0]?.href).toBe("/super-admin");
     expect(MENU_PLATFORM.every((item) => item.href.startsWith("/super-admin"))).toBe(true);
   });
@@ -70,8 +70,8 @@ describe("MENU_PLATFORM", () => {
     expect(tenant?.label).toBe("Tenant");
     expect(tenant?.submenu).toBeUndefined();
     expect(tenant?.ruteTambahan).toBeUndefined();
-    expect(domain?.label).toBe("Domain & infrastruktur");
-    expect(domain?.grup).not.toBe(tenant?.grup);
+    expect(domain?.label).toBe("Domain");
+    expect(domain?.grup).toBe(tenant?.grup);
     expect(MENU_PLATFORM.some((item) => item.href === "/super-admin/domain/tambah")).toBe(false);
   });
 
@@ -89,7 +89,7 @@ describe("MENU_PLATFORM", () => {
   it("menyediakan menu backup & restore untuk operasi manual", () => {
     const backup = MENU_PLATFORM.find((item) => item.href === "/super-admin/backup");
 
-    expect(backup?.label).toBe("Backup & restore");
+    expect(backup?.label).toBe("Backup & Restore");
     expect(backup?.grup).toBe("Operasional");
   });
 
@@ -108,10 +108,9 @@ describe("grupMenuPlatform", () => {
     const grup = grupMenuPlatform();
 
     expect(grup.map((kelompok) => kelompok.grup)).toEqual([
-      "Menu utama",
-      "Tenant",
-      "Domain & infrastruktur",
-      "Platform",
+      "Ringkasan",
+      "Desa & Tenant",
+      "Akses & Audit",
       "Operasional",
     ]);
     expect(grup.flatMap((kelompok) => kelompok.item)).toHaveLength(MENU_PLATFORM.length);

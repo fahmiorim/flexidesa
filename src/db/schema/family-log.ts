@@ -68,5 +68,3 @@ export const familyMemberLogs = mysqlTable(
   ],
 );
 
-export type FamilyMemberLog = typeof familyMemberLogs.$inferSelect;
-export type NewFamilyMemberLog = typeof familyMemberLogs.$inferInsert;

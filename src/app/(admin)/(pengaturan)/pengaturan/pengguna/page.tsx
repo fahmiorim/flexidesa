@@ -245,8 +245,8 @@ export default async function PenggunaPage() {
           {audit.rows.length === 0 ? (
             <p className="modul-empty">Belum ada aktivitas yang tercatat.</p>
           ) : (
-            <TableScroll className="tenant-table-scroll">
-              <Table className="tenant-table">
+            <TableScroll>
+              <Table>
                 <THead>
                   <Row>
                     <HeaderCell scope="col">Peristiwa</HeaderCell>

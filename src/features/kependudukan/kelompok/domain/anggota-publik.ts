@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import { jabatanLabel } from "./kelompok";
 
 /**
@@ -20,7 +22,7 @@ export interface AnggotaPublikRow {
 }
 
 /** Anggota ringkas untuk tampilan publik. */
-export interface AnggotaPublikRingkas {
+interface AnggotaPublikRingkas {
   nama: string;
   jabatan: string;
   nomorAnggota: string | null;

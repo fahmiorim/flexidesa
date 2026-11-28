@@ -27,7 +27,7 @@ export const KEUANGAN_AKUN = [
 ] as const;
 
 /** Kode akun yang dikecualikan dari ringkasan APBDes. */
-export const EXCLUDED_AKUN: readonly string[] = KEUANGAN_AKUN.filter(
+const EXCLUDED_AKUN: readonly string[] = KEUANGAN_AKUN.filter(
   (item) => !item.reportable,
 ).map((item) => item.kode);
 
@@ -43,7 +43,7 @@ export const EXCLUDED_AKUN: readonly string[] = KEUANGAN_AKUN.filter(
  * | 8       | rincian  | `5.1.1.01`  |
  * | 11      | sub      | `5.1.1.01.01` |
  *
- * Konsistensi dengan rujukan penting karena daftar input (`length <= 5`),
+ * Konsistensi dengan konvensi ini penting karena daftar input (`length <= 5`),
  * agregasi (`length 5`/`8`/`11`), dan laporan RP APBDes (`length 1`) semuanya
  * bertumpu pada konvensi ini.
  */
@@ -88,7 +88,7 @@ export function isAkunLevel1(uuid: string): boolean {
 /**
  * Apakah baris ini boleh diubah langsung lewat form.
  *
- * Sistem rujukan hanya menampilkan/mengizinkan input pada `length <= 5`
+ * Input langsung hanya diizinkan pada `length <= 5`
  * (akun & kegiatan); level di bawahnya diagregasi otomatis dari anaknya.
  */
 export function isInputRow(uuid: string): boolean {
@@ -150,7 +150,7 @@ export interface KeuanganBarisDTO {
   realisasi: string;
 }
 
-export interface RpApbdRingkas {
+interface RpApbdRingkas {
   pendapatan: string;
   belanja: string;
   pembiayaan: string;
@@ -192,7 +192,7 @@ export interface RpApbdBaris {
 /**
  * Susun baris laporan RP APBDes untuk akun terpilih.
  *
- * Mengikuti `lap_rp_abpd()` pada sistem rujukan: nilai diambil dari baris
+ * Nilai diambil dari baris
  * akun (yang sudah teragregasi dari anaknya) lalu dikemas bersama realisasi,
  * selisih, dan persentase realisasi.
  */
@@ -245,8 +245,7 @@ export const AKUN_LAPORAN: readonly string[] = KEUANGAN_AKUN.filter((item) => it
 /**
  * Bidang belanja = anak langsung akun `5` (kode `5.1`–`5.5`, `length = 3`).
  *
- * Sesuai `rincian_realisasi_bidang_manual` pada sistem rujukan, yang memecah
- * realisasi belanja menurut bidang.
+ * Realisasi belanja dipecah menurut bidang.
  */
 export function listBidangBelanja(rows: readonly KeuanganBarisDTO[]): KeuanganBarisDTO[] {
   return rows
@@ -259,7 +258,7 @@ export function listBidangBelanja(rows: readonly KeuanganBarisDTO[]): KeuanganBa
 
 // --- Grafik ----------------------------------------------------------------
 
-export interface GrafikBatangan {
+interface GrafikBatangan {
   label: string;
   kode: string;
   anggaran: number;

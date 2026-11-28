@@ -13,7 +13,7 @@ import {
 } from "@/features/kehadiran/kehadiran/infrastructure/kehadiran-repository";
 import { requirePermission } from "@/lib/dal";
 
-export interface RekapitulasiKehadiranData {
+interface RekapitulasiKehadiranData {
   rows: BarisRekapitulasi[];
   perangkat: { id: number; nama: string | null; jabatan: string | null }[];
   statusOptions: string[];

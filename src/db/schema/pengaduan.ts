@@ -79,4 +79,3 @@ export const pengaduan = mysqlTable(
 );
 
 export type Pengaduan = typeof pengaduan.$inferSelect;
-export type NewPengaduan = typeof pengaduan.$inferInsert;

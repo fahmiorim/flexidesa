@@ -57,8 +57,8 @@ export async function listKehadiran(
  * Daftar catatan kehadiran untuk layar Rekapitulasi.
  *
  * Berbeda dari `listKehadiran` (dipakai rekap bulanan), fungsi ini memakai
- * rentang tanggal bebas, filter perangkat, dan filter status seperti menu
- * Rekapitulasi OpenSID, serta menyertakan nama/jabatan perangkat.
+ * rentang tanggal bebas, filter perangkat, dan filter status, serta
+ * menyertakan nama/jabatan perangkat.
  */
 export async function listRekapitulasiKehadiran(
   villageId: number,

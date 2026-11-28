@@ -139,8 +139,8 @@ export function FormSuplemen({
       <fieldset className="suplemen-fieldset">
         <legend>Form Isian Tambahan</legend>
         <p className="suplemen-fieldset-note">
-          Kolom tambahan yang muncul saat mendata warga pada suplemen ini — setara kode isian
-          `form_isian` OpenSID. Kosongkan bila tidak diperlukan.
+          Kolom tambahan yang muncul saat mendata warga pada suplemen ini.
+          Kosongkan bila tidak diperlukan.
         </p>
 
         {fields.length === 0 ? (

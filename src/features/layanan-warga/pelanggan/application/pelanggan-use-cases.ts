@@ -20,7 +20,7 @@ import {
 } from "../infrastructure/pelanggan-repository";
 
 /** Berkas yang sudah dibaca dari `FormData` (isi, bukan jalur). */
-export interface BerkasDokumenKerjasama {
+interface BerkasDokumenKerjasama {
   nama: string;
   mime: string | null;
   isi: Uint8Array;

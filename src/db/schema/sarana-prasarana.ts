@@ -58,4 +58,3 @@ export const saranaPrasarana = mysqlTable(
   ],
 );
 
-export type SaranaPrasarana = typeof saranaPrasarana.$inferSelect;

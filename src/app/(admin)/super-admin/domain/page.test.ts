@@ -167,8 +167,8 @@ describe("SuperAdminDomainPage", () => {
     expect(html).toContain("Tenant");
     expect(html).toContain("Cek SSL massal");
     expect(html).toContain("Cek DNS massal");
-    expect(html).toContain("Tambah Tenant");
-    expect(html).toContain('href="/super-admin/tenant/tambah"');
+    expect(html).toContain("Kelola tenant");
+    expect(html).toContain('href="/super-admin/tenant"');
     expect(html).toContain("Total Domain");
     expect(html).toContain("(Desa/Tenant)");
     expect(html).toContain("Subdomain Aktif");
@@ -181,8 +181,8 @@ describe("SuperAdminDomainPage", () => {
     expect(html).toContain("Semua Jenis Domain");
     expect(html).toContain("Semua Status");
     expect(html).toContain("Semua SSL");
-    expect(html).toContain("domain-filter-button");
-    expect(html).toContain("tenant-table tenant-table-list domain-table");
+    expect(html).toContain("ui-toolbar");
+    expect(html).toContain("ui-table domain-table");
     expect(html).toContain("Status DNS");
     expect(html).toContain("Status SSL");
     expect(html).toContain("Masa Berlaku SSL");
@@ -246,7 +246,8 @@ describe("SuperAdminDomainPage", () => {
     const html = renderToStaticMarkup(await Page({ searchParams: Promise.resolve({}) }));
 
     expect(html).toContain("Menampilkan 1–10 dari 11 domain");
-    expect(html).toContain("Halaman 1 dari 2");
+    expect(html).toContain("ui-pagination");
+    expect(html).toContain('aria-label="Halaman 1"');
     expect(html).toContain("desa-10.localhost");
     expect(html).not.toContain("desa-11.localhost");
   });

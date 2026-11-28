@@ -27,7 +27,7 @@ const PAGE_HEIGHT = 595.28;
 const MARGIN = 28;
 const CONTENT_WIDTH = PAGE_WIDTH - MARGIN * 2;
 
-export interface KeluargaPdfInput {
+interface KeluargaPdfInput {
   desa: IdentitasDesa | null;
   nomorKk: string;
   alamat: string | null;
@@ -265,7 +265,7 @@ export async function buildKeluargaPdf(input: KeluargaPdfInput): Promise<Uint8Ar
   }
   y -= 14;
 
-  // --- Blok info (dua kolom berpasangan, urutan seperti KK OpenSID) ---
+  // --- Blok info (dua kolom berpasangan) ---
   const alamat = [input.alamat, input.wilayah.dusun ? `Dusun ${input.wilayah.dusun}` : null]
     .filter(Boolean)
     .join(", ");

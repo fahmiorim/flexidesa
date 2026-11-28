@@ -16,7 +16,7 @@ export interface PendapatEksporRow {
 }
 
 /** Label jawaban kepuasan (1..4). */
-export function labelPilihan(pilihan: number): string {
+function labelPilihan(pilihan: number): string {
   return JAWABAN_KEPUASAN.find((j) => j.value === pilihan)?.label ?? String(pilihan);
 }
 

@@ -378,10 +378,10 @@ export async function setStatusTemplateWebsite(id: number, status: StatusTemplat
 /** Baris `theme.opsi` tenant terpilih; dipakai migrasi opsi saat distribusi versi. */
 export async function opsiTemaTenant(
   villageIds: number[],
-): Promise<{ villageId: number; opsi: string | null }[]> {
+): Promise<{ villageId: number; slug: string; versi: string; opsi: string | null }[]> {
   if (villageIds.length === 0) return [];
   return db
-    .select({ villageId: theme.villageId, opsi: theme.opsi })
+    .select({ villageId: theme.villageId, slug: theme.slug, versi: theme.versi, opsi: theme.opsi })
     .from(theme)
     .where(and(eq(theme.aktif, true), inArray(theme.villageId, villageIds)));
 }

@@ -81,7 +81,7 @@ export interface JurnalBaris {
   referensi: string | null;
 }
 
-export interface RingkasanJurnal {
+interface RingkasanJurnal {
   totalDebet: string;
   totalKredit: string;
   saldo: string;
@@ -105,11 +105,11 @@ export function hitungRingkasanJurnal(rows: readonly JurnalBaris[]): RingkasanJu
 }
 
 /** Baris buku kas umum: jurnal ditambah saldo berjalan setelah mutasi. */
-export interface BukuKasBaris extends JurnalBaris {
+interface BukuKasBaris extends JurnalBaris {
   saldo: string;
 }
 
-export interface BukuKasUmum {
+interface BukuKasUmum {
   baris: BukuKasBaris[];
   totalDebet: string;
   totalKredit: string;

@@ -8,7 +8,7 @@ import { AUDIT_EVENT_LABELS, type AuditEvent } from "@/features/pengaturan/audit
  * mentah ke pengguna.
  */
 
-export type ToneAktivitas = "accent" | "info" | "netral";
+type ToneAktivitas = "accent" | "info" | "netral";
 
 export function labelAktivitas(event: string): string {
   return AUDIT_EVENT_LABELS[event as AuditEvent] ?? "Aktivitas sistem";

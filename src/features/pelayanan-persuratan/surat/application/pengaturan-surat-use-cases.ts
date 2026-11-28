@@ -17,7 +17,7 @@ import { validationError } from "@/lib/errors";
 import { skemaPengaturanSurat } from "../domain/pengaturan-surat";
 import { getKonfigurasiTtePageData, type KonfigurasiTtePageData } from "./tte-use-cases";
 
-export interface PengaturanSuratPageData {
+interface PengaturanSuratPageData {
   pengaturan: Pengaturan;
   canManage: boolean;
   /** Konfigurasi TTE; `null` bila role tidak berwenang membacanya. */

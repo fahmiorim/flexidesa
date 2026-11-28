@@ -45,7 +45,7 @@ export type IntegrasiDesa = z.infer<typeof integrasiDesaSchema>;
 export const tampilanDesaSchema = z.object({ templateSlug: z.string().trim().min(1).max(50) });
 
 /**
- * Opsi tema tenant (ala `config.json` OpenSID).
+ * Opsi tema tenant.
  * Nilai mentah divalidasi terhadap schema paket tema di use case, bukan di
  * sini, agar default/min/max berasal dari kode tema dan bukan dari klien.
  */

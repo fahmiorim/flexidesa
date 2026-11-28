@@ -81,7 +81,7 @@ export function Bagian({
         </div>
       </header>
       <div className="platform-card-body">
-        <div className="platform-form-grid">{children}</div>
+        <div className="ui-form-grid">{children}</div>
       </div>
     </section>
   );

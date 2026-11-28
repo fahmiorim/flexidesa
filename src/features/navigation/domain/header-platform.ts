@@ -9,12 +9,12 @@
  * keduanya tidak melenceng saat menu ditambah.
  */
 
-export interface RemahPlatform {
+interface RemahPlatform {
   readonly label: string;
   readonly href?: string;
 }
 
-export interface HeaderPlatform {
+interface HeaderPlatform {
   readonly eyebrow: string;
   readonly title: string;
   readonly description: string;
@@ -27,12 +27,12 @@ export interface HeaderPlatform {
 export const HEADER_PLATFORM: Readonly<Record<string, HeaderPlatform>> = {
   "/super-admin": {
     eyebrow: "Konsol platform",
-    title: "Ringkasan platform",
+    title: "Ringkasan",
     description: "Pantau tenant desa, domain, akses platform, dan retensi data dalam satu tempat.",
   },
   "/super-admin/tenant": {
-    eyebrow: "Tenant",
-    title: "Konsol tenant",
+    eyebrow: "Desa & Tenant",
+    title: "Tenant",
     description:
       "Kelola status, kuota media, domain, akses administrator, ekspor, dan purge tiap desa.",
     remah: [{ label: "Tenant" }],
@@ -45,76 +45,89 @@ export const HEADER_PLATFORM: Readonly<Record<string, HeaderPlatform>> = {
     remah: [{ label: "Tenant", href: "/super-admin/tenant" }],
   },
   "/super-admin/domain": {
-    eyebrow: "Domain & infrastruktur",
-    title: "Daftar domain",
+    eyebrow: "Desa & Tenant",
+    title: "Domain",
     description:
       "Kelola domain dan alamat website publik seluruh desa/tenant pada platform FlexiDesa.",
-    remah: [{ label: "Domain & infrastruktur" }],
+    remah: [{ label: "Domain" }],
   },
   "/super-admin/pengguna": {
-    eyebrow: "Konsol platform",
-    title: "Pengguna",
+    eyebrow: "Akses & Audit",
+    title: "Akun Platform",
     description:
       "Akun yang tidak terikat desa dan hanya mengelola platform. Akun administrator desa dikelola dari konsol tenant, bukan di sini.",
   },
+  "/super-admin/pengguna-desa": {
+    eyebrow: "Akses & Audit",
+    title: "Pengguna Desa",
+    description:
+      "Direktori akun pengguna desa lintas tenant: cari akun, nonaktifkan, reset sandi, dan cabut sesi dengan jejak audit.",
+  },
+  "/super-admin/kesehatan": {
+    eyebrow: "Operasional",
+    title: "Kesehatan Sistem",
+    description:
+      "Ringkasan kondisi basis data, sertifikat SSL, DNS, dan kesiapan tenant dari pemeriksaan terakhir.",
+    remah: [{ label: "Operasional" }],
+  },
   "/super-admin/audit": {
-    eyebrow: "Konsol platform",
-    title: "Audit trail",
+    eyebrow: "Akses & Audit",
+    title: "Audit Trail",
     description:
       "Rekaman aksi sensitif dari seluruh desa dan tingkat platform: aktor, waktu, alamat IP, dan sumber daya yang berubah.",
   },
   "/super-admin/template": {
-    eyebrow: "Konsol platform",
-    title: "Manajemen template",
+    eyebrow: "Desa & Tenant",
+    title: "Template Website",
     description:
       "Katalog tema website: token tampilan, status publikasi, penggunaan tenant, dan distribusi versi. Unggahan kode atau paket ZIP tidak termasuk.",
   },
   "/super-admin/template/baru": {
-    eyebrow: "Manajemen template",
+    eyebrow: "Template Website",
     title: "Tambah template",
     description:
       "Buat metadata tema baru dari token tampilan yang tervalidasi. Template tersimpan sebagai draf sampai diterbitkan.",
   },
   "/super-admin/template/penggunaan": {
-    eyebrow: "Manajemen template",
+    eyebrow: "Template Website",
     title: "Penggunaan & pembaruan",
     description:
       "Lihat tenant yang memakai setiap tema dan kirim versi terbaru hanya kepada tenant yang memakai slug template tersebut.",
   },
   "/super-admin/template/fondasi": {
-    eyebrow: "Manajemen template",
-    title: "Fondasi tenant",
+    eyebrow: "Template Website",
+    title: "Fondasi tenant baru",
     description:
       "Bacaan template fondasi yang disalin ke desa baru: role, modul, matriks akses, tema, dan menu publik. Diperbarui lewat rilis aplikasi.",
   },
   "/super-admin/paket": {
-    eyebrow: "Paket & fitur",
-    title: "Paket langganan",
+    eyebrow: "Desa & Tenant",
+    title: "Paket Langganan",
     description: "Atur modul setiap paket dan tentukan kapan versi terbit berlaku bagi tenant.",
   },
   "/super-admin/paket/baru": {
-    eyebrow: "Paket & fitur",
+    eyebrow: "Paket Langganan",
     title: "Buat paket",
     description: "Tambahkan paket baru beserta draf pertama daftar fiturnya.",
-    remah: [{ label: "Paket & fitur", href: "/super-admin/paket" }],
+    remah: [{ label: "Paket Langganan", href: "/super-admin/paket" }],
   },
   "/super-admin/paket/tenant": {
-    eyebrow: "Paket & fitur",
+    eyebrow: "Paket Langganan",
     title: "Paket tenant",
     description:
       "Tetapkan paket terbit kepada desa; modul di luar paket akan dibatasi tanpa menghapus datanya.",
-    remah: [{ label: "Paket & fitur", href: "/super-admin/paket" }],
+    remah: [{ label: "Paket Langganan", href: "/super-admin/paket" }],
   },
   "/super-admin/backup": {
     eyebrow: "Operasional",
-    title: "Backup & restore",
+    title: "Backup & Restore",
     description:
       "Unduh salinan basis data platform atau pulihkan dari berkas SQL. Restore mengganti seluruh basis data dan memengaruhi semua desa.",
     remah: [{ label: "Operasional" }],
   },
   "/super-admin/pengaturan": {
-    eyebrow: "Konsol platform",
-    title: "Pengaturan platform",
+    eyebrow: "Operasional",
+    title: "Pengaturan",
     description:
       "Ringkasan konfigurasi aktif yang dibaca aplikasi. Nilai rahasia tidak pernah dibaca maupun ditampilkan di halaman ini.",
   },
@@ -137,13 +150,21 @@ export function headerPlatform(pathname: string): HeaderPlatform {
   // "Desa & Domain → Detail Domain" tanpa menambah entri per id.
   if (/^\/super-admin\/domain\/\d+$/.test(pathname)) {
     return {
-      eyebrow: "Tenant",
+      eyebrow: "Desa & Tenant",
       title: "Detail Domain",
       description: "Informasi dan pengaturan domain, DNS, SSL, serta riwayat perubahan.",
-      remah: [
-        { label: "Domain & infrastruktur" },
-        { label: "Daftar domain", href: "/super-admin/domain" },
-      ],
+      remah: [{ label: "Domain" }, { label: "Domain", href: "/super-admin/domain" }],
+    };
+  }
+
+  // Detail tenant (`/super-admin/tenant/12`) memakai konteks menu Tenant.
+  if (/^\/super-admin\/tenant\/\d+$/.test(pathname)) {
+    return {
+      eyebrow: "Tenant",
+      title: "Detail Tenant",
+      description:
+        "Profil desa, domain, paket langganan, pengguna, kuota, dan riwayat audit tenant.",
+      remah: [{ label: "Tenant", href: "/super-admin/tenant" }],
     };
   }
 

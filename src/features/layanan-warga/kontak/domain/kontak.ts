@@ -3,7 +3,7 @@ import { z } from "zod";
 import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 
 export const KONTAK_RESOURCE = RESOURCES.daftarKontak;
-export const GRUP_KONTAK_RESOURCE = RESOURCES.grupKontak;
+export const KONTAK_GRUP_RESOURCE = RESOURCES.grupKontak;
 
 export const kontakSchema = z.object({
   id: z.number().int().positive().optional(),

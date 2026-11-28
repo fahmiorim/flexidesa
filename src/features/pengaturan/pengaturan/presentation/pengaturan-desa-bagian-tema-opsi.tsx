@@ -6,11 +6,11 @@ import { mediaUrl, type TemaOpsi } from "./pengaturan-desa-types";
 import styles from "./pengaturan-desa.module.css";
 
 /**
- * Form opsi tema tenant dari `config.json` paket tema aktif (ala OpenSID).
+ * Form opsi tema tenant dari `config.json` paket tema aktif.
  *
  * Field dirender dari definisi paket — bukan daftar hardcode di UI — sehingga
- * tema baru yang menambah opsi otomatis muncul di sini. Tipe yang didukung
- * sama dengan konfigurasi OpenSID: color-picker, select, input-number,
+ * tema baru yang menambah opsi otomatis muncul di sini. Tipe yang didukung:
+ * color-picker, select, input-number,
  * input-text, dan unggah (media tenant, bukan source paket).
  */
 export function TabOpsiTema({

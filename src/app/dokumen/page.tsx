@@ -9,6 +9,7 @@ import {
   isSafeDocumentLink,
   parseDokumenKategoriFilter,
 } from "@/features/info-desa/publik/domain/dokumen";
+import { mediaUrl } from "@/lib/media-url";
 
 import styles from "../informasi-publik.module.css";
 import { PublicShell } from "../public-shell";
@@ -19,18 +20,6 @@ export const metadata: Metadata = {
 };
 export const dynamic = "force-dynamic";
 type Props = { searchParams: Promise<{ q?: string; kategori?: string; page?: string }> };
-
-function mediaUrl(value: string | null, villageId: number): string | null {
-  if (!value) return null;
-  const segments = value.split(/[\\/]/).filter(Boolean);
-  if (
-    !segments.length ||
-    segments.some((part) => part === "." || part === ".." || part.includes(".."))
-  )
-    return null;
-  const path = segments[0] === String(villageId) ? segments : [String(villageId), ...segments];
-  return `/api/publik/media/${path.map(encodeURIComponent).join("/")}`;
-}
 
 export default async function DokumenPage({ searchParams }: Props) {
   const [desa, params] = await Promise.all([getIdentitasFromRequest(), searchParams]);

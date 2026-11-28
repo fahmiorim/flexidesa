@@ -22,24 +22,16 @@ export interface ApbdesTemplateRow {
 }
 
 /** Hasil validasi baris. */
-export interface ApbdesValidationResult {
+interface ApbdesValidationResult {
   valid: boolean;
   row: ApbdesTemplateRow;
   errors: string[];
 }
 
 /** Hasil impor. */
-export interface ApbdesImportResult {
-  success: number;
-  errors: Array<{
-    row: number;
-    kode_rekening: string;
-    errors: string[];
-  }>;
-}
 
 /** Skema validasi baris template. */
-export const apbdesTemplateRowSchema = z.object({
+const apbdesTemplateRowSchema = z.object({
   kode_rekening: z.string().trim().min(1, "Kode rekening wajib diisi"),
   nama: z.string().trim().min(1, "Nama wajib diisi"),
   pagu: z
@@ -124,7 +116,7 @@ function validatePagu(row: ApbdesTemplateRow): string[] {
 }
 
 /** Validasi satu baris template. */
-export function validateApbdesRow(
+function validateApbdesRow(
   row: ApbdesTemplateRow,
   existingKodes: Set<string>,
   allRows: ApbdesTemplateRow[],
@@ -190,7 +182,7 @@ export function validateApbdesRows(rows: ApbdesTemplateRow[]): {
   return { validRows, results };
 }
 
-/** Parse file Excel/CSV ke baris template menggunakan helper internal SID. */
+/** Parse file Excel/CSV ke baris template menggunakan helper internal. */
 export async function parseApbdesFile(
   buffer: Buffer,
   filename: string,

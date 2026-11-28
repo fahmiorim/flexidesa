@@ -13,13 +13,13 @@ import { toCsv } from "@/features/keuangan-desa/keuangan/domain/laporan-csv";
 /**
  * Laporan Realisasi Pelaksanaan APBDes format resmi.
  *
- * Meniru susunan laporan pada sistem rujukan: akun level-1 menjadi judul blok,
+ * Susunan laporan: akun level-1 menjadi judul blok,
  * anak-anaknya ditampilkan berjenjang, lalu ditutup baris JUMLAH per akun,
  * SURPLUS/(DEFISIT), PEMBIAYAAN NETTO, dan SiLPA tahun berjalan. Seluruh
  * perhitungan memakai bilangan sen (bigint) agar tidak ada galat pembulatan.
  */
 
-export interface BarisRealisasi {
+interface BarisRealisasi {
   kode: string;
   uraian: string;
   /** Kedalaman tampilan: 1 = akun, 2 = bidang, 3+ = rincian. */
@@ -32,7 +32,7 @@ export interface BarisRealisasi {
   persen: number | null;
 }
 
-export interface BlokRealisasi {
+interface BlokRealisasi {
   akun: BarisRealisasi;
   /** Semua keturunan akun (bidang, kegiatan, rincian) berurutan menurut kode. */
   baris: BarisRealisasi[];
@@ -40,13 +40,13 @@ export interface BlokRealisasi {
   total: RpApbdTotal;
 }
 
-export interface RingkasanRealisasi {
+interface RingkasanRealisasi {
   anggaran: string;
   realisasi: string;
   selisih: string;
 }
 
-export interface LaporanRealisasiResmi {
+interface LaporanRealisasiResmi {
   blok: BlokRealisasi[];
   /** Pendapatan − belanja. */
   surplus: RingkasanRealisasi;
@@ -137,7 +137,7 @@ export function susunLaporanRealisasi(rows: readonly KeuanganBarisDTO[]): Lapora
 
 const HEADER_CSV = ["Kode", "Uraian", "Anggaran", "Realisasi", "Lebih/(Kurang)", "Persentase (%)"];
 
-export interface LaporanRealisasiCsvInput {
+interface LaporanRealisasiCsvInput {
   namaDesa: string | null;
   kecamatan: string | null;
   tahun: number;
@@ -148,7 +148,7 @@ export interface LaporanRealisasiCsvInput {
  * Teks CSV laporan realisasi format resmi.
  *
  * Angka ditulis sebagai desimal polos agar dapat dijumlahkan langsung pada
- * lembar kerja; persentase pembiayaan dikosongkan seperti format rujukan.
+ * lembar kerja; persentase pembiayaan dikosongkan.
  */
 export function buildLaporanRealisasiCsv(input: LaporanRealisasiCsvInput): string {
   const rows: string[][] = [

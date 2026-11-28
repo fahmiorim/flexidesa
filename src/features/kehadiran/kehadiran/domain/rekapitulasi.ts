@@ -3,9 +3,9 @@ import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 /**
  * Domain Rekapitulasi Kehadiran.
  *
- * Meniru menu Kehadiran → Rekapitulasi OpenSID (`kehadiran_rekapitulasi`):
- * daftar catatan kehadiran perangkat dengan filter rentang tanggal, perangkat,
- * dan status, plus kolom Total Waktu (TIMEDIFF jam keluar − jam masuk).
+ * Daftar catatan kehadiran perangkat dengan filter rentang tanggal,
+ * perangkat, dan status, plus kolom Total Waktu (selisih jam keluar −
+ * jam masuk).
  */
 
 /** Slug modul sekaligus resource izin (lihat template tenant). */
@@ -51,7 +51,7 @@ export function bacaFilterRekapitulasi(params: {
   };
 }
 
-/** Selisih jam masuk–keluar dalam `HH:MM`, setara `TIMEDIFF` OpenSID. */
+/** Selisih jam masuk–keluar dalam `HH:MM`. */
 export function totalWaktu(jamMasuk: string | null, jamKeluar: string | null): string {
   if (!jamMasuk || !jamKeluar) return "-";
 
@@ -87,7 +87,7 @@ export function statusRekapitulasi(
     return bersih.charAt(0).toUpperCase() + bersih.slice(1).replace(/_/g, " ");
   }
 
-  // OpenSID menurunkan status dari jam saat kolom status kosong.
+  // Status diturunkan dari jam saat kolom status kosong.
   if (jamMasuk && jamKeluar) return "Hadir";
   if (jamMasuk) return "Lupa melapor keluar";
   return "Belum ditentukan";
@@ -119,7 +119,7 @@ export function tanggalIndonesia(tanggal: string): string {
   }).format(parsed);
 }
 
-/** Judul kolom ekspor, sama dengan `$judul` pada controller OpenSID. */
+/** Judul kolom ekspor. */
 export const JUDUL_EKSPOR_REKAPITULASI = [
   "Nama",
   "Jabatan",

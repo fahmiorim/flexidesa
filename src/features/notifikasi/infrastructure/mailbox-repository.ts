@@ -5,7 +5,7 @@ import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { mailboxPesan } from "@/db/schema/mailbox-pesan";
 
-export type MailboxBaris = Pick<
+type MailboxBaris = Pick<
   typeof mailboxPesan.$inferSelect,
   "id" | "arah" | "alamat" | "subjek" | "isi" | "dibaca" | "createdAt"
 >;

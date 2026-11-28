@@ -3,15 +3,7 @@ import { Resend } from "resend";
 import { kirimPesanWhatsApp } from "@/features/notifikasi/infrastructure/whatsapp-baileys";
 import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
-}
+import { escapeHtml } from "@/lib/sanitize";
 
 /**
  * Kirim email saat status pengaduan berubah.

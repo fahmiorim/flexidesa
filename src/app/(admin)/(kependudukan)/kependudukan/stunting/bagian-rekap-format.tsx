@@ -7,8 +7,7 @@ export const angka = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 2 }
 export const persen = (nilai: number) => `${angka.format(nilai)}%`;
 
 /**
- * Judul kolom indikator pada rekapitulasi. Istilahnya mengikuti tabel OpenSID
- * `rekapitulasi-ibu-hamil.blade.php` dan `rekapitulasi-bulanan-anak.blade.php`.
+ * Judul kolom indikator pada rekapitulasi.
  */
 export const LABEL_INDIKATOR_IBU: Record<string, string> = {
   periksa_kehamilan: "Periksa Kehamilan",
@@ -34,7 +33,7 @@ export const LABEL_INDIKATOR_ANAK: Record<string, string> = {
   pengasuhan_paud: "Pengasuhan (PAUD)",
 };
 
-/** Badge status indikator. `TS` (tidak seharusnya) ditulis `-` seperti legenda OpenSID. */
+/** Badge status indikator. `TS` (tidak seharusnya) ditulis `-`. */
 export function Penanda({ status }: { status: StatusIndikator }) {
   const kelas =
     status === "Y" ? styles.badgeHijau : status === "T" ? styles.badgeMerah : styles.badgeNetral;
@@ -49,7 +48,7 @@ export function BadgeAngka({ nilai, hijau }: { nilai: number; hijau?: boolean })
   );
 }
 
-/** Batang capaian persen; ambang warna sama dengan OpenSID (80% dan 60%). */
+/** Batang capaian persen; ambang warna 80% dan 60%. */
 export function BatangPersen({ nilai }: { nilai: number }) {
   const kelas =
     nilai >= 80 ? styles.batangHijau : nilai >= 60 ? styles.batangKuning : styles.batangMerah;

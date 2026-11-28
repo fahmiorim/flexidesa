@@ -1,9 +1,10 @@
 import Link from "next/link";
 
 import { agendaJamLabel } from "@/features/info-desa/agenda/domain/agenda";
+import { plainText } from "@/lib/plain-text";
 
 import styles from "./agenda.module.css";
-import { dateParts, plainText, type AgendaItem } from "./bagian-agenda";
+import { dateParts, type AgendaItem } from "./bagian-agenda";
 
 export function DaftarAgenda({
   pageItems,

@@ -38,8 +38,8 @@ export async function getJamKerjaData(): Promise<JamKerjaRow[]> {
 /**
  * Ubah jam kerja satu hari.
  *
- * OpenSID hanya menyediakan aksi ubah (`JamKerjaController@update`): tidak
- * ada tambah/hapus baris. Jam disimpan `HH:MM:SS` mengikuti kolom `time`.
+ * Hanya aksi ubah yang tersedia: tidak ada tambah/hapus baris. Jam disimpan
+ * `HH:MM:SS` mengikuti kolom `time`.
  */
 export async function ubahJamKerja(id: number, input: unknown): Promise<{ id: number }> {
   const user = await requirePermission(JAM_KERJA_RESOURCE, "update");

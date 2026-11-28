@@ -31,17 +31,17 @@ export { HEAD_OF_FAMILY_RELATION_ID };
 
 /**
  * Nomor KK: 16 angka. Nomor kosong hanya boleh saat ditandai sementara; nomor
- * sementara yang dibuat server juga 16 angka dengan awalan `0`, seperti OpenSID.
+ * sementara yang dibuat server juga 16 angka dengan awalan `0`.
  */
 const familyCardNumber = z.string().trim();
 
-/** Nomor KK sementara ditandai awalan `0`, sama seperti OpenSID. */
+/** Nomor KK sementara ditandai awalan `0`. */
 export function isTemporaryFamilyNumber(value: string): boolean {
   return value.startsWith("0");
 }
 
 /**
- * Kelas sosial keluarga, mengikuti kode `KeluargaSejahteraEnum` OpenSID.
+ * Kelas sosial keluarga.
  * Disimpan sebagai angka agar data lama/import tetap kompatibel.
  */
 export const KELUARGA_WELFARE_CLASSES = [
@@ -132,7 +132,7 @@ export type PecahKeluargaInput = z.infer<typeof pecahKeluargaSchema>;
 export interface KeluargaDTO {
   id: number;
   number: string;
-  /** Nomor belum final; diturunkan dari awalan `0` seperti OpenSID. */
+  /** Nomor belum final; diturunkan dari awalan `0`. */
   temporary: boolean;
   address: string | null;
   regionId: number | null;
@@ -140,7 +140,7 @@ export interface KeluargaDTO {
   welfareClass: number | null;
   /** Tanggal cetak KK (`YYYY-MM-DD`), atau `null`. */
   cardPrintedAt: string | null;
-  /** Tanggal keluarga terdaftar (padanan `tgl_daftar` OpenSID). */
+  /** Tanggal keluarga terdaftar. */
   registeredAt: string;
 }
 
@@ -234,7 +234,7 @@ export function parseKeluargaFilter(searchParams: URLSearchParams): KeluargaList
   };
 }
 
-/** Sensor NIK/No. KK seperti OpenSID: delapan digit awal tetap terlihat. */
+/** Sensor NIK/No. KK: delapan digit awal tetap terlihat. */
 export function sensorIdentitas(value: string | null): string {
   if (!value) return "";
   if (value.length <= 8) return value;
@@ -301,8 +301,8 @@ export function keluargaLabel(keluarga: Pick<KeluargaDTO, "number">): string {
 // --- Riwayat perubahan anggota ---------------------------------------------
 
 /** Jenis perubahan keanggotaan yang dicatat. */
-export const AKSI_LOG_ANGGOTA = ["added", "removed", "role_changed"] as const;
-export type AksiLogAnggota = (typeof AKSI_LOG_ANGGOTA)[number];
+const AKSI_LOG_ANGGOTA = ["added", "removed", "role_changed"] as const;
+type AksiLogAnggota = (typeof AKSI_LOG_ANGGOTA)[number];
 
 export const AKSI_LOG_LABELS: Readonly<Record<AksiLogAnggota, string>> = {
   added: "Ditambahkan",

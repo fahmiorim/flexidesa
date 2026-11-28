@@ -1,8 +1,9 @@
 import Image from "next/image";
 
 import type { daftarWilayahPublik } from "@/features/info-desa/wilayah/application/wilayah-publik";
+import { formatNumber } from "@/lib/format-tanggal";
 
-import { formatNumber, palette } from "./bagian-wilayah";
+import { palette } from "./bagian-wilayah";
 import styles from "./wilayah.module.css";
 
 type WilayahRow = Awaited<ReturnType<typeof daftarWilayahPublik>>[number];

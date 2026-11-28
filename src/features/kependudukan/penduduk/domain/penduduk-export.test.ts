@@ -90,7 +90,7 @@ const baris: PendudukEksporRow = {
 };
 
 describe("ekspor penduduk", () => {
-  it("memakai 44 kolom yang sama dengan OpenSID", () => {
+  it("memakai 44 kolom", () => {
     expect(KOLOM_EKSPOR_PENDUDUK).toHaveLength(44);
     expect(KOLOM_EKSPOR_PENDUDUK[0]).toBe("alamat");
     expect(KOLOM_EKSPOR_PENDUDUK).toContain("alamat_sekarang");

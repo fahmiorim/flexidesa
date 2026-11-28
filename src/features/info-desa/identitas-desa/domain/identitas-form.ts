@@ -71,11 +71,11 @@ export function jumlahTitikBatasDesa(nilai: string): number {
   return parseGeoJsonRings(nilai).reduce((total, ring) => total + ring.length, 0);
 }
 
-/** Rentang dimensi logo persegi warisan OpenSID (form `ukuran`). */
-export const UKURAN_LOGO_MIN = 100;
-export const UKURAN_LOGO_MAKS = 400;
+/** Rentang dimensi logo persegi (form `ukuran`). */
+const UKURAN_LOGO_MIN = 100;
+const UKURAN_LOGO_MAKS = 400;
 
-export type HasilValidasiUkuranLogo =
+type HasilValidasiUkuranLogo =
   { ok: true; ukuran: number | null } | { ok: false; pesan: string };
 
 /**

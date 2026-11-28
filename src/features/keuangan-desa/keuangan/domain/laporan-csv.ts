@@ -12,7 +12,7 @@ export { csvCell, toCsv };
  * desimal (koma) tidak terpecah menjadi kolom.
  */
 
-export interface LaporanCsvInput {
+interface LaporanCsvInput {
   namaDesa: string | null;
   kecamatan: string | null;
   tahun: number;

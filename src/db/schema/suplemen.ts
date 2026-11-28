@@ -30,9 +30,8 @@ export const suplemen = mysqlTable(
     sasaran: int("sasaran").notNull().default(SASARAN_PENDUDUK),
     keterangan: text("keterangan"),
     /**
-     * Definisi kolom isian dinamis per suplemen (paritas `suplemen.form_isian`
-     * OpenSID, JSON). Bentuknya mengikuti kode isian OpenSID: nama/label/
-     * tipe/placeholder/pilihan/referensi/required/kolom/atribut.
+     * Definisi kolom isian dinamis per suplemen (JSON). Bentuknya:
+     * nama/label/tipe/placeholder/pilihan/referensi/required/kolom/atribut.
      */
     formIsian: json("form_isian"),
 
@@ -71,7 +70,7 @@ export const suplemenTerdata = mysqlTable(
     /** Data isian dinamis (tergantung bentuk suplemen). */
     dataFormIsian: json("data_form_isian"),
 
-    /** Keterangan satu baris terdata (paritas `suplemen_terdata.keterangan`). */
+    /** Keterangan satu baris terdata. */
     keterangan: varchar("keterangan", { length: 100 }),
 
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -106,6 +105,3 @@ export const suplemenTerdata = mysqlTable(
 );
 
 export type Suplemen = typeof suplemen.$inferSelect;
-export type NewSuplemen = typeof suplemen.$inferInsert;
-export type SuplemenTerdata = typeof suplemenTerdata.$inferSelect;
-export type NewSuplemenTerdata = typeof suplemenTerdata.$inferInsert;

@@ -2,10 +2,10 @@ import { z } from "zod";
 
 /** Slug resource RBAC untuk pusat umpan balik. */
 
-export const UMPAN_BALIK_STATUS = ["baru", "dibaca", "ditindaklanjuti"] as const;
-export type UmpanBalikStatus = (typeof UMPAN_BALIK_STATUS)[number];
+const UMPAN_BALIK_STATUS = ["baru", "dibaca", "ditindaklanjuti"] as const;
+type UmpanBalikStatus = (typeof UMPAN_BALIK_STATUS)[number];
 
-export const UMPAN_BALIK_STATUS_LABELS: Readonly<Record<UmpanBalikStatus, string>> = {
+const UMPAN_BALIK_STATUS_LABELS: Readonly<Record<UmpanBalikStatus, string>> = {
   baru: "Baru",
   dibaca: "Dibaca",
   ditindaklanjuti: "Ditindaklanjuti",

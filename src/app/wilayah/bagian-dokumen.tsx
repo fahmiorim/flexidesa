@@ -1,7 +1,7 @@
 import type { daftarDokumenPublik } from "@/features/info-desa/publik/application/konten-publik";
 import { isSafeDocumentLink } from "@/features/info-desa/publik/domain/dokumen";
+import { mediaUrl } from "@/lib/media-url";
 
-import { mediaUrl } from "./bagian-wilayah";
 import styles from "./wilayah.module.css";
 
 type DokumenWilayah = Awaited<ReturnType<typeof daftarDokumenPublik>>[number];

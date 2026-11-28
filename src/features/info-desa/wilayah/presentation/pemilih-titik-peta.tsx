@@ -25,7 +25,7 @@ const JEDA_KETIK = 800;
 
 type HasilAlamat = { label: string; lat: number; lng: number };
 
-export type PerubahanTitik = { koordinat: string | null; zoom: number };
+type PerubahanTitik = { koordinat: string | null; zoom: number };
 
 /** Cari alamat lewat layanan publik OpenStreetMap; tanpa API key. */
 async function cariAlamat(kueri: string, signal: AbortSignal): Promise<HasilAlamat[]> {

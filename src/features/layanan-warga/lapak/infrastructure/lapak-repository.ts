@@ -8,9 +8,9 @@ import { lapakProduk, type NewLapakProduk } from "@/db/schema/lapak-produk";
 import { residents } from "@/db/schema/resident";
 import type { LapakProdukRow } from "@/features/layanan-warga/lapak/domain/lapak-produk";
 
-export const LAPAK_PAGE_SIZE = 20;
+const LAPAK_PAGE_SIZE = 20;
 
-export interface LapakPage {
+interface LapakPage {
   rows: Array<{
     id: number;
     villageId: number;

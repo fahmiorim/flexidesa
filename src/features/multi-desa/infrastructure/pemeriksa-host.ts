@@ -24,10 +24,10 @@ export interface AlamatHost {
   family: 4 | 6;
 }
 
-export type HasilResolusiHost = { ok: true; alamat: AlamatHost[] } | { ok: false; error: string };
+type HasilResolusiHost = { ok: true; alamat: AlamatHost[] } | { ok: false; error: string };
 
 /** Normalisasi dan validasi hostname dari tabel domain. */
-export function normalisasiHostDomain(domain: string): string | null {
+function normalisasiHostDomain(domain: string): string | null {
   const host = domain.trim().toLowerCase().replace(/\.$/, "");
   if (host === "" || isIP(host) !== 0) return null;
   if (!POLA_HOST.test(host)) return null;

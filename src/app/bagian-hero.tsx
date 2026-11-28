@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { mediaUrl, namaLengkap, type DesaPublik, type PerangkatBeranda } from "./bagian-beranda";
+import { mediaUrl } from "@/lib/media-url";
+
+import { namaLengkap, type DesaPublik, type PerangkatBeranda } from "./bagian-beranda";
 import styles from "./public-home.module.css";
 
 /**

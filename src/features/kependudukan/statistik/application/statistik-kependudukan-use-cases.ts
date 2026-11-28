@@ -20,11 +20,11 @@ import {
 import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { requirePermission } from "@/lib/dal";
 
-export interface PilihanStatistikKependudukan extends FilterWilayahStatistik {
+interface PilihanStatistikKependudukan extends FilterWilayahStatistik {
   kategoriSlug: string;
 }
 
-export interface HasilStatistikKependudukanData {
+interface HasilStatistikKependudukanData {
   kategori: KategoriStatistik;
   hasil: HasilStatistikKependudukan;
 }
@@ -37,7 +37,7 @@ export function nilaiFilter(value: string | string[] | undefined): string | unde
 }
 
 /** Normalisasi parameter kategori; kategori tidak dikenal kembali ke bawaan. */
-export function normalkanKategori(value: string | undefined): KategoriStatistik {
+function normalkanKategori(value: string | undefined): KategoriStatistik {
   return kategoriStatistik(value) ?? kategoriStatistik(STATISTIK_DEFAULT_KATEGORI)!;
 }
 
@@ -62,13 +62,13 @@ export async function getStatistikKependudukanPageData(
   return getStatistikKependudukanData(villageId, query);
 }
 
-export interface PendudukKategoriQuery extends FilterWilayahStatistik {
+interface PendudukKategoriQuery extends FilterWilayahStatistik {
   kategoriSlug: string;
   kelompok: string;
   gender?: "male" | "female";
 }
 
-export interface PendudukKategoriData {
+interface PendudukKategoriData {
   kategori: KategoriStatistik;
   kelompok: string;
   rows: PendudukStatistik[];
@@ -91,7 +91,7 @@ export async function getPendudukKategoriPageData(
   return { kategori, kelompok, rows };
 }
 
-export interface StatistikKependudukanCetakData {
+interface StatistikKependudukanCetakData {
   kategori: KategoriStatistik;
   hasil: HasilStatistikKependudukan;
   namaDesa: string | null;

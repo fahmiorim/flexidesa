@@ -26,7 +26,7 @@ type BarisIbu = IbuHamilRow & { createdAt?: Date | string | null };
 /**
  * Tab pemantauan bulanan ibu hamil.
  *
- * Field mengikuti `pemantauan_ibu_hamil_form.blade.php` OpenSID: No Register
+ * Field: No Register
  * KIA, posyandu, status kehamilan, usia kehamilan, tanggal melahirkan, butir
  * pil Fe, dan delapan indikator layanan konvergensi.
  */

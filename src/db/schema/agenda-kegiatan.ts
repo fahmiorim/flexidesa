@@ -49,4 +49,3 @@ export const agendaKegiatan = mysqlTable(
   (t) => [index("agenda_kegiatan_village_mulai_idx").on(t.villageId, t.mulai)],
 );
 
-export type AgendaKegiatan = typeof agendaKegiatan.$inferSelect;

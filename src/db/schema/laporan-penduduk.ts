@@ -6,9 +6,8 @@ import { villages } from "./village";
 /**
  * `laporan_penduduk` — arsip dokumen Laporan Penduduk per bulan.
  *
- * Mengikuti `laporan_sinkronisasi` pada sistem rujukan (OpenSID) untuk tipe
- * `laporan_penduduk`: operator mengunggah dokumen PDF resmi per bulan dan
- * tahun. Angka laporan **tidak** diturunkan dari tabel ini.
+ * Operator mengunggah dokumen PDF resmi `laporan_penduduk` per bulan
+ * dan tahun. Angka laporan **tidak** diturunkan dari tabel ini.
  */
 export const laporanPenduduk = mysqlTable(
   "laporan_penduduk",
@@ -49,5 +48,3 @@ export const laporanPenduduk = mysqlTable(
   ],
 );
 
-export type LaporanPenduduk = typeof laporanPenduduk.$inferSelect;
-export type NewLaporanPenduduk = typeof laporanPenduduk.$inferInsert;

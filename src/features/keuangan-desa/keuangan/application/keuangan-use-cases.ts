@@ -39,7 +39,7 @@ const TAHUN_MIN = 2000;
 const TAHUN_MAX = 2100;
 
 /** Tahun anggaran bawaan: tahun berjalan. */
-export function defaultTahun(now = new Date()): number {
+function defaultTahun(now = new Date()): number {
   return now.getFullYear();
 }
 

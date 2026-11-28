@@ -55,7 +55,7 @@ export default async function KeluargaBaruKepalaPage() {
             </div>
           </header>
           <div className="platform-card-body">
-            <div className="platform-form-grid">
+            <div className="ui-form-grid">
               <label className="form-field">
                 <span className="form-label">Nomor Kartu Keluarga</span>
                 <input
@@ -77,7 +77,7 @@ export default async function KeluargaBaruKepalaPage() {
                   <span>Buat nomor sementara otomatis</span>
                 </span>
                 <span className="form-help">
-                  Nomor memakai awalan 0 + kode desa + urutan, seperti OpenSID.
+                  Nomor memakai awalan 0 + kode desa + urutan.
                 </span>
               </label>
               <label className="form-field">

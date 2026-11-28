@@ -24,7 +24,7 @@ describe("alasanKeluarFormSchema", () => {
     expect(hasil.keterangan).toBeNull();
   });
 
-  it("menolak alasan kosong seperti validasi wajib OpenSID", () => {
+  it("menolak alasan kosong", () => {
     const hasil = alasanKeluarFormSchema.safeParse({ alasan: "   ", keterangan: "" });
 
     expect(hasil.success).toBe(false);

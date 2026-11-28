@@ -120,8 +120,6 @@ export const villages = mysqlTable("villages", {
     .$onUpdate(() => new Date()),
 });
 
-export type Village = typeof villages.$inferSelect;
-export type NewVillage = typeof villages.$inferInsert;
 
 /**
  * `village_domains` — satu desa boleh punya banyak host (domain utama + alias).
@@ -145,8 +143,6 @@ export const villageDomains = mysqlTable(
   (table) => [index("village_domains_village_idx").on(table.villageId)],
 );
 
-export type VillageDomain = typeof villageDomains.$inferSelect;
-export type NewVillageDomain = typeof villageDomains.$inferInsert;
 
 /**
  * `tenant_domain_tombstones` — host milik desa yang sudah di-purge.

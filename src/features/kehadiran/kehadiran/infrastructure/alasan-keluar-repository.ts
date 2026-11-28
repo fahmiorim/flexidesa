@@ -65,7 +65,7 @@ export async function deleteAlasanKeluar(id: number, villageId: number): Promise
     .where(and(eq(kehadiranAlasanKeluar.id, id), eq(kehadiranAlasanKeluar.villageId, villageId)));
 }
 
-/** Hapus beberapa alasan keluar sekaligus (aksi massal OpenSID). */
+/** Hapus beberapa alasan keluar sekaligus. */
 export async function deleteAlasanKeluarBanyak(
   villageId: number,
   ids: readonly number[],

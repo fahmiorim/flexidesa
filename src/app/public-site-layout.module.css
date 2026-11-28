@@ -23,12 +23,12 @@
 }
 .headerInner {
   width: min(1180px, calc(100% - 40px));
-  min-height: 54px;
+  min-height: 64px;
   margin: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 18px;
 }
 
 /*
@@ -37,13 +37,9 @@
  * seluruh halaman publik yang memakai header ini.
  */
 .header[data-varian="modern"] {
-  background: linear-gradient(
-    100deg,
-    var(--public-secondary, #0d2136),
-    var(--public-primary, #075cf0)
-  );
-  border-bottom-color: #ffffff1f;
-  box-shadow: 0 6px 20px #0a1d4026;
+  background: color-mix(in srgb, var(--public-secondary, #0d2136) 88%, black);
+  border-bottom: 3px solid var(--public-primary, #075cf0);
+  box-shadow: 0 8px 24px #0a1d4026;
 }
 .header[data-varian="modern"] .brandText strong,
 .header[data-varian="modern"] .brandText b,
@@ -60,27 +56,40 @@
 }
 .header[data-varian="modern"] .nav > a,
 .header[data-varian="modern"] .dropdown > summary {
-  padding: 0 12px;
+  padding: 0 13px;
   border-radius: 999px;
+  height: 36px;
 }
 .header[data-varian="modern"] .nav > a:hover,
 .header[data-varian="modern"] .dropdown > summary:hover {
   color: #fff;
   background: #ffffff1f;
 }
+/* Pil putih: teks aktif diwarnai token primary oleh style tema global. */
 .header[data-varian="modern"] .nav .active {
-  color: #fff;
-  background: #ffffff2e;
+  background: #ffffff;
+  color: var(--public-primary, #075cf0);
+  font-weight: 900;
+}
+.header[data-varian="modern"] .nav .active:hover {
+  background: #ffffff;
+  color: var(--public-primary, #075cf0);
 }
 .header[data-varian="modern"] .nav .active:after {
   display: none;
 }
-.header[data-varian="modern"] .searchLink {
-  color: #eaf1ff;
+.header[data-varian="modern"] .login {
+  background: var(--public-accent, #f59e0b);
+  color: #10202b;
 }
-.header[data-varian="modern"] .dropdownMenu {
+.header[data-varian="modern"] .login:hover {
+  background: color-mix(in srgb, var(--public-accent, #f59e0b) 84%, white);
+}
+.header[data-varian="modern"] .dropdownMenu,
+.header[data-varian="modern"] .loginMenuPanel {
   border-color: #ffffff2e;
-  background: var(--public-surface, #fff);
+  background: color-mix(in srgb, var(--public-surface, #fff) 96%, black);
+  box-shadow: 0 16px 36px #030d1c66;
 }
 
 .header[data-varian="ringkas"] {
@@ -118,14 +127,12 @@
 .header[data-gelap]:not([data-varian="modern"]) .nav {
   color: #b8c7dd;
 }
-.header[data-gelap]:not([data-varian="modern"]) .searchLink {
-  color: #e8eef8;
-}
 .brand {
   display: flex;
   align-items: center;
-  gap: 9px;
-  min-width: 230px;
+  gap: 11px;
+  min-width: 210px;
+  padding-right: 6px;
   color: var(--public-text, #101a3b);
 }
 .logo {
@@ -150,27 +157,35 @@
   line-height: 1.15;
 }
 .brandText strong {
-  font-size: 11px;
-  font-weight: 800;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.78;
 }
 .brandText b {
-  font-size: 13px;
+  font-size: 15px;
+  line-height: 1.15;
   font-weight: 900;
+  letter-spacing: -0.015em;
 }
 .brandText small {
   margin-top: 3px;
   color: #66748e;
-  font-size: 9px;
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 .nav {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(10px, 1.65vw, 24px);
-  height: 54px;
+  gap: clamp(2px, 0.5vw, 8px);
+  height: 64px;
   color: var(--public-text, #101a3b);
-  font-size: 10px;
-  font-weight: 800;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 .nav > a,
@@ -179,6 +194,8 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  padding: 0 8px;
+  border-radius: 8px;
   position: relative;
   cursor: pointer;
 }
@@ -191,10 +208,11 @@
   position: absolute;
   content: "";
   height: 2px;
+  border-radius: 2px;
   background: var(--public-primary, #075cf0);
-  bottom: 10px;
-  left: 0;
-  right: 0;
+  bottom: 14px;
+  left: 8px;
+  right: 8px;
 }
 .dropdown {
   height: 100%;
@@ -222,35 +240,35 @@
 .dropdownMenu a {
   padding: 9px 10px;
   border-radius: 7px;
-  font-size: 11px;
+  color: var(--public-text, #101a3b);
+  font-size: 12px;
   font-weight: 600;
 }
 .dropdownMenu a:hover {
-  background: #f0f5ff;
+  background: color-mix(in srgb, var(--public-accent, #075cf0) 16%, transparent);
   color: var(--public-primary, #075cf0);
 }
 .headerActions {
   display: flex;
   align-items: center;
-  gap: 14px;
-}
-.searchLink {
-  font-size: 23px;
-  font-weight: 700;
-  line-height: 1;
-  color: var(--public-text, #101a3b);
+  gap: 10px;
 }
 .login {
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 9px 14px;
-  border-radius: var(--public-radius, 9px);
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
   background: var(--public-primary, #075cf0);
   color: #fff;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
+  letter-spacing: 0.01em;
   white-space: nowrap;
+}
+.login:hover {
+  background: color-mix(in srgb, var(--public-primary, #075cf0) 84%, black);
 }
 .loginMenu {
   position: relative;
@@ -280,11 +298,11 @@
   padding: 9px 10px;
   border-radius: 8px;
   color: var(--public-text, #101a3b);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 .loginMenuPanel a:hover {
-  background: #f0f5ff;
+  background: color-mix(in srgb, var(--public-accent, #075cf0) 16%, transparent);
   color: var(--public-primary, #075cf0);
 }
 .footer {
@@ -362,21 +380,42 @@
   color: #b6c5d8;
   font-size: 9px;
 }
+@media (max-width: 1120px) {
+  .nav {
+    gap: 0;
+    font-size: 11px;
+  }
+  .nav > a,
+  .dropdown > summary {
+    padding: 0 7px;
+  }
+}
 @media (max-width: 980px) {
   .headerInner {
     flex-wrap: wrap;
-    padding: 10px 0;
+    padding: 9px 0 0;
+    min-height: 0;
+    row-gap: 6px;
   }
   .nav {
     order: 3;
     width: 100%;
-    height: 38px;
+    height: 44px;
     justify-content: flex-start;
     overflow-x: auto;
-    gap: 20px;
+    gap: 2px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav::-webkit-scrollbar {
+    display: none;
   }
   .nav .active:after {
-    bottom: 0;
+    bottom: 8px;
+  }
+  .header[data-varian="modern"] .nav > a,
+  .header[data-varian="modern"] .dropdown > summary {
+    height: 34px;
   }
   .brand {
     min-width: 0;
@@ -418,15 +457,18 @@
   .headerActions {
     gap: 10px;
   }
-  .searchLink {
-    font-size: 20px;
-  }
   .login {
-    padding: 8px 10px;
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 11px;
   }
   .nav {
-    gap: 18px;
-    font-size: 10px;
+    gap: 0;
+    font-size: 11px;
+  }
+  .nav > a,
+  .dropdown > summary {
+    padding: 0 6px;
   }
   .footerMain {
     grid-template-columns: repeat(2, minmax(0, 1fr));

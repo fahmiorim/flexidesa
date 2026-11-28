@@ -11,19 +11,11 @@ import {
 /**
  * Info tahap verifikasi untuk indikator visual di UI.
  */
-export interface VerificationStepInfo {
-  /** Tahap saat ini yang menunggu verifikasi (null jika selesai/blm diajukan). */
-  currentStep: VerificationStep | null;
-  /** Daftar tahap yang sudah disetujui (berurutan). */
-  completedSteps: VerificationStep[];
-  /** Daftar tahap yang belum dijangkau (pending). */
-  pendingSteps: VerificationStep[];
-}
 
 /**
  * Hasil validasi detail untuk verifikasi.
  */
-export interface ValidationResult {
+interface ValidationResult {
   ok: boolean;
   /** Kode error untuk UI (skip-step, double-approve, own-submission, wrong-role, wrong-sequence, not-pending). */
   errorCode?: string;
@@ -34,7 +26,7 @@ export interface ValidationResult {
 /**
  * Data surat minimal yang dibutuhkan untuk validasi verifikasi.
  */
-export interface SuratVerificationData {
+interface SuratVerificationData {
   id: number;
   status: LetterStatus;
   verifikasiOperator: boolean | null;

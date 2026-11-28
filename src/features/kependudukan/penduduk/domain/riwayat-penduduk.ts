@@ -15,11 +15,11 @@ export type MutationType = ResidentMutationType;
 
 export const MUTATION_TYPE_LABELS = RESIDENT_MUTATION_TYPE_LABELS;
 
-// --- Konstanta paritas OpenSID (donjo-app/config/constants.php) ----------
+// --- Konstanta ----------------------------------------------------------
 
-/** Sebab kematian, paritas `SEBAB` OpenSID. */
+/** Sebab kematian. */
 export const SEBAB_KEMATIAN = ["1", "2", "3", "4", "5", "6"] as const;
-export type SebabKematian = (typeof SEBAB_KEMATIAN)[number];
+type SebabKematian = (typeof SEBAB_KEMATIAN)[number];
 export const SEBAB_KEMATIAN_LABELS: Record<SebabKematian, string> = {
   "1": "Sakit biasa / tua",
   "2": "Wabah Penyakit",
@@ -29,9 +29,9 @@ export const SEBAB_KEMATIAN_LABELS: Record<SebabKematian, string> = {
   "6": "Lainnya",
 };
 
-/** Yang menerangkan kematian, paritas `PENOLONG_MATI` OpenSID. */
+/** Yang menerangkan kematian. */
 export const PENOLONG_KEMATIAN = ["1", "2", "3", "4"] as const;
-export type PenolongKematian = (typeof PENOLONG_KEMATIAN)[number];
+type PenolongKematian = (typeof PENOLONG_KEMATIAN)[number];
 export const PENOLONG_KEMATIAN_LABELS: Record<PenolongKematian, string> = {
   "1": "Dokter",
   "2": "Tenaga Kesehatan",
@@ -39,9 +39,9 @@ export const PENOLONG_KEMATIAN_LABELS: Record<PenolongKematian, string> = {
   "4": "Lainnya",
 };
 
-/** Tujuan pindah, paritas `PindahEnum` OpenSID. */
+/** Tujuan pindah. */
 export const TUJUAN_PINDAH = ["1", "2", "3", "4"] as const;
-export type TujuanPindah = (typeof TUJUAN_PINDAH)[number];
+type TujuanPindah = (typeof TUJUAN_PINDAH)[number];
 export const TUJUAN_PINDAH_LABELS: Record<TujuanPindah, string> = {
   "1": "Pindah keluar Desa/Kelurahan",
   "2": "Pindah keluar Kecamatan",
@@ -66,7 +66,7 @@ export interface MutasiDetailMeta {
 }
 
 /**
- * Pilihan status dasar baru paritas alur `edit_status_dasar` OpenSID:
+ * Pilihan status dasar baru:
  * penduduk tetap tidak dapat menjadi "Pergi", "Tidak Valid" tidak pernah
  * ditawarkan lewat mutasi, dan kepala KK yang anggotanya lebih dari satu
  * tidak dapat langsung dicatat "Mati" (KK harus dipecah dulu).
@@ -200,7 +200,7 @@ export const catatPerubahanSchema = z.object({
 export type CatatPerubahanInput = z.infer<typeof catatPerubahanSchema>;
 
 /**
- * Ubah status dasar penduduk, paritas `update_status_dasar` OpenSID.
+ * Ubah status dasar penduduk.
  * Status baru dibatasi `opsiStatusDasar`; detail kematian/pindah wajib
  * sesuai jenis status yang dipilih.
  */
@@ -306,7 +306,7 @@ export interface ListRiwayatParams {
   q?: string;
   from?: string;
   to?: string;
-  /** Filter paritas `penduduk_log` OpenSID. */
+  /** Filter riwayat penduduk. */
   year?: number | null;
   month?: number | null;
   gender?: "male" | "female" | null;

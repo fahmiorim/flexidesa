@@ -17,7 +17,7 @@ vi.mock("resend", () => ({
 vi.mock("@/lib/env", () => ({
   env: {
     RESEND_API_KEY: "re_test_key",
-    RESEND_FROM: "SID Desa <pengaduan@example.test>",
+    RESEND_FROM: "FlexiDesa <pengaduan@example.test>",
   },
 }));
 
@@ -48,7 +48,7 @@ describe("notifyStatusChange", () => {
 
     expect(result.success).toBe(true);
     expect(result.skipped).toBe(false);
-    expect(payload.from).toBe("SID Desa <pengaduan@example.test>");
+    expect(payload.from).toBe("FlexiDesa <pengaduan@example.test>");
     expect(payload.html).toContain("<strong>Dari:</strong> Baru");
     expect(payload.html).toContain("<strong>Menjadi:</strong> Diproses");
   });

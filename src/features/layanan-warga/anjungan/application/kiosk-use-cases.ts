@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import "server-only";
 
 import { cariPendudukHidupByNikData } from "@/features/kependudukan/penduduk/application/use-cases";
@@ -17,7 +19,7 @@ import {
 } from "../domain/kiosk-guest";
 
 /** Bidang perangkat kiosk yang dipakai alur guest. */
-export type PerangkatKiosk = {
+type PerangkatKiosk = {
   nama: string;
   keyboard: number | null;
   orientasiLayar: number | null;

@@ -17,4 +17,3 @@ export const bukuTamu = mysqlTable("buku_tamu", {
 });
 
 export type BukuTamu = typeof bukuTamu.$inferSelect;
-export type NewBukuTamu = typeof bukuTamu.$inferInsert;

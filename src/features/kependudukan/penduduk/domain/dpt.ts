@@ -51,7 +51,7 @@ export const listDptParamsSchema = z.object({
 export type ListDptParams = z.infer<typeof listDptParamsSchema>;
 
 /** Filter DPT tanpa pagination (dipakai rekapitulasi & ekspor). */
-export const dptFilterSchema = listDptParamsSchema.omit({ page: true, perPage: true });
+const dptFilterSchema = listDptParamsSchema.omit({ page: true, perPage: true });
 
 export type DptFilter = z.infer<typeof dptFilterSchema>;
 
@@ -113,19 +113,12 @@ export interface ListDptResult {
  * Tipe terpisah membuat kebocoran NIK menjadi kesalahan tipe, bukan sekadar
  * kelalaian tampilan.
  */
-export type DptPublikRow = Pick<
+type DptPublikRow = Pick<
   DptRow,
   "id" | "name" | "gender" | "umurPemilihan" | "dusun" | "rw" | "rt"
 >;
 
 /** Hasil paginasi DPT publik. */
-export interface ListDptPublikResult {
-  rows: DptPublikRow[];
-  total: number;
-  page: number;
-  perPage: number;
-  pageCount: number;
-}
 
 /** Susun baris DPT publik: buang seluruh kolom pribadi sebelum dikirim ke UI. */
 export function keDptPublik(row: DptRow): DptPublikRow {
@@ -208,7 +201,7 @@ export function buildDptCsv(input: {
 // --- Rekapitulasi DPT ------------------------------------------------------
 
 /** Satu baris rekapitulasi pemilih (per wilayah). */
-export interface DptRekapRow {
+interface DptRekapRow {
   label: string;
   total: number;
   male: number;

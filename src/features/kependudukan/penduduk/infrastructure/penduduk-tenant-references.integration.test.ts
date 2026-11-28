@@ -46,7 +46,7 @@ import { validasiDatabaseUji } from "@/testing/db-test-guard";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-003 — foreign reference penduduk harus terikat tenant.
+ * Foreign reference penduduk harus terikat tenant.
  *
  * Dua desa sintetis (A dan B) dipakai untuk membuktikan penolakan referensi
  * lintas desa pada create/update. Desa C menyimpan relasi legacy lintas desa
@@ -70,7 +70,7 @@ vi.mock("@/features/info-desa/desa/application/resolve-village", () => ({
   resolveVillageId: vi.fn(async (user: { villageId: number }) => user.villageId),
 }));
 
-// AUD-003 tidak menguji audit; hindari baris audit dengan actor fixture sintetis.
+// Hindari baris audit dengan actor fixture sintetis.
 vi.mock("@/features/pengaturan/audit/application/audit-use-cases", () => ({
   recordAuditEvent: vi.fn(async () => undefined),
 }));
@@ -201,7 +201,7 @@ function dataUji(): Fixture {
 /**
  * Sisipkan satu baris legacy lintas desa.
  *
- * AUD-002 memasang composite FK yang menolak relasi seperti ini pada jalur
+ * Composite FK menolak relasi seperti ini pada jalur
  * normal. Fixture di bawah sengaja mereproduksi data yang dibuat **sebelum**
  * constraint terpasang, karena migration tidak melakukan backfill dan data
  * legacy tersebut tetap harus aman saat dibaca. Pengecualian FK hanya berlaku
@@ -341,7 +341,7 @@ afterAll(async () => {
   if (fixture === null) return;
   const desaIds = [fixture.desaA, fixture.desaB, fixture.desaC];
 
-  // AUD-002 membuat FK composite bersifat RESTRICT. Hapus anak lebih dahulu
+  // FK composite bersifat RESTRICT. Hapus anak lebih dahulu
   // agar cleanup tidak bergantung pada urutan cascade antar-tenant.
   await db.delete(residents).where(inArray(residents.villageId, desaIds));
   await db.delete(families).where(inArray(families.villageId, desaIds));
@@ -349,7 +349,7 @@ afterAll(async () => {
   await db.delete(villages).where(inArray(villages.id, desaIds));
 });
 
-describe("AUD-003 create penduduk: foreign reference tenant", () => {
+describe("Create penduduk: foreign reference tenant", () => {
   it("menolak familyId milik desa lain tanpa menyimpan penduduk", async () => {
     const { desaA, keluargaB } = dataUji();
     sesi.villageId = desaA;
@@ -390,7 +390,7 @@ describe("AUD-003 create penduduk: foreign reference tenant", () => {
   });
 });
 
-describe("AUD-003 jalur create kelahiran dan kedatangan", () => {
+describe("Jalur create kelahiran dan kedatangan", () => {
   it("menolak familyId desa lain pada catatKelahiran", async () => {
     const { desaA, keluargaB } = dataUji();
     sesi.villageId = desaA;
@@ -443,7 +443,7 @@ describe("AUD-003 jalur create kelahiran dan kedatangan", () => {
   });
 });
 
-describe("AUD-003 update penduduk: foreign reference dan target tenant", () => {
+describe("Update penduduk: foreign reference dan target tenant", () => {
   it("menolak familyId lintas desa dan tidak mengubah data lama", async () => {
     const { desaA, keluargaB, pendudukA } = dataUji();
     sesi.villageId = desaA;
@@ -508,7 +508,7 @@ describe("AUD-003 update penduduk: foreign reference dan target tenant", () => {
   });
 });
 
-describe("AUD-003 join keluarga/wilayah tidak membaca tenant lain", () => {
+describe("Join keluarga/wilayah tidak membaca tenant lain", () => {
   it("daftar penduduk tidak menampilkan nomor KK atau label wilayah desa lain", async () => {
     const { desaC, pendudukC, pendudukLegacyC } = dataUji();
     const hasil = await listPenduduk({
@@ -569,7 +569,7 @@ describe("AUD-003 join keluarga/wilayah tidak membaca tenant lain", () => {
   });
 });
 
-describe("AUD-003 katalog kependudukan", () => {
+describe("Katalog kependudukan", () => {
   it("katalog referensi formulir bersifat global tanpa villageId", () => {
     for (const katalog of [
       religions,

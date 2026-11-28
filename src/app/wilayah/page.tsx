@@ -7,16 +7,18 @@ import {
   daftarDokumenPublik,
   profilDesaPublik,
 } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { daftarWilayahPublik } from "@/features/info-desa/wilayah/application/wilayah-publik";
 import { getPetaPublik } from "@/features/pertanahan-gis/gis/application/use-cases";
 import { proyeksikanKelompokRings } from "@/features/pertanahan-gis/gis/domain/peta-cetak";
+import { mediaUrl } from "@/lib/media-url";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import { UnduhDokumenWilayah } from "./bagian-dokumen";
 import { KondisiGeografis, TabelDusun } from "./bagian-dusun";
 import { BatasWilayah, InformasiWilayah } from "./bagian-info";
 import { PetaWilayah } from "./bagian-peta";
-import { buildAreaShapes, mediaUrl } from "./bagian-wilayah";
+import { buildAreaShapes } from "./bagian-wilayah";
 import styles from "./wilayah.module.css";
 
 export const metadata: Metadata = {
@@ -27,6 +29,7 @@ export const dynamic = "force-dynamic";
 
 export default async function WilayahPage() {
   const desa = await getIdentitasFromRequest();
+  const tema = await muatTemaPublik(desa.id);
   const [rows, mapData, statistik, profil, dokumenWilayah] = await Promise.all([
     daftarWilayahPublik(desa.id),
     getPetaPublik(),
@@ -79,7 +82,7 @@ export default async function WilayahPage() {
   ].filter((row): row is [string, string] => Boolean(row[1]));
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/wilayah" />
       <section className={styles.hero}>
         <div className={styles.heroInner}>

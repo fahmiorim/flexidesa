@@ -20,7 +20,7 @@ export const KATEGORI_PENGADUAN = [
   { value: "lainnya", label: "Lainnya" },
 ] as const;
 
-export type KategoriPengaduan = (typeof KATEGORI_PENGADUAN)[number]["value"];
+type KategoriPengaduan = (typeof KATEGORI_PENGADUAN)[number]["value"];
 
 const KATEGORI_VALUES = KATEGORI_PENGADUAN.map((item) => item.value) as [
   KategoriPengaduan,
@@ -64,12 +64,12 @@ export function labelStatus(value: string | null | undefined): string {
 }
 
 export const JUDUL_MAX = 200;
-export const ISI_MAX = 4000;
-export const NAMA_MAX = 100;
-export const ALAMAT_MAX = 255;
-export const TELEPON_MAX = 30;
-export const EMAIL_MAX = 100;
-export const TANGGAPAN_MAX = 4000;
+const ISI_MAX = 4000;
+const NAMA_MAX = 100;
+const ALAMAT_MAX = 255;
+const TELEPON_MAX = 30;
+const EMAIL_MAX = 100;
+const TANGGAPAN_MAX = 4000;
 
 const POLA_EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const POLA_TELEPON = /^[0-9+\-\s()]{6,30}$/;
@@ -221,7 +221,7 @@ export function samarkanNama(nama: string): string {
 }
 
 /** Ringkasan jumlah pengaduan per status untuk kartu statistik admin. */
-export interface StatistikPengaduan {
+interface StatistikPengaduan {
   total: number;
   baru: number;
   diproses: number;

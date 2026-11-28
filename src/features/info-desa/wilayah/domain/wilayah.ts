@@ -24,7 +24,7 @@ export const LABEL_TIPE_PETA: Record<TipePeta, string> = {
 };
 
 /**
- * Nilai `map_tipe` lama (mis. `HYBRID` OpenSID) atau tidak dikenal jatuh ke
+ * Nilai `map_tipe` lama (mis. `HYBRID`) atau tidak dikenal jatuh ke
  * peta default supaya data lama tetap dapat dibuka.
  */
 export function normalisasiTipePeta(nilai: string | null | undefined): TipePeta {

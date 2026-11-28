@@ -115,9 +115,3 @@ export const villagePlanSubscriptions = mysqlTable(
   ],
 );
 
-export type SubscriptionPlan = typeof subscriptionPlans.$inferSelect;
-export type NewSubscriptionPlan = typeof subscriptionPlans.$inferInsert;
-export type SubscriptionPlanVersion = typeof subscriptionPlanVersions.$inferSelect;
-export type NewSubscriptionPlanVersion = typeof subscriptionPlanVersions.$inferInsert;
-export type SubscriptionPlanFeature = typeof subscriptionPlanFeatures.$inferSelect;
-export type VillagePlanSubscription = typeof villagePlanSubscriptions.$inferSelect;

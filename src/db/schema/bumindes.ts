@@ -56,5 +56,3 @@ export const bumindesItem = mysqlTable(
   ],
 );
 
-export type BumindesBuku = typeof bumindesBuku.$inferSelect;
-export type BumindesItem = typeof bumindesItem.$inferSelect;

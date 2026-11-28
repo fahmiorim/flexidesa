@@ -73,7 +73,7 @@ export function isHeadOfFamily(
   return penduduk.familyId !== null && penduduk.familyRelationId === HEAD_OF_FAMILY_RELATION_ID;
 }
 
-// --- Data tambahan paritas OpenSID ----------------------------------------
+// --- Data tambahan --------------------------------------------------------
 
 /** Status kepemilikan identitas elektronik (`ktp_el`). */
 export const KTP_ELS = ["belum", "ktpEl", "kia"] as const;
@@ -109,7 +109,7 @@ export const STATUS_REKAM_LABELS: Readonly<Record<StatusRekam, string>> = {
 
 /** Tempat dilahirkan (`tempat_dilahirkan`). */
 export const BIRTH_PLACE_TYPES = ["hospital", "puskesmas", "polindes", "home", "other"] as const;
-export type BirthPlaceType = (typeof BIRTH_PLACE_TYPES)[number];
+type BirthPlaceType = (typeof BIRTH_PLACE_TYPES)[number];
 export const BIRTH_PLACE_TYPE_LABELS: Readonly<Record<BirthPlaceType, string>> = {
   hospital: "RS/RB",
   puskesmas: "Puskesmas",
@@ -120,7 +120,7 @@ export const BIRTH_PLACE_TYPE_LABELS: Readonly<Record<BirthPlaceType, string>> =
 
 /** Jenis kelahiran (`jenis_kelahiran`). */
 export const BIRTH_TYPES = ["single", "twin2", "twin3", "twin4"] as const;
-export type BirthType = (typeof BIRTH_TYPES)[number];
+type BirthType = (typeof BIRTH_TYPES)[number];
 export const BIRTH_TYPE_LABELS: Readonly<Record<BirthType, string>> = {
   single: "Tunggal",
   twin2: "Kembar 2",
@@ -130,7 +130,7 @@ export const BIRTH_TYPE_LABELS: Readonly<Record<BirthType, string>> = {
 
 /** Penolong kelahiran (`penolong_kelahiran`). */
 export const BIRTH_ASSISTANTS = ["doctor", "midwifeNurse", "traditional", "other"] as const;
-export type BirthAssistant = (typeof BIRTH_ASSISTANTS)[number];
+type BirthAssistant = (typeof BIRTH_ASSISTANTS)[number];
 export const BIRTH_ASSISTANT_LABELS: Readonly<Record<BirthAssistant, string>> = {
   doctor: "Dokter",
   midwifeNurse: "Bidan/Perawat",
@@ -140,7 +140,7 @@ export const BIRTH_ASSISTANT_LABELS: Readonly<Record<BirthAssistant, string>> = 
 
 /** Cara menghubungi warga (`hubung_warga`). */
 export const CONTACT_METHODS = ["sms", "email", "telegram"] as const;
-export type ContactMethod = (typeof CONTACT_METHODS)[number];
+type ContactMethod = (typeof CONTACT_METHODS)[number];
 export const CONTACT_METHOD_LABELS: Readonly<Record<ContactMethod, string>> = {
   sms: "SMS",
   email: "Email",
@@ -266,7 +266,7 @@ export const LITERACIES = [
   "arabRegional",
   "arabLatinRegional",
 ] as const;
-export type Literacy = (typeof LITERACIES)[number];
+type Literacy = (typeof LITERACIES)[number];
 export const LITERACY_LABELS: Readonly<Record<Literacy, string>> = {
   latin: "Latin",
   regional: "Daerah",
@@ -331,7 +331,7 @@ function optionalCoordinate(limit: number, pesan: string) {
   );
 }
 
-/** Teks paritas SID opsional; nilai kosong disimpan sebagai null. */
+/** Teks opsional; nilai kosong disimpan sebagai null. */
 function optionalParitasText(max: number) {
   return z.preprocess(
     (value) => (value === null || value === undefined ? "" : value),
@@ -504,7 +504,7 @@ export interface PendudukListRow extends PendudukDTO {
   /** Nomor Kartu Keluarga yang ditautkan (hasil join), untuk ditampilkan. */
   familyNumber: string | null;
   regionLabel: string | null;
-  /** Waktu data tercatat; dipakai kolom "Tgl Terdaftar" seperti OpenSID. */
+  /** Waktu data tercatat; dipakai kolom "Tgl Terdaftar". */
   createdAt: Date;
 }
 
@@ -512,7 +512,7 @@ export interface PendudukListRow extends PendudukDTO {
 export type ReferenceOption = IdOption;
 
 /** Pilihan wilayah dengan label siap tampil. */
-export type RegionOption = LabelOption;
+type RegionOption = LabelOption;
 
 /** Seluruh data referensi yang dibutuhkan formulir penduduk. */
 export interface PendudukReferenceData {
@@ -544,7 +544,7 @@ export interface PendudukFilter {
   search: string;
   lifeStatus: LifeStatus | null;
   gender: Gender | null;
-  /** Status penduduk (tetap/pendatang); di OpenSID bernama `status_penduduk`. */
+  /** Status penduduk (tetap/pendatang); bernama `status_penduduk`. */
   residenceStatus: ResidenceStatus | null;
   religionId: number | null;
   educationId: number | null;

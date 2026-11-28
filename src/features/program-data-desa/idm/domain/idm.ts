@@ -1,21 +1,6 @@
-import { z } from "zod";
 
 import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 
-export const idmFormSchema = z.object({
-  tahun: z.coerce.number().int().positive("Tahun harus lebih dari 0."),
-  kode: z.string().trim().min(1, "Kode wajib diisi.").max(20),
-  nama: z.string().trim().min(1, "Nama indikator wajib diisi.").max(200),
-  skor: z.coerce
-    .number()
-    .min(0, "Skor minimal 0.")
-    .max(100, "Skor maksimal 100.")
-    .nullable()
-    .optional(),
-  kategori: z.string().trim().max(50).nullable().optional(),
-  keterangan: z.string().trim().max(1000).nullable().optional(),
-  id: z.coerce.number().int().positive().optional(),
-});
 
 export interface IdmIndikatorDTO {
   id: number;
@@ -44,7 +29,7 @@ export const IDM_DIMENSI = [
   { id: "ikl", kode: "IKL", label: "Indeks Ketahanan Lingkungan", prefix: "III" },
 ] as const;
 
-export type IdmDimensiId = (typeof IDM_DIMENSI)[number]["id"];
+type IdmDimensiId = (typeof IDM_DIMENSI)[number]["id"];
 
 /**
  * Tentukan dimensi dari kode indikator.
@@ -107,7 +92,7 @@ export function normalisasiSkor(skor: number | null | undefined): number | null 
   return Number((dibatasi / 100).toFixed(4));
 }
 
-export const IDM_STATUS = [
+const IDM_STATUS = [
   "Sangat Tertinggal",
   "Tertinggal",
   "Berkembang",
@@ -115,7 +100,7 @@ export const IDM_STATUS = [
   "Mandiri",
 ] as const;
 
-export type IdmStatus = (typeof IDM_STATUS)[number];
+type IdmStatus = (typeof IDM_STATUS)[number];
 
 /**
  * Klasifikasi status IDM dari skor 0–1.
@@ -132,7 +117,7 @@ export function statusIdm(skor: number): IdmStatus {
   return "Mandiri";
 }
 
-export interface RekapDimensi {
+interface RekapDimensi {
   id: IdmDimensiId;
   kode: string;
   label: string;
@@ -222,20 +207,6 @@ export const SDGS_GOALS = [
   { nomor: 18, nama: "Kelembagaan Desa Dinamis dan Budaya Desa Adaptif" },
 ] as const;
 
-export const sdgsFormSchema = z.object({
-  tahun: z.coerce.number().int().positive(),
-  goal: z.coerce
-    .number()
-    .int()
-    .min(1, "Tujuan SDGs minimal 1.")
-    .max(18, "Tujuan SDGs maksimal 18."),
-  skor: z.coerce
-    .number()
-    .int("Skor harus bilangan bulat.")
-    .min(0, "Skor minimal 0.")
-    .max(100, "Skor maksimal 100."),
-  keterangan: z.string().trim().max(2000).nullable().optional(),
-});
 
 export interface SdgsDTO {
   id: number;
@@ -246,7 +217,7 @@ export interface SdgsDTO {
   keterangan: string | null;
 }
 
-export interface RekapSdgs {
+interface RekapSdgs {
   skor: number | null;
   predikat: string | null;
   jumlahTerisi: number;
@@ -292,7 +263,7 @@ export function formatSkor(skor: number | null): string {
   return dibulatkan.toFixed(3).replace(".", ",");
 }
 
-/** Format skor rujukan API (mis. skor minimal IDM) dengan presisi empat desimal. */
+/** Format skor API (mis. skor minimal IDM) dengan presisi empat desimal. */
 export function formatSkorRujukan(skor: number | null): string {
   if (skor === null) return "—";
   return skor.toFixed(4).replace(".", ",");

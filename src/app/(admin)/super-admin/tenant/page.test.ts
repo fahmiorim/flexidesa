@@ -152,11 +152,11 @@ describe("SuperAdminTenantPage", () => {
     expect(html).toContain("Total pengguna desa");
     expect(html).toContain("Total penduduk");
     expect(html).toContain("Domain terdaftar");
-    expect(html).toContain("tenant-table tenant-table-list");
-    expect(html).toContain("tenant-search-dengan-ikon");
+    expect(html).toContain("ui-table");
+    expect(html).toContain("ui-toolbar-search");
     expect(html).toContain("Semua tenant");
-    expect(html).toContain("Tambah tenant");
-    expect(html).toContain("Daftarkan desa baru");
+    expect(html).toContain("Tambah Tenant");
+    expect(html).toContain("/super-admin/tenant/tambah");
     expect(html).toContain("Kelola Desa Sukamaju");
   });
 
@@ -190,7 +190,8 @@ describe("SuperAdminTenantPage", () => {
     const html = renderToStaticMarkup(await Page({ searchParams: Promise.resolve({}) }));
 
     expect(html).toContain("Menampilkan 1–10 dari 11 desa");
-    expect(html).toContain("Halaman 1 dari 2");
+    expect(html).toContain("ui-pagination");
+    expect(html).toContain('aria-label="Halaman 1"');
     expect(html).toContain("Desa Ke-10");
     expect(html).not.toContain("Desa Ke-11");
   });

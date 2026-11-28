@@ -50,7 +50,7 @@ interface Props {
  * Form tambah dan ubah penduduk.
  *
  * Satu komponen dipakai untuk kedua mode agar aturan field tidak bercabang.
- * Susunan bagian mengikuti kelompok data biodata OpenSID; validasi tetap
+ * Susunan bagian mengikuti kelompok data biodata; validasi tetap
  * dijalankan ulang di Server Action, atribut HTML hanya membantu pengguna.
  * Field tiap kelompok berada di berkas bagian tersendiri agar form mudah
  * ditelusuri tanpa memecah satu kelompok field.

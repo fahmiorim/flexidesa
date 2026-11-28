@@ -25,7 +25,7 @@ export interface AnggotaLaporanRow {
 }
 
 /** Anggota satu kelompok yang sudah dikelompokkan untuk tampilan cetak. */
-export interface KelompokLaporan {
+interface KelompokLaporan {
   kelompokId: number;
   kelompokNama: string;
   kelompokTipe: string;

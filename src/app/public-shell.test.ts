@@ -82,7 +82,7 @@ describe("PublicShell", () => {
 
   it("menerapkan warna dasar tema dan menyembunyikan pintasan masuk dari opsi tenant", async () => {
     vi.mocked(muatTemaPublik).mockResolvedValue({
-      slug: "natra",
+      slug: "cakrawala",
       versi: "1.0.0",
       templateOptions: { warna_dasar: "#abcdef", pintasan_masuk: "0" },
       primary: "#e64946",
@@ -99,7 +99,7 @@ describe("PublicShell", () => {
       radius: "15px",
       style: "terang",
       layout: "klasik",
-      templateName: "Natra",
+      templateName: "Cakrawala",
     });
 
     const markup = renderToStaticMarkup(

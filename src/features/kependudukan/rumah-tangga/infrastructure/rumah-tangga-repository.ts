@@ -78,7 +78,7 @@ function buildWhere(villageId: number, filter: RtmFilter): SQL {
       like(rumahTangga.number, term),
       like(rumahTangga.address, term),
       like(rumahTangga.bdt, term),
-      // Nama/NIK kepala rumah tangga juga dicari, seperti daftar RTM OpenSID.
+      // Nama/NIK kepala rumah tangga juga dicari.
       sql`exists (
         select 1 from ${residents}
         where ${residents.villageId} = ${villageId}
@@ -101,7 +101,7 @@ function buildWhere(villageId: number, filter: RtmFilter): SQL {
     filters.push(sql`(${rumahTangga.bdt} is null or ${rumahTangga.bdt} = '')`);
   }
 
-  // Status RTM dihitung dari kondisi kepala rumah tangga (paritas OpenSID).
+  // Status RTM dihitung dari kondisi kepala rumah tangga.
   const kepalaFilter = (kondisi: SQL) =>
     sql`exists (
       select 1 from ${residents}
@@ -241,7 +241,7 @@ export async function hasDtksRtm(villageId: number, rtmId: number): Promise<bool
 }
 
 /**
- * Aktifkan/nonaktifkan pendaftaran DTKS sebuah RTM (paritas OpenSID).
+ * Aktifkan/nonaktifkan pendaftaran DTKS sebuah RTM.
  *
  * Mengaktifkan membuat formulir DTKS draf baru untuk RTM bila belum ada;
  * menonaktifkan menghapus formulir beserta anggota DTKS-nya (cascade).
@@ -260,7 +260,7 @@ export async function setDtksRtm(villageId: number, rtmId: number, aktif: boolea
 }
 
 /**
- * Lepaskan banyak anggota dari RTM-nya sekaligus (paritas OpenSID).
+ * Lepaskan banyak anggota dari RTM-nya sekaligus.
  *
  * Hanya penduduk desa aktif yang terdaftar di RTM yang dilepas; mengembalikan
  * jumlah baris yang benar-benar dilepas.
@@ -434,7 +434,7 @@ export interface HasilRtmKolektif {
  * seluruh anggota hidup ke RTM tersebut.
  *
  * KK dilewati bila kepala keluarga tidak ada, sudah meninggal/pindah, atau
- * sudah terdaftar di RTM lain — sama seperti perilaku OpenSID. Seluruh proses
+ * sudah terdaftar di RTM lain. Seluruh proses
  * berjalan dalam satu transaksi agar tidak ada RTM setengah jadi.
  */
 export async function tambahRtmKolektif(
@@ -692,13 +692,13 @@ export async function listNomorRtm(villageId: number): Promise<Set<string>> {
 }
 
 /** Hasil impor RTM: jumlah RTM baru dan jumlah penduduk yang ditautkan. */
-export interface HasilImporRtm {
+interface HasilImporRtm {
   dibuatRtm: number;
   dihubungkan: number;
 }
 
 /**
- * Impor pengelompokan RTM (paritas OpenSID).
+ * Impor pengelompokan RTM.
  *
  * Setiap nomor RTM pada berkas menjadi satu RTM: dibuat baru bila belum ada,
  * dipakai ulang bila sudah ada. Penduduk ditautkan menurut tingkatnya;

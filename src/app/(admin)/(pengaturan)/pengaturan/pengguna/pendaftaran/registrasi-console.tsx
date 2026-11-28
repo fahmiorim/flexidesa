@@ -50,8 +50,8 @@ export function RegistrasiWargaConsole({ rows }: { rows: Row[] }) {
 
   return (
     <div className="platform-card" style={{ padding: 24 }}>
-      <TableScroll className="tenant-table-scroll">
-        <Table className="tenant-table">
+      <TableScroll frame>
+        <Table>
           <THead>
             <Row>
               <HeaderCell>Waktu</HeaderCell>

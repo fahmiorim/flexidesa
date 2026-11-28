@@ -39,4 +39,3 @@ export const apiKeys = mysqlTable(
 );
 
 export type ApiKey = typeof apiKeys.$inferSelect;
-export type NewApiKey = typeof apiKeys.$inferInsert;

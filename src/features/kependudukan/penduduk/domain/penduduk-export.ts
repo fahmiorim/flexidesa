@@ -1,10 +1,9 @@
 /**
- * Ekspor data penduduk dengan cakupan kolom yang sama seperti OpenSID
- * (`Import::DAFTAR_KOLOM`).
+ * Ekspor data penduduk dengan cakupan 44 kolom.
  *
- * Header memakai nama kolom OpenSID apa adanya agar berkas dapat diimpor balik
- * ke OpenSID maupun ke FlexiDesa. Nilai katalog dan enum ditulis sebagai label
- * yang diterima kedua sistem; kolom dusun/RW/RT dipisah agar paritas terjaga.
+ * Header memakai nama kolom ekspor apa adanya agar berkas dapat diimpor
+ * balik. Nilai katalog dan enum ditulis sebagai label; kolom dusun/RW/RT
+ * dipisah.
  */
 
 import {
@@ -35,7 +34,7 @@ export interface PendudukEksporRow extends PendudukDTO {
   rt: string | null;
 }
 
-/** Urutan dan nama header ekspor, sama dengan `Import::DAFTAR_KOLOM` OpenSID. */
+/** Urutan dan nama header ekspor. */
 export const KOLOM_EKSPOR_PENDUDUK = [
   "alamat",
   "dusun",

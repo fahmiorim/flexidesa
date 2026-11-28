@@ -8,11 +8,11 @@ import {
   LABEL_STATUS_SSL,
   type DataSsl,
 } from "@/features/multi-desa/domain/status-ssl";
+import { mediaUrl } from "@/lib/media-url";
 
 import {
   Badge,
   DnsRecords,
-  mediaUrl,
   RiwayatTable,
   tanggalAtau,
   tanggalWaktuAtau,
@@ -20,7 +20,7 @@ import {
 } from "./detail-domain-bagian";
 import { PlatformCard } from "./platform-ui";
 
-export function StatusDomainCard({ data }: { data: DetailDomainPlatform }) {
+function StatusDomainCard({ data }: { data: DetailDomainPlatform }) {
   const domainUtama = data.aliases.find((item) => item.isPrimary)?.domain ?? data.domain.domain;
   const jenis = data.domain.isPrimary ? "Domain utama" : "Alias";
   const pemeriksaan = [data.dns.checkedAt, data.ssl.checkedAt]

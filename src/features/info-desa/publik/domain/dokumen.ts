@@ -7,7 +7,7 @@ export const DOKUMEN_KATEGORI = [
 ] as const;
 export type DokumenKategori = (typeof DOKUMEN_KATEGORI)[number];
 
-export const DOKUMEN_KATEGORI_LABELS: Readonly<Record<DokumenKategori, string>> = {
+const DOKUMEN_KATEGORI_LABELS: Readonly<Record<DokumenKategori, string>> = {
   informasi_publik: "Informasi publik",
   produk_hukum: "Produk hukum & peraturan",
   wilayah: "Wilayah",
@@ -80,7 +80,7 @@ export const DOKUMEN_JENIS = [
   "keputusan_kepala_desa",
 ] as const;
 
-export type DokumenJenis = (typeof DOKUMEN_JENIS)[number];
+type DokumenJenis = (typeof DOKUMEN_JENIS)[number];
 
 export const DOKUMEN_JENIS_LABELS: Readonly<Record<DokumenJenis, string>> = {
   peraturan_desa: "Peraturan Desa",
@@ -95,12 +95,12 @@ export function dokumenJenisLabel(jenis: string | null | undefined): string {
   return DOKUMEN_JENIS_LABELS[jenis as DokumenJenis] ?? jenis;
 }
 
-export interface BarisArsipDokumen {
+interface BarisArsipDokumen {
   tahun: number | null;
   jenis: string | null;
 }
 
-export interface JenisArsipDokumen {
+interface JenisArsipDokumen {
   jenis: string | null;
   label: string;
   jumlah: number;
@@ -149,7 +149,7 @@ export function susunArsipDokumen(rows: readonly BarisArsipDokumen[]): KelompokA
     });
 }
 
-export const DOKUMEN_PAGE_SIZE = 20;
+const DOKUMEN_PAGE_SIZE = 20;
 export const DOKUMEN_API_MAX_PAGE_SIZE = 100;
 
 export function susunPaginasiDokumen(

@@ -10,7 +10,7 @@ import styles from "./statistik-kependudukan.module.css";
 /**
  * Dialog penandatanganan sebelum cetak/PDF.
  *
- * Mengikuti alur OpenSID: operator memilih pejabat dan mengisi nomor laporan
+ * Operator memilih pejabat dan mengisi nomor laporan
  * sebelum dokumen dihasilkan. Halaman cetak dibuka di tab baru agar halaman
  * admin tetap terbuka.
  */

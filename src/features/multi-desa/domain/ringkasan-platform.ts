@@ -15,14 +15,14 @@ export interface DistribusiPlatformItem {
   readonly persentase: number;
 }
 
-export interface DistribusiKecamatan {
+interface DistribusiKecamatan {
   readonly items: readonly DistribusiPlatformItem[];
   readonly total: number;
   /** Tenant yang kecamatannya kosong atau belum diisi. */
   readonly tanpaKecamatan: number;
 }
 
-export interface DistribusiTema {
+interface DistribusiTema {
   readonly items: readonly DistribusiPlatformItem[];
   readonly total: number;
   /** Tenant dengan tema aktif. */
@@ -33,12 +33,12 @@ export interface DistribusiTema {
   readonly temaUnik: number;
 }
 
-export interface BarisTemaPlatform {
+interface BarisTemaPlatform {
   readonly tema: string | null;
   readonly temaNama: string | null;
 }
 
-export interface BarisKecamatanPlatform {
+interface BarisKecamatanPlatform {
   readonly district: string | null;
 }
 

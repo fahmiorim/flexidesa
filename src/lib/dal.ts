@@ -6,7 +6,7 @@ import { redirect, forbidden as renderForbidden } from "next/navigation";
 import { cache } from "react";
 
 import { db } from "@/db";
-import { accounts, sessions, users, villages } from "@/db/schema";
+import { accounts, roles, sessions, users, villages } from "@/db/schema";
 import { villageSecuritySettings } from "@/db/schema/village-security";
 import {
   computeEffectivePermissions,
@@ -33,10 +33,21 @@ export interface CurrentUser {
   passwordExpired: boolean;
   mustEnrollTwoFactor: boolean;
   permissions: EffectivePermissions;
+  /**
+   * Identitas asli pemilik sesi. Selama impersonasi, `id` tetap pemilik sesi
+   * (super admin) agar audit mencatat pelaku sebenarnya; field lain di bawah
+   * memuat identitas efektif administrator desa target.
+   */
+  realActorId: string;
+  /** True bila sesi ini sedang mengimpersonasi administrator desa. */
+  impersonating: boolean;
+  /** Akun administrator desa target impersonasi; `null` bila tidak impersonasi. */
+  impersonationTargetUserId: string | null;
+  impersonationExpiresAt: Date | null;
 }
 
 /** Pengguna yang sudah dipastikan memiliki akun warga. */
-export interface WargaUser extends CurrentUser {
+interface WargaUser extends CurrentUser {
   residentId: number;
 }
 
@@ -131,10 +142,36 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   // Super admin (villageId null) tetap bisa masuk untuk mengelola desa.
   if (account.villageId !== null && account.villageActive !== true) return null;
 
+  const impersonasi = await muatKonteksImpersonasi(session.session.id, account.villageId);
+  if (impersonasi) {
+    return {
+      id: user.id,
+      realActorId: user.id,
+      name: impersonasi.name,
+      username: impersonasi.username,
+      email: impersonasi.email,
+      image: impersonasi.image,
+      villageId: impersonasi.villageId,
+      roleId: impersonasi.roleId,
+      residentId: null,
+      mustChangePin: impersonasi.mustChangePin,
+      passwordExpired: false,
+      mustEnrollTwoFactor: false,
+      permissions: await computeEffectivePermissions(
+        impersonasi.roleId ?? 0,
+        impersonasi.villageId,
+      ),
+      impersonating: true,
+      impersonationTargetUserId: impersonasi.userId,
+      impersonationExpiresAt: impersonasi.expiresAt,
+    };
+  }
+
   const permissions = await computeEffectivePermissions(account.roleId ?? 0, account.villageId);
 
   return {
     id: user.id,
+    realActorId: user.id,
     name: user.name,
     username: (user.username as string | null) ?? null,
     email: user.email,
@@ -146,6 +183,155 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     passwordExpired,
     mustEnrollTwoFactor,
     permissions,
+    impersonating: false,
+    impersonationTargetUserId: null,
+    impersonationExpiresAt: null,
+  };
+});
+
+/** Baris konteks impersonasi pada sesi, dibaca langsung dari tabel sesi. */
+async function barisImpersonasi(sessionId: string) {
+  const [row] = await db
+    .select({
+      impersonatedVillageId: sessions.impersonatedVillageId,
+      impersonatedUserId: sessions.impersonatedUserId,
+      impersonatedExpiresAt: sessions.impersonatedExpiresAt,
+    })
+    .from(sessions)
+    .where(eq(sessions.id, sessionId))
+    .limit(1);
+  return row ?? null;
+}
+
+interface TargetImpersonasi {
+  userId: string;
+  name: string;
+  username: string | null;
+  email: string;
+  image: string | null;
+  villageId: number;
+  roleId: number | null;
+  mustChangePin: boolean;
+  expiresAt: Date;
+}
+
+/**
+ * Muat konteks impersonasi yang masih berlaku, atau `null`.
+ *
+ * Hanya akun platform (`villageId === null`) yang boleh mengimpersonasi, dan
+ * target wajib administrator desa aktif. Konteks kedaluwarsa atau target yang
+ * tak lagi valid diperlakukan sebagai tidak ada — sesi super admin tidak
+ * ikut terpengaruh.
+ */
+async function muatKonteksImpersonasi(
+  sessionId: string,
+  villageIdPemilik: number | null,
+): Promise<TargetImpersonasi | null> {
+  if (villageIdPemilik !== null) return null;
+
+  const baris = await barisImpersonasi(sessionId);
+  if (!baris?.impersonatedVillageId || !baris.impersonatedUserId || !baris.impersonatedExpiresAt) {
+    return null;
+  }
+  if (baris.impersonatedExpiresAt <= new Date()) return null;
+
+  const [target] = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      username: users.username,
+      email: users.email,
+      image: users.image,
+      villageId: users.villageId,
+      roleId: users.roleId,
+      mustChangePin: users.mustChangePin,
+      active: users.active,
+      residentId: users.residentId,
+      villageActive: villages.active,
+      roleSlug: roles.slug,
+    })
+    .from(users)
+    .leftJoin(villages, eq(users.villageId, villages.id))
+    .leftJoin(roles, eq(users.roleId, roles.id))
+    .where(eq(users.id, baris.impersonatedUserId))
+    .limit(1);
+
+  if (
+    !target ||
+    target.villageId !== baris.impersonatedVillageId ||
+    target.active !== true ||
+    target.residentId !== null ||
+    target.roleSlug !== "administrator" ||
+    target.villageActive !== true
+  ) {
+    return null;
+  }
+
+  return {
+    userId: target.id,
+    name: target.name,
+    username: target.username ?? null,
+    email: target.email,
+    image: target.image ?? null,
+    villageId: baris.impersonatedVillageId,
+    roleId: target.roleId,
+    mustChangePin: target.mustChangePin,
+    expiresAt: baris.impersonatedExpiresAt,
+  };
+}
+
+/** Keadaan impersonasi sesi saat ini, untuk banner dan use case keluar. */
+export interface KeadaanImpersonasi {
+  sessionId: string;
+  ownerId: string;
+  ownerVillageId: number | null;
+  ownerRoleId: number | null;
+  impersonating: boolean;
+  impersonatedVillageId: number | null;
+  impersonatedUserId: string | null;
+  impersonatedExpiresAt: Date | null;
+}
+
+/** Sesi aktif, pemilik sesi, dan konteks impersonasi mentah (tanpa validasi target). */
+export const getImpersonationState = cache(async (): Promise<KeadaanImpersonasi | null> => {
+  const session = await getSession();
+  if (!session) return null;
+
+  const [row] = await db
+    .select({
+      sessionId: sessions.id,
+      ownerId: sessions.userId,
+      impersonatedVillageId: sessions.impersonatedVillageId,
+      impersonatedUserId: sessions.impersonatedUserId,
+      impersonatedExpiresAt: sessions.impersonatedExpiresAt,
+    })
+    .from(sessions)
+    .where(eq(sessions.id, session.session.id))
+    .limit(1);
+  if (!row) return null;
+
+  const [owner] = await db
+    .select({ villageId: users.villageId, roleId: users.roleId })
+    .from(users)
+    .where(eq(users.id, row.ownerId))
+    .limit(1);
+  if (!owner) return null;
+
+  const berlaku =
+    row.impersonatedVillageId !== null &&
+    row.impersonatedUserId !== null &&
+    row.impersonatedExpiresAt !== null &&
+    row.impersonatedExpiresAt > new Date();
+
+  return {
+    sessionId: row.sessionId,
+    ownerId: row.ownerId,
+    ownerVillageId: owner.villageId,
+    ownerRoleId: owner.roleId,
+    impersonating: berlaku,
+    impersonatedVillageId: berlaku ? row.impersonatedVillageId : null,
+    impersonatedUserId: berlaku ? row.impersonatedUserId : null,
+    impersonatedExpiresAt: berlaku ? row.impersonatedExpiresAt : null,
   };
 });
 

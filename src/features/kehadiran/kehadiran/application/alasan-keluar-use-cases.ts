@@ -41,8 +41,8 @@ export async function getAlasanKeluarData(): Promise<AlasanKeluarRow[]> {
 /**
  * Tambah satu alasan keluar.
  *
- * OpenSID mencatat pembuat/pengubah pada `created_by`/`updated_by`; keduanya
- * diisi dari pengguna yang sedang masuk.
+ * Pembuat/pengubah dicatat pada `created_by`/`updated_by` dari pengguna
+ * yang sedang masuk.
  */
 export async function tambahAlasanKeluar(input: unknown): Promise<{ id: number }> {
   const user = await requirePermission(ALASAN_KELUAR_RESOURCE, "create");
@@ -89,7 +89,7 @@ export async function hapusAlasanKeluar(id: number): Promise<{ id: number }> {
   return { id };
 }
 
-/** Hapus beberapa alasan keluar sekaligus (aksi massal OpenSID). */
+/** Hapus beberapa alasan keluar sekaligus. */
 export async function hapusAlasanKeluarBanyak(ids: readonly number[]): Promise<{ jumlah: number }> {
   const user = await requirePermission(ALASAN_KELUAR_RESOURCE, "delete");
   const villageId = await resolveVillageId(user);

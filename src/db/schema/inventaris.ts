@@ -172,12 +172,7 @@ export const inventarisMutasi = mysqlTable(
   ],
 );
 
-export type InventarisKategori = typeof inventarisKategori.$inferSelect;
-export type NewInventarisKategori = typeof inventarisKategori.$inferInsert;
 export type Inventaris = typeof inventaris.$inferSelect;
-export type NewInventaris = typeof inventaris.$inferInsert;
-export type InventarisMutasi = typeof inventarisMutasi.$inferSelect;
-export type NewInventarisMutasi = typeof inventarisMutasi.$inferInsert;
 
 export const INVENTARIS_PEMELIHARAAN_STATUS = [
   "terjadwal",
@@ -185,7 +180,6 @@ export const INVENTARIS_PEMELIHARAAN_STATUS = [
   "selesai",
   "dibatalkan",
 ] as const;
-export type InventarisPemeliharaanStatus = (typeof INVENTARIS_PEMELIHARAAN_STATUS)[number];
 
 export const inventarisPemeliharaan = mysqlTable(
   "inventaris_pemeliharaan",
@@ -223,7 +217,6 @@ export const inventarisPemeliharaan = mysqlTable(
     }).onDelete("cascade"),
   ],
 );
-export type InventarisPemeliharaan = typeof inventarisPemeliharaan.$inferSelect;
 
 export const inventarisDokumen = mysqlTable(
   "inventaris_dokumen",
@@ -276,7 +269,6 @@ export const inventarisPenanggungJawabRiwayat = mysqlTable(
     }).onDelete("cascade"),
   ],
 );
-export type InventarisPenanggungJawabRiwayat = typeof inventarisPenanggungJawabRiwayat.$inferSelect;
 
 export const INVENTARIS_PEMELIHARAAN_AKSI = ["dibuat", "diperbarui", "dihapus"] as const;
 export const inventarisPemeliharaanRiwayat = mysqlTable(

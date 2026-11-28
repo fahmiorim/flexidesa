@@ -7,7 +7,7 @@ import {
 } from "@/features/administrasi-desa/bumindes/domain/buku-resmi";
 
 /** Pejabat penandatangan pada blok tanda tangan dokumen cetak. */
-export interface PejabatCetak {
+interface PejabatCetak {
   nama: string;
   gelarDepan?: string | null;
   gelarBelakang?: string | null;
@@ -16,7 +16,7 @@ export interface PejabatCetak {
 }
 
 /** Identitas desa minimum untuk kop sekaligus blok tanda tangan. */
-export type DesaCetak = KopDesa & {
+type DesaCetak = KopDesa & {
   namaKepalaDesa: string | null;
   nipKepalaDesa: string | null;
 };

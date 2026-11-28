@@ -218,7 +218,7 @@ export async function ubahStatusPermohonanData(
 }
 
 /**
- * Hapus permohonan yang sudah dibatalkan, seperti tombol hapus OpenSID.
+ * Hapus permohonan yang sudah dibatalkan.
  *
  * Berkas syarat yang tersimpan di media privat ikut dibersihkan agar tidak
  * menjadi sampah penyimpanan. Permohonan aktif tidak boleh dihapus supaya

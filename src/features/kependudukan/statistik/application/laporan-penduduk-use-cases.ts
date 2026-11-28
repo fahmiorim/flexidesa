@@ -34,13 +34,13 @@ import { conflict, notFound, validationError } from "@/lib/errors";
 export const LAPORAN_PENDUDUK_RESOURCE = RESOURCES.laporanPenduduk;
 
 /** Data berkas yang sudah dibaca dari `FormData`. */
-export interface BerkasLaporanPendudukInput {
+interface BerkasLaporanPendudukInput {
   nama: string;
   tipe: string;
   isi: Uint8Array;
 }
 
-export interface LaporanPendudukData {
+interface LaporanPendudukData {
   tahun: number;
   tahunTersedia: number[];
   rows: LaporanPendudukRow[];
@@ -72,8 +72,8 @@ export async function getLaporanPendudukData(tahunParam?: number): Promise<Lapor
 /**
  * Simpan arsip: unggah baru, atau ubah metadata/berkas yang sudah ada.
  *
- * Mengikuti OpenSID: berkas boleh dikosongkan saat mengubah dokumen (berkas
- * lama dipertahankan), tetapi wajib ada saat menambah.
+ * Berkas boleh dikosongkan saat mengubah dokumen (berkas lama
+ * dipertahankan), tetapi wajib ada saat menambah.
  */
 export async function saveLaporanPenduduk(input: {
   metadata: unknown;

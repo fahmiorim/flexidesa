@@ -7,7 +7,9 @@ import {
   daftarAlbumGaleri,
   daftarFotoAlbum,
 } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { daftarPotensiDesa } from "@/features/program-data-desa/potensi-sarana/application/kontrak";
+import { mediaUrl } from "@/lib/media-url";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./potensi.module.css";
@@ -28,14 +30,6 @@ const categories = [
   { id: "wisata", label: "Wisata Desa", icon: "▧", color: "purple" },
 ] as const;
 
-function mediaUrl(value: string | null, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
-}
 function locationLabel(desa: {
   namaKecamatan: string | null;
   namaKabupaten: string | null;
@@ -49,6 +43,7 @@ function categoryName(id: string) {
 
 export default async function PotensiPage({ searchParams }: Props) {
   const [desa, params] = await Promise.all([getIdentitasFromRequest(), searchParams]);
+  const tema = await muatTemaPublik(desa.id);
   const [potensi, albums] = await Promise.all([
     daftarPotensiDesa(desa.id),
     daftarAlbumGaleri(desa.id),
@@ -75,7 +70,7 @@ export default async function PotensiPage({ searchParams }: Props) {
   const heroImages = potensi.filter((item) => item.gambar).slice(0, 3);
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/profil" />
       <section className={styles.hero}>
         <div className={styles.heroInner}>

@@ -69,4 +69,3 @@ export const pengajuanLayanan = mysqlTable(
     }).onDelete("set null"),
   ],
 );
-export type PengajuanLayanan = typeof pengajuanLayanan.$inferSelect;

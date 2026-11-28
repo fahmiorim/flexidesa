@@ -77,7 +77,7 @@ export async function deleteHariLibur(id: number, villageId: number): Promise<vo
     .where(and(eq(kehadiranHariLibur.id, id), eq(kehadiranHariLibur.villageId, villageId)));
 }
 
-/** Hapus beberapa hari libur sekaligus (aksi massal OpenSID). */
+/** Hapus beberapa hari libur sekaligus. */
 export async function deleteHariLiburBanyak(
   villageId: number,
   ids: readonly number[],

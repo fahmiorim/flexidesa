@@ -149,7 +149,7 @@ function v6Publik(nilai: bigint): boolean {
   return true;
 }
 
-export interface KlasifikasiAlamat {
+interface KlasifikasiAlamat {
   /** `true` bila masukan berbentuk alamat IP (v4/v6). */
   adalahIp: boolean;
   /** `true` bila alamat boleh dihubungi (unicast publik). */

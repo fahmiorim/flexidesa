@@ -25,22 +25,11 @@ import {
 import { PilihSemuaTerdata } from "@/features/kependudukan/penduduk/presentation/pilih-semua-terdata";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { verifySession } from "@/lib/dal";
+import { formatTanggal } from "@/lib/format-tanggal";
 
 import styles from "../suplemen.module.css";
 
 export const metadata: Metadata = { title: "Rincian Data Suplemen" };
-
-const tanggal = new Intl.DateTimeFormat("id-ID", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-});
-
-function formatTanggal(nilai: string | null): string {
-  if (!nilai) return "—";
-  const hasil = new Date(`${nilai.slice(0, 10)}T00:00:00`);
-  return Number.isNaN(hasil.getTime()) ? "—" : tanggal.format(hasil);
-}
 
 function queryFilter(params: Record<string, string | string[] | undefined>): string {
   const isi = new URLSearchParams();

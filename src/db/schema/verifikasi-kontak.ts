@@ -35,4 +35,3 @@ export const verifikasiKontak = mysqlTable(
   ],
 );
 
-export type VerifikasiKontak = typeof verifikasiKontak.$inferSelect;

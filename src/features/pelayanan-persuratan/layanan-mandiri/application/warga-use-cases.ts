@@ -2,7 +2,6 @@ import "server-only";
 
 import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
 import { bacaMedia } from "@/features/media/infrastructure/media-storage";
-import { type AjukanSuratInput } from "@/features/pelayanan-persuratan/layanan-mandiri/application/ajukan-surat";
 import { type DokumenWargaDTO } from "@/features/pelayanan-persuratan/layanan-mandiri/domain/dokumen-warga";
 import {
   parseBerkasSyarat,
@@ -38,7 +37,6 @@ export async function listPermohonanWargaData() {
   return listPermohonanWarga(villageId, user.residentId);
 }
 
-export type AjukanSuratWargaInput = AjukanSuratInput;
 
 /**
  * Ajukan surat atas nama warga yang sedang login.

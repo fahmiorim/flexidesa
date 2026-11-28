@@ -30,5 +30,3 @@ export const pengunjungLog = mysqlTable(
   ],
 );
 
-export type PengunjungLog = typeof pengunjungLog.$inferSelect;
-export type NewPengunjungLog = typeof pengunjungLog.$inferInsert;

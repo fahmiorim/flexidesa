@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import "server-only";
 
 import { requireUser, type CurrentUser } from "@/lib/dal";
@@ -12,7 +14,7 @@ import { listUrutanMenu, simpanUrutanMenu } from "../infrastructure/urutan-menu-
 import type { MenuNode } from "./build-menu";
 import { getMenuForUser } from "./get-menu";
 
-export interface PreferensiSidebar {
+interface PreferensiSidebar {
   /** Menu tingkat atas yang sudah diurutkan sesuai preferensi pengguna. */
   menu: MenuNode[];
   /** Seluruh menu tingkat atas yang boleh dipilih. */

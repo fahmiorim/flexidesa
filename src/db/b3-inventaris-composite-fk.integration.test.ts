@@ -7,7 +7,7 @@ import { inventaris, inventarisKategori, inventarisMutasi, villages } from "@/db
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-034 Batch 3 — composite tenant FK untuk `inventaris_mutasi.inventaris_id`.
+ * Composite tenant FK untuk `inventaris_mutasi.inventaris_id`.
  *
  * Test ini memakai `db.insert`/`db.update` langsung, sehingga kegagalan akan
  * muncul bila composite FK dihapus dari schema meskipun seluruh jalur aplikasi

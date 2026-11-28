@@ -246,7 +246,7 @@ export function IdentitasDesaClient() {
 
   async function upload(field: MediaField, file?: File, ukuran?: string) {
     if (!file) return;
-    // Dimensi logo (paritas OpenSID): kosong = bawaan; 100–400 = persegi.
+    // Dimensi logo: kosong = bawaan; 100–400 = persegi.
     let ukuranLogo: number | null = null;
     if (field === "logo" && ukuran !== undefined && ukuran.trim() !== "") {
       const cek = validasiUkuranLogo(ukuran);

@@ -25,8 +25,8 @@ export const PERTANAHAN_RESOURCE = RESOURCES.pertanahan;
 // --- Polygon ----------------------------------------------------------------
 
 /** Tipe polygon: 0 = root/layer utama, 1 = sub-polygon detail. */
-export const POLYGON_TIPE = [0, 1] as const;
-export type PolygonTipe = (typeof POLYGON_TIPE)[number];
+const POLYGON_TIPE = [0, 1] as const;
+type PolygonTipe = (typeof POLYGON_TIPE)[number];
 
 export const POLYGON_TIPE_LABELS: Readonly<Record<PolygonTipe, string>> = {
   0: "Root / Layer Utama",
@@ -267,14 +267,6 @@ export interface CdesaDTO {
   sortOrder: number;
 }
 
-export interface CdesaRincianDTO {
-  id: number;
-  cdesaId: number;
-  nama: string | null;
-  alamat: string | null;
-  dllb: string | null;
-  sortOrder: number;
-}
 
 export interface CdesaMutasiDTO {
   id: number;

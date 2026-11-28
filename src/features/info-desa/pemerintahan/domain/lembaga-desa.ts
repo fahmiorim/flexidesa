@@ -1,18 +1,18 @@
 import { validationError } from "@/lib/errors";
 
-export type MasterLembagaInput = {
+type MasterLembagaInput = {
   nama: string;
   deskripsi?: string | null;
 };
 
-export type ProfilLembagaInput = {
+type ProfilLembagaInput = {
   nama: string;
   kode?: string | null;
   deskripsi?: string | null;
   noSkPendirian?: string | null;
 };
 
-export type AnggotaLembagaInput = {
+type AnggotaLembagaInput = {
   residentId?: number | null;
   nomorAnggota?: string | null;
   nomorSkJabatan?: string | null;
@@ -27,7 +27,7 @@ export type AnggotaLembagaInput = {
 export function validasiMasterLembaga(input: MasterLembagaInput): void {
   if (!input.nama.trim()) throw validationError("Nama kategori wajib diisi.");
   if (input.nama.trim().length > 50) throw validationError("Nama kategori maksimal 50 karakter.");
-  // OpenSID membatasi deskripsi kategori 400 karakter.
+  // Deskripsi kategori dibatasi 400 karakter.
   if ((input.deskripsi?.length ?? 0) > 400)
     throw validationError("Deskripsi kategori maksimal 400 karakter.");
 }

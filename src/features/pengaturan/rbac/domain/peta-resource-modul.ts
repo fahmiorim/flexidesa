@@ -1,3 +1,6 @@
+/**
+ * Guard aktif: menjaga setiap slug TENANT_TEMPLATE punya entri resource RBAC. Jangan hapus.
+ */
 import { RESOURCES, type Resource } from "./resources";
 
 /**
@@ -12,7 +15,7 @@ import { RESOURCES, type Resource } from "./resources";
  *   memakai string literal di pemeriksaan backend: tambahkan kunci baru lebih
  *   dahulu agar nilai yang diperiksa dan grant tenant selalu sinkron.
  */
-export interface PemetaanResourceModul {
+interface PemetaanResourceModul {
   resource: Resource | null;
   catatan?: string;
 }

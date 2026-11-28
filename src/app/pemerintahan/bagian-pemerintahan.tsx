@@ -2,23 +2,12 @@ import Image from "next/image";
 
 import type { daftarLembagaPublik } from "@/features/info-desa/pemerintahan/application/publik";
 import type { daftarPerangkatPublik } from "@/features/info-desa/publik/application/konten-publik";
+import { mediaUrl } from "@/lib/media-url";
 
 import styles from "./pemerintahan.module.css";
 
 export type PerangkatPemerintahan = Awaited<ReturnType<typeof daftarPerangkatPublik>>[number];
 export type LembagaPemerintahan = Awaited<ReturnType<typeof daftarLembagaPublik>>[number];
-
-export function mediaUrl(value: string | null | undefined, villageId: number): string | null {
-  if (!value) return null;
-  const segments = value.split(/[\\/]/).filter(Boolean);
-  if (
-    !segments.length ||
-    segments.some((part) => part === "." || part === ".." || part.includes(".."))
-  )
-    return null;
-  const path = segments[0] === String(villageId) ? segments : [String(villageId), ...segments];
-  return `/api/publik/media/${path.map(encodeURIComponent).join("/")}`;
-}
 
 export function namaLengkap(item: {
   gelarDepan: string | null;

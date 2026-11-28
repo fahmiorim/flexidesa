@@ -2,6 +2,8 @@
 
 import { useActionState } from "react";
 
+import { Button } from "@/components/ui/button";
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
@@ -13,7 +15,7 @@ import { createIdleActionState, type ActionState } from "@/lib/action-state";
  * supaya lapisan presentation tidak bergantung pada folder route.
  */
 
-export interface PenggunaPlatformRowTampil {
+interface PenggunaPlatformRowTampil {
   id: string;
   name: string;
   email: string;
@@ -26,7 +28,7 @@ export interface PenggunaPlatformRowTampil {
   sesiAktif: number;
 }
 
-export interface HasilResetSandi {
+interface HasilResetSandi {
   username: string | null;
   email: string;
   sandiSementara: string;
@@ -92,15 +94,15 @@ function BarisPengguna({
     <tr>
       <td>
         <strong>{pengguna.name}</strong>
-        <span className="tenant-secondary">{pengguna.email}</span>
+        <SecondaryText>{pengguna.email}</SecondaryText>
       </td>
       <td>
-        {pengguna.username ?? <span className="tenant-secondary">—</span>}
-        {diriSendiri ? <span className="tenant-secondary">Akun Anda</span> : null}
+        {pengguna.username ?? <SecondaryText>—</SecondaryText>}
+        {diriSendiri ? <SecondaryText>Akun Anda</SecondaryText> : null}
       </td>
       <td>
-        {pengguna.roleName ?? <span className="tenant-secondary">Tanpa role</span>}
-        {pengguna.roleSlug ? <span className="tenant-secondary">{pengguna.roleSlug}</span> : null}
+        {pengguna.roleName ?? <SecondaryText>Tanpa role</SecondaryText>}
+        {pengguna.roleSlug ? <SecondaryText>{pengguna.roleSlug}</SecondaryText> : null}
       </td>
       <td>
         <span className={pengguna.active ? "tenant-status is-active" : "tenant-status is-inactive"}>
@@ -113,16 +115,15 @@ function BarisPengguna({
         {pengguna.lastLoginAt ? (
           tanggal.format(new Date(pengguna.lastLoginAt))
         ) : (
-          <span className="tenant-secondary">Belum pernah</span>
+          <SecondaryText>Belum pernah</SecondaryText>
         )}
       </td>
       <td>
-        <div className="platform-row-actions">
+        <div className="ui-toolbar-actions">
           <form action={statusAction}>
             <input name="id" type="hidden" value={pengguna.id} />
             <input name="active" type="hidden" value={pengguna.active ? "false" : "true"} />
-            <button
-              className="button button-secondary platform-action-button"
+            <Button
               disabled={statusPending || (diriSendiri && pengguna.active)}
               title={
                 diriSendiri && pengguna.active
@@ -130,29 +131,26 @@ function BarisPengguna({
                   : undefined
               }
               type="submit"
+              variant="secondary"
             >
               {pengguna.active ? "Nonaktifkan" : "Aktifkan"}
-            </button>
+            </Button>
           </form>
           <form action={resetAction}>
             <input name="id" type="hidden" value={pengguna.id} />
-            <button
-              className="button button-secondary platform-action-button"
-              disabled={resetPending}
-              type="submit"
-            >
+            <Button disabled={resetPending} type="submit" variant="secondary">
               {resetPending ? "Mereset..." : "Reset sandi"}
-            </button>
+            </Button>
           </form>
           <form action={cabutAction}>
             <input name="id" type="hidden" value={pengguna.id} />
-            <button
-              className="button button-secondary platform-action-button"
+            <Button
               disabled={cabutPending || pengguna.sesiAktif === 0}
               type="submit"
+              variant="secondary"
             >
               {cabutPending ? "Mencabut..." : "Cabut sesi"}
-            </button>
+            </Button>
           </form>
         </div>
 
@@ -182,8 +180,8 @@ export function PenggunaPlatformConsole({
 }) {
   return (
     <>
-      <TableScroll className="tenant-table-scroll">
-        <Table className="tenant-table">
+      <TableScroll frame>
+        <Table>
           <THead>
             <Row>
               <HeaderCell scope="col">Nama</HeaderCell>

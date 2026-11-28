@@ -57,8 +57,8 @@ const VILLAGE_ID = 7;
 function temaAktif(templateOptions: Record<string, unknown>) {
   return {
     id: 1,
-    slug: "natra",
-    nama: "Natra",
+    slug: "cakrawala",
+    nama: "Cakrawala",
     versi: "1.0.0",
     opsi: JSON.stringify({ templateOptions }),
   };

@@ -3,18 +3,18 @@ import { z } from "zod";
 import { optionalDigits } from "@/lib/forms";
 
 /** Jenis pertanyaan yang didukung builder survei. */
-export const TIPE_SOAL = ["text", "number", "choice"] as const;
-export type TipeSoal = (typeof TIPE_SOAL)[number];
+const TIPE_SOAL = ["text", "number", "choice"] as const;
+type TipeSoal = (typeof TIPE_SOAL)[number];
 
 export const JUDUL_MAX = 200;
-export const DESKRIPSI_MAX = 2000;
-export const PERTANYAAN_MAX = 500;
-export const PILIHAN_MIN = 2;
-export const PILIHAN_MAX = 10;
-export const NAMA_RESPONDEN_MAX = 150;
-export const SASARAN_MAX = 200;
-export const BOBOT_MIN = 1;
-export const BOBOT_MAX = 100;
+const DESKRIPSI_MAX = 2000;
+const PERTANYAAN_MAX = 500;
+const PILIHAN_MIN = 2;
+const PILIHAN_MAX = 10;
+const NAMA_RESPONDEN_MAX = 150;
+const SASARAN_MAX = 200;
+const BOBOT_MIN = 1;
+const BOBOT_MAX = 100;
 
 /** Tipe dari DB bisa berupa teks bebas; nilai tak dikenal jatuh ke `text`. */
 export function normalizeTipeSoal(value: string | null | undefined): TipeSoal {
@@ -83,29 +83,8 @@ export function parseSkorPilihanSoal(raw: string | null | undefined): Record<str
  * Baca isian skor (satu baris `Pilihan=skor`) berdasarkan daftar pilihan soal.
  * Baris untuk pilihan yang tidak ada diabaikan; kosong berarti tanpa skor.
  */
-export function parseSkorPilihanForm(
-  raw: string,
-  pilihan: readonly string[],
-): Record<string, number> {
-  const hasil: Record<string, number> = {};
-
-  for (const baris of raw.split(/\r?\n/)) {
-    const [label, nilai] = baris.split("=");
-    const nama = label?.trim() ?? "";
-    if (!nama || !pilihan.includes(nama)) continue;
-
-    const angka = Number(nilai?.trim());
-    if (!Number.isFinite(angka)) continue;
-    hasil[nama] = Math.min(5, Math.max(0, angka));
-  }
-
-  return hasil;
-}
 
 /** Serialisasi peta skor pilihan untuk kolom `survey_soal.skor_pilihan`. */
-export function serializeSkorPilihan(peta: Readonly<Record<string, number>>): string | null {
-  return Object.keys(peta).length === 0 ? null : JSON.stringify(peta);
-}
 
 /** Isian teks skor untuk formulir, satu baris per pilihan. */
 
@@ -140,7 +119,6 @@ export const surveyFormSchema = z
     path: ["selesai"],
   });
 
-export type SurveyInput = z.infer<typeof surveyFormSchema>;
 
 /** Formulir pertanyaan; pilihan wajib 2–10 untuk tipe `choice`. */
 export const soalFormSchema = z
@@ -181,7 +159,6 @@ export const soalFormSchema = z
     }
   });
 
-export type SoalInput = z.infer<typeof soalFormSchema>;
 
 /** Formulir responden; NIK opsional tetapi harus 16 angka bila diisi. */
 export const respondenFormSchema = z.object({
@@ -190,7 +167,6 @@ export const respondenFormSchema = z.object({
   nik: optionalDigits(16),
 });
 
-export type RespondenInput = z.infer<typeof respondenFormSchema>;
 
 /** Baris survei untuk daftar admin. */
 export interface SurveyRow {
@@ -269,7 +245,7 @@ export function validasiJawaban(
   return errors;
 }
 
-export interface RekapDistribusi {
+interface RekapDistribusi {
   label: string;
   jumlah: number;
   /** Persentase terhadap responden yang menjawab soal ini (0–100). */
@@ -277,7 +253,7 @@ export interface RekapDistribusi {
 }
 
 /** Ringkasan satu soal untuk halaman rekap. */
-export interface RekapSoal {
+interface RekapSoal {
   soalId: number;
   pertanyaan: string;
   tipe: TipeSoal;
@@ -290,7 +266,7 @@ export interface RekapSoal {
 }
 
 /** Batas contoh jawaban teks yang ditampilkan di rekap. */
-export const REKAP_TEKS_MAKS = 20;
+const REKAP_TEKS_MAKS = 20;
 
 /**
  * Hitung rekap satu soal dari jawaban mentah.

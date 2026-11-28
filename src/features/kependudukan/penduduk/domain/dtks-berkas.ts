@@ -13,7 +13,7 @@ import { DTKS_STATUS_LABELS, type DtksStatus } from "./dtks";
 // --- Impor -----------------------------------------------------------------
 
 /** Kunci kolom impor DTKS. */
-export type KunciImporDtks = "noRtm" | "namaResponden" | "namaPetugas" | "tanggalPencacahan";
+type KunciImporDtks = "noRtm" | "namaResponden" | "namaPetugas" | "tanggalPencacahan";
 
 /**
  * Kolom yang dibaca dari berkas impor.
@@ -44,7 +44,7 @@ export interface BarisImporDtks {
  * Pencocokan nomor RTM dan penyaringan baris ganda dikerjakan di domain agar
  * aturannya dapat diuji tanpa basis data; use case hanya menulis formulirnya.
  */
-export interface RencanaImporDtks {
+interface RencanaImporDtks {
   siap: Array<{
     noRtm: string;
     rtmId: number;
@@ -161,7 +161,7 @@ export function dtksFilename(namaDesa: string | null): string {
 // --- Rekapitulasi -----------------------------------------------------------
 
 /** Satu baris rekapitulasi DTKS. */
-export interface DtksRekapRow {
+interface DtksRekapRow {
   label: string;
   jumlah: number;
   anggota: number;

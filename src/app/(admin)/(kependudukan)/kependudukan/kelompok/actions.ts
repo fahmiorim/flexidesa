@@ -109,7 +109,7 @@ export async function simpanAnggotaKelompokAction(
   return successState("Anggota kelompok berhasil disimpan.", { id: 1 });
 }
 
-/** Tambah banyak anggota dari checkbox kandidat (paritas aksi/2 OpenSID). */ export async function simpanAnggotaKelompokBanyakAction(
+/** Tambah banyak anggota dari checkbox kandidat. */ export async function simpanAnggotaKelompokBanyakAction(
   kelompokId: number,
   _state: ActionState<{ id: number }>,
   formData: FormData,
@@ -165,7 +165,7 @@ export async function lepasAnggotaKelompokAction(
   redirect(`/kependudukan/kelompok/${kelompokId}`);
 }
 
-/** Lepaskan banyak anggota yang dicentang (paritas `delete_all` OpenSID). */
+/** Lepaskan banyak anggota yang dicentang. */
 export async function lepasAnggotaKelompokMassalAction(
   kelompokId: number,
   formData: FormData,

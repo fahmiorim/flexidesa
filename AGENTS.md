@@ -18,11 +18,11 @@ Direktori ini hanya sumber pembanding. Perubahan yang diminta untuk Appdes diter
 
 Implementasi acuan berada di:
 
-- UI: `src/features/pengaturan/presentation/pengaturan-desa-client.tsx` dan `src/features/pengaturan/presentation/identitas-desa-view.tsx`
+- UI: `src/features/pengaturan/pengaturan/presentation/pengaturan-desa-client.tsx` dan `src/features/info-desa/identitas-desa/presentation/identitas-desa-view.tsx`
 - API: `src/app/api/identitas-desa/route.ts` dan `src/app/api/identitas-desa/media/route.ts`
-- Use case/domain: `src/features/identitas-desa/application/identitas-desa-use-cases.ts` dan `src/features/identitas-desa/domain/identitas-desa.ts`
-- Repository: `src/features/identitas-desa/infrastructure/identitas-desa-repository.ts`
-- Sinkronisasi perangkat/jabatan: `src/features/pemerintahan/application/use-cases.ts`
+- Use case/domain: `src/features/info-desa/identitas-desa/application/identitas-desa-use-cases.ts` dan `src/features/info-desa/identitas-desa/domain/identitas-desa.ts`
+- Repository: `src/features/info-desa/identitas-desa/infrastructure/identitas-desa-repository.ts`
+- Sinkronisasi perangkat/jabatan: `src/features/info-desa/pemerintahan/application/perangkat.ts` dan `jabatan.ts`
 
 Karakteristik yang relevan sebagai pola:
 
@@ -59,6 +59,22 @@ Saat implementasi:
 - Untuk upload/hapus file, validasi tipe dan ukuran di server, ikat path ke tenant, dan tangani pembersihan referensi/berkas lama dengan aman.
 - Jika kontrak atau skema database berubah, perbarui schema Drizzle dan migrasi yang diperlukan; jangan mengubah migrasi lama sebagai jalan pintas. Jangan menjalankan migrasi terhadap data produksi tanpa permintaan eksplisit.
 - Hindari perubahan di luar menu dan perilaku yang diminta.
+
+## Konvensi kode (hasil audit clean code)
+
+- **Impor lintas fitur wajib alias `@/`** (`@/features/...`, `@/lib/...`, `@/db/...`). Impor relatif hanya untuk sefolder (mis. `./actions`, `../domain/nama`) dan CSS module. Aturan ini dikunci test `src/features/info-desa/publik/application/lapisan-publik.test.ts` (tidak ada impor relatif yang menembus `features/` atau `db`).
+- **Helper lintas halaman wajib di `src/lib/`**, jangan didefinisikan ulang per halaman: `mediaUrl` (`media-url.ts`), `formatTanggal`/`formatNumber` (`format-tanggal.ts`), `plainText` (`plain-text.ts`), `escapeHtml`/`sanitasiHtml` (`sanitize.ts`), `slugify` (`utils.ts`).
+- **Varian `formatTanggal` domain dengan semantik khusus** (kembalikan input/`""`/`null`, zona UTC eksplisit, preset format surat) tetap di modul domain-nya — jangan disatukan ke helper halaman tanpa memeriksa semantiknya.
+- **`noUnusedLocals` aktif** di `tsconfig.json`: variabel, impor, dan tipe lokal tak terpakai adalah error typecheck. `noUnusedParameters` tetap mati (override fungsi framework seperti `GET(req, ctx)`).
+
+## Bentuk fitur yang sah (hasil audit clean code)
+
+Tidak semua fitur wajib punya keempat lapisan. Pola berikut disengaja; jangan dipaksa diseragamkan:
+
+- **Domain-only** — `info-desa/konten`, `kependudukan/pemilihan`, `layanan-warga/umpan-balik`, `pengaturan/modul`: kontrak/tipe/aturan bersama tanpa akses penyimpanan sendiri.
+- **Tanpa domain (fitur tipis)** — `info-desa/status-desa`, `kehadiran/kepegawaian`, `program-data-desa/potensi-sarana`: use case langsung memakai repository; aturan validasi ada di schema/form. `potensi-sarana` memakai pola baca `application/kontrak.ts` + tulis `application/use-cases.ts` agar repository tetap satu.
+- **Selalu ber-application** — fitur dengan `infrastructure` wajib punya `application/` sebagai pintu pemakaian (`administrasi-desa/arsip`, `layanan-warga/buku-tamu`, `layanan-warga/pesan-warga`). Repository tidak dipanggil langsung dari route.
+- **Pemisahan tanggung jawab tetap**: route → HTTP/izin/tenant; application → alur + validasi; infrastructure → Drizzle. Saat membuat halaman admin baru untuk fitur yang belum punya UI, panggil use case `application` (bukan repository) dan tentukan tenant dari sesi.
 
 ## Verifikasi
 

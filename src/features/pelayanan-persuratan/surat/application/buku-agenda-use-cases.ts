@@ -29,7 +29,7 @@ import { hasPermission } from "@/features/pengaturan/rbac/application/authorizat
 import { requirePermission } from "@/lib/dal";
 import { notFound, validationError } from "@/lib/errors";
 
-export interface BukuAgendaRow {
+interface BukuAgendaRow {
   id: number;
   agendaNumber: number;
   letterNumber: string;

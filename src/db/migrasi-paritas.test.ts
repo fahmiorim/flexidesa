@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import * as skema from "./schema";
 
 /**
- * Penjaga paritas skema vs migrasi.
+ * Penjaga kesesuaian skema vs migrasi.
  *
  * Skema Drizzle (`src/db/schema`) adalah sumber kebenaran bentuk tabel, tetapi
  * database baru hanya terbentuk dari berkas migrasi. Tanpa test ini, tabel yang
@@ -183,7 +183,7 @@ function berkasMigrasi(): string[] {
     .map((berkas) => berkas.replace(/\.sql$/, ""));
 }
 
-describe("paritas skema vs migrasi", () => {
+describe("kesesuaian skema vs migrasi", () => {
   it("mempertahankan satu baseline dan mencatat paket sebagai migrasi lanjutan", () => {
     const files = fs.readdirSync(MIGRATIONS_DIR).filter((file) => file.endsWith(".sql"));
     const journal = JSON.parse(fs.readFileSync(MIGRATIONS_DIR + "meta/_journal.json", "utf8")) as {

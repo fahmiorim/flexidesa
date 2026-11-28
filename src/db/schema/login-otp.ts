@@ -22,4 +22,3 @@ export const loginOtp = mysqlTable("login_otp", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export type LoginOtp = typeof loginOtp.$inferSelect;

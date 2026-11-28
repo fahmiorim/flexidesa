@@ -48,7 +48,7 @@ export default async function PersetujuanIzinPage({
 
   const bolehPutuskan = hasPermission(user.permissions, PERSETUJUAN_IZIN_RESOURCE, "update");
 
-  // OpenSID membuka daftar ini dengan filter status "Menunggu Persetujuan"
+  // Daftar ini dibuka dengan filter status "Menunggu Persetujuan"
   // sehingga antrean keputusan langsung terlihat.
   const filterStatusMentah = nilai(params, "status");
   const filterStatus =

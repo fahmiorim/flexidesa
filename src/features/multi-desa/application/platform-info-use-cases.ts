@@ -23,7 +23,7 @@ export async function getTemplateTenantPlatform(): Promise<TemplateTenant> {
  * kunci API) sengaja tidak pernah dibaca ke sini. Halaman hanya menampilkan
  * status aktif/tidak aktif dan allowlist host yang memang bukan rahasia.
  */
-export interface KonfigurasiPlatformRingkas {
+interface KonfigurasiPlatformRingkas {
   appUrl: string;
   baseDomain: string | null;
   trustProxy: boolean;

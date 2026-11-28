@@ -57,7 +57,7 @@ export interface SinergiDTO {
   keterangan: string | null;
 }
 
-export const SINERGI_CSV_HEADERS = [
+const SINERGI_CSV_HEADERS = [
   "Nama Program",
   "Mitra",
   "Tahun",

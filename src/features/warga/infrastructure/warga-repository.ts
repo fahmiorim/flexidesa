@@ -9,7 +9,7 @@ import { accounts, families, regions, residents, users } from "@/db/schema";
 import type { WargaAccountSummary, WargaProfile } from "@/features/warga/domain/warga";
 
 /** Calon pemilik akun warga (data minimum yang perlu diperiksa). */
-export interface ResidentAccountCandidate {
+interface ResidentAccountCandidate {
   id: number;
   name: string;
   nationalId: string | null;

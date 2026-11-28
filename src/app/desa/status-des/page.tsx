@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { urlMediaDesa } from "@/features/info-desa/publik/application/media-url";
 import { ringkasanIdmPublik } from "@/features/program-data-desa/idm/application/idm-use-cases";
 import {
@@ -43,6 +44,7 @@ export default async function StatusDesaPublikPage({
   const params = await searchParams;
   const tahunDiminta = Number.parseInt(params.tahun ?? "", 10);
   const desa = await getIdentitasFromRequest();
+  const tema = await muatTemaPublik(desa.id);
   const { tahun, tahunTersedia, indikator, sdgs, ringkasan } = await ringkasanIdmPublik(
     desa.id,
     Number.isInteger(tahunDiminta) ? tahunDiminta : undefined,
@@ -60,7 +62,7 @@ export default async function StatusDesaPublikPage({
     : null;
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader
         activePath="/desa/status-des"
         desa={desa}

@@ -15,7 +15,7 @@ import { kedaluwarsaEkspor, type RetensiDesa } from "@/features/multi-desa/domai
 import { conflict, notFound } from "@/lib/errors";
 
 /**
- * Ekspor data dan purge tenant (kebijakan retensi Fase 2).
+ * Ekspor data dan purge tenant (kebijakan retensi).
  *
  * Prinsip keamanan:
  * - Setiap query dibatasi `village_id` dari desa yang sedang diproses; tidak ada
@@ -296,7 +296,7 @@ async function ringkasanAgregat(villageId: number, tabel: readonly string[]): Pr
   return JSON.stringify({ versi: 1, jumlahBarisPerTabel: ringkasan });
 }
 
-export interface HasilPurge {
+interface HasilPurge {
   villageId: number;
   jumlahBarisDihapus: number;
   tabelDiproses: number;

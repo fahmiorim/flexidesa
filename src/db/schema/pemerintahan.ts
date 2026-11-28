@@ -15,7 +15,7 @@ import { perangkatDesa } from "./content";
 import { residents } from "./resident";
 import { villages } from "./village";
 
-/** Kategori (master) lembaga desa, setara `kelompok_master` OpenSID tipe `lembaga`. */
+/** Kategori (master) lembaga desa. */
 export const lembagaMaster = mysqlTable(
   "lembaga_master",
   {

@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import { z } from "zod";
 
 import { NO_SELECTION } from "@/lib/forms";
@@ -26,7 +28,7 @@ export interface ModulDTO {
   isHidden: boolean;
 }
 
-export interface ModulOption {
+interface ModulOption {
   value: string;
   label: string;
 }

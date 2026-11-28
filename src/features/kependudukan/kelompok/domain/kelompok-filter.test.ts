@@ -8,7 +8,7 @@ import {
 } from "./kelompok";
 
 describe("parseFilterKelompok", () => {
-  it("memakai bawaan status aktif bila parameter tidak ada (paritas OpenSID)", () => {
+  it("memakai bawaan status aktif bila parameter tidak ada", () => {
     expect(parseFilterKelompok({}).status).toBe("aktif");
     expect(parseFilterKelompok({ status: "semua" }).status).toBeNull();
     expect(parseFilterKelompok({ status: "tidak-aktif" }).status).toBe("tidak-aktif");

@@ -16,7 +16,7 @@ export interface FilterKomentar {
   pageSize?: number;
 }
 
-export interface KomentarRow {
+interface KomentarRow {
   id: number;
   namaPenulis: string;
   isi: string;

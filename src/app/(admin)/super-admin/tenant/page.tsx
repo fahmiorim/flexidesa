@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 
+import { ButtonLink } from "@/components/ui/button-link";
 import { daftarSemuaDomain } from "@/features/multi-desa/application/kelola-desa-use-cases";
 import { daftarDesaSuperAdmin } from "@/features/multi-desa/application/provisioning-use-cases";
 import { hariMenujuPurge, statusRetensi } from "@/features/multi-desa/domain/lifecycle-tenant";
 import { parseStatusTenantFilter } from "@/features/multi-desa/domain/status-tenant-filter";
-import { DialogDaftarDesa } from "@/features/multi-desa/presentation/dialog-daftar-desa";
 import {
   PlatformCard,
   PlatformPageHeader,
   PlatformStat,
+  PlatformStatGrid,
 } from "@/features/multi-desa/presentation/platform-ui";
 import { TenantConsole } from "@/features/multi-desa/presentation/tenant-console";
 
 import {
-  buatDesaAction,
   eksporDataAction,
   hapusDomainAction,
   jadikanUtamaAction,
@@ -26,7 +26,7 @@ import {
 import { pastikanSuperAdmin } from "../guard";
 
 export const metadata: Metadata = {
-  title: "Konsol Tenant",
+  title: "Tenant",
   robots: { index: false, follow: false },
 };
 
@@ -62,10 +62,14 @@ export default async function SuperAdminTenantPage({ searchParams }: Props) {
   return (
     <>
       <PlatformPageHeader
-        actions={<DialogDaftarDesa aksi={buatDesaAction} />}
+        actions={
+          <ButtonLink href="/super-admin/tenant/tambah" variant="primary">
+            Tambah Tenant
+          </ButtonLink>
+        }
         path="/super-admin/tenant"
       />
-      <div className="platform-stat-grid is-enam">
+      <PlatformStatGrid columns={6}>
         <PlatformStat
           icon={
             <>
@@ -144,7 +148,7 @@ export default async function SuperAdminTenantPage({ searchParams }: Props) {
           tone="ungu"
           value={angka.format(domain.length)}
         />
-      </div>
+      </PlatformStatGrid>
       <PlatformCard flush>
         <div className="platform-tenant-console">
           <TenantConsole

@@ -27,6 +27,26 @@ export function Card({ children, className = "", variant = "stat", ...props }: C
   );
 }
 
+/**
+ * Grid kartu bersama untuk menyusun beberapa `Card variant="panel"`
+ * berdampingan. Halaman tidak menulis grid sendiri.
+ */
+export function CardGrid({
+  children,
+  columns = 2,
+  className = "",
+}: {
+  children: ReactNode;
+  columns?: 1 | 2 | 3;
+  className?: string;
+}) {
+  return (
+    <div className={`ui-card-grid${className ? ` ${className}` : ""}`} data-columns={columns}>
+      {children}
+    </div>
+  );
+}
+
 export function CardHeader({
   title,
   description,

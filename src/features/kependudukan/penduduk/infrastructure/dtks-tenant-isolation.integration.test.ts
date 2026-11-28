@@ -86,7 +86,7 @@ function params(overrides: Partial<ListDtksParams> = {}): ListDtksParams {
 /**
  * Sisipkan relasi legacy lintas desa.
  *
- * Composite FK AUD-002 menolak relasi seperti ini pada jalur normal. Data
+ * Composite FK menolak relasi seperti ini pada jalur normal. Data
  * legacy yang dibuat sebelum constraint terpasang tetap harus aman dibaca,
  * jadi insert dilakukan pada koneksi terpisah dan FK check selalu
  * dikembalikan di blok `finally`.
@@ -292,7 +292,7 @@ afterAll(async () => {
   if (fixture === null) return;
   const desaIds = [fixture.desaA, fixture.desaB];
 
-  // Hapus anak lebih dahulu agar FK RESTRICT AUD-002 tidak memblokir cleanup.
+  // Hapus anak lebih dahulu agar FK RESTRICT tidak memblokir cleanup.
   await db
     .delete(dtksRefLampiran)
     .where(inArray(dtksRefLampiran.lampiranId, [fixture.lampiranA, fixture.lampiranB]));

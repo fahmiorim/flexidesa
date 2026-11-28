@@ -23,7 +23,7 @@ import { provisionDesa } from "@/features/multi-desa/infrastructure/provisioning
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * Provisioning tenant dari template platform (Fase 2).
+ * Provisioning tenant dari template platform.
  *
  * Membuktikan desa baru dibentuk dari `TENANT_TEMPLATE`, bukan dengan menyalin
  * konfigurasi desa yang sudah ada. Fixture sengaja membuat desa "sumber" yang
@@ -255,7 +255,7 @@ describe("provisioning desa dari template platform", () => {
       .select({ slug: theme.slug, aktif: theme.aktif })
       .from(theme)
       .where(eq(theme.villageId, hasil.id));
-    expect(temaBaru).toEqual([{ slug: "esensi", aktif: true }]);
+    expect(temaBaru).toEqual([{ slug: "arunika", aktif: true }]);
 
     const [domainBaru] = await db
       .select({ domain: villageDomains.domain, isPrimary: villageDomains.isPrimary })

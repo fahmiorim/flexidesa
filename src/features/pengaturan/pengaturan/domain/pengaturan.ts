@@ -1,14 +1,14 @@
 import { z } from "zod";
 
-/** Pilihan format tanggal pada surat (parity `format_tanggal_surat` OpenSID). */
+/** Pilihan format tanggal pada surat. */
 export const FORMAT_TANGGAL_SURAT = ["indonesia", "dmy", "iso"] as const;
 export type FormatTanggalSurat = (typeof FORMAT_TANGGAL_SURAT)[number];
 
 /**
  * Field penduduk luar desa yang boleh diminta pada formulir surat.
  *
- * Parity `form_penduduk_luar` OpenSID: desa memilih isian mana yang tampil.
- * `nama` dan `nik` selalu diminta seperti OpenSID.
+ * Desa memilih isian mana yang tampil pada formulir penduduk luar.
+ * `nama` dan `nik` selalu diminta.
  */
 export const FIELD_PENDUDUK_LUAR = [
   "nik",
@@ -28,13 +28,13 @@ export type FieldPendudukLuar = (typeof FIELD_PENDUDUK_LUAR)[number];
  * rusak, atau di luar batas selalu jatuh ke bawaan domain — satu baris data
  * lama tidak boleh membuat aplikasi gagal.
  */
-export const PETA_KUNCI = {
+const PETA_KUNCI = {
   komentarAktif: "web.komentar_aktif",
   beritaBeranda: "web.berita_beranda",
   pendaftaranWargaAktif: "mandiri.pendaftaran_warga",
   /** Mode penomoran surat (1–4); nilai efektif diselaraskan dengan villages.penomoran_surat. */
   penomoranSurat: "surat.penomoran_mode",
-  // --- Pengaturan global surat (parity `surat_master/pengaturan` OpenSID) ---
+  // --- Pengaturan global surat --------------------------------------------
   suratTinggiHeader: "surat.tinggi_header",
   suratTinggiFooter: "surat.tinggi_footer",
   suratTemplateHeader: "surat.template_header",
@@ -51,15 +51,15 @@ export const PETA_KUNCI = {
   suratPendudukLuarField: "surat.penduduk_luar_field",
   /** Logo kop surat (jalur media tenant); kosong = logo identitas desa. */
   suratLogo: "surat.logo",
-  /** Garis ganda di bawah kop seperti kop resmi OpenSID. */
+  /** Garis ganda di bawah kop. */
   suratGarisGanda: "surat.garis_ganda",
-  /** Lebar logo kop dalam persen lebar isi (OpenSID: 10%). */
+  /** Lebar logo kop dalam persen lebar isi (10%). */
   suratLogoLebar: "surat.logo_lebar",
   /** Posisi logo kop: kiri atau tengah. */
   suratLogoPosisi: "surat.logo_posisi",
 } as const;
 
-export type KunciPengaturan = keyof typeof PETA_KUNCI;
+type KunciPengaturan = keyof typeof PETA_KUNCI;
 
 /** Posisi logo pada kop surat. */
 export const POSISI_LOGO_SURAT = ["kiri", "tengah"] as const;
@@ -111,10 +111,10 @@ export const pengaturanSchema = z.object({
   /** Template teks header/footer; kosong = memakai identitas desa otomatis. */
   suratTemplateHeader: z.string().max(4000).default(""),
   suratTemplateFooter: z.string().max(4000).default(""),
-  /** Verifikasi berjenjang untuk surat baru (parity `verifikasi_sekdes/kades`). */
+  /** Verifikasi berjenjang untuk surat baru. */
   suratVerifikasiSekdes: z.boolean().default(true),
   suratVerifikasiKades: z.boolean().default(true),
-  /** Teks pengganti kode isian yang kosong (parity `ganti_data_kosong`). */
+  /** Teks pengganti kode isian yang kosong. */
   suratGantiDataKosong: z.string().max(20).default("-"),
   /** Format tanggal pada kode isian surat. */
   suratFormatTanggal: z.enum(FORMAT_TANGGAL_SURAT).default("indonesia"),
@@ -129,9 +129,9 @@ export const pengaturanSchema = z.object({
   suratPendudukLuarField: z.array(z.enum(FIELD_PENDUDUK_LUAR)).default([...FIELD_PENDUDUK_LUAR]),
   /** Logo kop surat; kosong berarti memakai logo identitas desa. */
   suratLogo: z.string().max(300).default(""),
-  /** Garis ganda di bawah kop (bawaan OpenSID). */
+  /** Garis ganda di bawah kop. */
   suratGarisGanda: z.boolean().default(true),
-  /** Lebar logo kop dalam persen lebar isi; 5–30 seperti pilihan OpenSID. */
+  /** Lebar logo kop dalam persen lebar isi; pilihan 5–30. */
   suratLogoLebar: z.coerce.number().min(5).max(30).default(10),
   /** Posisi logo kop. */
   suratLogoPosisi: z.enum(POSISI_LOGO_SURAT).default("kiri"),

@@ -7,8 +7,8 @@ import {
 /**
  * Domain Cetak Surat.
  *
- * Meniru menu OpenSID Layanan Surat → Cetak Surat (`Surat@index`): katalog
- * jenis surat aktif yang menjadi titik awal pembuatan dan pencetakan surat,
+ * Katalog jenis surat aktif yang menjadi titik awal pembuatan dan
+ * pencetakan surat,
  * lengkap dengan kode/klasifikasi dan jumlah surat yang sudah dibuat.
  */
 
@@ -26,7 +26,7 @@ export interface CetakSuratRow {
   /** Jumlah persyaratan dokumen yang melekat pada jenis surat ini. */
   jumlahSyarat: number;
   /**
-   * Daftar lampiran yang menyertai surat (parity `lampiran` OpenSID).
+   * Daftar lampiran yang menyertai surat.
    * Ditampilkan agar petugas tahu dokumen apa yang harus dilampirkan.
    */
   lampiran: string[];

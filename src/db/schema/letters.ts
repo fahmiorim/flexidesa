@@ -52,7 +52,7 @@ export const letters = mysqlTable(
 
     /** Badan surat hasil render template pada saat diterbitkan. */
     content: text("content"),
-    /** Salinan isi surat untuk arsip (parity dengan log_surat.isi_surat). */
+    /** Salinan isi surat untuk arsip. */
     isiSurat: text("isi_surat"),
     /** Nilai isian dinamis per jenis surat (JSON map kode isian → nilai). */
     nilaiIsian: text("nilai_isian"),
@@ -114,4 +114,3 @@ export const letters = mysqlTable(
 );
 
 export type Letter = typeof letters.$inferSelect;
-export type NewLetter = typeof letters.$inferInsert;

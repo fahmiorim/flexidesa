@@ -66,6 +66,3 @@ export const pemilihanKandidat = mysqlTable(
 );
 
 export type Pemilihan = typeof pemilihan.$inferSelect;
-export type NewPemilihan = typeof pemilihan.$inferInsert;
-export type PemilihanKandidat = typeof pemilihanKandidat.$inferSelect;
-export type NewPemilihanKandidat = typeof pemilihanKandidat.$inferInsert;

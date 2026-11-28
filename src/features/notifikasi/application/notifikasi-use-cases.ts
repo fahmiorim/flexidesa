@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import "server-only";
 
 import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";

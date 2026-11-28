@@ -23,5 +23,3 @@ export const registrasiWarga = mysqlTable(
   ],
 );
 
-export type RegistrasiWarga = typeof registrasiWarga.$inferSelect;
-export type NewRegistrasiWarga = typeof registrasiWarga.$inferInsert;

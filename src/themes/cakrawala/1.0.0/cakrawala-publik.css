@@ -1,0 +1,1178 @@
+/*
+ * Cakrawala — penyetelan halaman publik selain beranda.
+ *
+ * Halaman publik (profil, berita, agenda, layanan, dst.) memakai CSS module
+ * masing-masing dengan warna dan bentuk kartu ala Arunika. Beranda, hero, dan
+ * footer Cakrawala memakai komponen paket sendiri, sedangkan halaman lain
+ * dibentuk ulang di sini tanpa mengubah JSX/field/perilakunya:
+ *
+ * - Hanya aktif untuk <main data-tema="cakrawala"> (diisi dari slug
+ *   tema tenant), jadi Arunika, Cakrawala, dan area admin tidak tersentuh.
+ * - Hero native beranda diberi penanda data-hero dan dikecualikan.
+ * - Deklarasi penentu memakai !important karena CSS module route dimuat
+ *   setelah stylesheet global; tanpa itu aturan modul menang pada
+ *   spesifisitas yang sama.
+ *
+ * Bahasa visualnya mengikuti beranda: kanvas kertas terang bertoken, tajuk
+ * serif, bagian bergaris rambut (bukan kotak kartu), daftar bernomor, dan
+ * aksen bata untuk aksi/hari aktif.
+ */
+
+/* ---------- Kanvas & tipografi ---------- */
+main[data-tema="cakrawala"][class*="site"] {
+  background: var(--public-background, #faf7f0) !important;
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"] :is(h1, h2, h3, h4):not([data-native] *) {
+  letter-spacing: -0.02em;
+  color: var(--public-text, #202126) !important;
+}
+
+/*
+ * Teks isi: diselaraskan ke tinta bertoken agar terbaca di kanvas kertas.
+ */
+main[data-tema="cakrawala"]
+  :is(p, li, dt, dd, th, td, label, small, strong, b, span):not([class*="kicker"]):not(
+    [class*="eyebrow"]
+  ):not([data-native]):not([data-native] *) {
+  color: var(--public-text, #202126);
+}
+
+main[data-tema="cakrawala"] :is([class*="kicker"], [class*="eyebrow"]) {
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* Skor IDM di pita beranda tetap bata. */
+main[data-tema="cakrawala"] [class*="pitaIdm"] strong {
+  color: var(--public-accent, #a93526);
+}
+
+/* ---------- Lebar konten ---------- */
+main[data-tema="cakrawala"] [class*="container"] {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+/* ---------- Hero halaman: panel membulat modern ---------- */
+main[data-tema="cakrawala"] > section[class*="hero"]:not([data-hero]) {
+  width: min(1240px, calc(100% - 48px)) !important;
+  margin: 1.25rem auto 0 !important;
+  padding: clamp(2.2rem, 5vw, 3.6rem) clamp(1.4rem, 4vw, 3rem) !important;
+  border: 0 !important;
+  border-radius: 28px !important;
+  background:
+    radial-gradient(
+      circle at 82% 8%,
+      color-mix(in srgb, var(--public-accent, #a93526) 22%, transparent),
+      transparent 48%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--public-accent, #a93526) 14%, var(--public-surface, #ffffff)),
+      var(--public-surface, #ffffff)
+    ) !important;
+  background-position: center !important;
+  background-size: cover !important;
+  box-shadow: 0 24px 55px -24px rgb(16 24 40 / 0.28) !important;
+  color: #202126 !important;
+}
+
+/* Dekorasi kertas, art, dan gelombang ungu/biru Arunika tidak dipakai. */
+main[data-tema="cakrawala"] > section[class*="hero"]:not([data-hero])::before,
+main[data-tema="cakrawala"] > section[class*="hero"]:not([data-hero])::after,
+main[data-tema="cakrawala"] :is([class*="heroPaper"], [class*="heroArt"]) {
+  display: none !important;
+}
+
+main[data-tema="cakrawala"] > section[class*="hero"]:not([data-hero]) h1,
+main[data-tema="cakrawala"] > section[class*="hero"]:not([data-hero]) p,
+main[data-tema="cakrawala"] > section[class*="hero"]:not([data-hero]) span,
+main[data-tema="cakrawala"] > section[class*="hero"]:not([data-hero]) a {
+  color: #202126;
+}
+
+main[data-tema="cakrawala"] > section[class*="hero"]:not([data-hero]) p {
+  color: color-mix(in srgb, #202126 78%, transparent);
+}
+
+main[data-tema="cakrawala"] [class*="breadcrumb"] {
+  color: color-mix(in srgb, #202126 66%, transparent);
+}
+
+/* ---------- Bagian editorial menggantikan kotak kartu ---------- */
+main[data-tema="cakrawala"]
+  :is(
+    [class*="Card"],
+    [class*="card"],
+    [class*="Panel"],
+    [class*="panel"],
+    [class*="metric"],
+    [class*="Metric"],
+    [class*="allNews"],
+    [class*="article"],
+    [class*="filters"],
+    [class*="agendaPanel"],
+    [class*="albumCard"],
+    [class*="banner"],
+    [class*="catalog"],
+    [class*="commentList"],
+    [class*="contactNote"],
+    [class*="cta"],
+    [class*="detailCard"],
+    [class*="emptyState"],
+    [class*="faq"],
+    [class*="filter"],
+    [class*="help"],
+    [class*="missionList"],
+    [class*="stats"],
+    [class*="steps"],
+    [class*="timelineItem"],
+    [class*="videoCard"],
+    [class*="yearFilter"],
+    [class*="financeGrid"],
+    [class*="benefits"],
+    [class*="process"],
+    [class*="calendarCard"],
+    [class*="listCard"],
+    [class*="generalData"],
+    [class*="aboutCard"],
+    [class*="historyCard"],
+    [class*="regionCard"],
+    [class*="visionCard"],
+    [class*="potentialCard"],
+    [class*="facilityCard"],
+    [class*="infoCard"],
+    [class*="featured"]
+  ) {
+  background: var(--public-surface, #ffffff) !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 7%, transparent) !important;
+  border-radius: 20px !important;
+  box-shadow:
+    0 1px 2px rgb(16 24 40 / 0.05),
+    0 16px 40px -16px rgb(16 24 40 / 0.14) !important;
+  padding: 1.4rem 1.5rem !important;
+}
+
+/* Rel samping: kartu putih, termasuk panel di dalamnya. */
+main[data-tema="cakrawala"] :is([class*="sidebar"], [class*="Sidebar"]) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="cakrawala"] :is([class*="sidebar"], [class*="Sidebar"]) > :is(section, div, aside) {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #202126) 16%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 1rem 0 !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="sidebar"], [class*="Sidebar"])
+  > :is(section, div, aside):first-child {
+  border-top: 2px solid color-mix(in srgb, var(--public-accent, #a93526) 55%, transparent) !important;
+}
+
+/* Baris daftar (kategori, populer, agenda): tanpa pil putih. */
+main[data-tema="cakrawala"]
+  :is(
+    [class*="categoryList"] > a,
+    [class*="popularItem"],
+    [class*="sideItem"],
+    [class*="upcoming"] > a,
+    [class*="selectedList"] > a,
+    [class*="documentList"] > *,
+    [class*="downloadActions"] > *
+  ) {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 10%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="categoryList"] > a, [class*="popularItem"], [class*="sideItem"])
+  :is(strong, b, h3, span) {
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="categoryList"] > a, [class*="popularItem"], [class*="sideItem"])
+  small {
+  background: color-mix(in srgb, var(--public-text, #202126) 10%, transparent) !important;
+  color: color-mix(in srgb, var(--public-text, #202126) 80%, transparent) !important;
+}
+
+/* Kategori aktif: penanda aksen, bukan pil ungu. */
+main[data-tema="cakrawala"] :is([class*="categoryActive"], [class*="selected"]) {
+  background: color-mix(in srgb, var(--public-accent, #a93526) 16%, transparent) !important;
+  color: var(--public-text, #202126) !important;
+  border-left: 2px solid var(--public-accent, #a93526) !important;
+}
+
+/* ---------- Aksi & tombol: aksen bata ---------- */
+main[data-tema="cakrawala"]
+  :is(
+    [class*="searchForm"] button,
+    [class*="empty"] button,
+    [class*="primaryAction"],
+    [class*="readButton"],
+    [class*="download"]
+  ) {
+  background: var(--public-accent, #a93526) !important;
+  border-color: var(--public-accent, #a93526) !important;
+  color: #fffdf8 !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="cakrawala"]
+  :is(
+    [class*="searchForm"] button,
+    [class*="empty"] button,
+    [class*="primaryAction"],
+    [class*="readButton"]
+  ):hover {
+  background: color-mix(in srgb, var(--public-accent, #a93526) 82%, white) !important;
+  color: #fffdf8 !important;
+}
+
+main[data-tema="cakrawala"] [class*="filters"] > button {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 22%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"] [class*="filters"] > button[class*="selected"] {
+  background: var(--public-accent, #a93526) !important;
+  border-color: var(--public-accent, #a93526) !important;
+  color: #fffdf8 !important;
+}
+
+/* Paginasi: berbingkai rambut, halaman aktif bata. */
+main[data-tema="cakrawala"] :is([class*="pagination"], [class*="Pagination"]) a {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 20%, transparent) !important;
+  border-radius: 0.55rem !important;
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="pagination"], [class*="Pagination"])
+  :is(a[class*="active"], a[class*="Active"]) {
+  background: var(--public-accent, #a93526) !important;
+  border-color: var(--public-accent, #a93526) !important;
+  color: #fffdf8 !important;
+  font-weight: 800;
+}
+
+/* Tab aktif: teks bata bergaris bawah, bukan blok ungu atau pil penuh. */
+main[data-tema="cakrawala"] [class*="tabs"] :is([class*="active"], [class*="selected"]) {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--public-accent, #a93526) !important;
+  box-shadow: inset 0 -2px 0 var(--public-accent, #a93526);
+}
+
+/* ---------- Kalender agenda ---------- */
+main[data-tema="cakrawala"] [class*="calendarGrid"] {
+  background: var(--public-surface, #fffdf8) !important;
+  border-color: color-mix(in srgb, var(--public-text, #202126) 14%, transparent) !important;
+}
+
+main[data-tema="cakrawala"] [class*="calendarGrid"] > b {
+  background: color-mix(
+    in srgb,
+    var(--public-text, #202126) 8%,
+    var(--public-surface, #fffdf8)
+  ) !important;
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"] [class*="calendarGrid"] > :is(span, a) {
+  background: var(--public-surface, #fffdf8) !important;
+  border-color: color-mix(in srgb, var(--public-text, #202126) 12%, transparent) !important;
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"] [class*="calendarGrid"] i {
+  background: var(--public-accent, #a93526) !important;
+}
+
+main[data-tema="cakrawala"] [class*="calendarGrid"] [class*="selected"] {
+  background: var(--public-accent, #a93526) !important;
+  color: #fffdf8 !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="cakrawala"] [class*="calendarGrid"] [class*="today"] {
+  outline-color: var(--public-accent, #a93526) !important;
+}
+
+/* ---------- Tabel, form, media ---------- */
+main[data-tema="cakrawala"] :is([class*="table"], [class*="Table"]) :is(th, td) {
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 10%, transparent);
+}
+
+main[data-tema="cakrawala"] :is([class*="table"], [class*="Table"]) th {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--public-text, #202126) 70%, transparent) !important;
+}
+
+main[data-tema="cakrawala"] :is(input, select, textarea) {
+  background: var(--public-surface, #fffdf8) !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 18%, transparent) !important;
+  border-radius: 0.55rem !important;
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"] :is(input, textarea)::placeholder {
+  color: color-mix(in srgb, var(--public-text, #202126) 55%, transparent);
+}
+
+main[data-tema="cakrawala"] :is(input, select, textarea):focus {
+  outline: 2px solid color-mix(in srgb, var(--public-accent, #a93526) 55%, transparent);
+  outline-offset: 1px;
+}
+
+main[data-tema="cakrawala"] img:not([data-native] *) {
+  border-radius: calc(var(--public-radius, 15px) * 0.6);
+}
+
+/* Kotak kosong: bingkai putus-putus rambut. */
+main[data-tema="cakrawala"] :is([class*="empty"], [class*="kosong"]) {
+  background: transparent !important;
+  border: 1px dashed color-mix(in srgb, var(--public-text, #202126) 22%, transparent) !important;
+  border-radius: var(--public-radius, 15px) !important;
+  color: color-mix(in srgb, var(--public-text, #202126) 82%, transparent) !important;
+}
+
+@media (max-width: 620px) {
+  main[data-tema="cakrawala"] [class*="container"] {
+    width: calc(100% - 28px);
+  }
+}
+
+/* ---------- Navigasi tab halaman ---------- */
+main[data-tema="cakrawala"] [class*="tabs"] {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #a93526) 55%, transparent) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 16%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.5rem 0 !important;
+}
+
+main[data-tema="cakrawala"] [class*="tabs"] > a {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #202126) !important;
+  font-weight: 700;
+}
+
+main[data-tema="cakrawala"] [class*="tabs"] > a[aria-current="page"],
+main[data-tema="cakrawala"] [class*="tabs"] > a:is([class*="active"], [class*="selected"]) {
+  background: transparent !important;
+  color: var(--public-accent, #a93526) !important;
+  box-shadow: inset 0 -2px 0 var(--public-accent, #a93526);
+}
+
+/* ---------- Kartu anak di dalam blok editorial ---------- */
+main[data-tema="cakrawala"]
+  :is(
+    [class*="steps"],
+    [class*="stats"],
+    [class*="benefits"],
+    [class*="realizationCards"],
+    [class*="cards"],
+    [class*="metrics"]
+  )
+  > :is(article, div) {
+  background: transparent !important;
+  border: 0 !important;
+  border-left: 1px solid color-mix(in srgb, var(--public-text, #202126) 14%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.85rem 0.9rem !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="steps"], [class*="stats"], [class*="benefits"], [class*="cards"])
+  > :is(article, div):first-child {
+  border-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* ---------- Sisa permukaan terang ---------- */
+main[data-tema="cakrawala"] :is([class*="monthNav"], [class*="notify"], [class*="selectedPanel"]) {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #202126) 16%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="monthNav"], [class*="notify"], [class*="selectedPanel"])
+  > :is(a, span, strong, button, h3) {
+  background: transparent !important;
+  border-color: color-mix(in srgb, var(--public-text, #202126) 20%, transparent) !important;
+  color: var(--public-text, #202126) !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="cakrawala"] [class*="selectedPanel"] > p {
+  color: color-mix(in srgb, var(--public-text, #202126) 78%, transparent) !important;
+}
+
+main[data-tema="cakrawala"] [class*="quick"] > a {
+  background: var(--public-accent, #a93526) !important;
+  border-color: var(--public-accent, #a93526) !important;
+  color: #fffdf8 !important;
+}
+
+/* ---------- Tautan & wadah pencarian ---------- */
+main[data-tema="cakrawala"] a:not([data-native]):not([data-native] *) {
+  color: inherit !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="help"], [class*="empty"], [class*="notify"], [class*="quick"], [class*="agendaHead"])
+  a {
+  color: var(--public-accent, #a93526) !important;
+}
+
+main[data-tema="cakrawala"] :is([class*="search"], [class*="Search"]) {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 20%, transparent) !important;
+  border-radius: 0.6rem !important;
+  box-shadow: none !important;
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"] :is([class*="help"], [class*="notify"]) > a {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #a93526) 55%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* ---------- Navigasi bagian & blok kontak ---------- */
+main[data-tema="cakrawala"] [class*="sectionNav"] {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #a93526) 55%, transparent) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 16%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.45rem 0 !important;
+}
+
+main[data-tema="cakrawala"] [class*="sectionNav"] > * {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #202126) !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="cakrawala"] [class*="sectionNav"] > :is([aria-current="page"], [class*="active"]) {
+  background: transparent !important;
+  color: var(--public-accent, #a93526) !important;
+  box-shadow: inset 0 -2px 0 var(--public-accent, #a93526) !important;
+}
+
+main[data-tema="cakrawala"]
+  :is(
+    [class*="chat"],
+    [class*="contactList"],
+    [class*="faq"],
+    [class*="bottomCta"],
+    [class*="tracking"]
+  ) {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #a93526) 55%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 1.1rem 0 1.25rem !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="chat"], [class*="contactList"], [class*="faq"], [class*="bottomCta"])
+  > :is(article, div, details, section) {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 12%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Lencana/chip ungu Arunika → aksen Cakrawala. */
+main[data-tema="cakrawala"] :is([class*="badge"], [class*="chip"], [class*="phone"]) {
+  background: color-mix(in srgb, var(--public-accent, #a93526) 16%, transparent) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* Tombol peta/aplikasi eksternal. */
+main[data-tema="cakrawala"] [class*="mapAction"] {
+  background: var(--public-accent, #a93526) !important;
+  border-color: var(--public-accent, #a93526) !important;
+  color: #fffdf8 !important;
+}
+
+/*
+ * Bersihkan semua permukaan kotak ala Arunika sekaligus: elemen tata letak di
+ * dalam halaman Cakrawala tidak memakai latar kotak/gradasi terang. Hero, pita
+ * statistik, dan footer dikecualikan; elemen aksi (a/button) tidak termasuk
+ * sehingga tetap bisa berwarna aksen.
+ */
+main[data-tema="cakrawala"]
+  :is(section, article, aside, details, div, li, span, label, dl, ul, ol):not([class*="hero"]):not(
+    [class*="Hero"]
+  ):not([class*="pita"]):not([class*="kaki"]):not([class*="jam"]):not([data-native]):not(
+    [data-native] *
+  ) {
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* Pulihkan penanda aksen setelah pembersihan permukaan. */
+main[data-tema="cakrawala"] :is([class*="badge"], [class*="chip"], [class*="phone"]) {
+  background-color: color-mix(in srgb, var(--public-accent, #a93526) 16%, transparent) !important;
+  color: var(--public-accent, #a93526) !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="tabs"], [class*="sectionNav"])
+  > :is([aria-current="page"], [class*="active"]) {
+  background-color: transparent !important;
+  box-shadow: inset 0 -2px 0 var(--public-accent, #a93526) !important;
+}
+
+main[data-tema="cakrawala"] [class*="calendarGrid"] [class*="selected"] {
+  background-color: var(--public-accent, #a93526) !important;
+}
+
+main[data-tema="cakrawala"] [class*="pitaIdm"] {
+  background-color: color-mix(in srgb, var(--public-accent, #a93526) 12%, transparent) !important;
+}
+
+/* Tab bergaya camelCase (statTabs), baris FAQ (summary), dan tabel data. */
+main[data-tema="cakrawala"] :is([class*="Tabs"], [class*="Tab"]) {
+  background-color: transparent !important;
+  border: 0 !important;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #a93526) 55%, transparent) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 16%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.45rem 0 !important;
+}
+
+main[data-tema="cakrawala"] :is([class*="Tabs"], [class*="Tab"]) > * {
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="Tabs"], [class*="Tab"])
+  > :is([aria-current="page"], [class*="active"]) {
+  background: transparent !important;
+  background-image: none !important;
+  color: var(--public-accent, #a93526) !important;
+  box-shadow: inset 0 -2px 0 var(--public-accent, #a93526) !important;
+}
+
+/* Tabel data: tanpa pita putih pada kepala/kaki tabel. */
+main[data-tema="cakrawala"]
+  :is([class*="table"], [class*="Table"])
+  :is(thead, tbody, tfoot, tr, caption) {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+main[data-tema="cakrawala"] :is(summary, [class*="tableWrap"]) {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="cakrawala"] summary {
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 12%, transparent) !important;
+  color: var(--public-text, #202126) !important;
+  padding: 0.7rem 0 !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="table"], [class*="Table"]):not(thead):not(tbody):not(tr):not(th):not(td) {
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ---------- Grafik & ikon ---------- */
+/* Ancestor dibatasi pada akar bilah grafik yang sebenarnya (barList/barRow
+ * halaman statistik dan ui-chart-bars). Jangan pakai [class*="bar"] longgar:
+ * ia juga cocok dengan heroGambar/dossierLebarFoto ("Gambar"/"Lebar"
+ * mengandung "bar") sehingga bingkai foto ikut dicat bata dan dipill. */
+main[data-tema="cakrawala"]
+  :is([class*="barList"], [class*="barRow"], [class*="chart-bars"])
+  :is(span, i, div, [class*="Fill"], [class*="fill"]) {
+  background: var(--public-primary, #a93526) !important;
+  background-image: none !important;
+  border-radius: 999px;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="barList"], [class*="barRow"], [class*="chart-bars"])
+  :is(b, strong) {
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"] :is([class*="donut"], [class*="chart"]) > :is(span, div) {
+  background-color: transparent !important;
+  border-color: color-mix(in srgb, var(--public-primary, #a93526) 45%, transparent) !important;
+}
+
+main[data-tema="cakrawala"] :is([class*="icon"], [class*="Icon"]) {
+  background-color: color-mix(in srgb, var(--public-accent, #a93526) 14%, transparent) !important;
+  border-radius: 0.6rem !important;
+  color: var(--public-accent, #a93526) !important;
+}
+
+main[data-tema="cakrawala"]
+  :is([class*="submit"], [class*="Send"], [class*="btn"], [class*="Btn"]) {
+  background: var(--public-accent, #a93526) !important;
+  border-color: var(--public-accent, #a93526) !important;
+  color: #fffdf8 !important;
+  border-radius: 999px !important;
+}
+
+/* Blok ajakan menutup halaman: tombol aksen bata. */
+main[data-tema="cakrawala"] :is([class*="bottomCta"], [class*="cta"]) a {
+  background: var(--public-accent, #a93526) !important;
+  border-color: var(--public-accent, #a93526) !important;
+  border-radius: 999px !important;
+  color: #fffdf8 !important;
+}
+
+main[data-tema="cakrawala"] :is([class*="table"], [class*="Table"]) :is(th, td) {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Visi & misi: baris misi buatan Arunika (kayu ungu + gradasi terang) menjadi
+   daftar editorial Cakrawala; ikon bernomor dipadatkan ke teks. */
+main[data-tema="cakrawala"] [class*="visionBanner"] {
+  background-image: linear-gradient(
+    95deg,
+    var(--public-background, #faf7f0) 0%,
+    color-mix(in srgb, var(--public-accent, #a93526) 14%, var(--public-background, #faf7f0)) 100%
+  ) !important;
+  background-color: var(--public-background, #faf7f0) !important;
+  border-radius: 0 !important;
+}
+main[data-tema="cakrawala"] [class*="visionQuote"] {
+  color: var(--public-text, #202126) !important;
+  text-shadow: none !important;
+}
+main[data-tema="cakrawala"] [class*="visionQuote"] > b,
+main[data-tema="cakrawala"] [class*="visionQuote"] > i {
+  color: var(--public-accent, #a93526) !important;
+  background: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="missionList"] li {
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #202126) 13%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+main[data-tema="cakrawala"] [class*="missionList"] li > b {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="missionIcon"] {
+  background: transparent !important;
+  background-image: none !important;
+}
+main[data-tema="cakrawala"] :is([class*="missionList"] p, [class*="sideIntro"]) {
+  color: color-mix(in srgb, var(--public-text, #202126) 78%, transparent) !important;
+}
+
+/* Spanduk ajakan Visi & Misi: linimasanya ungu terang buatan Arunika. */
+main[data-tema="cakrawala"] [class*="callout"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-top: 2px solid var(--public-secondary, #a93526) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+main[data-tema="cakrawala"] [class*="target"] {
+  border-color: var(--public-secondary, #a93526) !important;
+  background: #faf7f0 !important;
+  box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--public-text, #202126) 12%, transparent) !important;
+}
+main[data-tema="cakrawala"] [class*="callout"] > a {
+  background: var(--public-accent, #a93526) !important;
+  background-image: none !important;
+  color: #fffdf8 !important;
+}
+
+/* Sejarah: panel samping "Profil Desa" putih-lavender, item aktif, penanda
+   kutipan, dan simpul linimasa ungu dibentuk ulang sebagai editorial Cakrawala. */
+main[data-tema="cakrawala"]
+  :is([class*="profileMenu"], [class*="quoteCard"], [class*="galleryCard"]) {
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-top: 2px solid var(--public-secondary, #a93526) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+main[data-tema="cakrawala"] [class*="profileMenu"] > a {
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 13%, transparent) !important;
+  color: var(--public-text, #202126) !important;
+}
+main[data-tema="cakrawala"] [class*="profileMenu"] > a > span {
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="profileMenu"] > a[class*="active"] {
+  background: transparent !important;
+  background-image: none !important;
+  border-radius: 0 !important;
+  border-left: 2px solid var(--public-accent, #a93526) !important;
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] :is([class*="quoteCard"], [class*="galleryHeading"]) > span {
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="timelineNode"] {
+  background: var(--public-secondary, #a93526) !important;
+  border-color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="timelineYear"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid var(--public-accent, #a93526) !important;
+  border-radius: 0 !important;
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="timelineItem"] {
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 13%, transparent) !important;
+}
+
+/* Blok ajakan penutup halaman bergaya kartu sorot ungu di Arunika. */
+main[data-tema="cakrawala"] [class*="callout"] > a {
+  background: var(--public-accent, #a93526) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #a93526) !important;
+  color: #fffdf8 !important;
+  border-radius: 999px !important;
+}
+
+/* Tombol aksi halaman (filter, ajakan kotak kosong, unggah): pil aksen bata.
+   Tombol akordeon FAQ tidak termasuk karena dibentuk sebagai baris editorial. */
+main[data-tema="cakrawala"]
+  :is([class*="sectionHead"], [class*="filter"], [class*="actions"], [class*="heroActions"])
+  button {
+  background: var(--public-accent, #a93526) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #a93526) !important;
+  border-radius: 999px !important;
+  color: #fffdf8 !important;
+}
+
+/* Unduh/ cetak: tombol garis rambut, bukan pil putih penuh. */
+main[data-tema="cakrawala"] [class*="printButton"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid var(--public-accent, #a93526) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* Kotak kosong dengan tombol ajakan (mis. "Hubungi Pemerintah Desa"). */
+main[data-tema="cakrawala"] [class*="emptyState"] > a,
+main[data-tema="cakrawala"] [class*="empty"] > a {
+  background: var(--public-accent, #a93526) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #a93526) !important;
+  border-radius: 999px !important;
+  color: #fffdf8 !important;
+}
+
+/* Daftar tautan penting / kategori bergaya pil putih menjadi baris editorial. */
+main[data-tema="cakrawala"]
+  :is([class*="importantLinks"], [class*="categoryList"], [class*="summaryList"])
+  > a {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #202126) 13%, transparent) !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #202126) !important;
+}
+main[data-tema="cakrawala"] [class*="importantLinks"] small {
+  color: color-mix(in srgb, var(--public-text, #202126) 70%, transparent) !important;
+}
+
+/* Lencana ikon berwarna lavender di daftar dan judul bagian. */
+main[data-tema="cakrawala"] :is(h1, h2, h3) > span:first-child {
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* Spanduk ajakan di dasar halaman (galeri, pengumuman). */
+main[data-tema="cakrawala"] [class*="banner"] > a {
+  background: var(--public-accent, #a93526) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #a93526) !important;
+  border-radius: 999px !important;
+  color: #fffdf8 !important;
+}
+
+/* Potensi: daftar ringkas data potensi berpil putih menjadi baris editorial. */
+main[data-tema="cakrawala"] [class*="summaryList"] a {
+  background: transparent !important;
+  background-image: none !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #202126) 13%, transparent) !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #202126) !important;
+}
+
+/* ---------- Teks tombol aksen ----------
+   Aturan tautan aksen di atas berwarna bata; tombol berlatar bata harus
+   memakai teks gelap. Ditaruh paling akhir agar menang urutan. */
+main[data-tema="cakrawala"]
+  :is(
+    [class*="quick"] > a,
+    [class*="banner"] > a,
+    [class*="callout"] > a,
+    [class*="emptyState"] > a,
+    [class*="empty"] > a,
+    [class*="printButton"],
+    [class*="pagination"] a[class*="active"],
+    [class*="pagination"] a[class*="Active"]
+  ) {
+  color: #fffdf8 !important;
+}
+
+main[data-tema="cakrawala"] [class*="printButton"] {
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* Glyph dekoratif pada blok ajakan mengikuti aksen. */
+main[data-tema="cakrawala"] :is([class*="ctaArt"], [class*="emptyDot"]) {
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* ---------- Kontak: FAQ akordeon, panel catatan, dan tombol kanal ---------- */
+main[data-tema="cakrawala"] [class*="faqItem"] {
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #202126) 14%, transparent) !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+main[data-tema="cakrawala"] [class*="faqItem"] > button {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #202126) !important;
+  padding-inline: 0 !important;
+}
+main[data-tema="cakrawala"] [class*="faqItem"] > button span {
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="faqItem"] > p {
+  background: transparent !important;
+  background-image: none !important;
+  color: color-mix(in srgb, var(--public-text, #202126) 78%, transparent) !important;
+  padding-inline: 0 !important;
+}
+
+main[data-tema="cakrawala"] :is([class*="contactNote"], [class*="hoursNote"]) {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #202126) 14%, transparent) !important;
+  border-radius: 0 !important;
+}
+main[data-tema="cakrawala"] :is([class*="contactNote"], [class*="hoursNote"]) p {
+  color: color-mix(in srgb, var(--public-text, #202126) 78%, transparent) !important;
+}
+main[data-tema="cakrawala"] :is([class*="contactNote"] a, [class*="mapLink"]) {
+  background: var(--public-accent, #a93526) !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #fffdf8 !important;
+}
+main[data-tema="cakrawala"] [class*="contactNote"] a + a {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 30%, transparent) !important;
+  color: var(--public-text, #202126) !important;
+}
+
+/* ---------- Kontak: ikon kanal dan tautan bulat ---------- */
+main[data-tema="cakrawala"] [class*="contactList"] article > span {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #a93526) 42%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="contactList"] article > a {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 28%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* ---------- Rel samping halaman: baris tautan editorial ---------- */
+main[data-tema="cakrawala"] :is([class*="sidebar"], [class*="Sidebar"]) > a {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 12%, transparent) !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #202126) !important;
+}
+main[data-tema="cakrawala"] :is([class*="sidebar"], [class*="Sidebar"]) > a > span {
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"]
+  :is([class*="sidebar"], [class*="Sidebar"])
+  > a:is([class*="active"], [aria-current]) {
+  background: transparent !important;
+  border-left: 2px solid var(--public-accent, #a93526) !important;
+  border-radius: 0 !important;
+  color: var(--public-accent, #a93526) !important;
+  padding-left: 0.85rem !important;
+}
+
+/* ---------- Kartu kategori potensi: ikon berwarna tunggal ---------- */
+main[data-tema="cakrawala"] [class*="categoryInfo"] > b {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #a93526) 40%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #a93526) !important;
+  font-size: 18px !important;
+}
+main[data-tema="cakrawala"] [class*="categoryInfo"] > i {
+  background: transparent !important;
+  background-image: none !important;
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="categoryInfo"] > b,
+main[data-tema="cakrawala"] [class*="categoryInfo"] > b * {
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* ---------- Statistik: lubang donat dan angka di tengah ---------- */
+main[data-tema="cakrawala"] [class*="genderChart"]:before {
+  background: var(--public-surface, #fffdf8) !important;
+}
+main[data-tema="cakrawala"] [class*="genderChart"] strong {
+  color: var(--public-text, #202126) !important;
+}
+main[data-tema="cakrawala"] [class*="genderChart"] span {
+  color: color-mix(in srgb, var(--public-text, #202126) 72%, transparent) !important;
+}
+
+/* ---------- Daftar kategori (berita, pengumuman): lencana angka ---------- */
+main[data-tema="cakrawala"] [class*="categoryList"] > a small,
+main[data-tema="cakrawala"] [class*="categoryList"] > a > i {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 22%, transparent) !important;
+  border-radius: 999px !important;
+  color: color-mix(in srgb, var(--public-text, #202126) 82%, transparent) !important;
+}
+main[data-tema="cakrawala"] [class*="categoryIcon"],
+main[data-tema="cakrawala"] [class*="categoryList"] > a > span {
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="categoryList"] > a[class*="Active"] {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: inset 2px 0 0 var(--public-accent, #a93526);
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* ---------- Layanan surat: panel akun, tombol ajukan, dan alur ---------- */
+main[data-tema="cakrawala"]
+  :is(
+    [class*="loginButton"],
+    [class*="registerButton"],
+    [class*="apply"],
+    [class*="help"] > a,
+    [class*="notice"] > a
+  ) {
+  background: var(--public-accent, #a93526) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #a93526) !important;
+  border-radius: 999px !important;
+  color: #fffdf8 !important;
+}
+main[data-tema="cakrawala"] :is([class*="registerButton"], [class*="secondaryAction"]) {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 30%, transparent) !important;
+  color: var(--public-text, #202126) !important;
+}
+main[data-tema="cakrawala"] [class*="headingIcon"],
+main[data-tema="cakrawala"] [class*="step"] > span:first-child {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #a93526) 42%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #a93526) !important;
+}
+main[data-tema="cakrawala"] [class*="serviceIcon"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #a93526) 38%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* Tombol sekunder layanan surat: garis rambut, bukan pil penuh. */
+main[data-tema="cakrawala"] a[class*="registerButton"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 32%, transparent) !important;
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"] [class*="help"] a {
+  background: var(--public-accent, #a93526) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #a93526) !important;
+  border-radius: 999px !important;
+  color: #fffdf8 !important;
+}
+main[data-tema="cakrawala"] [class*="help"] a + a {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 30%, transparent) !important;
+  color: var(--public-text, #202126) !important;
+}
+
+/* Alur layanan: bingkai langkah tanpa blok abu-abu dan ikon warna tunggal. */
+main[data-tema="cakrawala"] [class*="steps"] > article {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #202126) 14%, transparent) !important;
+  border-radius: 0 !important;
+  padding-inline: 0 !important;
+}
+main[data-tema="cakrawala"] [class*="steps"] > article > span {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #a93526) 42%, transparent) !important;
+  color: var(--public-accent, #a93526) !important;
+}
+
+/* ---------- Topbar: header bersama menjadi kaca modern ----------
+ *
+ * Header publik dipakai bersama semua tema. Token layout Cakrawala bernilai
+ * "modern", yang di header bersama berarti bilah gelap + pil navigasi ala
+ * Samudra. Di sini dikembalikan ke bahasa Cakrawala modern: bilah putih
+ * kaca lengket, merek sans tebal, navigasi pil dengan penanda aksen, dan
+ * tombol masuk bergradasi.
+ */
+main[data-tema="cakrawala"] > header {
+  background: color-mix(in srgb, var(--public-surface, #ffffff) 82%, transparent) !important;
+  backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #202126) 9%, transparent) !important;
+  box-shadow: 0 10px 34px -18px rgb(16 24 40 / 0.22) !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="brandText"]) :is(strong, b) {
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="brandText"]) small {
+  color: color-mix(in srgb, var(--public-text, #202126) 62%, transparent) !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="logoFallback"]) {
+  background: linear-gradient(
+    135deg,
+    var(--public-accent, #a93526),
+    var(--public-secondary, #1f4c38)
+  ) !important;
+  color: #fff !important;
+  border-radius: 12px !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="nav"]) {
+  color: var(--public-text, #202126) !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="nav"]) > a,
+main[data-tema="cakrawala"] > header :is([class*="dropdown"]) > summary {
+  border-radius: 999px !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="nav"]) > a:hover,
+main[data-tema="cakrawala"] > header :is([class*="dropdown"]) > summary:hover {
+  color: var(--public-accent, #a93526) !important;
+  background: color-mix(in srgb, var(--public-accent, #a93526) 8%, transparent) !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="nav"]) .active {
+  background: transparent !important;
+  color: var(--public-accent, #a93526) !important;
+  font-weight: 800 !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="nav"]) .active:after {
+  display: block !important;
+  background: var(--public-accent, #a93526) !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="login"]) {
+  background: linear-gradient(
+    135deg,
+    var(--public-accent, #a93526),
+    var(--public-secondary, #1f4c38)
+  ) !important;
+  color: #fff !important;
+  border-radius: 999px !important;
+  box-shadow: 0 12px 26px -10px color-mix(in srgb, var(--public-accent, #a93526) 60%, transparent) !important;
+  min-width: 104px !important;
+  justify-content: center !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="login"]):hover {
+  filter: brightness(1.08) !important;
+}
+
+main[data-tema="cakrawala"] > header :is([class*="dropdownMenu"], [class*="loginMenuPanel"]) {
+  background: var(--public-surface, #ffffff) !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #202126) 9%, transparent) !important;
+  border-radius: 18px !important;
+  box-shadow: 0 24px 50px -20px rgb(16 24 40 / 0.3) !important;
+}

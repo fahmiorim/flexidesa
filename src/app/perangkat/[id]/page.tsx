@@ -5,6 +5,8 @@ import { notFound } from "next/navigation";
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import { detailPerangkatPemerintahanPublik } from "@/features/info-desa/pemerintahan/application/publik";
 import { daftarPerangkatPublik } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { mediaUrl } from "@/lib/media-url";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
 import styles from "./detail-perangkat.module.css";
@@ -12,15 +14,6 @@ import styles from "./detail-perangkat.module.css";
 export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
-
-function mediaUrl(value: string | null, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\\\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const safe = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return `/api/publik/media/${safe.map(encodeURIComponent).join("/")}`;
-}
 
 function fullName(item: { gelarDepan: string | null; nama: string; gelarBelakang: string | null }) {
   return [item.gelarDepan, item.nama, item.gelarBelakang].filter(Boolean).join(" ");
@@ -71,6 +64,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function DetailPerangkatPage({ params }: Props) {
   const [{ id }, desa] = await Promise.all([params, getIdentitasFromRequest()]);
+  const tema = await muatTemaPublik(desa.id);
   const numericId = Number(id);
   if (!Number.isSafeInteger(numericId) || numericId < 1) notFound();
   const perangkat = await daftarPerangkatPublik(desa.id);
@@ -88,7 +82,7 @@ export default async function DetailPerangkatPage({ params }: Props) {
   const birthPlace = [item.tempatLahir, dateLabel(item.tanggalLahir)].filter(Boolean).join(", ");
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader
         desa={desa}
         location={location}

@@ -19,7 +19,6 @@ import { validasiJawaban } from "@/features/layanan-warga/survey/domain/survey";
 import {
   buildSurveyCsv,
   surveyCsvFilename,
-  type KesalahanImporSurvei,
 } from "@/features/layanan-warga/survey/domain/survey-csv";
 import {
   getSurvey,
@@ -75,13 +74,6 @@ async function pastikanSurvei(villageId: number, surveyId: number) {
 /** Hapus responden beserta jawabannya. */
 
 /** Hasil impor CSV respons survei. */
-export interface HasilImporSurvei {
-  surveyId: number;
-  diimpor: number;
-  ditolak: number;
-  /** Rincian baris yang gagal (maks. 50 ditampilkan di UI). */
-  kesalahan: KesalahanImporSurvei[];
-}
 
 /**
  * Ekspor seluruh responden + jawaban satu survei sebagai CSV.
@@ -166,7 +158,7 @@ export async function simpanResponsPublikData(
 }
 
 /** Hasil perhitungan skor satu survei untuk laporan formal. */
-export interface LaporanSkorData {
+interface LaporanSkorData {
   survei: Awaited<ReturnType<typeof pastikanSurvei>>;
   jumlahResponden: number;
   rataRata: number;

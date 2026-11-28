@@ -26,7 +26,7 @@ export interface SuratUntukVerifikasi {
 }
 
 /** Baris antrean lengkap dengan tahap aktif dan kewenangan pengguna. */
-export interface BarisAntreanVerifikasi<T extends SuratUntukVerifikasi> {
+interface BarisAntreanVerifikasi<T extends SuratUntukVerifikasi> {
   surat: T;
   /** Tahap yang sedang menunggu; `null` bila tidak ada tahap aktif. */
   langkah: VerificationStep | null;

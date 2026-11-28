@@ -63,7 +63,7 @@ export async function findLaporanDokumen(
   return { ...keRow(row), jalurFile: row.jalurFile };
 }
 
-export interface LaporanDokumenInsert {
+interface LaporanDokumenInsert {
   tipe: string;
   judul: string;
   tahun: number;

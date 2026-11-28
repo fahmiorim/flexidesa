@@ -38,7 +38,7 @@ export async function listRegions(villageId: number) {
     .orderBy(asc(regions.sortOrder), asc(regions.dusun), asc(regions.rw), asc(regions.rt));
 }
 
-export interface RingkasanDusun extends JumlahWilayah {
+interface RingkasanDusun extends JumlahWilayah {
   dusun: string;
   jumlahRw: number;
   jumlahRt: number;
@@ -47,7 +47,7 @@ export interface RingkasanDusun extends JumlahWilayah {
   kepalaResidentId: number | null;
 }
 
-export interface WilayahAdministratifData {
+interface WilayahAdministratifData {
   rows: WilayahDenganJumlah[];
   perDusun: RingkasanDusun[];
   ringkasan: JumlahWilayah;
@@ -59,7 +59,7 @@ export interface WilayahAdministratifData {
   tanpaWilayah: JumlahWilayah;
 }
 
-export type ProfilWilayahValues = {
+type ProfilWilayahValues = {
   luasWilayah: string | null;
   batasUtara: string | null;
   batasSelatan: string | null;

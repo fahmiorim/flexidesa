@@ -59,7 +59,7 @@ export async function getRiwayatPendudukById(id: number) {
   return getRiwayatById(villageId, id);
 }
 
-/** Konteks form ubah status dasar: pilihan status yang diizinkan OpenSID. */
+/** Konteks form ubah status dasar: pilihan status yang diizinkan. */
 export async function getKonteksMutasiPenduduk(residentId: number) {
   const user = await requirePermission(PENDUDUK_RESOURCE, "read");
   const villageId = await resolveVillageId(user);
@@ -206,9 +206,9 @@ export async function catatPindahKeluar(input: CatatPindahKeluarInput) {
 }
 
 /**
- * Ubah status dasar penduduk (paritas `update_status_dasar` OpenSID).
+ * Ubah status dasar penduduk.
  * Hanya untuk penduduk yang masih `alive`; kepala KK beranggota banyak
- * tidak dapat langsung "Mati" — samakan dengan pengecualian OpenSID.
+ * tidak dapat langsung "Mati".
  */
 export async function ubahStatusDasar(input: UbahStatusDasarInput) {
   const user = await requirePermission(PENDUDUK_RESOURCE, "update");
@@ -271,7 +271,7 @@ export async function ubahStatusDasar(input: UbahStatusDasarInput) {
 }
 
 /**
- * Kembalikan status dasar penduduk menjadi Hidup (paritas `kembalikan_status`).
+ * Kembalikan status dasar penduduk menjadi Hidup.
  */
 export async function kembalikanStatusPenduduk(residentId: number) {
   const user = await requirePermission(PENDUDUK_RESOURCE, "update");
@@ -311,7 +311,7 @@ export async function kembalikanStatusMassal(residentIds: number[]) {
   return { jumlah };
 }
 
-/** Perbarui catatan riwayat (paritas `penduduk_log/update`). */
+/** Perbarui catatan riwayat. */
 export async function ubahRiwayat(
   id: number,
   input: {

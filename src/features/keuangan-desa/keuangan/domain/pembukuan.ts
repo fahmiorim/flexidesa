@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import { z } from "zod";
 
 import { formatMoney, toMinor } from "@/features/keuangan-desa/keuangan/domain/keuangan";
@@ -10,8 +12,8 @@ import { formatMoney, toMinor } from "@/features/keuangan-desa/keuangan/domain/k
  * anggaran; saldo diturunkan dari selisih total kedua jenis.
  */
 
-export const PEMBUKUAN_JENIS = ["pendapatan", "belanja"] as const;
-export type PembukuanJenis = (typeof PEMBUKUAN_JENIS)[number];
+const PEMBUKUAN_JENIS = ["pendapatan", "belanja"] as const;
+type PembukuanJenis = (typeof PEMBUKUAN_JENIS)[number];
 
 export const pembukuanFormSchema = z.object({
   tanggal: z.iso.date("Tanggal transaksi tidak valid."),
@@ -38,7 +40,7 @@ export interface PembukuanBaris {
   jenis: PembukuanJenis;
 }
 
-export interface PembukuanRingkas {
+interface PembukuanRingkas {
   totalPendapatan: string;
   totalBelanja: string;
   /** Saldo berjalan = total pendapatan − total belanja (boleh negatif). */

@@ -3,7 +3,6 @@ import { z } from "zod";
 export const KEHADIRAN_RESOURCE = "kehadiran";
 
 export const kehadiranStatusSchema = z.enum(["hadir", "izin", "sakit", "alpa"]);
-export type KehadiranStatus = z.infer<typeof kehadiranStatusSchema>;
 
 export const kehadiranFormSchema = z.object({
   perangkatId: z.coerce.number().int().positive(),

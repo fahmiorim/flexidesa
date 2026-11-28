@@ -50,7 +50,7 @@ describe("jamKerjaFormSchema", () => {
     ).toBe(false);
   });
 
-  it("menolak jam keluar lebih kecil dari jam masuk seperti OpenSID", () => {
+  it("menolak jam keluar lebih kecil dari jam masuk", () => {
     const hasil = jamKerjaFormSchema.safeParse({
       jamMasuk: "08:00",
       jamKeluar: "07:59",
@@ -77,7 +77,7 @@ describe("jamKerjaFormSchema", () => {
     ).toBe(true);
   });
 
-  it("membatasi keterangan 300 karakter seperti formulir OpenSID", () => {
+  it("membatasi keterangan 300 karakter", () => {
     expect(
       jamKerjaFormSchema.safeParse({
         jamMasuk: "08:00",

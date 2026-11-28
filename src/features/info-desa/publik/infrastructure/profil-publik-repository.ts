@@ -18,7 +18,7 @@ import {
   profilDesa,
 } from "@/db/schema";
 
-export interface ProfilRingkas {
+interface ProfilRingkas {
   visi: string | null;
   misi: string | null;
   sejarah: string | null;
@@ -72,7 +72,7 @@ export async function getProfilDesa(villageId: number): Promise<ProfilRingkas | 
 
 /* -------------------------------------------------------------- perangkat */
 
-export interface PerangkatRingkas {
+interface PerangkatRingkas {
   id: number;
   nama: string;
   gelarDepan: string | null;

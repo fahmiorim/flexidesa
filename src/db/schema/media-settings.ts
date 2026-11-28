@@ -38,5 +38,3 @@ export const mediaSettings = mysqlTable(
   ],
 );
 
-export type MediaSetting = typeof mediaSettings.$inferSelect;
-export type NewMediaSetting = typeof mediaSettings.$inferInsert;

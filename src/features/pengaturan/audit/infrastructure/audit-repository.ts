@@ -6,7 +6,7 @@ import { db } from "@/db";
 import { auditLogs, users, villages } from "@/db/schema";
 import type { AuditEventInput, AuditLogRow } from "@/features/pengaturan/audit/domain/audit";
 
-export interface AuditLogPage {
+interface AuditLogPage {
   rows: AuditLogRow[];
   total: number;
   page: number;

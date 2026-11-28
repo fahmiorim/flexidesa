@@ -1,5 +1,5 @@
 /**
- * Mode penomoran surat layanan (paritas SID).
+ * Mode penomoran surat layanan.
  *
  * Nilai disimpan pada `villages.penomoran_surat` agar dapat diubah operator
  * lewat Pengaturan > Identitas Desa.

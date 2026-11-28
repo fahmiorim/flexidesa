@@ -23,7 +23,7 @@ import { simpanJabatanFormAction } from "@/features/info-desa/pemerintahan/prese
 import { PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import { createIdleActionState } from "@/lib/action-state";
 
-export interface JabatanKelolaItem {
+interface JabatanKelolaItem {
   id: number;
   nama: string;
   jenis: string;

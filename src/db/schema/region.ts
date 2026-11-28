@@ -70,5 +70,3 @@ export const regions = mysqlTable(
   ],
 );
 
-export type Region = typeof regions.$inferSelect;
-export type NewRegion = typeof regions.$inferInsert;

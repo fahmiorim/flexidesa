@@ -78,5 +78,3 @@ export const residentMutations = mysqlTable(
   ],
 );
 
-export type ResidentMutation = typeof residentMutations.$inferSelect;
-export type NewResidentMutation = typeof residentMutations.$inferInsert;

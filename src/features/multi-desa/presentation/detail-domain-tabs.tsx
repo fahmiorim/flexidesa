@@ -94,7 +94,7 @@ function DaftarAlias({
 }) {
   return (
     <TableScroll className="domain-detail-table-wrap">
-      <Table className="tenant-table domain-alias-table">
+      <Table className="domain-alias-table">
         <THead>
           <Row>
             <HeaderCell>Domain</HeaderCell>

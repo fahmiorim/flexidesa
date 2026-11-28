@@ -173,5 +173,3 @@ export const cutiKuota = mysqlTable(
 );
 
 export type Pegawai = typeof kepegawaianPegawai.$inferSelect;
-export type NewPegawai = typeof kepegawaianPegawai.$inferInsert;
-export type CutiPegawai = typeof cutiPegawai.$inferSelect;

@@ -111,7 +111,7 @@ describe("pendudukFormSchema", () => {
     expect(result.success).toBe(false);
   });
 
-  it("menerima field paritas SID dan mengubah nilai kosong menjadi null", () => {
+  it("menerima field opsional dan mengubah nilai kosong menjadi null", () => {
     const result = pendudukFormSchema.parse({
       ...minimalInput,
       birthCertificateNumber: "AK-123",

@@ -53,7 +53,7 @@ export interface RingkasanDns {
   bermasalah: number;
 }
 
-export interface PemeriksaanDomain {
+interface PemeriksaanDomain {
   ssl: HasilSslRow[];
   dns: HasilDnsRow[];
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { ButtonLink } from "@/components/ui/button-link";
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { daftarPaketPlatform } from "@/features/multi-desa/application/paket-langganan-use-cases";
 import {
@@ -56,8 +57,8 @@ export default async function SuperAdminPaketPage() {
             title="Belum ada paket"
           />
         ) : (
-          <TableScroll className="tenant-table-scroll">
-            <Table className="tenant-table tenant-table-list">
+          <TableScroll frame>
+            <Table>
               <THead>
                 <Row>
                   <HeaderCell scope="col">Paket</HeaderCell>
@@ -89,7 +90,7 @@ export default async function SuperAdminPaketPage() {
                       {item.publishedVersion ? (
                         <span>v{item.publishedVersion.version}</span>
                       ) : (
-                        <span className="tenant-secondary">Belum diterbitkan</span>
+                        <SecondaryText>Belum diterbitkan</SecondaryText>
                       )}
                     </Cell>
                     <Cell>
@@ -98,7 +99,7 @@ export default async function SuperAdminPaketPage() {
                           Draf v{item.draftVersion.version}
                         </span>
                       ) : (
-                        <span className="tenant-secondary">Tidak ada</span>
+                        <SecondaryText>Tidak ada</SecondaryText>
                       )}
                     </Cell>
                     <Cell>

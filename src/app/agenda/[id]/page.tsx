@@ -7,6 +7,8 @@ import {
 } from "@/features/info-desa/agenda/application/agenda-use-cases";
 import { agendaJamLabel, agendaTanggalPanjang } from "@/features/info-desa/agenda/domain/agenda";
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { plainText } from "@/lib/plain-text";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
 import styles from "./detail-agenda.module.css";
@@ -19,16 +21,6 @@ function locationLabel(desa: {
   namaPropinsi: string | null;
 }) {
   return [desa.namaKecamatan, desa.namaKabupaten, desa.namaPropinsi].filter(Boolean).join(", ");
-}
-function plainText(value: string | null) {
-  return (value ?? "")
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/\s+/g, " ")
-    .trim();
 }
 
 export async function generateMetadata({ params }: Props) {
@@ -43,6 +35,7 @@ export async function generateMetadata({ params }: Props) {
 }
 export default async function DetailAgendaPage({ params }: Props) {
   const [{ id }, desa] = await Promise.all([params, getIdentitasFromRequest()]);
+  const tema = await muatTemaPublik(desa.id);
   const item = await detailAgendaPublik(desa.id, Number(id));
   if (!item) notFound();
   const [others] = await Promise.all([agendaMendatang(desa.id, 8)]);
@@ -67,7 +60,7 @@ export default async function DetailAgendaPage({ params }: Props) {
         ? styles.live
         : styles.done;
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/agenda" />
       <section className={styles.hero}>
         <div>

@@ -26,7 +26,7 @@ export const KODE_JENIS_DOKUMEN = Object.keys(JENIS_DOKUMEN_WARGA) as [
   ...JenisDokumenWarga[],
 ];
 
-export const jenisDokumenWargaSchema = z.enum(KODE_JENIS_DOKUMEN);
+const jenisDokumenWargaSchema = z.enum(KODE_JENIS_DOKUMEN);
 
 export const dokumenWargaSchema = z.object({
   jenis: jenisDokumenWargaSchema,

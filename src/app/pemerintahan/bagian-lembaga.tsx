@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { mediaUrl } from "@/lib/media-url";
+
 import {
   FotoPerangkat,
-  mediaUrl,
   namaLengkap,
   tugasJabatan,
   type LembagaPemerintahan,

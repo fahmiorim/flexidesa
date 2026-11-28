@@ -11,7 +11,7 @@ import { createHmac, randomInt, timingSafeEqual } from "node:crypto";
  */
 export const MASA_BERLAKU_CAPTCHA_MS = 10 * 60 * 1000;
 
-export interface CaptchaChallenge {
+interface CaptchaChallenge {
   pertanyaan: string;
   token: string;
 }

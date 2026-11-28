@@ -26,7 +26,7 @@ function labelGender(gender: "male" | "female" | undefined): string {
 /**
  * Rekapitulasi layanan PAUD 2-6 tahun.
  *
- * Meniru `rekapitulasi-bulanan-balita.blade.php` OpenSID: ringkasan sasaran,
+ * Ringkasan sasaran,
  * matriks status kehadiran per bulan, tabel statistik kehadiran bulanan, dan
  * panduan layanan PAUD.
  */

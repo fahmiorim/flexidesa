@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   ambilTemplateWebsite,
@@ -18,6 +20,7 @@ import {
   PlatformEmpty,
   PlatformPageHeader,
   PlatformStat,
+  PlatformStatGrid,
 } from "@/features/multi-desa/presentation/platform-ui";
 
 import { pastikanSuperAdmin } from "../../guard";
@@ -53,7 +56,7 @@ export default async function SuperAdminPenggunaanTemplatePage({ searchParams }:
     <>
       <PlatformPageHeader path="/super-admin/template/penggunaan" />
 
-      <div className="platform-stat-grid template-stat-grid">
+      <PlatformStatGrid columns={4}>
         <PlatformStat
           icon={
             <>
@@ -102,7 +105,7 @@ export default async function SuperAdminPenggunaanTemplatePage({ searchParams }:
           tone="ungu"
           value={dipilih ? dipilih.name : "—"}
         />
-      </div>
+      </PlatformStatGrid>
 
       <PlatformCard
         description="Pilih template untuk melihat pemakainya."
@@ -111,16 +114,17 @@ export default async function SuperAdminPenggunaanTemplatePage({ searchParams }:
         {templates.length > 0 ? (
           <>
             <form className="template-filter-bar" method="get">
-              <label className="form-field">
-                <span className="form-label">Template</span>
-                <select className="form-input" defaultValue={dipilih?.id ?? ""} name="template">
-                  {templates.map((item) => (
-                    <option key={item.id} value={item.id}>
-                      {item.name} · v{item.version} · {LABEL_STATUS_TEMPLATE[item.status]}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              <FormField
+                defaultValue={dipilih?.id ?? ""}
+                id="template"
+                kind="select"
+                label="Template"
+                name="template"
+                options={templates.map((item) => ({
+                  value: String(item.id),
+                  label: `${item.name} · v${item.version} · ${LABEL_STATUS_TEMPLATE[item.status]}`,
+                }))}
+              />
               <Button variant="secondary" type="submit">
                 Tampilkan
               </Button>
@@ -159,8 +163,8 @@ export default async function SuperAdminPenggunaanTemplatePage({ searchParams }:
             ) : null}
 
             {penggunaan.length > 0 ? (
-              <TableScroll className="tenant-table-scroll">
-                <Table className="tenant-table">
+              <TableScroll frame>
+                <Table>
                   <THead>
                     <Row>
                       <HeaderCell scope="col">Desa</HeaderCell>
@@ -180,9 +184,7 @@ export default async function SuperAdminPenggunaanTemplatePage({ searchParams }:
                           <strong>{item.namaDesa ?? "Tanpa nama"}</strong>
                         </Cell>
                         <Cell>
-                          {item.domain ?? (
-                            <span className="tenant-secondary">Belum ada domain</span>
-                          )}
+                          {item.domain ?? <SecondaryText>Belum ada domain</SecondaryText>}
                         </Cell>
                         <Cell>{item.themeNama}</Cell>
                         <Cell>

@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import { formatMoney, realisasiPersen, sumMoney, toMinor, type KeuanganBarisDTO } from "./keuangan";
 import type { TriwulanBarisInput } from "./laporan-triwulan";
 
@@ -75,7 +77,7 @@ export function rekonsiliasiBidang(
   });
 }
 
-export interface RekonsiliasiTotal {
+interface RekonsiliasiTotal {
   anggaran: string;
   realisasiTahunan: string;
   realisasiTriwulan: string;

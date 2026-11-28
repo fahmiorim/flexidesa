@@ -1,7 +1,7 @@
 import { type TipePeta } from "@/features/info-desa/wilayah/domain/wilayah";
 import { parseGeoJsonRings } from "@/features/pertanahan-gis/gis/domain/peta-cetak";
 
-export interface TilePeta {
+interface TilePeta {
   url: string;
   atribusi: string;
   maxZoom: number;

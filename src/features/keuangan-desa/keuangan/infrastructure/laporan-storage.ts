@@ -37,7 +37,7 @@ async function pastikanDirektori(absolut: string): Promise<void> {
  * Ubah jalur relatif menjadi jalur absolut, sambil menolak percobaan keluar
  * dari akar penyimpanan (path traversal).
  */
-export function jalurAbsolutLaporan(relatif: string): string {
+function jalurAbsolutLaporan(relatif: string): string {
   const absolut = path.resolve(AKAR_PENYIMPANAN, relatif);
   const akar = path.resolve(AKAR_PENYIMPANAN);
   if (absolut !== akar && !absolut.startsWith(akar + path.sep)) {

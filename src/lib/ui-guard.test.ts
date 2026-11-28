@@ -18,9 +18,12 @@ import { BASELINE_UI_ADMIN } from "./ui-guard-baseline";
  */
 const AKAR_ADMIN = path.join(process.cwd(), "src", "app", "(admin)");
 const AKAR_FITUR = path.join(process.cwd(), "src", "features");
+const AKAR_SUPER_ADMIN = path.join(AKAR_ADMIN, "super-admin");
 const CETAK = /\/cetak\//;
 const POLA_TOMBOL = /<button(?=[\s>])/g;
 const POLA_TABEL = /<table(?=[\s>])/g;
+const POLA_INPUT = /<(input|select)(?=[\s>])/g;
+const POLA_ANCHOR_TOMBOL = /<a[^>]*className="button/g;
 const POLA_DATA_TABLE = /data-table/;
 
 function daftarBerkas(direktori: string): string[] {
@@ -88,6 +91,20 @@ describe("guard UI admin", () => {
         );
       }
     }
+
+    expect(pelanggaran).toEqual([]);
+  });
+
+  it("tidak memakai input/select mentah atau tautan tombol mentah di super-admin", () => {
+    const pelanggaran = daftarBerkas(AKAR_SUPER_ADMIN)
+      .filter((berkas) => {
+        const isi = readFileSync(berkas, "utf8");
+        return (
+          (isi.match(POLA_INPUT) ?? []).length > 0 ||
+          (isi.match(POLA_ANCHOR_TOMBOL) ?? []).length > 0
+        );
+      })
+      .map(jalurRelatif);
 
     expect(pelanggaran).toEqual([]);
   });

@@ -9,6 +9,7 @@ import {
   daftarVideoGaleriPublik,
 } from "@/features/info-desa/publik/application/konten-publik";
 import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { mediaUrl } from "@/lib/media-url";
 import { resolveTema } from "@/themes/registry";
 import { validasiOpsiTenant } from "@/themes/types";
 
@@ -22,17 +23,6 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 type Props = { searchParams: Promise<{ q?: string; tipe?: string; kategori?: string }> };
 
-function mediaUrl(value: string | null, villageId: number): string | null {
-  if (!value) return null;
-  const segments = value.split(/[\\/]/).filter(Boolean);
-  if (
-    !segments.length ||
-    segments.some((part) => part === "." || part === ".." || part.includes(".."))
-  )
-    return null;
-  const path = segments[0] === String(villageId) ? segments : [String(villageId), ...segments];
-  return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
-}
 function locationLabel(desa: {
   namaKecamatan: string | null;
   namaKabupaten: string | null;
@@ -95,7 +85,7 @@ export default async function GaleriPage({ searchParams }: Props) {
     (heroAlbum ? mediaUrl(heroAlbum.sampul, desa.id) : null) ?? mediaUrl(fotoFallback, desa.id);
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/galeri" />
       <section className={styles.hero}>
         <div className={styles.heroInner}>

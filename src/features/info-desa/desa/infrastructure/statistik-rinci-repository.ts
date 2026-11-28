@@ -8,7 +8,7 @@ import { areas, educations, occupations, regions, residents } from "@/db/schema"
 const alive = (villageId: number) =>
   and(eq(residents.villageId, villageId), eq(residents.lifeStatus, "alive"));
 
-export interface BarisKelompok {
+interface BarisKelompok {
   label: string;
   total: number | string;
 }
@@ -21,13 +21,13 @@ export interface BarisWilayah {
   keluarga: number | string | null;
 }
 
-export interface BarisPetaWilayah {
+interface BarisPetaWilayah {
   nama: string;
   deskripsi: string | null;
   path: string | null;
 }
 
-export interface RincianStatistikQuery {
+interface RincianStatistikQuery {
   kelompokUsia: BarisKelompok[];
   pendidikan: BarisKelompok[];
   pekerjaan: BarisKelompok[];

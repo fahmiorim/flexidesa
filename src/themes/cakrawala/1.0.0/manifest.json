@@ -1,0 +1,7 @@
+{
+  "slug": "cakrawala",
+  "version": "1.0.0",
+  "kompatibilitas": "modern terang: hero foto gelap membulat, kartu putih beradius besar, pil aksi bergradasi, footer panel gelap",
+  "surfaces": ["beranda", "profil", "konten", "data", "media", "layanan"],
+  "preview": "/themes/cakrawala/preview.svg"
+}

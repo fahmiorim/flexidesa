@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 /**
  * Linimasa dokumentasi publik proyek pembangunan.
  *
@@ -6,9 +8,9 @@
  * tanpa basis data.
  */
 
-export type JenisLinimasa = "mulai" | "dokumentasi" | "selesai";
+type JenisLinimasa = "mulai" | "dokumentasi" | "selesai";
 
-export interface DokumentasiLinimasa {
+interface DokumentasiLinimasa {
   id: number;
   gambar: string | null;
   judul: string | null;
@@ -16,7 +18,7 @@ export interface DokumentasiLinimasa {
   createdAt: Date | null;
 }
 
-export interface ProyekLinimasa {
+interface ProyekLinimasa {
   mulai: string | null;
   selesai: string | null;
   status: string;
@@ -24,7 +26,7 @@ export interface ProyekLinimasa {
   dokumentasi: readonly DokumentasiLinimasa[];
 }
 
-export interface LinimasaEvent {
+interface LinimasaEvent {
   /** Kunci stabil untuk React (bukan id basis data lintas jenis). */
   id: string;
   jenis: JenisLinimasa;

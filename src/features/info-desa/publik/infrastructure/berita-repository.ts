@@ -22,7 +22,7 @@ export function beritaLayakTayang(villageId: number) {
   );
 }
 
-export interface BeritaRingkas {
+interface BeritaRingkas {
   id: number;
   judul: string;
   slug: string;
@@ -98,7 +98,7 @@ export async function countBerita(villageId: number, kategoriSlug?: string): Pro
   return row?.value ?? 0;
 }
 
-export interface BeritaDetail extends BeritaRingkas {
+interface BeritaDetail extends BeritaRingkas {
   isi: string;
   dokumen: string | null;
   hit: number;
@@ -145,7 +145,7 @@ export async function tambahHitBerita(id: number): Promise<void> {
     .where(eq(berita.id, id));
 }
 
-export interface KategoriRingkas {
+interface KategoriRingkas {
   id: number;
   nama: string;
   slug: string;

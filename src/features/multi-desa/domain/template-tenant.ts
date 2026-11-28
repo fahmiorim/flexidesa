@@ -3,7 +3,7 @@ import { z } from "zod";
 import { ACCESS_LEVELS } from "@/features/pengaturan/rbac/domain/permission";
 
 /**
- * Template fondasi tenant (Fase 2).
+ * Template fondasi tenant.
  *
  * Sebelumnya desa baru dibentuk dengan menyalin role, modul, matriks akses,
  * tema, dan menu publik milik **desa pertama** yang kebetulan ada. Itu membuat

@@ -1,0 +1,1091 @@
+/*
+ * Samudra — penyetelan halaman publik selain beranda.
+ *
+ * Halaman publik (profil, berita, agenda, layanan, dst.) memakai CSS module
+ * masing-masing dengan warna dan bentuk kartu ala Arunika. Beranda, hero, dan
+ * footer Samudra memakai komponen paket sendiri, sedangkan halaman lain
+ * dibentuk ulang di sini tanpa mengubah JSX/field/perilakunya:
+ *
+ * - Hanya aktif untuk <main data-tema="samudra"> (diisi dari slug
+ *   tema tenant), jadi Arunika, Cakrawala, dan area admin tidak tersentuh.
+ * - Hero native beranda diberi penanda data-hero dan dikecualikan.
+ * - Deklarasi penentu memakai !important karena CSS module route dimuat
+ *   setelah stylesheet global; tanpa itu aturan modul menang pada
+ *   spesifisitas yang sama.
+ *
+ * Bahasa visualnya mengikuti beranda: kanvas gelap bertoken, pita/hero
+ * bergradasi teal dengan sorot amber, bagian bergaris rambut (bukan kotak
+ * kartu), daftar bernomor, dan aksen amber untuk aksi/hari aktif.
+ */
+
+/* ---------- Kanvas & tipografi ---------- */
+main[data-tema="samudra"][class*="site"] {
+  background: var(--public-background, #06202a) !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"] h1,
+main[data-tema="samudra"] h2,
+main[data-tema="samudra"] h3,
+main[data-tema="samudra"] h4 {
+  letter-spacing: -0.02em;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+/*
+ * Teks isi: modul halaman memakai warna gelap hardcode yang dirancang untuk
+ * latar terang, sehingga di kanvas gelap menjadi tak terbaca.
+ */
+main[data-tema="samudra"]
+  :is(p, li, dt, dd, th, td, label, small, strong, b, span):not([class*="kicker"]):not(
+    [class*="eyebrow"]
+  ) {
+  color: var(--public-text, #e6f4f1);
+}
+
+main[data-tema="samudra"] :is([class*="kicker"], [class*="eyebrow"]) {
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* Skor IDM di pita beranda tetap amber. */
+main[data-tema="samudra"] [class*="pitaIdm"] strong {
+  color: var(--public-accent, #f59e0b);
+}
+
+/* ---------- Lebar konten ---------- */
+main[data-tema="samudra"] [class*="container"] {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+/* ---------- Hero halaman ---------- */
+main[data-tema="samudra"] > section[class*="hero"]:not([data-hero]) {
+  border-radius: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-accent, #f59e0b) 45%, transparent);
+  background:
+    radial-gradient(
+      circle at 82% 12%,
+      color-mix(in srgb, var(--public-accent, #f59e0b) 26%, transparent),
+      transparent 46%
+    ),
+    radial-gradient(
+      circle at 12% 90%,
+      color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--public-secondary, #083344) 94%, black),
+      color-mix(in srgb, var(--public-primary, #0e7a6d) 62%, black)
+    ) !important;
+  background-position: center !important;
+  background-size: cover !important;
+  color: #f4fbfa !important;
+}
+
+/* Dekorasi kertas, art, dan gelombang ungu/biru Arunika tidak dipakai. */
+main[data-tema="samudra"] > section[class*="hero"]:not([data-hero])::before,
+main[data-tema="samudra"] > section[class*="hero"]:not([data-hero])::after,
+main[data-tema="samudra"] :is([class*="heroPaper"], [class*="heroArt"]) {
+  display: none !important;
+}
+
+main[data-tema="samudra"] > section[class*="hero"]:not([data-hero]) h1,
+main[data-tema="samudra"] > section[class*="hero"]:not([data-hero]) p,
+main[data-tema="samudra"] > section[class*="hero"]:not([data-hero]) span,
+main[data-tema="samudra"] > section[class*="hero"]:not([data-hero]) a {
+  color: #f8fbff;
+}
+
+main[data-tema="samudra"] > section[class*="hero"]:not([data-hero]) p {
+  color: color-mix(in srgb, #f8fbff 78%, transparent);
+}
+
+main[data-tema="samudra"] [class*="breadcrumb"] {
+  color: color-mix(in srgb, #f8fbff 66%, transparent);
+}
+
+/* ---------- Bagian editorial menggantikan kotak kartu ---------- */
+main[data-tema="samudra"]
+  :is(
+    [class*="Card"],
+    [class*="card"],
+    [class*="Panel"],
+    [class*="panel"],
+    [class*="metric"],
+    [class*="Metric"],
+    [class*="allNews"],
+    [class*="article"],
+    [class*="filters"],
+    [class*="agendaPanel"],
+    [class*="albumCard"],
+    [class*="banner"],
+    [class*="catalog"],
+    [class*="commentList"],
+    [class*="contactNote"],
+    [class*="cta"],
+    [class*="detailCard"],
+    [class*="emptyState"],
+    [class*="faq"],
+    [class*="filter"],
+    [class*="help"],
+    [class*="missionList"],
+    [class*="stats"],
+    [class*="steps"],
+    [class*="timelineItem"],
+    [class*="videoCard"],
+    [class*="yearFilter"],
+    [class*="financeGrid"],
+    [class*="benefits"],
+    [class*="process"],
+    [class*="calendarCard"],
+    [class*="listCard"],
+    [class*="generalData"],
+    [class*="aboutCard"],
+    [class*="historyCard"],
+    [class*="regionCard"],
+    [class*="visionCard"],
+    [class*="potentialCard"],
+    [class*="facilityCard"],
+    [class*="infoCard"],
+    [class*="featured"]
+  ) {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 1.1rem 0 1.25rem !important;
+}
+
+/* Rel samping: tanpa latar, termasuk panel di dalamnya. */
+main[data-tema="samudra"] :is([class*="sidebar"], [class*="Sidebar"]) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="samudra"] :is([class*="sidebar"], [class*="Sidebar"]) > :is(section, div, aside) {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 1rem 0 !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="sidebar"], [class*="Sidebar"])
+  > :is(section, div, aside):first-child {
+  border-top: 2px solid color-mix(in srgb, var(--public-accent, #f59e0b) 55%, transparent) !important;
+}
+
+/* Baris daftar (kategori, populer, agenda): tanpa pil putih. */
+main[data-tema="samudra"]
+  :is(
+    [class*="categoryList"] > a,
+    [class*="popularItem"],
+    [class*="sideItem"],
+    [class*="upcoming"] > a,
+    [class*="selectedList"] > a,
+    [class*="documentList"] > *,
+    [class*="downloadActions"] > *
+  ) {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 10%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="categoryList"] > a, [class*="popularItem"], [class*="sideItem"])
+  :is(strong, b, h3, span) {
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="categoryList"] > a, [class*="popularItem"], [class*="sideItem"])
+  small {
+  background: color-mix(in srgb, var(--public-text, #e6f4f1) 10%, transparent) !important;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 80%, transparent) !important;
+}
+
+/* Kategori aktif: penanda aksen, bukan pil ungu. */
+main[data-tema="samudra"] :is([class*="categoryActive"], [class*="selected"]) {
+  background: color-mix(in srgb, var(--public-accent, #f59e0b) 16%, transparent) !important;
+  color: var(--public-text, #e6f4f1) !important;
+  border-left: 2px solid var(--public-accent, #f59e0b) !important;
+}
+
+/* ---------- Aksi & tombol: aksen amber ---------- */
+main[data-tema="samudra"]
+  :is(
+    [class*="searchForm"] button,
+    [class*="empty"] button,
+    [class*="primaryAction"],
+    [class*="readButton"],
+    [class*="download"]
+  ) {
+  background: var(--public-accent, #f59e0b) !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  color: #10202b !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="samudra"]
+  :is(
+    [class*="searchForm"] button,
+    [class*="empty"] button,
+    [class*="primaryAction"],
+    [class*="readButton"]
+  ):hover {
+  background: color-mix(in srgb, var(--public-accent, #f59e0b) 82%, white) !important;
+  color: #10202b !important;
+}
+
+main[data-tema="samudra"] [class*="filters"] > button {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 22%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"] [class*="filters"] > button[class*="selected"] {
+  background: var(--public-accent, #f59e0b) !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  color: #10202b !important;
+}
+
+/* Paginasi: berbingkai rambut, halaman aktif amber. */
+main[data-tema="samudra"] :is([class*="pagination"], [class*="Pagination"]) a {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 20%, transparent) !important;
+  border-radius: 0.55rem !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="pagination"], [class*="Pagination"])
+  :is(a[class*="active"], a[class*="Active"]) {
+  background: var(--public-accent, #f59e0b) !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  color: #10202b !important;
+  font-weight: 800;
+}
+
+/* Tab aktif: teks amber bergaris bawah, bukan blok ungu atau pil penuh. */
+main[data-tema="samudra"] [class*="tabs"] :is([class*="active"], [class*="selected"]) {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--public-accent, #f59e0b) !important;
+  box-shadow: inset 0 -2px 0 var(--public-accent, #f59e0b);
+}
+
+/* ---------- Kalender agenda ---------- */
+main[data-tema="samudra"] [class*="calendarGrid"] {
+  background: var(--public-surface, #0f2b36) !important;
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 14%, transparent) !important;
+}
+
+main[data-tema="samudra"] [class*="calendarGrid"] > b {
+  background: color-mix(
+    in srgb,
+    var(--public-text, #e6f4f1) 8%,
+    var(--public-surface, #0f2b36)
+  ) !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"] [class*="calendarGrid"] > :is(span, a) {
+  background: var(--public-surface, #0f2b36) !important;
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent) !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"] [class*="calendarGrid"] i {
+  background: var(--public-accent, #f59e0b) !important;
+}
+
+main[data-tema="samudra"] [class*="calendarGrid"] [class*="selected"] {
+  background: var(--public-accent, #f59e0b) !important;
+  color: #10202b !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="samudra"] [class*="calendarGrid"] [class*="today"] {
+  outline-color: var(--public-accent, #f59e0b) !important;
+}
+
+/* ---------- Tabel, form, media ---------- */
+main[data-tema="samudra"] :is([class*="table"], [class*="Table"]) :is(th, td) {
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 10%, transparent);
+}
+
+main[data-tema="samudra"] :is([class*="table"], [class*="Table"]) th {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 70%, transparent) !important;
+}
+
+main[data-tema="samudra"] :is(input, select, textarea) {
+  background: var(--public-surface, #0f2b36) !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 18%, transparent) !important;
+  border-radius: 0.55rem !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"] :is(input, textarea)::placeholder {
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 55%, transparent);
+}
+
+main[data-tema="samudra"] :is(input, select, textarea):focus {
+  outline: 2px solid color-mix(in srgb, var(--public-accent, #f59e0b) 55%, transparent);
+  outline-offset: 1px;
+}
+
+main[data-tema="samudra"] img {
+  border-radius: calc(var(--public-radius, 15px) * 0.6);
+}
+
+/* Kotak kosong: bingkai putus-putus rambut. */
+main[data-tema="samudra"] :is([class*="empty"], [class*="kosong"]) {
+  background: transparent !important;
+  border: 1px dashed color-mix(in srgb, var(--public-text, #e6f4f1) 22%, transparent) !important;
+  border-radius: var(--public-radius, 15px) !important;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 82%, transparent) !important;
+}
+
+@media (max-width: 620px) {
+  main[data-tema="samudra"] [class*="container"] {
+    width: calc(100% - 28px);
+  }
+}
+
+/* ---------- Navigasi tab halaman ---------- */
+main[data-tema="samudra"] [class*="tabs"] {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, transparent) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.5rem 0 !important;
+}
+
+main[data-tema="samudra"] [class*="tabs"] > a {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #e6f4f1) !important;
+  font-weight: 700;
+}
+
+main[data-tema="samudra"] [class*="tabs"] > a[aria-current="page"],
+main[data-tema="samudra"] [class*="tabs"] > a:is([class*="active"], [class*="selected"]) {
+  background: transparent !important;
+  color: var(--public-accent, #f59e0b) !important;
+  box-shadow: inset 0 -2px 0 var(--public-accent, #f59e0b);
+}
+
+/* ---------- Kartu anak di dalam blok editorial ---------- */
+main[data-tema="samudra"]
+  :is(
+    [class*="steps"],
+    [class*="stats"],
+    [class*="benefits"],
+    [class*="realizationCards"],
+    [class*="cards"],
+    [class*="metrics"]
+  )
+  > :is(article, div) {
+  background: transparent !important;
+  border: 0 !important;
+  border-left: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 14%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.85rem 0.9rem !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="steps"], [class*="stats"], [class*="benefits"], [class*="cards"])
+  > :is(article, div):first-child {
+  border-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+/* ---------- Sisa permukaan terang ---------- */
+main[data-tema="samudra"] :is([class*="monthNav"], [class*="notify"], [class*="selectedPanel"]) {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="monthNav"], [class*="notify"], [class*="selectedPanel"])
+  > :is(a, span, strong, button, h3) {
+  background: transparent !important;
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 20%, transparent) !important;
+  color: var(--public-text, #e6f4f1) !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="samudra"] [class*="selectedPanel"] > p {
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent) !important;
+}
+
+main[data-tema="samudra"] [class*="quick"] > a {
+  background: var(--public-accent, #f59e0b) !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  color: #10202b !important;
+}
+
+/* ---------- Tautan & wadah pencarian ---------- */
+main[data-tema="samudra"] a {
+  color: inherit !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="help"], [class*="empty"], [class*="notify"], [class*="quick"], [class*="agendaHead"])
+  a {
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+main[data-tema="samudra"] :is([class*="search"], [class*="Search"]) {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 20%, transparent) !important;
+  border-radius: 0.6rem !important;
+  box-shadow: none !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"] :is([class*="help"], [class*="notify"]) > a {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #f59e0b) 55%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* ---------- Navigasi bagian & blok kontak ---------- */
+main[data-tema="samudra"] [class*="sectionNav"] {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, transparent) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.45rem 0 !important;
+}
+
+main[data-tema="samudra"] [class*="sectionNav"] > * {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #e6f4f1) !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="samudra"] [class*="sectionNav"] > :is([aria-current="page"], [class*="active"]) {
+  background: transparent !important;
+  color: var(--public-accent, #f59e0b) !important;
+  box-shadow: inset 0 -2px 0 var(--public-accent, #f59e0b) !important;
+}
+
+main[data-tema="samudra"]
+  :is(
+    [class*="chat"],
+    [class*="contactList"],
+    [class*="faq"],
+    [class*="bottomCta"],
+    [class*="tracking"]
+  ) {
+  background: transparent !important;
+  border: 0 !important;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 1.1rem 0 1.25rem !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="chat"], [class*="contactList"], [class*="faq"], [class*="bottomCta"])
+  > :is(article, div, details, section) {
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Lencana/chip ungu Arunika → aksen Samudra. */
+main[data-tema="samudra"] :is([class*="badge"], [class*="chip"], [class*="phone"]) {
+  background: color-mix(in srgb, var(--public-accent, #f59e0b) 16%, transparent) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* Tombol peta/aplikasi eksternal. */
+main[data-tema="samudra"] [class*="mapAction"] {
+  background: var(--public-accent, #f59e0b) !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  color: #10202b !important;
+}
+
+/*
+ * Bersihkan semua permukaan kotak ala Arunika sekaligus: elemen tata letak di
+ * dalam halaman Samudra tidak memakai latar kotak/gradasi terang. Hero, pita
+ * statistik, dan footer dikecualikan; elemen aksi (a/button) tidak termasuk
+ * sehingga tetap bisa berwarna aksen.
+ */
+main[data-tema="samudra"]
+  :is(section, article, aside, details, div, li, span, label, dl, ul, ol):not([class*="hero"]):not(
+    [class*="Hero"]
+  ):not([class*="pita"]):not([class*="kaki"]):not([class*="jam"]) {
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* Pulihkan penanda aksen setelah pembersihan permukaan. */
+main[data-tema="samudra"] :is([class*="badge"], [class*="chip"], [class*="phone"]) {
+  background-color: color-mix(in srgb, var(--public-accent, #f59e0b) 16%, transparent) !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="tabs"], [class*="sectionNav"])
+  > :is([aria-current="page"], [class*="active"]) {
+  background-color: transparent !important;
+  box-shadow: inset 0 -2px 0 var(--public-accent, #f59e0b) !important;
+}
+
+main[data-tema="samudra"] [class*="calendarGrid"] [class*="selected"] {
+  background-color: var(--public-accent, #f59e0b) !important;
+}
+
+main[data-tema="samudra"] [class*="pitaIdm"] {
+  background-color: color-mix(in srgb, var(--public-accent, #f59e0b) 12%, transparent) !important;
+}
+
+/* Tab bergaya camelCase (statTabs), baris FAQ (summary), dan tabel data. */
+main[data-tema="samudra"] :is([class*="Tabs"], [class*="Tab"]) {
+  background-color: transparent !important;
+  border: 0 !important;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, transparent) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0.45rem 0 !important;
+}
+
+main[data-tema="samudra"] :is([class*="Tabs"], [class*="Tab"]) > * {
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="Tabs"], [class*="Tab"])
+  > :is([aria-current="page"], [class*="active"]) {
+  background: transparent !important;
+  background-image: none !important;
+  color: var(--public-accent, #f59e0b) !important;
+  box-shadow: inset 0 -2px 0 var(--public-accent, #f59e0b) !important;
+}
+
+/* Tabel data: tanpa pita putih pada kepala/kaki tabel. */
+main[data-tema="samudra"]
+  :is([class*="table"], [class*="Table"])
+  :is(thead, tbody, tfoot, tr, caption) {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+main[data-tema="samudra"] :is(summary, [class*="tableWrap"]) {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+main[data-tema="samudra"] summary {
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent) !important;
+  color: var(--public-text, #e6f4f1) !important;
+  padding: 0.7rem 0 !important;
+}
+
+main[data-tema="samudra"]
+  :is([class*="table"], [class*="Table"]):not(thead):not(tbody):not(tr):not(th):not(td) {
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* ---------- Grafik & ikon ---------- */
+/* Ancestor dibatasi pada akar bilah grafik yang sebenarnya (barList/barRow
+ * halaman statistik dan ui-chart-bars). Jangan pakai [class*="bar"] longgar:
+ * ia juga cocok dengan permukaanLebar ("Lebar" mengandung "bar"). */
+main[data-tema="samudra"]
+  :is([class*="barList"], [class*="barRow"], [class*="chart-bars"])
+  :is(span, i, div, [class*="Fill"], [class*="fill"]) {
+  background: var(--public-primary, #0e7a6d) !important;
+  background-image: none !important;
+  border-radius: 999px;
+}
+
+main[data-tema="samudra"]
+  :is([class*="barList"], [class*="barRow"], [class*="chart-bars"])
+  :is(b, strong) {
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"] :is([class*="donut"], [class*="chart"]) > :is(span, div) {
+  background-color: transparent !important;
+  border-color: color-mix(in srgb, var(--public-primary, #0e7a6d) 45%, transparent) !important;
+}
+
+main[data-tema="samudra"] :is([class*="icon"], [class*="Icon"]) {
+  background-color: color-mix(in srgb, var(--public-accent, #f59e0b) 14%, transparent) !important;
+  border-radius: 0.6rem !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+main[data-tema="samudra"] :is([class*="submit"], [class*="Send"], [class*="btn"], [class*="Btn"]) {
+  background: var(--public-accent, #f59e0b) !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  color: #10202b !important;
+  border-radius: 999px !important;
+}
+
+/* Blok ajakan menutup halaman: tombol aksen amber. */
+main[data-tema="samudra"] :is([class*="bottomCta"], [class*="cta"]) a {
+  background: var(--public-accent, #f59e0b) !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  border-radius: 999px !important;
+  color: #10202b !important;
+}
+
+main[data-tema="samudra"] :is([class*="table"], [class*="Table"]) :is(th, td) {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Visi & misi: baris misi buatan Arunika (kayu ungu + gradasi terang) menjadi
+   daftar editorial Samudra; ikon bernomor dipadatkan ke teks. */
+main[data-tema="samudra"] [class*="visionBanner"] {
+  background-image: linear-gradient(95deg, #06202a 0%, #0f3d46 58%, #0e7a6d 100%) !important;
+  background-color: #06202a !important;
+  border-radius: 0 !important;
+}
+main[data-tema="samudra"] [class*="visionQuote"] {
+  color: var(--public-text, #e6f4f1) !important;
+  text-shadow: none !important;
+}
+main[data-tema="samudra"] [class*="visionQuote"] > b,
+main[data-tema="samudra"] [class*="visionQuote"] > i {
+  color: var(--public-accent, #f59e0b) !important;
+  background: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="missionList"] li {
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 13%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+main[data-tema="samudra"] [class*="missionList"] li > b {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="missionIcon"] {
+  background: transparent !important;
+  background-image: none !important;
+}
+main[data-tema="samudra"] :is([class*="missionList"] p, [class*="sideIntro"]) {
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent) !important;
+}
+
+/* Spanduk ajakan Visi & Misi: linimasanya ungu terang buatan Arunika. */
+main[data-tema="samudra"] [class*="callout"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-top: 2px solid var(--public-secondary, #0e7a6d) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+main[data-tema="samudra"] [class*="target"] {
+  border-color: var(--public-secondary, #0e7a6d) !important;
+  background: #06202a !important;
+  box-shadow: inset 0 0 0 8px color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent) !important;
+}
+main[data-tema="samudra"] [class*="callout"] > a {
+  background: var(--public-accent, #f59e0b) !important;
+  background-image: none !important;
+  color: #10202b !important;
+}
+
+/* Sejarah: panel samping "Profil Desa" putih-lavender, item aktif, penanda
+   kutipan, dan simpul linimasa ungu dibentuk ulang sebagai editorial Samudra. */
+main[data-tema="samudra"]
+  :is([class*="profileMenu"], [class*="quoteCard"], [class*="galleryCard"]) {
+  background: transparent !important;
+  background-image: none !important;
+  border: none !important;
+  border-top: 2px solid var(--public-secondary, #0e7a6d) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+main[data-tema="samudra"] [class*="profileMenu"] > a {
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 13%, transparent) !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+main[data-tema="samudra"] [class*="profileMenu"] > a > span {
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="profileMenu"] > a[class*="active"] {
+  background: transparent !important;
+  background-image: none !important;
+  border-radius: 0 !important;
+  border-left: 2px solid var(--public-accent, #f59e0b) !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] :is([class*="quoteCard"], [class*="galleryHeading"]) > span {
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="timelineNode"] {
+  background: var(--public-secondary, #0e7a6d) !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="timelineYear"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid var(--public-accent, #f59e0b) !important;
+  border-radius: 0 !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="timelineItem"] {
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 13%, transparent) !important;
+}
+
+/* Blok ajakan penutup halaman bergaya kartu sorot ungu di Arunika. */
+main[data-tema="samudra"] [class*="callout"] > a {
+  background: var(--public-accent, #f59e0b) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  color: #10202b !important;
+  border-radius: 999px !important;
+}
+
+/* Tombol aksi halaman (filter, ajakan kotak kosong, unggah): pil aksen amber.
+   Tombol akordeon FAQ tidak termasuk karena dibentuk sebagai baris editorial. */
+main[data-tema="samudra"]
+  :is([class*="sectionHead"], [class*="filter"], [class*="actions"], [class*="heroActions"])
+  button {
+  background: var(--public-accent, #f59e0b) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  border-radius: 999px !important;
+  color: #10202b !important;
+}
+
+/* Unduh/ cetak: tombol garis rambut, bukan pil putih penuh. */
+main[data-tema="samudra"] [class*="printButton"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid var(--public-accent, #f59e0b) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* Kotak kosong dengan tombol ajakan (mis. "Hubungi Pemerintah Desa"). */
+main[data-tema="samudra"] [class*="emptyState"] > a,
+main[data-tema="samudra"] [class*="empty"] > a {
+  background: var(--public-accent, #f59e0b) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  border-radius: 999px !important;
+  color: #10202b !important;
+}
+
+/* Daftar tautan penting / kategori bergaya pil putih menjadi baris editorial. */
+main[data-tema="samudra"]
+  :is([class*="importantLinks"], [class*="categoryList"], [class*="summaryList"])
+  > a {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 13%, transparent) !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+main[data-tema="samudra"] [class*="importantLinks"] small {
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 70%, transparent) !important;
+}
+
+/* Lencana ikon berwarna lavender di daftar dan judul bagian. */
+main[data-tema="samudra"] :is(h1, h2, h3) > span:first-child {
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* Spanduk ajakan di dasar halaman (galeri, pengumuman). */
+main[data-tema="samudra"] [class*="banner"] > a {
+  background: var(--public-accent, #f59e0b) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  border-radius: 999px !important;
+  color: #10202b !important;
+}
+
+/* Potensi: daftar ringkas data potensi berpil putih menjadi baris editorial. */
+main[data-tema="samudra"] [class*="summaryList"] a {
+  background: transparent !important;
+  background-image: none !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 13%, transparent) !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+/* ---------- Teks tombol aksen ----------
+   Aturan tautan aksen di atas berwarna amber; tombol berlatar amber harus
+   memakai teks gelap. Ditaruh paling akhir agar menang urutan. */
+main[data-tema="samudra"]
+  :is(
+    [class*="quick"] > a,
+    [class*="banner"] > a,
+    [class*="callout"] > a,
+    [class*="emptyState"] > a,
+    [class*="empty"] > a,
+    [class*="printButton"],
+    [class*="pagination"] a[class*="active"],
+    [class*="pagination"] a[class*="Active"]
+  ) {
+  color: #10202b !important;
+}
+
+main[data-tema="samudra"] [class*="printButton"] {
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* Glyph dekoratif pada blok ajakan mengikuti aksen. */
+main[data-tema="samudra"] :is([class*="ctaArt"], [class*="emptyDot"]) {
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* ---------- Kontak: FAQ akordeon, panel catatan, dan tombol kanal ---------- */
+main[data-tema="samudra"] [class*="faqItem"] {
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 14%, transparent) !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+}
+main[data-tema="samudra"] [class*="faqItem"] > button {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #e6f4f1) !important;
+  padding-inline: 0 !important;
+}
+main[data-tema="samudra"] [class*="faqItem"] > button span {
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="faqItem"] > p {
+  background: transparent !important;
+  background-image: none !important;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent) !important;
+  padding-inline: 0 !important;
+}
+
+main[data-tema="samudra"] :is([class*="contactNote"], [class*="hoursNote"]) {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 14%, transparent) !important;
+  border-radius: 0 !important;
+}
+main[data-tema="samudra"] :is([class*="contactNote"], [class*="hoursNote"]) p {
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent) !important;
+}
+main[data-tema="samudra"] :is([class*="contactNote"] a, [class*="mapLink"]) {
+  background: var(--public-accent, #f59e0b) !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: #10202b !important;
+}
+main[data-tema="samudra"] [class*="contactNote"] a + a {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 30%, transparent) !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+/* ---------- Kontak: ikon kanal dan tautan bulat ---------- */
+main[data-tema="samudra"] [class*="contactList"] article > span {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #f59e0b) 42%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="contactList"] article > a {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 28%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* ---------- Rel samping halaman: baris tautan editorial ---------- */
+main[data-tema="samudra"] :is([class*="sidebar"], [class*="Sidebar"]) > a {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent) !important;
+  border-radius: 0 !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+main[data-tema="samudra"] :is([class*="sidebar"], [class*="Sidebar"]) > a > span {
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"]
+  :is([class*="sidebar"], [class*="Sidebar"])
+  > a:is([class*="active"], [aria-current]) {
+  background: transparent !important;
+  border-left: 2px solid var(--public-accent, #f59e0b) !important;
+  border-radius: 0 !important;
+  color: var(--public-accent, #f59e0b) !important;
+  padding-left: 0.85rem !important;
+}
+
+/* ---------- Kartu kategori potensi: ikon berwarna tunggal ---------- */
+main[data-tema="samudra"] [class*="categoryInfo"] > b {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #f59e0b) 40%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #f59e0b) !important;
+  font-size: 18px !important;
+}
+main[data-tema="samudra"] [class*="categoryInfo"] > i {
+  background: transparent !important;
+  background-image: none !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="categoryInfo"] > b,
+main[data-tema="samudra"] [class*="categoryInfo"] > b * {
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* ---------- Statistik: lubang donat dan angka di tengah ---------- */
+main[data-tema="samudra"] [class*="genderChart"]:before {
+  background: var(--public-surface, #0f2b36) !important;
+}
+main[data-tema="samudra"] [class*="genderChart"] strong {
+  color: var(--public-text, #e6f4f1) !important;
+}
+main[data-tema="samudra"] [class*="genderChart"] span {
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 72%, transparent) !important;
+}
+
+/* ---------- Daftar kategori (berita, pengumuman): lencana angka ---------- */
+main[data-tema="samudra"] [class*="categoryList"] > a small,
+main[data-tema="samudra"] [class*="categoryList"] > a > i {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 22%, transparent) !important;
+  border-radius: 999px !important;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 82%, transparent) !important;
+}
+main[data-tema="samudra"] [class*="categoryIcon"],
+main[data-tema="samudra"] [class*="categoryList"] > a > span {
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="categoryList"] > a[class*="Active"] {
+  background: transparent !important;
+  border-radius: 0 !important;
+  box-shadow: inset 2px 0 0 var(--public-accent, #f59e0b);
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* ---------- Layanan surat: panel akun, tombol ajukan, dan alur ---------- */
+main[data-tema="samudra"]
+  :is(
+    [class*="loginButton"],
+    [class*="registerButton"],
+    [class*="apply"],
+    [class*="help"] > a,
+    [class*="notice"] > a
+  ) {
+  background: var(--public-accent, #f59e0b) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  border-radius: 999px !important;
+  color: #10202b !important;
+}
+main[data-tema="samudra"] :is([class*="registerButton"], [class*="secondaryAction"]) {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 30%, transparent) !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+main[data-tema="samudra"] [class*="headingIcon"],
+main[data-tema="samudra"] [class*="step"] > span:first-child {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #f59e0b) 42%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+main[data-tema="samudra"] [class*="serviceIcon"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #f59e0b) 38%, transparent) !important;
+  border-radius: 999px !important;
+  color: var(--public-accent, #f59e0b) !important;
+}
+
+/* Tombol sekunder layanan surat: garis rambut, bukan pil penuh. */
+main[data-tema="samudra"] a[class*="registerButton"] {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 32%, transparent) !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+main[data-tema="samudra"] [class*="help"] a {
+  background: var(--public-accent, #f59e0b) !important;
+  background-image: none !important;
+  border-color: var(--public-accent, #f59e0b) !important;
+  border-radius: 999px !important;
+  color: #10202b !important;
+}
+main[data-tema="samudra"] [class*="help"] a + a {
+  background: transparent !important;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 30%, transparent) !important;
+  color: var(--public-text, #e6f4f1) !important;
+}
+
+/* Alur layanan: bingkai langkah tanpa blok abu-abu dan ikon warna tunggal. */
+main[data-tema="samudra"] [class*="steps"] > article {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 14%, transparent) !important;
+  border-radius: 0 !important;
+  padding-inline: 0 !important;
+}
+main[data-tema="samudra"] [class*="steps"] > article > span {
+  background: transparent !important;
+  background-image: none !important;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #f59e0b) 42%, transparent) !important;
+  color: var(--public-accent, #f59e0b) !important;
+}

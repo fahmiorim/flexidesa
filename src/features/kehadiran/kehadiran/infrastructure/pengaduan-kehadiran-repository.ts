@@ -11,8 +11,8 @@ import type { PengaduanKehadiranRow } from "@/features/kehadiran/kehadiran/domai
 /**
  * Daftar pengaduan kehadiran milik desa.
  *
- * Hanya desa sendiri yang terlihat; pelapor dan terlapor diambil lewat join
- * agar tabel tidak menampilkan id mentah seperti pada layar OpenSID.
+ * Hanya desa sendiri yang terlihat; pelapor dan terlapor diambil lewat
+ * join agar tabel tidak menampilkan id mentah.
  */
 export async function listPengaduanKehadiran(villageId: number): Promise<PengaduanKehadiranRow[]> {
   const rows = await db

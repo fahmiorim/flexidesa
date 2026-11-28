@@ -71,7 +71,7 @@ function buildWhere(
   if (isKelompokTipe(tipe)) filters.push(eq(kelompok.type, tipe));
   if (categoryId !== null) filters.push(eq(kelompok.categoryId, categoryId));
 
-  // Status kelompok dihitung dari kondisi ketua (paritas OpenSID).
+  // Status kelompok dihitung dari kondisi ketua.
   if (status !== null) {
     const kondisi =
       status === "aktif"
@@ -287,7 +287,7 @@ export async function insertKelompok(
     description: blankToNull(input.keterangan),
   };
 
-  // Bila ketua dipilih (paritas OpenSID), kelompok dan keanggotaan ketua
+  // Bila ketua dipilih, kelompok dan keanggotaan ketua
   // disimpan dalam satu transaksi agar tidak ada kelompok tanpa ketua.
   if (headResidentId !== null) {
     return db.transaction(async (tx) => {
@@ -358,7 +358,7 @@ export interface HasilHapusMassalKelompok {
 }
 
 /**
- * Hapus banyak kelompok sekaligus (paritas `delete_all` OpenSID).
+ * Hapus banyak kelompok sekaligus.
  *
  * Kelompok yang masih memiliki anggota dilewati, sama seperti hapus satu.
  */
@@ -570,7 +570,7 @@ export async function updateKelompokMember(
   return result.affectedRows > 0;
 }
 
-/** Lepaskan banyak anggota dari kelompoknya sekaligus (paritas OpenSID). */
+/** Lepaskan banyak anggota dari kelompoknya sekaligus. */
 export async function removeKelompokMemberMassal(
   villageId: number,
   kelompokId: number,
@@ -900,7 +900,7 @@ export interface HasilHapusMassalKategori {
 }
 
 /**
- * Hapus banyak kategori sekaligus (paritas `delete_all` OpenSID).
+ * Hapus banyak kategori sekaligus.
  *
  * Kategori yang masih dipakai kelompok dilewati, sama seperti hapus satu.
  */

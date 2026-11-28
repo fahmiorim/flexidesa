@@ -12,8 +12,8 @@ export const pesanWargaSchema = z.object({
     .max(PANJANG_MAKS_PESAN, `Pesan maksimal ${PANJANG_MAKS_PESAN} karakter.`),
 });
 
-export const PENGIRIM_PESAN = ["warga", "operator"] as const;
-export type PengirimPesan = (typeof PENGIRIM_PESAN)[number];
+const PENGIRIM_PESAN = ["warga", "operator"] as const;
+type PengirimPesan = (typeof PENGIRIM_PESAN)[number];
 
 /** Nilai `pengirim` dari DB; nilai asing dianggap pesan warga. */
 export function pengirimPesan(value: string): PengirimPesan {
@@ -49,7 +49,7 @@ export interface PesanPercakapanRow {
   dibacaOperatorPada: Date | null;
 }
 
-export interface PercakapanWargaDTO {
+interface PercakapanWargaDTO {
   residentId: number;
   nama: string;
   nik: string | null;

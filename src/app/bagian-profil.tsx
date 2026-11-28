@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { mediaUrl, type DesaPublik } from "./bagian-beranda";
+import { mediaUrl } from "@/lib/media-url";
+
+import { type DesaPublik } from "./bagian-beranda";
 import styles from "./public-home.module.css";
 
 type FotoGaleri = {

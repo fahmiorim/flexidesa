@@ -25,7 +25,7 @@ const FILTER_UMUR: Record<KelompokUmurRentan, FilterTautan> = {
 };
 
 /**
- * Tautan ke daftar penduduk RT ini, mengikuti tautan angka OpenSID.
+ * Tautan ke daftar penduduk RT ini.
  *
  * Hanya penduduk hidup yang dihitung laporan, jadi daftar pun dibatasi
  * `status=alive` agar jumlahnya sama dengan angka yang diklik.
@@ -52,8 +52,8 @@ function Nilai({ value, href }: { value: number; href?: string }) {
 /**
  * Tabel laporan kelompok rentan, dipakai halaman layar dan halaman cetak.
  *
- * Susunan kolom mengikuti OpenSID: grup "KK" berisi kolom L/P (OpenSID tidak
- * mencetak angka KK), lalu kelompok umur, cacat, sakit menahun, dan hamil.
+ * Susunan kolom: grup "KK" berisi kolom L/P (angka KK tidak ditampilkan),
+ * lalu kelompok umur, cacat, sakit menahun, dan hamil.
  * Angka menjadi tautan daftar penduduk terfilter hanya saat `tautkan` aktif
  * (halaman layar), bukan pada hasil cetak.
  */

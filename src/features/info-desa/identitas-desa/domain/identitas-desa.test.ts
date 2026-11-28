@@ -44,7 +44,7 @@ describe("profilDesaSchema — field kontak", () => {
     expect(hasil.kontakPemberitahuanJabatan).toBe("Kaur Umum");
   });
 
-  it("menolak format email tidak valid seperti OpenSID", () => {
+  it("menolak format email tidak valid", () => {
     expect(() => profilDesaSchema.parse({ ...dasar, email: "bukan-email" })).toThrow(
       "Alamat email tidak valid.",
     );

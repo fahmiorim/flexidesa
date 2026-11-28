@@ -23,7 +23,7 @@ export const LABEL_KATEGORI_TEMPLATE: Record<KategoriTemplate, string> = {
   pemerintahan: "Pemerintahan",
 };
 
-export const STATUS_TEMPLATE = ["draft", "published", "archived"] as const;
+const STATUS_TEMPLATE = ["draft", "published", "archived"] as const;
 export type StatusTemplate = (typeof STATUS_TEMPLATE)[number];
 
 export const LABEL_STATUS_TEMPLATE: Record<StatusTemplate, string> = {
@@ -58,7 +58,7 @@ const warnaSchema = z
  * seperti sebelumnya.
  */
 export const VARIAN_LAYOUT = ["klasik", "modern", "ringkas"] as const;
-export type VarianLayout = (typeof VARIAN_LAYOUT)[number];
+type VarianLayout = (typeof VARIAN_LAYOUT)[number];
 
 export const LABEL_VARIAN_LAYOUT: Record<VarianLayout, string> = {
   klasik: "Klasik — header terang, nav di tengah, hero foto di samping",

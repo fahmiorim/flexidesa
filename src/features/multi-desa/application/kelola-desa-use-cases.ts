@@ -168,7 +168,7 @@ export async function jadikanDomainUtamaDesa(input: unknown): Promise<void> {
   });
 }
 
-export interface HasilResetAdmin {
+interface HasilResetAdmin {
   username: string | null;
   email: string;
   sandiSementara: string;

@@ -23,7 +23,7 @@ import {
 } from "./bantuan";
 
 /** Kunci kolom impor peserta. */
-export type KunciImporPeserta = "sasaran" | "nomorKartu" | "namaKartu";
+type KunciImporPeserta = "sasaran" | "nomorKartu" | "namaKartu";
 
 /** Label kolom identitas sasaran menurut jenis sasaran program. */
 export function sasaranKolomLabel(sasaran: number): string {
@@ -68,14 +68,14 @@ export interface BarisImporPeserta {
 }
 
 /** Sasaran yang dapat dicocokkan dengan kode pada berkas. */
-export interface SasaranImpor {
+interface SasaranImpor {
   id: number;
   kode: string;
   nama: string;
 }
 
 /** Satu peserta yang siap disimpan. */
-export interface PesertaImporSiap {
+interface PesertaImporSiap {
   id: number;
   kode: string;
   nama: string;
@@ -84,7 +84,7 @@ export interface PesertaImporSiap {
 }
 
 /** Hasil pencocokan berkas dengan sasaran desa. */
-export interface RencanaImporPeserta {
+interface RencanaImporPeserta {
   siap: PesertaImporSiap[];
   /** Baris yang tidak dapat dipakai beserta alasannya. */
   ditolak: Array<{ kode: string; pesan: string }>;

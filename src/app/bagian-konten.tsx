@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import { mediaUrl } from "@/lib/media-url";
+
 import {
   dateLabel,
-  mediaUrl,
   type BeritaBeranda,
   type DesaPublik,
   type PengumumanBeranda,

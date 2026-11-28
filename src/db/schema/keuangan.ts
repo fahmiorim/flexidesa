@@ -83,10 +83,7 @@ export const keuangan = mysqlTable(
   ],
 );
 
-export type KeuanganTemplate = typeof keuanganTemplate.$inferSelect;
-export type NewKeuanganTemplate = typeof keuanganTemplate.$inferInsert;
 export type Keuangan = typeof keuangan.$inferSelect;
-export type NewKeuangan = typeof keuangan.$inferInsert;
 
 /**
  * `keuangan_triwulan` — realisasi belanja per bidang per triwulan.
@@ -132,8 +129,6 @@ export const keuanganTriwulan = mysqlTable(
   ],
 );
 
-export type KeuanganTriwulan = typeof keuanganTriwulan.$inferSelect;
-export type NewKeuanganTriwulan = typeof keuanganTriwulan.$inferInsert;
 
 /**
  * `keuangan_transaksi` — catatan transaksi manual keuangan.
@@ -174,10 +169,10 @@ export const keuanganTransaksi = mysqlTable(
 );
 
 /**
- * `keuangan_laporan` — arsip dokumen laporan APBDes per semester (Lapis D).
+ * `keuangan_laporan` — arsip dokumen laporan APBDes per semester.
  *
- * Mengikuti `laporan_sinkronisasi` pada sistem rujukan: dokumen diunggah
- * manual oleh operator lalu dicatat tanggal penyerahannya.
+ * Dokumen diunggah manual oleh operator lalu dicatat tanggal
+ * penyerahannya.
  * Angka laporan **tidak** diturunkan dari tabel ini.
  */
 export const keuanganLaporan = mysqlTable(
@@ -225,8 +220,6 @@ export const keuanganLaporan = mysqlTable(
   ],
 );
 
-export type KeuanganLaporan = typeof keuanganLaporan.$inferSelect;
-export type NewKeuanganLaporan = typeof keuanganLaporan.$inferInsert;
 
 /**
  * `keuangan_jurnal` — buku jurnal pembukuan kas desa (satu baris = satu mutasi).
@@ -266,8 +259,6 @@ export const keuanganJurnal = mysqlTable(
   ],
 );
 
-export type KeuanganJurnal = typeof keuanganJurnal.$inferSelect;
-export type NewKeuanganJurnal = typeof keuanganJurnal.$inferInsert;
 
 /**
  * `keuangan_saldo_bank` — saldo awal kas di bank per rekening per tahun.
@@ -296,5 +287,3 @@ export const keuanganSaldoBank = mysqlTable(
   ],
 );
 
-export type KeuanganSaldoBank = typeof keuanganSaldoBank.$inferSelect;
-export type NewKeuanganSaldoBank = typeof keuanganSaldoBank.$inferInsert;

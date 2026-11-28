@@ -7,6 +7,8 @@ import {
   daftarFaqKontak,
   pengaturanKontakPublik,
 } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { mediaUrl } from "@/lib/media-url";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import { KontakFaq } from "./kontak-faq";
@@ -24,14 +26,6 @@ function locationLabel(desa: {
 }) {
   return [desa.namaKecamatan, desa.namaKabupaten, desa.namaPropinsi].filter(Boolean).join(", ");
 }
-function mediaUrl(value: string | null, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
-}
 
 function socialUrl(value: string, base: string): string | null {
   const trimmed = value.trim();
@@ -46,6 +40,7 @@ function socialUrl(value: string, base: string): string | null {
 
 export default async function KontakPage() {
   const desa = await getIdentitasFromRequest();
+  const tema = await muatTemaPublik(desa.id);
   const [settings, faq] = await Promise.all([
     pengaturanKontakPublik(desa.id),
     daftarFaqKontak(desa.id),
@@ -71,7 +66,7 @@ export default async function KontakPage() {
     { label: "YouTube", href: socialUrl(settings.youtube ?? "", "https://youtube.com/") },
   ].filter((item): item is { label: string; href: string } => Boolean(item.href));
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/kontak" />
       <section className={styles.hero}>
         <div className={styles.container}>

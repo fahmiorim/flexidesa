@@ -84,7 +84,7 @@ export function DialogPengguna<T>({
         <form action={formAction} className="platform-dialog-form form-stack">
           {ubah ? <input name="id" type="hidden" value={pengguna.id} /> : null}
 
-          <div className="platform-form-grid">
+          <div className="ui-form-grid">
             <label className="form-field">
               <span className="form-label">Nama lengkap</span>
               <input

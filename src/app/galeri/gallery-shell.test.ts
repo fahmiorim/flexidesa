@@ -14,7 +14,7 @@ vi.mock("@/themes/renderer", () => ({
 }));
 
 const TEMA_DASAR = {
-  slug: "natra",
+  slug: "cakrawala",
   versi: "1.0.0",
   templateOptions: null as Record<string, unknown> | null,
   primary: "#e64946",
@@ -31,7 +31,7 @@ const TEMA_DASAR = {
   radius: "15px",
   style: "terang" as const,
   layout: "klasik" as const,
-  templateName: "Natra",
+  templateName: "Cakrawala",
 };
 
 describe("GalleryShell", () => {

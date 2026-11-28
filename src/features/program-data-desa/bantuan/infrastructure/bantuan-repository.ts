@@ -411,13 +411,6 @@ export async function countPesertaByProgram(villageId: number, programId: number
 }
 
 /** Ringkasan program bantuan untuk situs publik (tanpa izin admin, sadar-tenant). */
-export interface BantuanProgramPublik {
-  id: number;
-  nama: string;
-  slug: string;
-  sasaran: number;
-  asalDana: number | null;
-}
 
 /** Ringkasan jumlah program dan peserta bantuan untuk statistik publik. */
 export async function getRingkasanBantuanPublik(
@@ -443,7 +436,7 @@ export async function getRingkasanBantuanPublik(
 /**
  * Program bantuan yang diikuti satu rumah tangga (sasaran RTM).
  *
- * Dipakai halaman detail RTM (paritas OpenSID) untuk menampilkan program
+ * Dipakai halaman detail RTM untuk menampilkan program
  * kerja yang diterima RTM tersebut beserta nomor kartu pesertanya.
  */
 export async function listProgramBantuanRtm(

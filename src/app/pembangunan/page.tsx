@@ -8,6 +8,7 @@ import {
   formatAnggaran,
   statusPembangunanLabel,
 } from "@/features/pembangunan-aset/pembangunan/domain/pembangunan";
+import { mediaUrl } from "@/lib/media-url";
 import { resolveTema } from "@/themes/registry";
 import { validasiOpsiTenant } from "@/themes/types";
 
@@ -21,13 +22,6 @@ export const metadata: Metadata = {
 };
 export const dynamic = "force-dynamic";
 type Props = { searchParams: Promise<{ tahun?: string; page?: string }> };
-function mediaUrl(value: string | null | undefined, villageId: number) {
-  if (!value) return null;
-  const parts = value.split(/[\\\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((x) => x === ".." || x.includes(".."))) return null;
-  const safe = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return "/api/publik/media/" + safe.map(encodeURIComponent).join("/");
-}
 function lokasi(desa: {
   namaKecamatan: string | null;
   namaKabupaten: string | null;
@@ -49,7 +43,7 @@ export default async function PembangunanPage({ searchParams }: Props) {
     Math.min(50, Number(opsiTema.jumlah_pembangunan_perhalaman ?? 10) || 10),
   );
   // Page-size tema menjadi batas per halaman; sisa data tetap terjangkau
-  // melalui navigasi halaman berikutnya (paritas pagination OpenSID).
+  // melalui navigasi halaman berikutnya.
   const totalHalaman = Math.max(1, Math.ceil(data.rows.length / perHalaman));
   const halamanDiminta = Number(params.page);
   const halaman =
@@ -66,7 +60,7 @@ export default async function PembangunanPage({ searchParams }: Props) {
   };
   const logoUrl = mediaUrl(desa.logo, desa.id);
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader
         desa={desa}
         location={lokasi(desa)}

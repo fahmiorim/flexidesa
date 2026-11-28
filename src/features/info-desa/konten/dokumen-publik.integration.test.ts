@@ -27,8 +27,8 @@ function pastiId(row: { id: number | undefined } | undefined, label: string): nu
 /**
  * Sisipkan berita legacy yang menunjuk kategori desa lain.
  *
- * Batch 4C-1 memasang composite FK `(village_id, kategori_id)`, sehingga jalur
- * normal sudah menolak pasangan ini. Baris dibuat lewat koneksi terpisah dengan
+ * Composite FK `(village_id, kategori_id)` menolak pasangan ini pada
+ * jalur normal. Baris dibuat lewat koneksi terpisah dengan
  * pengecekan FK dimatikan untuk mereproduksi data sebelum constraint terpasang;
  * pengecualian selalu dikembalikan di blok `finally`.
  */

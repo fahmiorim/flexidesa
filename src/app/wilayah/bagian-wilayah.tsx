@@ -17,15 +17,6 @@ export type AreaShape = {
 
 export const palette = ["#12bf56", "#f4b900", "#1689f5", "#a832ed"];
 
-export function mediaUrl(value: string | null | undefined, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return `/api/publik/media/${path.map(encodeURIComponent).join("/")}`;
-}
-
 export function buildAreaShapes(
   areas: AreaDTO[],
   polygons: PolygonDTO[],
@@ -49,8 +40,4 @@ export function buildAreaShapes(
   return batas.length
     ? [{ id: -1, name: "Batas Desa", description: null, color: "#12bf56", rings: batas }, ...shapes]
     : shapes;
-}
-
-export function formatNumber(value: number) {
-  return new Intl.NumberFormat("id-ID").format(value);
 }

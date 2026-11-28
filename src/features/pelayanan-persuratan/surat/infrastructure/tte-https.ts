@@ -34,7 +34,7 @@ interface OpsiHttpsTte extends https.RequestOptions {
   autoSelectFamily?: boolean;
 }
 
-export interface OpsiTransportTte {
+interface OpsiTransportTte {
   /**
    * CA tambahan untuk pengujian dengan sertifikat lokal. Tidak pernah diisi
    * dari konfigurasi tenant maupun environment; hanya dipakai test.

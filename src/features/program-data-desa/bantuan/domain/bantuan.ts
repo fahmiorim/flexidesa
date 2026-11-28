@@ -7,7 +7,6 @@ import {
   optionalIsoDate,
   optionalSelectId,
   optionalText,
-  type LabelOption,
 } from "@/lib/forms";
 
 /**
@@ -33,7 +32,7 @@ export const BANTUAN_RESOURCE = RESOURCES.bantuan;
 
 // --- Sasaran -----------------------------------------------------------------
 
-/** Sasaran program bantuan. Angka dipertahankan sama seperti katalog rujukan. */
+/** Sasaran program bantuan. Angka mengikuti katalog sasaran. */
 export const SASARAN_BANTUAN = [1, 2, 3, 4] as const;
 export type SasaranBantuan = (typeof SASARAN_BANTUAN)[number];
 
@@ -77,8 +76,8 @@ export function isSasaranTersedia(sasaran: number): boolean {
 
 // --- Asal dana ---------------------------------------------------------------
 
-export const ASAL_DANA_BANTUAN = [1, 2, 3, 4, 5] as const;
-export type AsalDanaBantuan = (typeof ASAL_DANA_BANTUAN)[number];
+const ASAL_DANA_BANTUAN = [1, 2, 3, 4, 5] as const;
+type AsalDanaBantuan = (typeof ASAL_DANA_BANTUAN)[number];
 
 export const ASAL_DANA_LABELS: Readonly<Record<AsalDanaBantuan, string>> = {
   1: "Pusat",
@@ -99,7 +98,7 @@ export function asalDanaLabel(asalDana: number | null): string {
 // --- Status masa aktif ------------------------------------------------------
 
 /** Status masa aktif program (dihitung, bukan disimpan). */
-export type StatusMasaAktif = "belum" | "aktif" | "selesai";
+type StatusMasaAktif = "belum" | "aktif" | "selesai";
 
 /** Tanggal ISO (`YYYY-MM-DD`) → angka hari; `null` bila kosong/tidak valid. */
 function toDayNumber(value: string | null): number | null {
@@ -244,7 +243,7 @@ export interface PesertaReferenceData {
 }
 
 /** Wilayah yang menjadi domisili peserta, untuk ringkasan sebaran. */
-export interface PesertaWilayahCount {
+interface PesertaWilayahCount {
   label: string;
   total: number;
 }
@@ -259,7 +258,3 @@ export interface BantuanDetail {
 }
 
 /** Satu pilihan katalog: `id` numerik + `name` untuk ditampilkan. */
-export interface BantuanReferenceOption extends LabelOption {
-  /** Kode/nomor pendek pendukung (mis. "320101200100001"). */
-  detail: string | null;
-}

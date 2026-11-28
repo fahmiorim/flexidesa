@@ -9,10 +9,22 @@
   margin-inline: auto;
 }
 .hero {
+  /* Warna hero mengikuti token tema aktif, bukan hardcode biru. */
+  background:
+    radial-gradient(
+      circle at 78% 18%,
+      color-mix(in srgb, var(--public-accent, #f59e0b) 32%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(
+      110deg,
+      color-mix(in srgb, var(--public-secondary, #063b73) 92%, black),
+      var(--public-primary, #075b99) 55%,
+      color-mix(in srgb, var(--public-accent, #1477a6) 40%, var(--public-primary, #075b99))
+    );
   position: relative;
   min-height: 300px;
   overflow: hidden;
-  background: linear-gradient(110deg, #063b73, #075b99 55%, #1477a6);
   color: #fff;
 }
 .heroImage {
@@ -33,7 +45,11 @@
   inset: auto -5% -75px;
   height: 150px;
   border-radius: 50% 50% 0 0;
-  background: linear-gradient(100deg, #086dc9a8, #6428e8bb);
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--public-primary, #086dc9) 66%, transparent),
+    color-mix(in srgb, var(--public-accent, #6428e8) 73%, transparent)
+  );
   transform: rotate(-3deg);
   pointer-events: none;
 }
@@ -138,7 +154,11 @@
   min-width: 190px;
   padding: 8px 13px;
   border-radius: 8px;
-  background: linear-gradient(100deg, #075bea, #1529a9);
+  background: linear-gradient(
+    100deg,
+    var(--public-primary, #075bea),
+    color-mix(in srgb, var(--public-secondary, #1529a9) 86%, black)
+  );
   box-shadow: 0 5px 14px #051c4a55;
 }
 .leaderCaption strong {
@@ -156,8 +176,8 @@
   align-items: center;
   padding: 6px 11px;
   border-radius: 30px;
-  background: #12a8c6d9;
-  color: white;
+  background: var(--public-accent, #12a8c6);
+  color: #17202a;
   font-size: 10px;
   font-weight: 800;
 }
@@ -193,8 +213,8 @@
   font-weight: 850;
 }
 .primaryButton {
-  background: white;
-  color: #075bea;
+  background: var(--public-accent, #ffffff);
+  color: #17202a;
 }
 .secondaryButton {
   border: 1px solid #ffffffbd;
@@ -1012,4 +1032,125 @@
   .relatedLinks a {
     font-size: 9px;
   }
+}
+
+/*
+ * Mode gelap tema (token `style: gelap`, mis. Samudra).
+ *
+ * Bagian beranda memakai permukaan & teks dari token tema, bukan putih
+ * hardcode, sehingga teks terang tidak jatuh di atas kartu putih. Bentuk
+ * (radius, garis, tanpa bayangan) juga mengikuti identitas tema gelap.
+ */
+.site[data-gelap="ya"] .quickLinks {
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 14%, transparent);
+  background: var(--public-surface, #0f2b36);
+  box-shadow: none;
+}
+.site[data-gelap="ya"] .quickLink {
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 10%, transparent);
+}
+.site[data-gelap="ya"] .quickIcon {
+  background: color-mix(in srgb, var(--public-primary, #0e7a6d) 26%, transparent);
+  color: var(--public-accent, #f59e0b);
+}
+.site[data-gelap="ya"] .quickText small,
+.site[data-gelap="ya"] .cardHeading > div > small,
+.site[data-gelap="ya"] .statTiles small,
+.site[data-gelap="ya"] .newsSideList small,
+.site[data-gelap="ya"] .announcement small,
+.site[data-gelap="ya"] .profileMenu small,
+.site[data-gelap="ya"] .relatedLinks small,
+.site[data-gelap="ya"] .signature small,
+.site[data-gelap="ya"] .profileCard p {
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 72%, transparent);
+}
+.site[data-gelap="ya"] .welcomeCard,
+.site[data-gelap="ya"] .statsCard,
+.site[data-gelap="ya"] .newsPanel,
+.site[data-gelap="ya"] .announcementPanel,
+.site[data-gelap="ya"] .profileCard,
+.site[data-gelap="ya"] .profileMenu,
+.site[data-gelap="ya"] .galleryPanel {
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent);
+  background: var(--public-surface, #0f2b36);
+  box-shadow: none;
+  color: var(--public-text, #e6f4f1);
+}
+.site[data-gelap="ya"] .welcomeCard {
+  background: linear-gradient(
+    115deg,
+    var(--public-surface, #0f2b36),
+    color-mix(in srgb, var(--public-primary, #0e7a6d) 16%, var(--public-surface, #0f2b36))
+  );
+}
+.site[data-gelap="ya"] .statTiles > div,
+.site[data-gelap="ya"] .statTiles > a {
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--public-primary, #0e7a6d) 10%,
+    var(--public-surface, #0f2b36)
+  );
+  color: var(--public-text, #e6f4f1);
+}
+.site[data-gelap="ya"] .statTiles > div > span,
+.site[data-gelap="ya"] .statTiles > a > span,
+.site[data-gelap="ya"] .announcement > span:first-child,
+.site[data-gelap="ya"] .profileMenu > a > span {
+  background: color-mix(in srgb, var(--public-primary, #0e7a6d) 24%, transparent);
+  color: var(--public-accent, #f59e0b);
+}
+.site[data-gelap="ya"] .newsSideList > a,
+.site[data-gelap="ya"] .announcement,
+.site[data-gelap="ya"] .profileMenu > a {
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent);
+}
+.site[data-gelap="ya"] .thumbFallback,
+.site[data-gelap="ya"] .profileImageFallback,
+.site[data-gelap="ya"] .galleryGrid > a {
+  background: color-mix(in srgb, var(--public-text, #e6f4f1) 10%, var(--public-surface, #0f2b36));
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 70%, transparent);
+}
+.site[data-gelap="ya"] .profileCard a {
+  border-color: var(--public-primary, #0e7a6d);
+  color: var(--public-text, #e6f4f1);
+}
+.site[data-gelap="ya"] .cardHeading > a {
+  color: var(--public-accent, #f59e0b);
+}
+.site[data-gelap="ya"] .serviceBanner {
+  border-color: color-mix(in srgb, var(--public-accent, #f59e0b) 45%, transparent);
+  background: linear-gradient(
+    105deg,
+    color-mix(in srgb, var(--public-primary, #0e7a6d) 72%, black),
+    var(--public-surface, #0f2b36) 62%
+  );
+}
+.site[data-gelap="ya"] .bannerCopy small,
+.site[data-gelap="ya"] .bannerSteps small,
+.site[data-gelap="ya"] .bannerSteps > b,
+.site[data-gelap="ya"] .bannerSkor {
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 80%, transparent);
+}
+.site[data-gelap="ya"] .bannerSteps > span {
+  color: var(--public-accent, #f59e0b);
+}
+.site[data-gelap="ya"] .bannerLink {
+  background: color-mix(in srgb, var(--public-accent, #f59e0b) 88%, black);
+  color: #f8fafc;
+}
+.site[data-gelap="ya"] .relatedLinks h2 {
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 82%, transparent);
+}
+.site[data-gelap="ya"] .relatedLinks a {
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent);
+  background: var(--public-surface, #0f2b36);
+  color: var(--public-text, #e6f4f1);
+}
+.site[data-gelap="ya"] .empty {
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 20%, transparent);
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 68%, transparent);
+}
+.site[data-gelap="ya"] .newsFeature {
+  border-color: color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent);
 }

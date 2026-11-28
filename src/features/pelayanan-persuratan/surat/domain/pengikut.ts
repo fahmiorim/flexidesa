@@ -88,21 +88,6 @@ function isi(value: string | null | undefined): string {
   return value && value.trim() !== "" ? value : "-";
 }
 
-/** Kode yang tersedia per baris (untuk bantuan di UI template). */ export const PENGIKUT_PLACEHOLDER_CODES =
-  [
-    "no",
-    "nik",
-    "nama",
-    "jenis_kelamin",
-    "ttl",
-    "tempat_tgl_lahir",
-    "tempat_lahir",
-    "tanggal_lahir",
-    "usia",
-    "pekerjaan",
-    "alamat",
-    "keterangan",
-  ] as const;
 
 /** Nilai satu baris; dipakai bersama untuk prefix `pengikut` dan `luar`. */
 function isiBaris(

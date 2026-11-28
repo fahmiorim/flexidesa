@@ -10,7 +10,7 @@ import styles from "./stunting.module.css";
 /**
  * Tab KIA — buku Kesehatan Ibu dan Anak.
  *
- * Field mengikuti form OpenSID (`kia_form.blade.php`): Nomor KIA, Nama Ibu,
+ * Field: Nomor KIA, Nama Ibu,
  * Nama Anak, dan Hari Perkiraan Lahir. Ibu dan anak dipilih dari data penduduk
  * desa agar rujukannya tetap valid terhadap tenant.
  */

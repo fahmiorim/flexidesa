@@ -4,7 +4,7 @@ import { PDFDocument, rgb, StandardFonts, type PDFFont, type PDFPage } from "pdf
 import type { DptRow } from "@/features/kependudukan/penduduk/domain/dpt";
 
 /**
- * Laporan daftar calon pemilih, mengikuti kolom cetak OpenSID.
+ * Laporan daftar calon pemilih.
  * NIK dan nomor KK dapat disensor untuk kebutuhan tampilan publik.
  */
 

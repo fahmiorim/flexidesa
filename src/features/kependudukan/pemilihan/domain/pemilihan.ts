@@ -34,12 +34,12 @@ export interface KandidatDTO {
 }
 
 /** Satu baris rekapitulasi suara (persentase dua desimal). */
-export interface KandidatRekapRow extends KandidatDTO {
+interface KandidatRekapRow extends KandidatDTO {
   percentage: number;
 }
 
 /** Rekap suara sebuah pemilihan. */
-export interface RekapSuara {
+interface RekapSuara {
   totalSuara: number;
   rows: KandidatRekapRow[];
   /** Nama peraih suara terbanyak; `null` bila belum ada suara atau terjadi seri. */

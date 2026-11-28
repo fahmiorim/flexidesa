@@ -14,7 +14,7 @@ import { validasiDatabaseUji } from "@/testing/db-test-guard";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-034 Batch 2 — rekap kehadiran tidak boleh meminjam identitas desa lain.
+ * Rekap kehadiran tidak boleh meminjam identitas desa lain.
  *
  * Rekap mencocokkan izin warga ke perangkat lewat NIK. NIK hanya unik *per
  * desa*, jadi dua desa dapat memiliki NIK yang sama. Test ini menyiapkan satu
@@ -49,8 +49,8 @@ function dataUji(): Fixture {
 /**
  * Sisipkan satu baris izin legacy lintas desa.
  *
- * Batch 1 memasang composite FK `(village_id, resident_id)` sehingga jalur
- * normal sudah menolak pasangan ini. Baris dibuat lewat koneksi terpisah
+ * Composite FK `(village_id, resident_id)` menolak pasangan ini pada
+ * jalur normal. Baris dibuat lewat koneksi terpisah
  * dengan pengecekan FK dimatikan untuk mereproduksi data yang dibuat sebelum
  * constraint terpasang; pengecualian selalu dikembalikan di blok `finally`.
  */

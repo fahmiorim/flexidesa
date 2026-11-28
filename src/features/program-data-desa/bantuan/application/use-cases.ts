@@ -313,7 +313,7 @@ export async function hapusSemuaPeserta(programId: number): Promise<void> {
 }
 
 /** Ringkasan hasil impor peserta untuk umpan balik ke pengguna. */
-export interface ImporPesertaResult {
+interface ImporPesertaResult {
   diimpor: number;
   sudahTerdaftar: number;
   ganda: number;

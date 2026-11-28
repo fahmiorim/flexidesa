@@ -4,7 +4,9 @@ import Link from "next/link";
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import { getStatistikPublik } from "@/features/info-desa/desa/application/statistik-publik";
 import { getRincianStatistikPublik } from "@/features/info-desa/desa/application/statistik-rinci-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { formatRupiah } from "@/features/keuangan-desa/keuangan/domain/keuangan";
+import { mediaUrl } from "@/lib/media-url";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import { PrintStatisticsButton } from "./print-statistics-button";
@@ -18,14 +20,6 @@ export const dynamic = "force-dynamic";
 
 function angka(value: number) {
   return new Intl.NumberFormat("id-ID").format(value);
-}
-function mediaUrl(value: string | null, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
 }
 function locationLabel(desa: {
   namaKecamatan: string | null;
@@ -63,6 +57,7 @@ function BarList({
 
 export default async function StatistikPage() {
   const desa = await getIdentitasFromRequest();
+  const tema = await muatTemaPublik(desa.id);
   const [data, rincian] = await Promise.all([
     getStatistikPublik(desa.id),
     getRincianStatistikPublik(desa.id),
@@ -83,7 +78,7 @@ export default async function StatistikPage() {
   );
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/statistik" />
       <section className={styles.hero}>
         <div className={styles.container}>

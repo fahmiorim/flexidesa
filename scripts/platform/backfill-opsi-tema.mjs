@@ -10,20 +10,29 @@ if (!DATABASE_URL) {
   process.exit(1);
 }
 
-const DEFAULT_NATRA = {
+const DEFAULT_CAKRAWALA = {
   jumlah_pengaduan_perhalaman: 10,
   jumlah_pembangunan_perhalaman: 10,
 };
-const DEFAULT_ESENSI = {
+const DEFAULT_ARUNIKA = {
+  jumlah_pengaduan_perhalaman: 10,
+  jumlah_pembangunan_perhalaman: 10,
+};
+// `samudra` kini paket sendiri dengan tujuh opsi (sama seperti cakrawala).
+const DEFAULT_SAMUDRA = {
+  warna_dasar: "#0e7a6d",
+  statistik_desa: "1",
+  jam: "1",
+  pintasan_masuk: "1",
+  foto_tidak_tersedia: null,
   jumlah_pengaduan_perhalaman: 10,
   jumlah_pembangunan_perhalaman: 10,
 };
 
 function opsiUntuk(slug) {
-  const base =
-    slug === "natra" || slug === "samudra-modern" ? { ...DEFAULT_NATRA } : { ...DEFAULT_ESENSI };
-  // token layout legacy: modern/gelap dipertahankan via alias natra.
-  return base;
+  if (slug === "samudra") return { ...DEFAULT_SAMUDRA };
+  // token layout legacy: modern/gelap dipertahankan via paket cakrawala.
+  return slug === "cakrawala" ? { ...DEFAULT_CAKRAWALA } : { ...DEFAULT_ARUNIKA };
 }
 
 async function main() {
@@ -46,8 +55,8 @@ async function main() {
       parsed = {};
     }
     const templateOptions = opsiUntuk(row.slug);
-    // samudra-modern -> natra (alias eksplisit di registry).
-    const slugBaru = row.slug === "samudra-modern" ? "natra" : row.slug;
+    // Tidak ada rename slug: setiap slug katalog harus punya paket berkode.
+    const slugBaru = row.slug;
     const baru = {
       ...parsed,
       templateOptions,

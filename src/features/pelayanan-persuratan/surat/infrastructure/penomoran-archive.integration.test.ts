@@ -78,7 +78,7 @@ beforeAll(async () => {
 afterAll(async () => {
   if (!fixture) return;
   const { villageId } = fixture;
-  // Composite FK RESTRICT (AUD-034 4C-2a): urutan cascade antar-anak desa tidak
+  // Composite FK RESTRICT: urutan cascade antar-anak desa tidak
   // dijamin MySQL, jadi surat/jenis/klasifikasi dibersihkan eksplisit.
   await db.delete(letters).where(eq(letters.villageId, villageId));
   await db.delete(letterTypes).where(eq(letterTypes.villageId, villageId));

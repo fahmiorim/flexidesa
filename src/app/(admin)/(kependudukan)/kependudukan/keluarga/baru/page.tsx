@@ -63,7 +63,7 @@ export default async function KeluargaBaruPage() {
                 <span>Buat nomor sementara otomatis</span>
               </span>
               <span className="form-help">
-                Nomor memakai awalan 0 + kode desa + urutan, seperti OpenSID.
+                Nomor memakai awalan 0 + kode desa + urutan.
               </span>
             </label>
             <label className="form-field">

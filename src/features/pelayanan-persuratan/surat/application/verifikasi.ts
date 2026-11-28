@@ -255,7 +255,7 @@ async function terbitkanSurat(
   const mode = normalizePenomoranMode(desa.penomoranSurat);
   const pengaturan = await bacaPengaturan(villageId);
   // `formatNomorGlobal = 1` memakai format desa yang sama untuk semua jenis surat,
-  // sedangkan `0` memakai format khusus jenis surat ini (OpenSID `format_nomor_global`).
+  // sedangkan `0` memakai format khusus jenis surat ini.
   const format =
     jenis.formatNomorGlobal === 1
       ? DEFAULT_NUMBER_FORMAT
@@ -431,8 +431,8 @@ export async function verifySuratData(
 /**
  * Lanjutkan alur setelah satu tahap selesai.
  *
- * Bila Sekdes/Kades dimatikan pada Pengaturan Surat (`verifikasi_sekdes` /
- * `verifikasi_kades` OpenSID), tahap itu dianggap selesai otomatis sehingga
+ * Bila Sekdes/Kades dimatikan pada Pengaturan Surat, tahap itu dianggap
+ * selesai otomatis sehingga
  * surat tidak tertahan menunggu pejabat yang tidak ikut memverifikasi.
  */
 

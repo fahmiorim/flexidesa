@@ -1,7 +1,7 @@
 import { SKALA_MAKS } from "./konstanta";
 
 /** Satu soal yang ikut perhitungan skor. */
-export interface SoalSkor {
+interface SoalSkor {
   id: number;
   tipe: string;
   bobot: number;

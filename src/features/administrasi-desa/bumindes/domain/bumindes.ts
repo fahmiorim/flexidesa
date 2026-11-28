@@ -3,11 +3,11 @@ import { z } from "zod";
 import { optionalIsoDate } from "@/lib/forms";
 
 export const URAIAN_ITEM_MAX = 500;
-export const KETERANGAN_ITEM_MAX = 2000;
+const KETERANGAN_ITEM_MAX = 2000;
 export const NOMOR_URUT_MAX = 999_999;
 
 /** Satu buku pada katalog buku administrasi desa. */
-export interface BukuInti {
+interface BukuInti {
   kodeBuku: string;
   namaBuku: string;
   uraian: string;
@@ -144,7 +144,7 @@ export type ItemBukuInput = z.infer<typeof itemBukuFormSchema>;
 /** Baris buku untuk halaman daftar. */
 
 /** Baris item untuk tabel detail buku. */
-export interface ItemBukuRow {
+interface ItemBukuRow {
   id: number;
   bukuId: number;
   nomorUrut: number;

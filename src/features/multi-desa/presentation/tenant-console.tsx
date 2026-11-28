@@ -3,7 +3,14 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
-import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
+import { Pagination } from "@/components/ui/pagination";
+import { SecondaryText } from "@/components/ui/secondary-text";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { EmptyRow, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { Tabs } from "@/components/ui/tabs";
 import type { StatusRetensi } from "@/features/multi-desa/domain/lifecycle-tenant";
 import {
   cocokStatusTenant,
@@ -33,44 +40,22 @@ const LABEL_RETENSI: Record<StatusRetensi, string> = {
   "sudah-purge": "Sudah di-purge",
 };
 
-function nomorHalaman(aktif: number, total: number): (number | "elipsis")[] {
-  if (total <= 7) return Array.from({ length: total }, (_, index) => index + 1);
-
-  const nomor = [...new Set([1, total, aktif - 1, aktif, aktif + 1])]
-    .filter((item) => item >= 1 && item <= total)
-    .sort((a, b) => a - b);
-  const hasil: (number | "elipsis")[] = [];
-
-  for (const item of nomor) {
-    const sebelumnya = hasil[hasil.length - 1];
-    if (typeof sebelumnya === "number" && item - sebelumnya > 1) hasil.push("elipsis");
-    hasil.push(item);
-  }
-
-  return hasil;
-}
-
 function RetensiBadge({ desa }: { desa: DesaKonsolRow }) {
-  const kelas =
+  const tone =
     desa.statusRetensi === "aktif"
-      ? "tenant-status is-active"
+      ? "success"
       : desa.statusRetensi === "masa-tenggang"
-        ? "tenant-status is-grace"
+        ? "warning"
         : desa.statusRetensi === "siap-purge"
-          ? "tenant-status is-ready"
-          : "tenant-status is-purged";
+          ? "danger"
+          : "neutral";
 
   const label =
     desa.statusRetensi === "masa-tenggang" && desa.hariMenujuPurge !== null
       ? `Tenggang ${angka.format(desa.hariMenujuPurge)} hari`
       : LABEL_RETENSI[desa.statusRetensi];
 
-  return (
-    <span className={kelas}>
-      <span aria-hidden="true" />
-      {label}
-    </span>
-  );
+  return <StatusBadge tone={tone}>{label}</StatusBadge>;
 }
 
 export function TenantConsole({
@@ -181,80 +166,68 @@ export function TenantConsole({
 
   return (
     <>
-      <div className="tenant-tabs-row">
-        <div aria-label="Filter status desa" className="platform-tabs" role="group">
-          {TAB_STATUS.map((tab) => (
-            <button
-              aria-pressed={status === tab.nilai}
-              className="platform-tab"
-              key={tab.nilai}
-              onClick={() => pilihStatus(tab.nilai)}
-              type="button"
-            >
-              {tab.label}
-              <span className="platform-tab-count">{angka.format(jumlahStatus[tab.nilai])}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-      <div className="tenant-toolbar">
-        <label className="tenant-search tenant-search-dengan-ikon">
-          <span className="sr-only">Cari nama desa, kode, slug, domain, atau kecamatan</span>
-          <span aria-hidden="true" className="tenant-search-icon">
-            <svg fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-              <circle cx="10.8" cy="10.8" r="6.4" />
-              <path d="m15.6 15.6 4 4" />
-            </svg>
-          </span>
-          <input
-            className="form-input"
-            type="search"
-            placeholder="Cari desa, domain, atau kode..."
-            value={query}
-            onChange={(event) => {
-              setQuery(event.target.value);
-              setHalaman(1);
-            }}
-          />
-        </label>
-        <select
-          aria-label="Filter kecamatan"
-          className="form-input tenant-filter"
+      <Tabs
+        active={status}
+        items={TAB_STATUS.map((tab) => ({
+          id: tab.nilai,
+          label: tab.label,
+          count: jumlahStatus[tab.nilai],
+        }))}
+        label="Filter status desa"
+        onSelect={pilihStatus}
+      />
+      <div className="ui-toolbar">
+        <FormField
+          className="ui-toolbar-search"
+          containerClassName="ui-toolbar-search"
+          id="tenant-q"
+          label="Cari nama desa, kode, slug, domain, atau kecamatan"
+          placeholder="Cari desa, domain, atau kode..."
+          type="search"
+          value={query}
+          onChange={(event) => {
+            setQuery(event.target.value);
+            setHalaman(1);
+          }}
+        />
+        <FormField
+          className="ui-toolbar-filter"
+          containerClassName="ui-toolbar-filter"
+          id="tenant-kecamatan"
+          kind="select"
+          label="Kecamatan"
+          options={[
+            { value: "semua", label: "Semua kecamatan" },
+            ...opsiKecamatan.map((item) => ({ value: item, label: item })),
+            ...(adaTanpaKecamatan ? [{ value: "__tanpa__", label: "Belum diisi" }] : []),
+          ]}
           value={kecamatan}
           onChange={(event) => {
             setKecamatan(event.target.value);
             setHalaman(1);
           }}
-        >
-          <option value="semua">Semua kecamatan</option>
-          {opsiKecamatan.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-          {adaTanpaKecamatan ? <option value="__tanpa__">Belum diisi</option> : null}
-        </select>
-        <select
-          aria-label="Filter tema"
-          className="form-input tenant-filter"
+        />
+        <FormField
+          className="ui-toolbar-filter"
+          containerClassName="ui-toolbar-filter"
+          id="tenant-tema"
+          kind="select"
+          label="Tema"
+          options={[
+            { value: "semua", label: "Semua tema" },
+            ...opsiTema.map(([slug, label]) => ({ value: slug, label })),
+            ...(adaTanpaTema ? [{ value: "__tanpa__", label: "Belum memilih tema" }] : []),
+          ]}
           value={tema}
           onChange={(event) => {
             setTema(event.target.value);
             setHalaman(1);
           }}
-        >
-          <option value="semua">Semua tema</option>
-          {opsiTema.map(([slug, label]) => (
-            <option key={slug} value={slug}>
-              {label}
-            </option>
-          ))}
-          {adaTanpaTema ? <option value="__tanpa__">Belum memilih tema</option> : null}
-        </select>
+        />
       </div>
 
-      <TableScroll className="tenant-table-scroll">
-        <Table className="tenant-table tenant-table-list">
+      <TableScroll frame>
+        <Table>
           <THead>
             <Row>
               <HeaderCell scope="col">#</HeaderCell>
@@ -285,91 +258,47 @@ export function TenantConsole({
                 />
               ))
             ) : (
-              <Row>
-                <Cell className="tenant-empty" colSpan={10}>
-                  {desa.length === 0
-                    ? "Belum ada tenant desa yang terdaftar."
-                    : "Tidak ada desa yang sesuai dengan pencarian atau filter."}
-                </Cell>
-              </Row>
+              <EmptyRow colSpan={10}>
+                {desa.length === 0
+                  ? "Belum ada tenant desa yang terdaftar."
+                  : "Tidak ada desa yang sesuai dengan pencarian atau filter."}
+              </EmptyRow>
             )}
           </TBody>
         </Table>
       </TableScroll>
 
-      {filtered.length > 0 ? (
-        <div className="tenant-pagination">
-          <div className="tenant-pagination-summary">
-            <span>
-              {totalHalaman > 1
-                ? `Menampilkan ${angka.format(mulai + 1)}–${angka.format(nomorAkhir)} dari ${angka.format(filtered.length)} desa`
-                : `Menampilkan ${angka.format(filtered.length)} dari ${angka.format(desa.length)} desa`}
-            </span>
-            <span className="sr-only">
-              Halaman {angka.format(halamanAktif)} dari {angka.format(totalHalaman)}
-            </span>
-          </div>
-          <div
-            aria-label="Navigasi halaman tenant"
-            className="tenant-pagination-pages"
-            role="group"
-          >
-            <button
-              aria-label="Halaman sebelumnya"
-              className="tenant-page-button"
-              disabled={halamanAktif <= 1}
-              onClick={() => setHalaman(halamanAktif - 1)}
-              type="button"
-            >
-              ‹
-            </button>
-            {nomorHalaman(halamanAktif, totalHalaman).map((item, index) =>
-              item === "elipsis" ? (
-                <span className="tenant-page-ellipsis" key={`elipsis-${index}`}>
-                  …
-                </span>
-              ) : (
-                <button
-                  aria-current={item === halamanAktif ? "page" : undefined}
-                  aria-label={`Halaman ${item}`}
-                  className="tenant-page-button"
-                  key={item}
-                  onClick={() => setHalaman(item)}
-                  type="button"
-                >
-                  {item}
-                </button>
-              ),
-            )}
-            <button
-              aria-label="Halaman berikutnya"
-              className="tenant-page-button"
-              disabled={halamanAktif >= totalHalaman}
-              onClick={() => setHalaman(halamanAktif + 1)}
-              type="button"
-            >
-              ›
-            </button>
-          </div>
-          <label className="tenant-page-size">
-            <span className="sr-only">Baris per halaman</span>
-            <select
-              className="form-input"
-              value={perHalaman}
-              onChange={(event) => {
-                setPerHalaman(Number(event.target.value));
-                setHalaman(1);
-              }}
-            >
-              {[10, 25, 50].map((jumlah) => (
-                <option key={jumlah} value={jumlah}>
-                  {jumlah} / halaman
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      ) : null}
+      <Pagination
+        label="Navigasi halaman tenant"
+        onPageChange={setHalaman}
+        page={halamanAktif}
+        pageCount={totalHalaman}
+        pageSize={
+          <FormField
+            className="ui-toolbar-filter"
+            containerClassName="ui-toolbar-filter"
+            id="tenant-per-halaman"
+            kind="select"
+            label="Baris per halaman"
+            options={[10, 25, 50].map((jumlah) => ({
+              value: String(jumlah),
+              label: `${jumlah} / halaman`,
+            }))}
+            value={String(perHalaman)}
+            onChange={(event) => {
+              setPerHalaman(Number(event.target.value));
+              setHalaman(1);
+            }}
+          />
+        }
+        summary={
+          <span>
+            {totalHalaman > 1
+              ? `Menampilkan ${angka.format(mulai + 1)}–${angka.format(nomorAkhir)} dari ${angka.format(filtered.length)} desa`
+              : `Menampilkan ${angka.format(filtered.length)} dari ${angka.format(desa.length)} desa`}
+          </span>
+        }
+      />
     </>
   );
 }
@@ -395,66 +324,74 @@ function TrTenant({
         <td className="tenant-row-number">{nomor}</td>
         <td className="tenant-cell-name">
           <strong>{desa.name || "Tanpa nama"}</strong>
-          <span className="tenant-secondary">
+          <SecondaryText>
             Kode: {desa.code || "—"}
             {desa.slug ? ` · ${desa.slug}` : ""}
-          </span>
+          </SecondaryText>
         </td>
-        <td>{desa.domain || <span className="tenant-secondary">Belum diatur</span>}</td>
-        <td>{desa.district || <span className="tenant-secondary">Belum diisi</span>}</td>
+        <td>{desa.domain || <SecondaryText>Belum diatur</SecondaryText>}</td>
+        <td>{desa.district || <SecondaryText>Belum diisi</SecondaryText>}</td>
         <td>
           {desa.temaNama || desa.tema ? (
             <>
               <span>{desa.temaNama || desa.tema}</span>
-              <span className="tenant-secondary">
+              <SecondaryText>
                 {desa.tema}
                 {desa.temaVersi ? ` · v${desa.temaVersi}` : ""}
-              </span>
+              </SecondaryText>
             </>
           ) : (
-            <span className="tenant-secondary">Belum memilih</span>
+            <SecondaryText>Belum memilih</SecondaryText>
           )}
         </td>
         <td>{angka.format(desa.pengguna)}</td>
         <td>
           {desa.kuotaMediaMb === null ? (
-            <span className="tenant-secondary">Tanpa batas</span>
+            <SecondaryText>Tanpa batas</SecondaryText>
           ) : (
             `${angka.format(desa.kuotaMediaMb)} MB`
           )}
         </td>
         <td>{tanggal.format(new Date(desa.createdAt))}</td>
         <td>
-          <span className={desa.active ? "tenant-status is-active" : "tenant-status is-inactive"}>
-            <span aria-hidden="true" />
+          <StatusBadge tone={desa.active ? "success" : "warning"}>
             {desa.active ? "Aktif" : "Nonaktif"}
-          </span>
+          </StatusBadge>
           {desa.statusRetensi !== "aktif" ? (
-            <span className="tenant-secondary tenant-status-note">
+            <SecondaryText>
               <RetensiBadge desa={desa} />
-            </span>
+            </SecondaryText>
           ) : null}
         </td>
         <td>
-          <button
-            aria-expanded={terbuka}
-            aria-label={`${terbuka ? "Tutup" : "Kelola"} ${desa.name || "tenant"}`}
-            className="button button-secondary tenant-expand tenant-row-action"
-            onClick={onToggle}
-            type="button"
-          >
-            <svg
-              aria-hidden="true"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.8}
-              viewBox="0 0 24 24"
+          <div className="ui-toolbar-actions">
+            <ButtonLink
+              aria-label={`Detail ${desa.name || "tenant"}`}
+              href={`/super-admin/tenant/${desa.id}`}
+              variant="secondary"
             >
-              <path d="M2.5 12s3.6-6 9.5-6 9.5 6 9.5 6-3.6 6-9.5 6-9.5-6-9.5-6Z" />
-              <circle cx="12" cy="12" r="2.8" />
-            </svg>
-            {terbuka ? "Tutup" : "Kelola"}
-          </button>
+              Detail
+            </ButtonLink>
+            <Button
+              aria-expanded={terbuka}
+              aria-label={`${terbuka ? "Tutup" : "Kelola"} ${desa.name || "tenant"}`}
+              variant="secondary"
+              onClick={onToggle}
+              type="button"
+            >
+              <svg
+                aria-hidden="true"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={1.8}
+                viewBox="0 0 24 24"
+              >
+                <path d="M2.5 12s3.6-6 9.5-6 9.5 6 9.5 6-3.6 6-9.5 6-9.5-6-9.5-6Z" />
+                <circle cx="12" cy="12" r="2.8" />
+              </svg>
+              {terbuka ? "Tutup" : "Kelola"}
+            </Button>
+          </div>
         </td>
       </tr>
       {terbuka ? (

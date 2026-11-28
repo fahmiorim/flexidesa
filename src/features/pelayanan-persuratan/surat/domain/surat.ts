@@ -34,7 +34,6 @@ export const LETTER_STATUS_LABELS: Readonly<Record<LetterStatus, string>> = {
 export const VERIFICATION_STEPS = ["operator", "sekdes", "kades"] as const;
 export type VerificationStep = (typeof VERIFICATION_STEPS)[number];
 
-export const VERIFICATION_STATUS = ["pending", "approved", "rejected"] as const;
 
 export const VERIFICATION_STEP_LABELS: Readonly<Record<VerificationStep, string>> = {
   operator: "Operator",
@@ -183,7 +182,7 @@ export function bulanRomawi(month: number): string {
 
 export const DEFAULT_NUMBER_FORMAT = "[kode_surat]/[nomor]/[kode_desa]/[tahun]";
 
-export interface NumberContext {
+interface NumberContext {
   /** Panjang nomor urut (nol di depan); 0/undefined = 3 digit seperti lama. */
   panjangNomor?: number;
   sequence: number;
@@ -243,11 +242,11 @@ export function formatTanggalSurat(
 }
 
 /**
- * Nomor urut dengan nol di depan (parity `panjang_nomor_surat` OpenSID).
+ * Nomor urut dengan nol di depan.
  *
  * `0` memakai lebar bawaan 3 digit seperti perilaku penomoran lama.
  */
-export function padNomorUrut(sequence: number, panjang: number): string {
+function padNomorUrut(sequence: number, panjang: number): string {
   const lebar = panjang > 0 ? Math.min(panjang, 10) : 3;
   return String(Math.max(0, Math.trunc(sequence))).padStart(lebar, "0");
 }
@@ -390,10 +389,10 @@ const selectedId = (message: string) =>
     .refine((value) => Number.isInteger(Number(value)) && Number(value) > 0, message)
     .transform((value) => Number(value));
 
-/** Batas kode klasifikasi; OpenSID menyimpan `kode` sampai 50 karakter. */
+/** Batas kode klasifikasi; `kode` disimpan sampai 50 karakter. */
 export const KLASIFIKASI_KODE_MAKS = 50;
 
-/** Batas uraian klasifikasi (`uraian` mediumText pada OpenSID). */
+/** Batas uraian klasifikasi (`uraian` mediumText). */
 export const KLASIFIKASI_URAIAN_MAKS = 5000;
 
 export const klasifikasiSuratFormSchema = z.object({
@@ -403,14 +402,14 @@ export const klasifikasiSuratFormSchema = z.object({
     .min(1, "Kode wajib diisi.")
     .max(KLASIFIKASI_KODE_MAKS, `Maksimal ${KLASIFIKASI_KODE_MAKS} karakter.`),
   name: nameField("Nama klasifikasi"),
-  /** `uraian` pada form OpenSID. */
+  /** `uraian` pada formulir. */
   description: z
     .string()
     .trim()
     .max(KLASIFIKASI_URAIAN_MAKS, "Maksimal 5.000 karakter.")
     .optional()
     .default(""),
-  /** `enabled` pada OpenSID. */
+  /** `enabled`. */
   isActive: z.boolean().optional().default(true),
 });
 export type KlasifikasiSuratInput = z.infer<typeof klasifikasiSuratFormSchema>;
@@ -428,8 +427,7 @@ export const syaratSuratFormSchema = z.object({
 export type SyaratSuratInput = z.infer<typeof syaratSuratFormSchema>;
 
 /**
- * Satuan masa berlaku surat, parity `FormatSurat::MASA_BERLAKU` OpenSID
- * (`d` hari, `w` minggu, `M` bulan, `y` tahun).
+ * Satuan masa berlaku surat (`d` hari, `w` minggu, `M` bulan, `y` tahun).
  */
 export const SATUAN_MASA_BERLAKU = [
   { nilai: "d", label: "Hari" },
@@ -437,7 +435,7 @@ export const SATUAN_MASA_BERLAKU = [
   { nilai: "M", label: "Bulan" },
   { nilai: "y", label: "Tahun" },
 ] as const;
-export const NILAI_SATUAN_MASA_BERLAKU = SATUAN_MASA_BERLAKU.map((item) => item.nilai) as [
+const NILAI_SATUAN_MASA_BERLAKU = SATUAN_MASA_BERLAKU.map((item) => item.nilai) as [
   string,
   ...string[],
 ];
@@ -448,17 +446,17 @@ export const ORIENTASI_SURAT = [
   { nilai: "landscape", label: "Landscape" },
 ] as const;
 
-/** Ukuran kertas; OpenSID memakai A1–A6 dan F4, Appdes menambah Letter/Legal. */
+/** Ukuran kertas: A1–A6, F4, Letter, dan Legal. */
 export const UKURAN_SURAT = ["A4", "F4", "Letter", "Legal"] as const;
 
-/** Pilihan tampilan header, parity `header` OpenSID (1 semua, 2 halaman awal, 0 tidak). */
+/** Pilihan tampilan header (1 semua, 2 halaman awal, 0 tidak). */
 export const HEADER_SURAT = [
   { nilai: 1, label: "Semua halaman" },
   { nilai: 2, label: "Hanya halaman awal" },
   { nilai: 0, label: "Tidak" },
 ] as const;
 
-/** Margin default (cm), sama dengan `FormatSurat::MARGINS` OpenSID. */
+/** Margin default (cm). */
 export const MARGIN_SURAT_DEFAULT = { kiri: 3, atas: 2, kanan: 2, bawah: 2.5 } as const;
 
 /** Label masa berlaku ringkas, mis. "6 Bulan". */
@@ -470,13 +468,12 @@ export function labelMasaBerlaku(nilai: number, satuan: string | null): string {
 
 /** Batas jumlah & panjang nama lampiran surat pada satu jenis surat. */
 export const LAMPIRAN_MAKS = 20;
-export const LAMPIRAN_NAMA_MAKS = 100;
+const LAMPIRAN_NAMA_MAKS = 100;
 
 /**
  * Normalisasi daftar lampiran: buang spasi berlebih, kosong, dan duplikat.
  *
- * Lampiran disimpan sebagai JSON array string pada `letter_types.lampiran`,
- * parity `tweb_surat_format.lampiran` OpenSID.
+ * Lampiran disimpan sebagai JSON array string pada `letter_types.lampiran`.
  */
 export function normalisasiLampiran(nama: readonly string[]): string[] {
   const hasil: string[] = [];
@@ -501,7 +498,7 @@ export function parseDaftarLampiran(raw: string | null | undefined): string[] {
 }
 
 /** Apakah JSON daftar lampiran sah dan tidak melebihi batas. */
-export function daftarLampiranValid(raw: string): boolean {
+function daftarLampiranValid(raw: string): boolean {
   try {
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return false;
@@ -616,7 +613,7 @@ export const jenisSuratFormSchema = z.object({
     .refine((value) => daftarLampiranValid(value), "Daftar lampiran tidak valid."),
   requiresResident: z.boolean().optional().default(true),
   isActive: z.boolean().optional().default(true),
-  /** Sediakan di layanan mandiri warga (parity `mandiri` OpenSID). */
+  /** Sediakan di layanan mandiri warga. */
   mandiri: z.boolean().optional().default(true),
   numberFormat: z
     .string()
@@ -632,7 +629,7 @@ export const jenisSuratFormSchema = z.object({
     .max(31, "Maksimal 31, isi 0 bila tidak dibatasi.")
     .optional()
     .default(1),
-  /** Satuan masa berlaku: d/w/M/y seperti OpenSID. */
+  /** Satuan masa berlaku: d/w/M/y. */
   satuanMasaBerlaku: z.enum(NILAI_SATUAN_MASA_BERLAKU).optional().default("M"),
   /** `true` → format nomor desa dipakai; `false` → format per jenis surat. */
   formatNomorGlobal: z.boolean().optional().default(false),
@@ -641,7 +638,7 @@ export const jenisSuratFormSchema = z.object({
   templateVariant: z.string().trim().max(50).optional().default("default"),
   /** JSON konfigurasi layout turunan; lihat `susunLayoutConfig`. */
   layoutConfig: z.string().trim().max(5000).optional().default("{}"),
-  // --- Pengaturan tampilan (tab Umum OpenSID) ---------------------------
+  // --- Pengaturan tampilan ----------------------------------------------
   orientasi: z.enum(["potrait", "landscape"]).optional().default("potrait"),
   ukuran: z.enum(UKURAN_SURAT).optional().default("F4"),
   /** 1 = semua halaman, 2 = halaman awal, 0 = tidak tampil. */
@@ -680,7 +677,7 @@ export const jenisSuratFormSchema = z.object({
   qrCode: z.boolean().optional().default(false),
   qrCodeTte: z.boolean().optional().default(false),
   logoGaruda: z.boolean().optional().default(false),
-  /** Kirim ke kecamatan untuk TTE (OpenSID `kecamatan`). */
+  /** Kirim ke kecamatan untuk TTE. */
   kecamatan: z.boolean().optional().default(false),
   /** Butuh data penduduk lain (memengaruhi izin layanan mandiri). */
   sumberPendudukBerulang: z.boolean().optional().default(false),
@@ -868,7 +865,7 @@ export interface SuratDinasDTO {
  * Panjang token mentah (byte). 32 byte = 256 bit entropy — tidak feasible
  * untuk di-brute-force tanpa kunci.
  */
-export const VERIFICATION_TOKEN_BYTES = 32;
+const VERIFICATION_TOKEN_BYTES = 32;
 /** Panjang token dalam representasi hex (2 char per byte). */
 export const VERIFICATION_TOKEN_LENGTH = VERIFICATION_TOKEN_BYTES * 2;
 
@@ -876,7 +873,7 @@ export const VERIFICATION_TOKEN_LENGTH = VERIFICATION_TOKEN_BYTES * 2;
  * Hasil generate token: token mentah (dipakai di URL/QR) + hash (kunci
  * pencarian di DB). Keduanya hex-encoded.
  */
-export interface VerificationToken {
+interface VerificationToken {
   token: string;
   hash: string;
 }

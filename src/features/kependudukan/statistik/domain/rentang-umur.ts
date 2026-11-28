@@ -32,7 +32,7 @@ export interface RentangUmurDTO {
 }
 
 /** Range yang dipakai saat mengagregasi penduduk per rentang umur. */
-export interface UmurRange {
+interface UmurRange {
   label: string;
   min: number;
   /** `null` = tanpa batas atas. */
@@ -61,11 +61,11 @@ export const KELOMPOK_UMUR: readonly KelompokUmur[] = [
   { kode: "60+", label: "Di atas 60 Tahun", min: 60, max: null },
 ];
 
-/** Batas umur maksimal yang lazim dipakai OpenSID (150 = tanpa batas praktis). */
+/** Batas umur maksimal (150 = tanpa batas praktis). */
 export const BATAS_UMUR_MAKSIMAL = 150;
 
 /**
- * Nama rentang yang dibentuk dari batasnya, mengikuti OpenSID.
+ * Nama rentang yang dibentuk dari batasnya.
  *
  * `150` dan `null` diperlakukan sebagai batas terbuka sehingga labelnya
  * menjadi “Di atas X Tahun”.
@@ -80,7 +80,7 @@ export function susunNamaRentang(
   return `${dari} s/d ${sampai} Tahun`;
 }
 
-export interface RentangUmurRingkas {
+interface RentangUmurRingkas {
   id?: number;
   nama: string;
   dari: number;

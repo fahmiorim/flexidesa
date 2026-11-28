@@ -44,8 +44,6 @@ export const idmSdgs = mysqlTable(
   (t) => [uniqueIndex("idm_sdgs_village_tahun_goal_uq").on(t.villageId, t.tahun, t.goal)],
 );
 
-export type IdmIndikator = typeof idmIndikator.$inferSelect;
-export type NewIdmIndikator = typeof idmIndikator.$inferInsert;
 
 /**
  * Ringkasan IDM dari API Kemendesa per desa dan tahun.
@@ -71,5 +69,3 @@ export const idmRingkasan = mysqlTable(
   },
   (t) => [uniqueIndex("idm_ringkasan_village_tahun_uq").on(t.villageId, t.tahun)],
 );
-export type IdmSdgs = typeof idmSdgs.$inferSelect;
-export type NewIdmSdgs = typeof idmSdgs.$inferInsert;

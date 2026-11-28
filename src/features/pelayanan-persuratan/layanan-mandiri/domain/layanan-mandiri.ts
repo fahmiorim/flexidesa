@@ -1,4 +1,3 @@
-import { z } from "zod";
 
 export const PERMOHONAN_STATUS = ["0", "1", "2", "3", "4", "5"] as const;
 export type PermohonanStatus = (typeof PERMOHONAN_STATUS)[number];
@@ -19,7 +18,7 @@ export const PERMOHONAN_STATUS_LABELS: Record<PermohonanStatus, string> = {
  * permohonan yang sudah selesai. Warga hanya dapat membatalkan selama belum
  * diambil; operator dapat mengembalikan ke 0 dengan alasan.
  */
-export const PERMOHONAN_TRANSITIONS: Record<PermohonanStatus, readonly PermohonanStatus[]> = {
+const PERMOHONAN_TRANSITIONS: Record<PermohonanStatus, readonly PermohonanStatus[]> = {
   "0": ["1", "5"],
   "1": ["0", "2", "5"],
   "2": ["0", "3", "5"],
@@ -78,12 +77,6 @@ export function pesanNotifikasiPermohonan(input: {
  * `residentId` sengaja **tidak** ada di sini: identitas warga selalu diambil
  * dari sesi. Menambahkannya ke form akan mengundang IDOR.
  */
-export const permohonanSuratFormSchema = z.object({
-  idSurat: z.coerce.number().int().min(1),
-  isianForm: z.string().optional().or(z.literal("")),
-  noHpAktif: z.string().trim().max(50).optional().or(z.literal("")),
-  keterangan: z.string().trim().max(500).optional().or(z.literal("")),
-});
 
 /** Baris permohonan untuk tabel operator. */
 export interface PermohonanAdminRow {

@@ -18,7 +18,6 @@ export const JENIS_IZIN = ["izin", "sakit", "cuti"] as const;
 export type JenisIzin = (typeof JENIS_IZIN)[number];
 
 export const STATUS_IZIN = ["menunggu", "disetujui", "ditolak"] as const;
-export type StatusIzin = (typeof STATUS_IZIN)[number];
 
 /**
  * `kehadiran_izin` — pengajuan izin/sakit/cuti dari area warga.
@@ -85,6 +84,3 @@ export const kehadiranPengaturan = mysqlTable(
   (table) => [index("kehadiran_pengaturan_village_idx").on(table.villageId)],
 );
 
-export type KehadiranIzin = typeof kehadiranIzin.$inferSelect;
-export type NewKehadiranIzin = typeof kehadiranIzin.$inferInsert;
-export type KehadiranPengaturan = typeof kehadiranPengaturan.$inferSelect;

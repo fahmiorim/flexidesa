@@ -15,12 +15,12 @@ export const pelangganFormSchema = z.object({
 });
 
 /** MIME yang diterima untuk dokumen kerja sama pelanggan. */
-export const MIME_DOKUMEN_KERJASAMA = ["application/pdf", "image/jpeg", "image/png"] as const;
+const MIME_DOKUMEN_KERJASAMA = ["application/pdf", "image/jpeg", "image/png"] as const;
 
 /** Batas ukuran dokumen kerja sama (5 MB). */
 export const MAKS_UKURAN_DOKUMEN_KERJASAMA = 5 * 1024 * 1024;
 
-export type HasilValidasiDokumen = { ok: true } | { ok: false; pesan: string };
+type HasilValidasiDokumen = { ok: true } | { ok: false; pesan: string };
 
 /**
  * Validasi berkas dokumen kerja sama (murni, tanpa I/O).

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { auth } from "@/lib/auth";
 
 /**
- * Regresi AUD-007.
+ * Cakupan regresi.
  *
  * Reset password harus mencabut sesi lama, dan sesi tidak boleh dipercaya dari
  * cookie cache stateless karena sesi yang sudah dihapus akan tetap dianggap

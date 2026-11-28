@@ -100,7 +100,7 @@ export async function saveSecuritySettings(
     });
 }
 
-export interface RingkasanKeamanan {
+interface RingkasanKeamanan {
   staffCount: number;
   twoFactorCount: number;
   activeSessions: number;

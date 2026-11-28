@@ -14,5 +14,3 @@ export const dokumenDesa = mysqlTable("dokumen_desa", {
   keterangan: text("keterangan"),
 });
 
-export type DokumenDesa = typeof dokumenDesa.$inferSelect;
-export type NewDokumenDesa = typeof dokumenDesa.$inferInsert;

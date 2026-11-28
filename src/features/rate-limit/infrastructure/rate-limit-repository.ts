@@ -11,7 +11,7 @@ import { milidetikKeKuotaBerikutnya, saringPermintaanAktif } from "../domain/rat
 let cleanupTerakhir = 0;
 const JEDA_PEMBERSIHAN_MS = 60_000;
 
-export interface CatatanRateLimit {
+interface CatatanRateLimit {
   jumlah: number;
   resetMs: number;
 }

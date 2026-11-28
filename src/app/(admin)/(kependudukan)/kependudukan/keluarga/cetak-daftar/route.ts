@@ -2,7 +2,7 @@ import { buildKeluargaDaftarPdf } from "@/features/kependudukan/keluarga/applica
 import { parseKeluargaFilter } from "@/features/kependudukan/keluarga/domain/keluarga";
 import { isAppError } from "@/lib/errors";
 
-/** Cetak daftar KK sesuai filter aktif (paritas Aksi Lainnya OpenSID). */
+/** Cetak daftar KK sesuai filter aktif. */
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const sensor = url.searchParams.get("sensor") === "1";

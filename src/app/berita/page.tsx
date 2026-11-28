@@ -10,6 +10,8 @@ import {
   daftarKategoriBerita,
   hitungBeritaPublik,
 } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { mediaUrl } from "@/lib/media-url";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./berita.module.css";
@@ -23,15 +25,6 @@ export const dynamic = "force-dynamic";
 type Props = {
   searchParams: Promise<{ q?: string; kategori?: string; page?: string }>;
 };
-
-function mediaUrl(value: string | null | undefined, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\\\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const safe = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return `/api/publik/media/${safe.map(encodeURIComponent).join("/")}`;
-}
 
 function tanggal(value: Date | string): string {
   const date = value instanceof Date ? value : new Date(`${value}T00:00:00`);
@@ -66,6 +59,7 @@ function Icon({ children }: { children: ReactNode }) {
 
 export default async function BeritaPage({ searchParams }: Props) {
   const desa = await getIdentitasFromRequest();
+  const tema = await muatTemaPublik(desa.id);
   const params = await searchParams;
   const q = params.q?.trim().slice(0, 100) ?? "";
   const kategori = params.kategori?.trim().slice(0, 100) ?? "";
@@ -110,7 +104,7 @@ export default async function BeritaPage({ searchParams }: Props) {
   ];
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/berita" />
       <section className={styles.hero}>
         <div className={styles.heroInner}>

@@ -74,6 +74,23 @@ export const resolveVillageByHost = cache(
     halamanTidakDitemukan();
   },
 );
+/**
+ * `village_id` desa untuk host permintaan ini, atau `null` bila host adalah
+ * platform/tak dikenal.
+ *
+ * Varian non-404 dari pipeline `resolveVillageByHost`, khusus dipakai halaman
+ * 404 (`src/app/not-found.tsx`): resolver biasa sengaja melempar `notFound()`
+ * untuk host tak dikenal, yang dari halaman 404 akan berputar. Di sini hasil
+ * tak dikenal diturunkan ke tampilan 404 netral tanpa tema desa.
+ */
+export async function getVillageIdByHost(host: string | null | undefined): Promise<number | null> {
+  if (adalahHostPlatform(host, hostPlatform)) return null;
+  const peta = susunPetaDesa(await listVillageDomains(), env.DESA_BASE_DOMAIN ?? null);
+  return villageIdDariHost(host, peta, {
+    hostPlatform,
+    fallbackSatuDesa: env.TENANT_LEGACY_SINGLE_HOST_FALLBACK,
+  });
+}
 
 /** Desa aktif untuk request saat ini, berdasarkan header Host yang diterima server. */
 export const getIdentitasFromRequest = cache(async (): Promise<IdentitasDesa> => {

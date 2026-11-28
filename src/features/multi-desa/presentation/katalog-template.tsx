@@ -14,7 +14,7 @@ import {
 
 import { TemplateThumb } from "./template-preview";
 
-export interface TemplateKatalogItem {
+interface TemplateKatalogItem {
   id: number;
   slug: string;
   name: string;
@@ -24,6 +24,8 @@ export interface TemplateKatalogItem {
   status: StatusTemplate;
   tokens: TokenTemplate;
   tags: string[];
+  /** Path SVG pratinjau paket tema; null bila slug/versi tak ada di registry. */
+  preview?: string | null;
   jumlahTenant: number;
   jumlahTertinggal: number;
   updatedAt: Date;
@@ -126,6 +128,7 @@ export function KatalogTemplate({ templates }: { templates: TemplateKatalogItem[
               <TemplateThumb
                 category={labelKategori(item.category)}
                 name={item.name}
+                preview={item.preview ?? null}
                 tokens={item.tokens}
               />
               <div className="template-card-body">

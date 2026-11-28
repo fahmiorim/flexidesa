@@ -148,7 +148,7 @@ export function inventarisEksporUrl(filter: FilterInventarisPublik): string {
   return query ? `/desa/inventaris/ekspor?${query}` : "/desa/inventaris/ekspor";
 }
 
-export const KOLOM_CSV_INVENTARIS = [
+const KOLOM_CSV_INVENTARIS = [
   "Nama Barang",
   "Kode",
   "Nomor Inventaris",

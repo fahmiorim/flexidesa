@@ -243,11 +243,5 @@ export const dtksPengaturanProgram = mysqlTable(
   (t) => [uniqueIndex("dtks_pengaturan_program_village_kode_uq").on(t.villageId, t.kodeProgram)],
 );
 
-export type Dtks = typeof dtks.$inferSelect;
-export type NewDtks = typeof dtks.$inferInsert;
-export type DtksAnggota = typeof dtksAnggota.$inferSelect;
-export type NewDtksAnggota = typeof dtksAnggota.$inferInsert;
 export type DtksLampiran = typeof dtksLampiran.$inferSelect;
-export type NewDtksLampiran = typeof dtksLampiran.$inferInsert;
 export type DtksPengaturanProgram = typeof dtksPengaturanProgram.$inferSelect;
-export type NewDtksPengaturanProgram = typeof dtksPengaturanProgram.$inferInsert;

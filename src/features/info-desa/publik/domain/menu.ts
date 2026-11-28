@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 /**
  * Menu navigasi situs publik.
  *
@@ -8,7 +10,7 @@
  * tampil pada instalasi baru.
  */
 
-export interface PublicNavItem {
+interface PublicNavItem {
   href: string;
   label: string;
   children?: PublicNavItem[];

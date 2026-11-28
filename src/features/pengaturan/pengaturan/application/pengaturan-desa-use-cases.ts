@@ -179,7 +179,7 @@ export async function simpanKontakDesa(villageId: number, input: unknown): Promi
   await simpanKontakDesaRepo(villageId, d);
 }
 
-export type JenisFaq = "kontak" | "surat";
+type JenisFaq = "kontak" | "surat";
 
 /** Simpan FAQ publik per desa; kunci ditentukan server-side, bukan dari klien. */
 export async function simpanFaqDesa(
@@ -396,7 +396,7 @@ export async function getDataBackupDesa(villageId: number) {
   return { ...data, umum };
 }
 
-export type HasilPulihkanBackup =
+type HasilPulihkanBackup =
   | { status: "ok" }
   | { status: "media-logo-tidak-valid" }
   | { status: "media-favicon-tidak-valid" }

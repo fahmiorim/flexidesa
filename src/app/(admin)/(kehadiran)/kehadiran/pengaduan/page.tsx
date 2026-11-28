@@ -16,7 +16,7 @@ export const metadata: Metadata = { title: "Pengaduan Kehadiran" };
 
 const RESOURCE = "pengaduan-kehadiran";
 
-/** Format waktu seperti `tgl_indo2` OpenSID: tanggal, bulan, tahun, jam. */
+/** Format waktu tanggal lengkap: tanggal, bulan, tahun, jam. */
 const formatWaktu = new Intl.DateTimeFormat("id-ID", {
   day: "2-digit",
   month: "long",

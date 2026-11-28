@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const PENGAJUAN_RESOURCE = "pengajuan-layanan";
-export const STATUS_PENGAJUAN_LAYANAN = [
+const STATUS_PENGAJUAN_LAYANAN = [
   "diajukan",
   "diverifikasi",
   "diproses",
@@ -10,7 +10,7 @@ export const STATUS_PENGAJUAN_LAYANAN = [
 ] as const;
 export type StatusPengajuanLayanan = (typeof STATUS_PENGAJUAN_LAYANAN)[number];
 
-export const TRANSISI_PENGAJUAN: Record<StatusPengajuanLayanan, readonly StatusPengajuanLayanan[]> =
+const TRANSISI_PENGAJUAN: Record<StatusPengajuanLayanan, readonly StatusPengajuanLayanan[]> =
   {
     diajukan: ["diverifikasi", "ditolak"],
     diverifikasi: ["diproses", "ditolak"],

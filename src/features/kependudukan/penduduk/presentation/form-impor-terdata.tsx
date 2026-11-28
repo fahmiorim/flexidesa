@@ -7,7 +7,7 @@ import { useActionState, useEffect } from "react";
 import { PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
-export interface HasilImporTerdata {
+interface HasilImporTerdata {
   ditambahkan: number;
   dilewati: number;
   tidakDitemukan: string[];
@@ -16,7 +16,7 @@ export interface HasilImporTerdata {
 /**
  * Form impor terdata suplemen.
  *
- * Paritas halaman `impor_data` OpenSID: unggah berkas, unduh contoh format, dan
+ * Unggah berkas, unduh contoh format, dan
  * ringkasan hasil impor (berhasil / dilewati / sasaran tidak ditemukan).
  */
 export function FormImporTerdata({

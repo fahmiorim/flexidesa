@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { muatHalamanPublik } from "@/features/info-desa/publik/application/website-admin";
 import { sanitasiHtml } from "@/lib/sanitize";
 
@@ -27,6 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function HalamanStatisPage({ params }: Props) {
   const { slug } = await params;
   const desa = await getIdentitasFromRequest();
+  const tema = await muatTemaPublik(desa.id);
   const halaman = await muatHalamanPublik(desa.id, slug);
   if (!halaman) notFound();
   const lokasi = [desa.namaKecamatan, desa.namaKabupaten, desa.namaPropinsi]
@@ -36,7 +38,7 @@ export default async function HalamanStatisPage({ params }: Props) {
     ? `/api/publik/media/${desa.logo.split("/").map(encodeURIComponent).join("/")}`
     : null;
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader
         desa={desa}
         location={lokasi}

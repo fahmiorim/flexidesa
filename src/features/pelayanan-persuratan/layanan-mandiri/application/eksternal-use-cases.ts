@@ -40,7 +40,7 @@ export const suratEksternalSchema = z.object({
     .default(""),
 });
 
-export type SuratEksternalInput = z.infer<typeof suratEksternalSchema>;
+type SuratEksternalInput = z.infer<typeof suratEksternalSchema>;
 
 /**
  * Ajukan permohonan surat atas nama warga lewat API mitra.

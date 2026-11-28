@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { ButtonLink } from "@/components/ui/button-link";
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { ambilAuditPlatform } from "@/features/multi-desa/application/audit-platform-use-cases";
 import { daftarSemuaDomain } from "@/features/multi-desa/application/kelola-desa-use-cases";
@@ -19,6 +20,7 @@ import {
   PlatformEmpty,
   PlatformPageHeader,
   PlatformStat,
+  PlatformStatGrid,
   PlatformStatus,
   PlatformTrend,
 } from "@/features/multi-desa/presentation/platform-ui";
@@ -27,7 +29,7 @@ import { AUDIT_EVENT_LABELS, type AuditEvent } from "@/features/pengaturan/audit
 import { pastikanSuperAdmin } from "./guard";
 
 export const metadata: Metadata = {
-  title: "Ringkasan Platform",
+  title: "Ringkasan",
   robots: { index: false, follow: false },
 };
 
@@ -142,7 +144,7 @@ export default async function SuperAdminPage() {
         }
         path="/super-admin"
       />
-      <div className="platform-stat-grid">
+      <PlatformStatGrid columns={6}>
         <PlatformStat
           icon={
             <>
@@ -208,7 +210,7 @@ export default async function SuperAdminPage() {
           tone="oranye"
           value={angka.format(totalPengguna)}
         />
-      </div>
+      </PlatformStatGrid>
 
       <div className="platform-dashboard-secondary">
         <PlatformCard
@@ -304,8 +306,8 @@ export default async function SuperAdminPage() {
             title="Tenant terbaru"
           >
             {terbaru.length > 0 ? (
-              <TableScroll className="tenant-table-scroll">
-                <Table className="tenant-table">
+              <TableScroll>
+                <Table>
                   <THead>
                     <Row>
                       <HeaderCell scope="col">Desa</HeaderCell>
@@ -321,11 +323,9 @@ export default async function SuperAdminPage() {
                       <Row key={item.id}>
                         <Cell>
                           <strong>{item.name || "Tanpa nama"}</strong>
-                          <span className="tenant-secondary">Kode: {item.code || "—"}</span>
+                          <SecondaryText>Kode: {item.code || "—"}</SecondaryText>
                         </Cell>
-                        <Cell>
-                          {item.domain || <span className="tenant-secondary">Belum diatur</span>}
-                        </Cell>
+                        <Cell>{item.domain || <SecondaryText>Belum diatur</SecondaryText>}</Cell>
                         <Cell>{angka.format(item.pengguna)}</Cell>
                         <Cell>{angka.format(item.penduduk)}</Cell>
                         <Cell>{tanggal.format(new Date(item.createdAt))}</Cell>

@@ -47,5 +47,3 @@ export const wargaPesan = mysqlTable(
   ],
 );
 
-export type WargaPesan = typeof wargaPesan.$inferSelect;
-export type NewWargaPesan = typeof wargaPesan.$inferInsert;

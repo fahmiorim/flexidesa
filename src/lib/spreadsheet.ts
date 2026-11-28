@@ -35,12 +35,12 @@ export interface BarisImpor<Kunci extends string> {
 }
 
 /** Baris yang gagal dipetakan beserta alasannya. */
-export interface GalatImpor {
+interface GalatImpor {
   baris: number;
   pesan: string;
 }
 
-export interface HasilImpor<Kunci extends string> {
+interface HasilImpor<Kunci extends string> {
   baris: BarisImpor<Kunci>[];
   galat: GalatImpor[];
   /** Header pada berkas yang tidak dikenali kolom mana pun. */
@@ -62,7 +62,7 @@ function headerTambahan(
 }
 
 /** Berkas impor yang didukung. */
-export const EKSTENSI_IMPOR = [".csv", ".txt", ".xlsx"] as const;
+const EKSTENSI_IMPOR = [".csv", ".txt", ".xlsx"] as const;
 
 /** Batas ukuran berkas impor (5 MB) — cukup untuk puluhan ribu baris. */
 export const BATAS_UKURAN_IMPOR = 5 * 1024 * 1024;
@@ -169,8 +169,7 @@ function selKeTeks(nilai: unknown): string {
 /**
  * Baca satu sheet XLSX menjadi baris teks.
  *
- * `namaSheet` opsional; tanpa itu sheet pertama dipakai. Beberapa berkas impor
- * (mis. format suplemen OpenSID) memakai nama sheet tertentu seperti `Peserta`.
+ * `namaSheet` opsional; tanpa itu sheet pertama dipakai. Beberapa berkas impor memakai nama sheet tertentu seperti `Peserta`.
  */
 export async function bacaTabelXlsx(isi: Buffer, namaSheet?: string): Promise<string[][]> {
   const { default: ExcelJS } = await import("exceljs");

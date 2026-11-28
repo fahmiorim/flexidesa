@@ -1,13 +1,16 @@
 import type { Metadata } from "next";
 
+import { Alert } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
 import { PlatformCard, PlatformPageHeader } from "@/features/multi-desa/presentation/platform-ui";
 import { MAX_RESTORE_BYTES } from "@/features/pengaturan/database/domain/database";
 
 import { pastikanSuperAdmin } from "../guard";
 
 export const metadata: Metadata = {
-  title: "Backup & Restore Database",
+  title: "Backup & Restore",
   robots: { index: false, follow: false },
 };
 
@@ -38,10 +41,10 @@ export default async function SuperAdminBackupPage({
       <PlatformPageHeader path="/super-admin/backup" />
 
       {restored === "1" ? (
-        <p className="alert alert-success" role="status">
+        <Alert variant="info">
           Restore selesai dan verifikasi tabel inti lulus. Seluruh sesi pengguna mengikuti data
           hasil restore.
-        </p>
+        </Alert>
       ) : null}
 
       <PlatformCard
@@ -52,13 +55,13 @@ export default async function SuperAdminBackupPage({
           Unduhan dibuat saat tautan dibuka. Proses selesai ditandai dengan berkas terunduh dan
           tercatat pada audit trail platform.
         </p>
-        <div className="platform-page-actions">
-          <a className="button button-secondary" href="/api/database/backup">
+        <div className="ui-page-actions">
+          <ButtonLink variant="secondary" href="/api/database/backup">
             Unduh SQL.GZ
-          </a>
-          <a className="button button-secondary" href="/api/database/backup?format=sql">
+          </ButtonLink>
+          <ButtonLink variant="secondary" href="/api/database/backup?format=sql">
             Unduh SQL
-          </a>
+          </ButtonLink>
         </div>
         <p className="form-help">
           Format SQL.GZ lebih kecil dan lebih cepat diunggah; format SQL dipakai bila perlu dibaca
@@ -70,33 +73,39 @@ export default async function SuperAdminBackupPage({
         description="Restore mengganti seluruh basis data yang sedang dipakai aplikasi."
         title="Pulihkan dari berkas"
       >
-        <p className="alert alert-error" role="alert">
+        <Alert variant="error">
           Perhatian: restore menimpa data berjalan untuk <strong>semua desa</strong>, bukan hanya
           satu tenant. Buat backup terbaru dan pastikan berkas berasal dari platform ini sebelum
           melanjutkan.
-        </p>
+        </Alert>
 
         <form
           action="/api/database/restore"
-          className="platform-form-grid"
+          className="ui-form-grid"
           encType="multipart/form-data"
           method="post"
         >
-          <label className="form-field form-field-full">
-            <span>Berkas backup</span>
-            <input accept=".sql,.sql.gz" name="berkas" required type="file" />
-            <small className="form-help">Hanya .sql atau .sql.gz, maksimum {batasMb} MB.</small>
-          </label>
+          <FormField
+            accept=".sql,.sql.gz"
+            containerClassName="form-field-full"
+            helpText={`Hanya .sql atau .sql.gz, maksimum ${batasMb} MB.`}
+            id="berkas"
+            kind="file"
+            label="Berkas backup"
+            name="berkas"
+            required
+          />
+          <FormField
+            containerClassName="form-field-full"
+            id="konfirmasi"
+            kind="checkbox"
+            label="Saya memahami restore mengganti seluruh basis data dan memengaruhi semua desa."
+            name="konfirmasi"
+            required
+            value="1"
+          />
 
-          <label className="form-field form-field-full">
-            <span>Konfirmasi</span>
-            <span>
-              <input name="konfirmasi" required type="checkbox" value="1" /> Saya memahami restore
-              mengganti seluruh basis data dan memengaruhi semua desa.
-            </span>
-          </label>
-
-          <div className="platform-page-actions">
+          <div className="ui-page-actions">
             <Button type="submit" variant="secondary">
               Jalankan restore
             </Button>

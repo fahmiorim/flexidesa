@@ -157,7 +157,7 @@ export async function imporPendudukAction(
       );
     }
 
-    // Kolom dusun/RW/RT pada berkas SID berupa teks. Petakan ke wilayah desa
+    // Kolom dusun/RW/RT pada berkas impor berupa teks. Petakan ke wilayah desa
     // ini, atau buat wilayah baru bila kombinasi tersebut belum terdaftar.
     const wilayahCache = new Map<string, number>();
     for (const item of hasil.siap) {

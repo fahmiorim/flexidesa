@@ -24,8 +24,8 @@ import { villages } from "./village";
  * tanggal (lihat `features/bantuan/domain`), sehingga tidak ada dua sumber
  * kebenaran yang bisa saling bertentangan.
  *
- * Berbeda dari sistem rujukan yang mengizinkan `slug` kosong, di sini program
- * selalu punya `slug` unik per desa agar tautan langsung ke program stabil.
+ * Program selalu punya `slug` unik per desa agar tautan langsung ke
+ * program stabil.
  */
 export const bantuanProgram = mysqlTable(
   "bantuan_program",
@@ -69,7 +69,7 @@ export const bantuanProgram = mysqlTable(
  *
  * Penautan memakai **FK eksplisit per jenis sasaran** (`resident_id`,
  * `family_id`, `rtm_id`, `kelompok_id`) alih-alih kunci join berupa teks
- * (NIK/no. KK) seperti sistem rujukan, sehingga integritas referensial terjaga
+ * (NIK/no. KK), sehingga integritas referensial terjaga
  * dan peserta otomatis terlepas bila sasaran dihapus.
  *
  * Kolom `card_*` adalah **salinan cetak** yang boleh berbeda dari data master

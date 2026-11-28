@@ -170,6 +170,7 @@ export function AdminSidebar({
           {isPlatformAdmin
             ? grupMenuPlatform().map((kelompok) => (
                 <div className="platform-nav-group" key={kelompok.grup}>
+                  <span className="admin-nav-label">{kelompok.grup}</span>
                   {kelompok.item.map((item) => {
                     const aktif = menuPlatformAktif(item.href, pathname);
 

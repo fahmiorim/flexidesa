@@ -10,6 +10,34 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   /**
+   * Security headers global (audit keamanan F2). CSP penuh tidak diterapkan
+   * di sini karena akan memutus inline style/hydration; yang dipasang adalah
+   * header yang aman untuk seluruh halaman & API. CSP `sandbox` tetap per-route
+   * untuk berkas yang disajikan inline. `frame-ancestors 'self'` menutup
+   * clickjacking pada form publik (pengaduan, kontak). HSTS hanya bermakna di
+   * HTTPS; header ini diabaikan browser pada HTTP sehingga aman di dev.
+   */
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'self'" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=(), payment=()",
+          },
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+        ],
+      },
+    ];
+  },
+
+  /**
    * Mengaktifkan `forbidden()` dari `next/navigation` agar halaman dapat
    * merespons 403 dengan UI penjelasan (`src/app/forbidden.tsx`), bukan error
    * boundary generik. Flag ini hanya membuka API; tidak mengubah rute lain.

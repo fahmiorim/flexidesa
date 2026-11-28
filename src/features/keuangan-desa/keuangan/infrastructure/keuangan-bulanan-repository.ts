@@ -6,12 +6,12 @@ import { db } from "@/db";
 import { denganKunciMysql } from "@/db/kunci-mysql";
 import { keuanganBulanan } from "@/db/schema";
 
-export interface KeuanganBulananInput {
+interface KeuanganBulananInput {
   bulan: number;
   target: string;
   realisasi: string;
 }
-export interface KeuanganBulananRow {
+interface KeuanganBulananRow {
   bulan: number;
   target: string;
   realisasi: string;

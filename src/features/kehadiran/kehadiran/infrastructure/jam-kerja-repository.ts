@@ -25,9 +25,9 @@ function keBaris(row: KehadiranJamKerja): JamKerjaRow {
 /**
  * Pastikan tujuh baris hari tersedia.
  *
- * OpenSID hanya menyediakan aksi ubah, sehingga tabelnya diisi lebih dulu di
- * luar aplikasi. Appdes membuat jadwal bawaan saat pertama dibuka agar menu
- * langsung dapat dipakai tanpa langkah manual. `insert ignore` menjaga
+ * Hanya aksi ubah yang tersedia, sehingga tabelnya diisi lebih dulu di
+ * luar aplikasi. Aplikasi membuat jadwal bawaan saat pertama dibuka agar
+ * menu langsung dapat dipakai tanpa langkah manual. `insert ignore` menjaga
  * permintaan paralel tidak menggandakan baris.
  */
 async function pastikanJamKerja(villageId: number): Promise<void> {

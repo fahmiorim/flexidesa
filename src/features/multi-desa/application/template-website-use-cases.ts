@@ -56,7 +56,7 @@ function opsiTersimpan(raw: string | null | undefined): Record<string, unknown> 
   }
 }
 
-export interface DetailTemplateWebsite {
+interface DetailTemplateWebsite {
   template: TemplateWebsiteRow;
   versi: VersiTemplateWebsiteRow[];
   penggunaan: PenggunaanTemplateWebsiteRow[];
@@ -204,6 +204,10 @@ export async function gantiTemplateDesa(input: {
   // dari Super Admin tidak menghapus opsi yang masih berlaku.
   const [sebelum] = await opsiTemaTenant([villageId]);
   const opsiLama = opsiTersimpan(sebelum?.opsi) ?? {};
+  // Warna dasar adalah identitas paket: saat pindah paket, warna lama
+  // (mis. merah Cakrawala) tidak boleh terbawa ke tema baru (mis. teal Samudra).
+  // Opsi lain yang netral (page-size, foto) tetap dipertahankan.
+  if (sebelum && sebelum.slug !== template.slug) delete opsiLama.warna_dasar;
   const migrasi = migrasiOpsiUntukTema(template.slug, template.version, opsiLama);
   if (!migrasi) {
     throw conflict("Template ini belum memiliki paket tema berkode di registry aplikasi.");

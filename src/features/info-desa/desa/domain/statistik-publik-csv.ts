@@ -8,7 +8,7 @@
  */
 
 /** Bentuk data yang dibutuhkan pembuat CSV (subset `StatistikPublik`). */
-export interface StatistikPublikCsv {
+interface StatistikPublikCsv {
   total: number;
   lakiLaki: number;
   perempuan: number;
@@ -24,7 +24,7 @@ export interface StatistikPublikCsv {
   periode: { triwulan: number; label: string; realisasi: string; persen: number }[];
 }
 
-export const KOLOM_CSV_STATISTIK = ["Kategori", "Keterangan", "Nilai"] as const;
+const KOLOM_CSV_STATISTIK = ["Kategori", "Keterangan", "Nilai"] as const;
 
 /** Cegah formula injection saat CSV dibuka di Excel. */
 function amanFormula(value: string): string {
@@ -33,7 +33,7 @@ function amanFormula(value: string): string {
 }
 
 /** Bungkus sel CSV; pemisah titik koma agar ramah Excel Indonesia. */
-export function csvCellStatistik(value: string): string {
+function csvCellStatistik(value: string): string {
   const teksSel = amanFormula(value);
   const perluKutip =
     teksSel.includes(";") ||

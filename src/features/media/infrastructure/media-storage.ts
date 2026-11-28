@@ -54,7 +54,7 @@ export function akarPenyimpananMedia(): string {
  * @param namaAman nama aman (lihat `namaBerkasAman`)
  * @param ekstensi ekstensi kanonik dari MIME tervalidasi (mis. `jpg`)
  */
-export function jalurRelatifMedia(
+function jalurRelatifMedia(
   villageId: number,
   kategori: KategoriMedia,
   namaAman: string,
@@ -71,7 +71,7 @@ export function jalurRelatifMedia(
  * Ubah jalur relatif menjadi absolut, sambil menolak keluar dari akar
  * penyimpanan (path traversal).
  */
-export function jalurAbsolutMedia(relatif: string): string {
+function jalurAbsolutMedia(relatif: string): string {
   const absolut = path.resolve(AKAR_PENYIMPANAN, relatif);
   const akar = path.resolve(AKAR_PENYIMPANAN);
   if (absolut !== akar && !absolut.startsWith(akar + path.sep)) {
@@ -101,7 +101,7 @@ export async function hapusMedia(relatif: string): Promise<void> {
   }
 }
 
-export interface HasilSimpanMedia {
+interface HasilSimpanMedia {
   /** Jalur relatif yang harus dicatat di basis data. */
   jalur: string;
   mime: string;

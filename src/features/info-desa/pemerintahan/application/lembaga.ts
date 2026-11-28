@@ -215,7 +215,7 @@ export async function simpanAnggotaLembaga(id: number | null, input: AnggotaValu
   ) {
     throw validationError("Nomor anggota sudah digunakan pada lembaga ini.");
   }
-  // OpenSID menjadikan pasangan lembaga + penduduk unik; cegah orang yang sama
+  // Pasangan lembaga + penduduk wajib unik; cegah orang yang sama
   // tercatat dua kali pada satu lembaga.
   if (await getAnggotaLembagaByResident(villageId, input.lembagaId, input.residentId, id)) {
     throw validationError("Penduduk ini sudah terdaftar sebagai anggota lembaga tersebut.");

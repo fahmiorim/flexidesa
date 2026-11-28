@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { CSSProperties } from "react";
 
 import type { TokenTemplate } from "@/features/multi-desa/domain/template-website";
@@ -6,11 +7,21 @@ export function TemplateThumb({
   name,
   category,
   tokens,
+  preview,
 }: {
   name: string;
   category: string;
   tokens: TokenTemplate;
+  /** Path SVG pratinjau paket tema (`manifest.preview`); null bila paket tak menyediakannya. */
+  preview?: string | null;
 }) {
+  if (preview) {
+    return (
+      <div aria-hidden="true" className="template-thumb template-thumb--img">
+        <Image alt="" className="template-thumb-img" fill sizes="320px" src={preview} unoptimized />
+      </div>
+    );
+  }
   const gaya = {
     "--template-primary": tokens.primary,
     "--template-secondary": tokens.secondary,

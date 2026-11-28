@@ -9,9 +9,9 @@ export const PEMBANGUNAN_RESOURCE = RESOURCES.pembangunan;
 // --- Status proyek ----------------------------------------------------------
 
 export const STATUS_PEMBANGUNAN = ["rencana", "berjalan", "selesai", "dibatalkan"] as const;
-export type StatusPembangunan = (typeof STATUS_PEMBANGUNAN)[number];
+type StatusPembangunan = (typeof STATUS_PEMBANGUNAN)[number];
 
-export const STATUS_PEMBANGUNAN_LABELS: Readonly<Record<StatusPembangunan, string>> = {
+const STATUS_PEMBANGUNAN_LABELS: Readonly<Record<StatusPembangunan, string>> = {
   rencana: "Rencana",
   berjalan: "Berjalan",
   selesai: "Selesai",

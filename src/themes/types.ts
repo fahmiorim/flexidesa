@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { z } from "zod";
 
 /**
- * Kontrak paket tema situs publik (ala OpenSID, dikompilasi saat build).
+ * Kontrak paket tema situs publik (dikompilasi saat build).
  *
  * Setiap tema di `src/themes/<slug>/<version>/` membawa `manifest.json`,
  * `config.json`, dan `layout.tsx`. Registry (`registry.ts`) adalah satu-satunya
@@ -24,9 +24,9 @@ export const JENIS_OPSI_TEMA = [
   "unggah",
 ] as const;
 
-export type JenisOpsi = (typeof JENIS_OPSI_TEMA)[number];
+type JenisOpsi = (typeof JENIS_OPSI_TEMA)[number];
 
-export interface ThemeOptionAttributes {
+interface ThemeOptionAttributes {
   min?: number;
   max?: number;
   step?: number;
@@ -85,10 +85,138 @@ export interface ThemePageProps {
   activePath?: string;
   opsi: Record<string, unknown>;
   widgets: ThemeWidgets;
+  /**
+   * Bagian beranda yang sudah dirender server (akses, sambutan, berita,
+   * profil, idm, tautan). Tema boleh menyusun ulang slot ini; data dan
+   * field tiap bagian tetap sama karena berasal dari use case yang sama.
+   */
+  slots?: ThemeBerandaSlots;
   children: ReactNode;
 }
 
-export type ThemePageComponent = (props: ThemePageProps) => ReactNode;
+/** Kunci bagian beranda yang dapat disusun ulang oleh paket tema. */
+export const SLOT_BERANDA = ["akses", "sambutan", "berita", "profil", "idm", "tautan"] as const;
+
+type SlotBerandaKey = (typeof SLOT_BERANDA)[number];
+
+export type ThemeBerandaSlots = Partial<Record<SlotBerandaKey, ReactNode>>;
+
+type ThemePageComponent = (props: ThemePageProps) => ReactNode;
+
+/**
+ * Data hero beranda untuk paket tema yang menyediakan hero sendiri.
+ * Semua nilai berasal dari use case yang sama dengan hero bersama, sehingga
+ * identitas desa, kepala desa, judul, subjudul, dan aksi tidak hilang.
+ */
+export interface ThemeHeroProps {
+  villageId: number;
+  villageName: string | null;
+  location: string;
+  leaderName: string | null;
+  leaderRole: string | null;
+  leaderPhotoUrl: string | null;
+  heroImageUrl: string | null;
+  judulHero: string;
+  subHero: string;
+  ctaUtama: { href: string; label: string };
+  ctaSekunder: { href: string; label: string };
+}
+
+type ThemeHeroComponent = (props: ThemeHeroProps) => ReactNode;
+
+/**
+ * Data beranda terstruktur untuk paket yang merender isi beranda sendiri.
+ * Nilainya dihitung halaman dari use case publik yang sama dengan komponen
+ * bersama (statistik, berita, pengumuman, sambutan, IDM, galeri), sehingga
+ * paket dapat mengubah bentuk tanpa kehilangan field.
+ */
+export interface ThemeBerandaData {
+  villageId: number;
+  villageName: string | null;
+  location: string;
+  statistik: { penduduk: number; keluarga: number; dusun: number; wargaTerdata: number };
+  idm: {
+    tahun: number;
+    skor: string | null;
+    status: string | null;
+    dimensi: { label: string; skor: string }[];
+  };
+  berita: { id: number; slug: string; judul: string; tanggal: string; gambarUrl: string | null }[];
+  pengumuman: {
+    id: number;
+    nama: string;
+    keterangan: string | null;
+    href: string;
+  }[];
+  sambutan: { teks: string; nama: string | null; jabatan: string | null; fotoUrl: string | null };
+  profil: {
+    teks: string;
+    gambarUrl: string | null;
+    tautan: { href: string; label: string; deskripsi: string }[];
+  };
+  galeri: {
+    albumSlug: string | null;
+    foto: { id: number; url: string; judul: string }[];
+  };
+}
+
+type ThemeBerandaComponent = (props: ThemeBerandaData) => ReactNode;
+
+/**
+ * Data footer untuk paket tema yang menyediakan footer sendiri.
+ * Identitas, tagline, dan kontak berasal dari use case yang sama dengan
+ * footer bersama, sehingga tidak ada field yang hilang; hanya susunan dan
+ * gayanya yang berbeda. `widget` berisi node jam/statistik yang sudah
+ * dirender footer bersama sesuai opsi paket aktif.
+ */
+export interface ThemeFooterProps {
+  villageName: string | null;
+  location: string;
+  logoUrl: string | null;
+  judul: string;
+  tagline: string;
+  alamat: string | null;
+  telepon: string | null;
+  email: string | null;
+  widget?: ReactNode;
+}
+
+type ThemeFooterComponent = (props: ThemeFooterProps) => ReactNode;
+
+/**
+ * Data halaman Profil Desa untuk paket yang merender profil sendiri.
+ * Seluruh nilai berasal dari use case yang sama dengan halaman bersama
+ * (profil desa, statistik, perangkat, potensi, sarana), sehingga tidak ada
+ * field yang hilang; hanya susunan dan gayanya yang berbeda.
+ */
+export interface ThemeProfilData {
+  villageName: string | null;
+  location: string;
+  heroImageUrl: string | null;
+  tentang: {
+    teks: string;
+    kepalaDesaNama: string | null;
+    kepalaDesaJabatan: string | null;
+    fotoUrl: string | null;
+    fotoAlt: string;
+  };
+  fakta: { tahunBerdiri: string; penduduk: string; keluarga: string; luasWilayah: string };
+  sejarah: { teks: string; fotoUrl: string | null };
+  visi: string;
+  misi: string[];
+  wilayah: {
+    kecamatan: string | null;
+    kabupaten: string | null;
+    provinsi: string | null;
+    dusun: string[];
+    mapUrl: string | null;
+  };
+  potensi: { judul: string; ringkasan: string | null; lokasi: string | null }[];
+  sarana: { nama: string; keterangan: string | null; lokasi: string | null }[];
+  dataUmum: { penduduk: string; keluarga: string; dusun: string };
+}
+
+type ThemeProfilComponent = (props: ThemeProfilData) => ReactNode;
 
 export interface ThemeWidgetProps {
   villageId: number;
@@ -106,6 +234,14 @@ export interface ThemeDefinition {
   manifest: ThemeManifest;
   opsi: ThemeOptionDefinition[];
   layout: (props: ThemeLayoutProps) => ReactNode;
+  /** Hero khusus paket; bila tidak ada, halaman memakai hero bersama. */
+  hero?: ThemeHeroComponent;
+  /** Isi beranda khusus paket; bila tidak ada, dipakai slot halaman bersama. */
+  beranda?: ThemeBerandaComponent;
+  /** Footer khusus paket; bila tidak ada, dipakai footer bersama. */
+  footer?: ThemeFooterComponent;
+  /** Halaman Profil Desa khusus paket; bila tidak ada, dipakai halaman bersama. */
+  profil?: ThemeProfilComponent;
   /** Renderer per surface wajib; komponen bersama terdaftar sebagai shared. */
   pages: Record<SurfaceKey, ThemePageComponent>;
   widgets: ThemeWidgets;
@@ -224,7 +360,7 @@ export function warnaDasarDari(opsi: Record<string, unknown>): string | null {
   return /^#[0-9a-fA-F]{6}$/.test(v) ? v : null;
 }
 
-/** Opsi ya/tidak bertipe select (`"1"`/`"0"`); default `true` bila kunci tak ada (Esensi). */
+/** Opsi ya/tidak bertipe select (`"1"`/`"0"`); default `true` bila kunci tak ada (Arunika). */
 export function opsiYa(opsi: Record<string, unknown>, key: string, defaultYa = true): boolean {
   if (!(key in opsi)) return defaultYa;
   return String(opsi[key]) === "1";

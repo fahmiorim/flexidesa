@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Checkbox "pilih semua" untuk tabel Laporan Penduduk.
  *
- * Meniru checkbox `#checkall` OpenSID: menandai seluruh baris pada halaman ini
+ * Menandai seluruh baris pada halaman ini
  * sehingga tombol Hapus massal bisa dipakai. Status indeterminate dipakai saat
  * hanya sebagian baris terpilih.
  */

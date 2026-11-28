@@ -26,5 +26,3 @@ export const domainDnsChecks = mysqlTable(
   (table) => [index("domain_dns_checks_status_idx").on(table.status)],
 );
 
-export type DomainDnsCheck = typeof domainDnsChecks.$inferSelect;
-export type NewDomainDnsCheck = typeof domainDnsChecks.$inferInsert;

@@ -24,7 +24,7 @@ const SATUAN = [
 const SKALA = ["", "ribu", "juta", "miliar", "triliun"] as const;
 
 /** Batas maksimum input: 999 triliun (kebutuhan surat desa jauh di bawah ini). */
-export const BATAS_TERBILANG = 999_999_999_999_999n;
+const BATAS_TERBILANG = 999_999_999_999_999n;
 
 /** Kata satuan aman terhadap indeks di luar tabel (fallback "nol"). */
 function kata(i: number): string {

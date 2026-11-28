@@ -26,6 +26,7 @@ import {
 import { RTM_GENDER_LABELS } from "@/features/kependudukan/rumah-tangga/domain/rumah-tangga";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { verifySession } from "@/lib/dal";
+import { formatTanggal } from "@/lib/format-tanggal";
 
 import styles from "../kelompok.module.css";
 
@@ -43,17 +44,6 @@ function umurTahun(birthDate: string | null): string {
     umur -= 1;
   }
   return umur < 0 ? "—" : `${umur} tahun`;
-}
-
-function formatTanggal(birthDate: string | null): string {
-  if (!birthDate) return "—";
-  const tanggal = new Date(`${birthDate}T00:00:00`);
-  if (Number.isNaN(tanggal.getTime())) return birthDate;
-  return new Intl.DateTimeFormat("id-ID", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(tanggal);
 }
 
 export default async function DetailKelompokPage({ params }: { params: Promise<{ id: string }> }) {

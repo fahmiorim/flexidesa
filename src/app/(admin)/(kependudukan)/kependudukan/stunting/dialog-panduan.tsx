@@ -9,9 +9,8 @@ import styles from "./stunting.module.css";
 /**
  * Dialog panduan modul Stunting.
  *
- * OpenSID membuka panduan lewat modal Bootstrap (`data-toggle="modal"`); di
- * FlexiDesa dipakai `<dialog>` natif supaya fokus, tombol Esc, dan backdrop tetap
- * bekerja tanpa pustaka tambahan.
+ * Panduan dibuka lewat `<dialog>` natif supaya fokus, tombol Esc, dan backdrop
+ * tetap bekerja tanpa pustaka tambahan.
  */
 export function DialogPanduan({
   label,

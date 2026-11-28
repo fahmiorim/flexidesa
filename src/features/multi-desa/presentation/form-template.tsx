@@ -16,12 +16,12 @@ import { createIdleActionState, type ActionState } from "@/lib/action-state";
 import { GalatField } from "./dialog-bagian";
 import { TemplatePreview } from "./template-preview";
 
-export interface HasilFormTemplate {
+interface HasilFormTemplate {
   id: number;
   versiBaru: boolean;
 }
 
-export interface IsianTemplate {
+interface IsianTemplate {
   id?: number;
   name: string;
   slug: string;
@@ -62,7 +62,7 @@ const AWAL: IsianTemplate = {
 };
 
 /** Paket berkode yang boleh diterbitkan (dibaca dari registry saat render server). */
-export type PaketTemplateTersedia = { slug: string; version: string };
+type PaketTemplateTersedia = { slug: string; version: string };
 
 export function FormTemplate({
   aksi,
@@ -117,7 +117,7 @@ export function FormTemplate({
             </div>
           </div>
           <div className="platform-card-body form-stack">
-            <div className="platform-form-grid">
+            <div className="ui-form-grid">
               <label className="form-field">
                 <span className="form-label">Nama template</span>
                 <input
@@ -301,7 +301,7 @@ export function FormTemplate({
               ))}
             </div>
 
-            <div className="platform-form-grid">
+            <div className="ui-form-grid">
               <label className="form-field">
                 <span className="form-label">Font judul</span>
                 <select

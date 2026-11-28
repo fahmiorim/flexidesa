@@ -1,5 +1,5 @@
 /**
- * Impor pengelompokan data rumah tangga dari berkas (paritas OpenSID).
+ * Impor pengelompokan data rumah tangga dari berkas.
  *
  * Berkas berisi satu baris per penduduk: NIK, nomor RTM, dan tingkat hubungan
  * (1 = kepala rumah tangga, 2 = anggota). Penduduk yang NIK-nya dikenal akan
@@ -10,9 +10,9 @@
 import { templateCsv, type KolomImpor } from "@/lib/spreadsheet";
 
 /** Kunci kolom impor RTM. */
-export type KunciImporRtm = "nik" | "nomorRtm" | "level";
+type KunciImporRtm = "nik" | "nomorRtm" | "level";
 
-/** Definisi kolom impor RTM (header mengikuti format impor OpenSID). */
+/** Definisi kolom impor RTM. */
 export const KOLOM_IMPOR_RTM: readonly KolomImpor<KunciImporRtm>[] = [
   {
     kunci: "nik",
@@ -35,7 +35,7 @@ export const KOLOM_IMPOR_RTM: readonly KolomImpor<KunciImporRtm>[] = [
 ];
 
 /** Satu baris impor RTM yang siap diproses. */
-export interface SiapImporRtm {
+interface SiapImporRtm {
   residentId: number;
   nik: string;
   nomorRtm: string;
@@ -43,14 +43,14 @@ export interface SiapImporRtm {
 }
 
 /** Penduduk desa yang dapat dicocokkan dari berkas (berkunci NIK). */
-export interface PendudukImporRtm {
+interface PendudukImporRtm {
   id: number;
   nik: string;
   nama: string;
 }
 
 /** Hasil rencana impor: baris siap, galat per baris, dan RTM baru yang dibuat. */
-export interface RencanaImporRtm {
+interface RencanaImporRtm {
   siap: SiapImporRtm[];
   galat: Array<{ baris: number; pesan: string }>;
   /** Nomor RTM pada berkas yang belum ada di desa (akan dibuat baru). */
@@ -65,7 +65,7 @@ export function normalisasiNomorRtm(nomor: string): string {
 /**
  * Susun rencana impor RTM dari baris berkas yang sudah dipetakan.
  *
- * Aturan (paritas OpenSID):
+ * Aturan:
  * - NIK wajib 16 angka dan harus dikenal di desa ini;
  * - nomor RTM wajib diisi;
  * - level 1 = kepala rumah tangga, level lain yang positif = anggota;

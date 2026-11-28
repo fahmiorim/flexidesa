@@ -106,7 +106,7 @@ afterAll(async () => {
   await db.delete(villages).where(inArray(villages.id, [fixture.desaA, fixture.desaB]));
 });
 
-describe("AUD-036 composite FK indikator survey", () => {
+describe("Composite FK indikator survey", () => {
   it("menerima indikator dari desa yang sama", async () => {
     const current = dataUji();
     const [row] = await db

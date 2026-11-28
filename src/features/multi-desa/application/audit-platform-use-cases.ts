@@ -11,9 +11,9 @@ import {
 const PANJANG_MAKS_PENCARIAN = 120;
 
 /** Batas baris ekspor audit agar unduhan tetap dapat diselesaikan. */
-export const BATAS_EKSPOR_AUDIT = 5000;
+const BATAS_EKSPOR_AUDIT = 5000;
 
-export interface FilterAuditPlatform {
+interface FilterAuditPlatform {
   page?: unknown;
   search?: unknown;
   /** Id desa dari query string; kosong berarti semua desa. */

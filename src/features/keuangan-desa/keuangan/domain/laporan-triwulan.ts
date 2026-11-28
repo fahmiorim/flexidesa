@@ -75,7 +75,7 @@ export function triwulanLabel(triwulan: number): string {
 }
 
 /** Ringkasan realisasi satu periode (triwulan) untuk keluaran publik. */
-export interface RealisasiPeriode {
+interface RealisasiPeriode {
   /** Nomor triwulan 1–4. */
   triwulan: number;
   label: string;

@@ -5,8 +5,8 @@ import { describe, expect, it } from "vitest";
 import { SURFACE_WAJIB } from "./types";
 
 /**
- * 35 route situs publik (docs/Dokumentasi-Implementasi-Template-ala-OpenSID.md
- * §4.3). Setiap route wajib memakai adapter tema yang disetujui:
+ * 35 route situs publik. Setiap route wajib memakai adapter tema yang
+ * disetujui:
  * TemaRenderer, PublicShell, GalleryShell, atau header/footer bersama
  * PublicSiteHeader/PublicSiteFooter (komponen bersama terdaftar), atau
  * mengimpor komponen halaman utama (alias).

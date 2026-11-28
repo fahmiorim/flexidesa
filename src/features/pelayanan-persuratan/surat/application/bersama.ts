@@ -53,7 +53,7 @@ export function text(value: string | null | undefined): string {
   return value && value.trim() !== "" ? value : "-";
 }
 
-export function toAnggotaKeluarga(
+function toAnggotaKeluarga(
   rows: readonly AnggotaKeluargaSuratRow[],
 ): AnggotaKeluargaSurat[] {
   return rows.map((row) => ({
@@ -156,11 +156,11 @@ export function buildValues(
 /**
  * Ganti nilai kosong ("-") dengan teks dari Pengaturan Surat.
  *
- * Parity `ganti_data_kosong` OpenSID; hanya placeholder bawaan yang disentuh,
+ * Hanya placeholder bawaan yang disentuh,
  * nilai isian dinamis milik petugas dibiarkan apa adanya.
  */
 
-export function terapkanKodeKosong(
+function terapkanKodeKosong(
   values: Record<string, string>,
   pengaturan: Pengaturan,
 ): Record<string, string> {

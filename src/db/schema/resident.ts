@@ -71,7 +71,7 @@ export const residents = mysqlTable(
     birthPlace: varchar("birth_place", { length: 100 }),
     birthDate: date("birth_date", { mode: "string" }),
 
-    /* Data identitas & kelahiran (paritas form biodata OpenSID). */
+    /* Data identitas & kelahiran. */
     ktpEl: mysqlEnum("ktp_el", KTP_ELS),
     statusRekam: mysqlEnum("status_rekam", STATUS_REKAMS),
     idCardTag: varchar("id_card_tag", { length: 17 }),
@@ -102,7 +102,7 @@ export const residents = mysqlTable(
     religionId: int("religion_id").references(() => religions.id, { onDelete: "set null" }),
     educationId: int("education_id").references(() => educations.id, { onDelete: "set null" }),
     /**
-     * Pendidikan yang sedang ditempuh (parity `pendidikan_sedang_id`).
+     * Pendidikan yang sedang ditempuh.
      *
      * memakai katalog `educations` yang sama dengan pendidikan terakhir; dipisah
      * agar isian surat/KK dapat membedakan keduanya.
@@ -145,9 +145,9 @@ export const residents = mysqlTable(
     contactMethod: mysqlEnum("contact_method", CONTACT_METHODS),
     fatherName: varchar("father_name", { length: 100 }),
     motherName: varchar("mother_name", { length: 100 }),
-    /** NIK ayah (parity `ayah_nik`), dipakai pada placeholder surat/KK. */
+    /** NIK ayah, dipakai pada placeholder surat/KK. */
     fatherNationalId: varchar("father_national_id", { length: 16 }),
-    /** NIK ibu (parity `ibu_nik`), dipakai pada placeholder surat/KK. */
+    /** NIK ibu, dipakai pada placeholder surat/KK. */
     motherNationalId: varchar("mother_national_id", { length: 16 }),
 
     birthCertificateNumber: varchar("birth_certificate_number", { length: 40 }),

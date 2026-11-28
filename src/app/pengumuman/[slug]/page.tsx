@@ -12,6 +12,8 @@ import {
   daftarBerita,
   detailBerita,
 } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { mediaUrl } from "@/lib/media-url";
 import { sanitasiHtml } from "@/lib/sanitize";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
@@ -21,17 +23,6 @@ import styles from "./pengumuman-detail.module.css";
 export const dynamic = "force-dynamic";
 type Props = { params: Promise<{ slug: string }> };
 
-function mediaUrl(value: string | null | undefined, villageId: number): string | null {
-  if (!value) return null;
-  const segments = value.split(/[\\\\/]/).filter(Boolean);
-  if (
-    !segments.length ||
-    segments.some((part) => part === "." || part === ".." || part.includes(".."))
-  )
-    return null;
-  const safe = segments[0] === String(villageId) ? segments : [String(villageId), ...segments];
-  return `/api/publik/media/${safe.map(encodeURIComponent).join("/")}`;
-}
 function tanggal(value: Date, withTime = false) {
   return new Intl.DateTimeFormat("id-ID", {
     day: "numeric",
@@ -57,6 +48,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function DetailPengumumanPage({ params }: Props) {
   const [{ slug }, desa] = await Promise.all([params, getIdentitasFromRequest()]);
+  const tema = await muatTemaPublik(desa.id);
   const item = await detailBerita(desa.id, slug);
   if (!item || item.kategoriSlug !== "pengumuman") notFound();
 
@@ -91,7 +83,7 @@ export default async function DetailPengumumanPage({ params }: Props) {
   while (calendarCells.length % 7) calendarCells.push(0);
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logo} activePath="/pengumuman" />
       <section className={styles.hero}>
         <div className={styles.heroInner}>

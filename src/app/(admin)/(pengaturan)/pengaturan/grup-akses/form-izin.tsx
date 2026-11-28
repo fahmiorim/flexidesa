@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { ModulePermissionRow } from "@/features/pengaturan/rbac/domain/grup";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
@@ -22,8 +23,8 @@ export function FormIzin({ roleId, permissions, readOnly, aksi, resetAction }: P
     <form action={formAction} className="pengguna-izin-form">
       <input name="roleId" type="hidden" value={roleId} />
 
-      <TableScroll className="tenant-table-scroll">
-        <Table className="tenant-table pengguna-izin-table">
+      <TableScroll frame>
+        <Table className="pengguna-izin-table">
           <THead>
             <Row>
               <HeaderCell scope="col">Modul</HeaderCell>
@@ -38,7 +39,7 @@ export function FormIzin({ roleId, permissions, readOnly, aksi, resetAction }: P
               <Row key={modul.moduleId} data-grup={modul.isGroup || undefined}>
                 <Cell style={{ paddingLeft: modul.parentId === null ? 16 : 32 }}>
                   <span className={modul.isGroup ? "modul-strong" : undefined}>{modul.name}</span>
-                  <span className="tenant-secondary">{modul.slug}</span>
+                  <SecondaryText>{modul.slug}</SecondaryText>
                 </Cell>
                 {(["read", "create", "update", "delete"] as const).map((akses) => (
                   <Cell key={akses}>

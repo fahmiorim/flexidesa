@@ -9,7 +9,7 @@ import {
 /**
  * Berkas Excel Rekapitulasi Kehadiran.
  *
- * Kolom mengikuti `ekspor()` OpenSID: Nama, Jabatan, Tanggal, Jam Masuk,
+ * Kolom: Nama, Jabatan, Tanggal, Jam Masuk,
  * Jam Keluar, Total Waktu, Status Kehadiran.
  */
 export async function buildRekapitulasiKehadiranXlsx(

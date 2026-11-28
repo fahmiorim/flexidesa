@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import {
   laporanDokumenFormSchema,
   validasiBerkasLaporan,
@@ -5,7 +7,7 @@ import {
 } from "./laporan-dokumen";
 
 /**
- * Impor **banyak** dokumen laporan periodik sekaligus (Lapis D).
+ * Impor **banyak** dokumen laporan periodik sekaligus.
  *
  * Setiap berkas membawa metadata sendiri (judul, jenis, tahun, semester) agar
  * satu impor dapat mengarsipkan dokumen lintas periode/jenis. Validasi di sini
@@ -32,7 +34,7 @@ export interface ImporDokumenItem {
 }
 
 /** Hasil validasi satu berkas impor. */
-export interface ImporDokumenItemHasil {
+interface ImporDokumenItemHasil {
   nama: string;
   judul: string;
   jenis: string;
@@ -43,7 +45,7 @@ export interface ImporDokumenItemHasil {
   pesan: string | null;
 }
 
-export interface ImporDokumenValidasi {
+interface ImporDokumenValidasi {
   /** `true` hanya bila seluruh berkas sah. */
   ok: boolean;
   /** Ringkasan kesalahan untuk ditampilkan; `null` bila semua sah. */

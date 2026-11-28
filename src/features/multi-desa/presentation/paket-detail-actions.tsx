@@ -118,7 +118,7 @@ export function PaketDetailActions({
           <form action={saveFormAction} className="form-stack">
             <input name="planId" type="hidden" value={planId} />
             <input name="versionId" type="hidden" value={draft.id} />
-            <div className="platform-row-actions">
+            <div className="ui-toolbar-actions">
               <strong>Draf v{draft.version}</strong>
               <span className="form-help">
                 {selected.size} modul dipilih{dirty ? " · perubahan belum disimpan" : ""}
@@ -181,7 +181,7 @@ export function PaketDetailActions({
               </p>
             )}
             {actionFeedback(saveState)}
-            <div className="platform-row-actions">
+            <div className="ui-toolbar-actions">
               <button
                 className="button button-primary"
                 disabled={

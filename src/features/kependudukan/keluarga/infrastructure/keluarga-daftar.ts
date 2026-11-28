@@ -9,14 +9,14 @@ import {
 } from "@/features/kependudukan/keluarga/domain/keluarga";
 
 /**
- * Daftar KK untuk cetak/unduh (paritas "Aksi Lainnya" OpenSID).
+ * Daftar KK untuk cetak/unduh.
  *
  * Berbeda dari Kartu Keluarga per KK, laporan ini memuat banyak KK sekaligus:
  * nomor KK, kepala keluarga, NIK, jumlah anggota, jenis kelamin, alamat,
  * dusun/RW/RT, tanggal terdaftar, dan tanggal cetak KK.
  */
 
-export interface KeluargaDaftarInput {
+interface KeluargaDaftarInput {
   rows: readonly KeluargaListRow[];
   namaDesa: string;
   sensor: boolean;

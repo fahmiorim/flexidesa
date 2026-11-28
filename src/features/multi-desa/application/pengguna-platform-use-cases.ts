@@ -38,7 +38,7 @@ const idSchema = z
   .min(1, "Pengguna tidak valid.")
   .max(36, "Pengguna tidak valid.");
 
-export const penggunaPlatformBaruSchema = z.object({
+const penggunaPlatformBaruSchema = z.object({
   name: z.string().trim().min(3, "Nama minimal 3 karakter.").max(255),
   email: z
     .string()

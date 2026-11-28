@@ -12,7 +12,7 @@ import {
 import { TENANT_TEMPLATE } from "@/features/multi-desa/domain/tenant-template-data";
 
 /**
- * Paritas izin Website ↔ modul template tenant.
+ * Kesesuaian izin Website ↔ modul template tenant.
  *
  * Halaman Website pernah memakai slug `website-konten`/`website-halaman`/
  * `website-dashboard` yang tidak ada pada template, sehingga hanya superadmin

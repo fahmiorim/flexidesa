@@ -1,5 +1,7 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 /**
- * Berkas impor klasifikasi surat (kode lama sistem SID).
+ * Berkas impor klasifikasi surat (kode lama).
  *
  * Kode dinormalisasi ke huruf besar dan unik per berkas; baris duplikat
  * dilaporkan agar operator dapat memperbaiki sumbernya sebelum mengimpor.
@@ -7,15 +9,13 @@
 
 import { KLASIFIKASI_KODE_MAKS } from "./surat";
 
-export type KunciImporKlasifikasi = "kode" | "nama" | "keterangan";
-
-export interface BarisKlasifikasiImpor {
+interface BarisKlasifikasiImpor {
   kode: string;
   nama: string;
   keterangan: string | null;
 }
 
-export interface HasilPersiapanKlasifikasi {
+interface HasilPersiapanKlasifikasi {
   rows: BarisKlasifikasiImpor[];
   galat: { baris: number; pesan: string }[];
 }

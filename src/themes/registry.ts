@@ -1,13 +1,26 @@
-import configEsensi from "./esensi/1.0.0/config.json";
-import LayoutEsensi from "./esensi/1.0.0/layout";
-import manifestEsensi from "./esensi/1.0.0/manifest.json";
-import { halamanEsensi } from "./esensi/1.0.0/pages";
-import { widgetEsensi } from "./esensi/1.0.0/widgets";
-import configNatra from "./natra/1.0.0/config.json";
-import LayoutNatra from "./natra/1.0.0/layout";
-import manifestNatra from "./natra/1.0.0/manifest.json";
-import { halamanNatra } from "./natra/1.0.0/pages";
-import { widgetNatra } from "./natra/1.0.0/widgets";
+import configArunika from "./arunika/1.0.0/config.json";
+import LayoutArunika from "./arunika/1.0.0/layout";
+import manifestArunika from "./arunika/1.0.0/manifest.json";
+import { halamanArunika } from "./arunika/1.0.0/pages";
+import { widgetArunika } from "./arunika/1.0.0/widgets";
+import { BerandaCakrawala } from "./cakrawala/1.0.0/beranda";
+import configCakrawala from "./cakrawala/1.0.0/config.json";
+import { FooterCakrawala } from "./cakrawala/1.0.0/footer";
+import { HeroCakrawala } from "./cakrawala/1.0.0/hero";
+import LayoutCakrawala from "./cakrawala/1.0.0/layout";
+import manifestCakrawala from "./cakrawala/1.0.0/manifest.json";
+import { halamanCakrawala } from "./cakrawala/1.0.0/pages";
+import { ProfilCakrawala } from "./cakrawala/1.0.0/profil-cakrawala";
+import { widgetCakrawala } from "./cakrawala/1.0.0/widgets";
+import { BerandaSamudra } from "./samudra/1.0.0/beranda";
+import configSamudra from "./samudra/1.0.0/config.json";
+import { FooterSamudra } from "./samudra/1.0.0/footer";
+import { HeroSamudra } from "./samudra/1.0.0/hero";
+import LayoutSamudra from "./samudra/1.0.0/layout";
+import manifestSamudra from "./samudra/1.0.0/manifest.json";
+import { halamanSamudra } from "./samudra/1.0.0/pages";
+import { ProfilSamudra } from "./samudra/1.0.0/profil-samudra";
+import { widgetSamudra } from "./samudra/1.0.0/widgets";
 import {
   parseConfigOpsi,
   SURFACE_WAJIB,
@@ -30,6 +43,10 @@ function definisi(
   layout: ThemeDefinition["layout"],
   pages: ThemeDefinition["pages"],
   widgets: ThemeWidgets,
+  hero?: ThemeDefinition["hero"],
+  beranda?: ThemeDefinition["beranda"],
+  footer?: ThemeDefinition["footer"],
+  profil?: ThemeDefinition["profil"],
 ): ThemeDefinition {
   const opsi = parseConfigOpsi(config);
   return {
@@ -38,40 +55,57 @@ function definisi(
     layout,
     pages,
     widgets,
+    hero,
+    beranda,
+    footer,
+    profil,
     defaultOpsi: () => Object.fromEntries(opsi.map((o) => [o.key, o.default])),
   };
 }
 
-const ESENSI: ThemeDefinition = definisi(
-  manifestEsensi as ThemeManifest,
-  configEsensi,
-  LayoutEsensi,
-  halamanEsensi,
-  widgetEsensi,
+const ARUNIKA: ThemeDefinition = definisi(
+  manifestArunika as ThemeManifest,
+  configArunika,
+  LayoutArunika,
+  halamanArunika,
+  widgetArunika,
 );
-const NATRA: ThemeDefinition = definisi(
-  manifestNatra as ThemeManifest,
-  configNatra,
-  LayoutNatra,
-  halamanNatra,
-  widgetNatra,
+const CAKRAWALA: ThemeDefinition = definisi(
+  manifestCakrawala as ThemeManifest,
+  configCakrawala,
+  LayoutCakrawala,
+  halamanCakrawala,
+  widgetCakrawala,
+  HeroCakrawala,
+  BerandaCakrawala,
+  FooterCakrawala,
+  ProfilCakrawala,
+);
+const SAMUDRA: ThemeDefinition = definisi(
+  manifestSamudra as ThemeManifest,
+  configSamudra,
+  LayoutSamudra,
+  halamanSamudra,
+  widgetSamudra,
+  HeroSamudra,
+  BerandaSamudra,
+  FooterSamudra,
+  ProfilSamudra,
 );
 
 /** Pasangan `slug@version` → definisi paket. */
 export const TEMA_REGISTRY: Record<string, ThemeDefinition> = {
-  "esensi@1.0.0": ESENSI,
-  "natra@1.0.0": NATRA,
+  "arunika@1.0.0": ARUNIKA,
+  "cakrawala@1.0.0": CAKRAWALA,
+  "samudra@1.0.0": SAMUDRA,
 };
 
 /**
- * Alias slug lama agar tidak jatuh ke fallback diam-diam:
- * `samudra-modern` (dibuat via `scripts/platform/tambah-template-samudra.mjs`)
- * dipetakan ke `natra@1.0.0`; opsi token lama tetap dibaca `muatTemaPublik`,
- * dan schema opsi natra memberi default yang setara.
+ * Alias slug lama → paket berkode. Kosong saat ini: `samudra` sudah
+ * menjadi paket sendiri, sehingga tidak ada slug katalog yang jatuh ke tema
+ * lain. Mekanisme tetap ada untuk slug legacy yang kelak perlu dipetakan.
  */
-export const ALIAS_SLUG_TEMA: Record<string, string> = {
-  "samudra-modern@1.0.0": "natra@1.0.0",
-};
+export const ALIAS_SLUG_TEMA: Record<string, string> = {};
 
 export function resolveTema(
   slug: string | null | undefined,

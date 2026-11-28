@@ -4,7 +4,7 @@ import { getStatistikPengunjung } from "@/features/layanan-warga/kontak/infrastr
  * Use case untuk statistik pengunjung.
  */
 
-export interface StatistikPengunjungParams {
+interface StatistikPengunjungParams {
   villageId: number;
   halaman: string;
   jumlahHari?: number;

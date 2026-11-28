@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 /**
  * Rekap hasil pendataan survei untuk situs publik.
  *
@@ -14,19 +16,19 @@ export interface SoalHasilSurvei {
   pilihan: readonly string[];
 }
 
-export interface JawabanHasilSurvei {
+interface JawabanHasilSurvei {
   soalId: number;
   jawaban: string | null;
 }
 
-export interface DistribusiHasilSurvei {
+interface DistribusiHasilSurvei {
   label: string;
   jumlah: number;
   /** Persentase terhadap total jawaban soal ini, satu angka desimal. */
   persen: number;
 }
 
-export interface HasilSoalSurvei {
+interface HasilSoalSurvei {
   soalId: number;
   pertanyaan: string;
   tipe: string;

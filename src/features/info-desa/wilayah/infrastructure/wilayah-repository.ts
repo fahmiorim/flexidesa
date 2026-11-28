@@ -13,20 +13,7 @@ import {
   type WilayahPatch,
 } from "@/features/info-desa/wilayah/domain/wilayah";
 
-export interface WilayahListParams {
-  villageId: number;
-  search: string;
-  page: number;
-  pageSize: number;
-}
 
-export interface WilayahListResult {
-  rows: WilayahDTO[];
-  total: number;
-  page: number;
-  pageSize: number;
-  pageCount: number;
-}
 
 /** Petakan baris `regions` → DTO domain (kosakata Indonesia). */
 function toDto(row: typeof regions.$inferSelect, kepalaNik: string | null = null): WilayahDTO {
@@ -132,7 +119,7 @@ export async function insertWilayah(villageId: number, input: WilayahFormInput):
 /**
  * Ambil wilayah berdasarkan dusun/RW/RT, atau buat bila belum ada.
  *
- * Dipakai impor penduduk: berkas SID membawa dusun/RW/RT sebagai teks, bukan
+ * Dipakai impor penduduk: berkas impor membawa dusun/RW/RT sebagai teks, bukan
  * id. Nilai kosong disimpan sebagai string kosong agar indeks unik tetap
  * mencegah duplikasi (MySQL menganggap NULL berbeda satu sama lain).
  */

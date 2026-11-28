@@ -8,7 +8,7 @@ import { NextResponse } from "next/server";
  * `{ ok: false, error }`, sehingga klien yang mengikuti kontrak mendapat
  * `undefined`.
  */
-export interface GalatApiEksternal {
+interface GalatApiEksternal {
   ok: false;
   error: string;
   detail?: string;

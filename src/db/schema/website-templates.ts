@@ -79,7 +79,3 @@ export const websiteTemplateVersions = mysqlTable(
   ],
 );
 
-export type WebsiteTemplate = typeof websiteTemplates.$inferSelect;
-export type NewWebsiteTemplate = typeof websiteTemplates.$inferInsert;
-export type WebsiteTemplateVersion = typeof websiteTemplateVersions.$inferSelect;
-export type NewWebsiteTemplateVersion = typeof websiteTemplateVersions.$inferInsert;

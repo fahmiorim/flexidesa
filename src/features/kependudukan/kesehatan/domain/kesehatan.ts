@@ -43,7 +43,7 @@ export const posyanduSchema = z.object({
   namaBidan: z.string().max(100).optional().or(z.literal("")),
 });
 
-export type PosyanduInput = z.infer<typeof posyanduSchema>;
+type PosyanduInput = z.infer<typeof posyanduSchema>;
 export type Posyandu = PosyanduInput & { id: number };
 
 export const kiaSchema = z.object({
@@ -97,7 +97,7 @@ export interface IbuHamilRow {
   usiaKehamilan: number | null;
   tanggalMelahirkan: string | null;
   // Kolom indikator boleh kosong di database; status kosong dihitung sebagai
-  // `TS` (tidak seharusnya) saat rekapitulasi, sama seperti OpenSID.
+  // `TS` (tidak seharusnya) saat rekapitulasi.
   pemeriksaanKehamilan: boolean | null;
   konsumsiPilFe: boolean | null;
   butirPilFe: number | null;
@@ -140,7 +140,7 @@ export interface BulananAnakRow {
   kiaId: number;
   /** Tanggal periksa isian operator; `createdAt` dipakai bila kosong. */
   tanggalPeriksa?: string | null;
-  /** Catatan bebas operator, seperti kolom keterangan di form OpenSID. */
+  /** Catatan bebas operator. */
   keterangan?: string | null;
   statusGizi: number;
   umurBulan: number;
@@ -163,13 +163,13 @@ export interface BulananAnakRow {
 
 // --- Sasaran PAUD 2-6 tahun ---
 
-/** Kategori usia sasaran PAUD, sama dengan opsi OpenSID. */
+/** Kategori usia sasaran PAUD. */
 export const KATEGORI_USIA_PAUD = [
   { value: 1, label: "Anak Usia 2 - < 3 Tahun" },
   { value: 2, label: "Anak Usia 3 - 6 Tahun" },
 ] as const;
 
-/** Status keikutsertaan PAUD per bulan, sama dengan opsi OpenSID. */
+/** Status keikutsertaan PAUD per bulan. */
 export const STATUS_PAUD = [
   { value: 1, label: "Belum" },
   { value: 2, label: "Mengikuti" },
@@ -213,7 +213,7 @@ export const paudSchema = z.object({
   desember: z.coerce.number().int().min(1).max(3).optional(),
 });
 
-export type PaudInput = z.infer<typeof paudSchema>;
+type PaudInput = z.infer<typeof paudSchema>;
 export type PaudRow = Omit<PaudInput, "tanggalPeriksa" | "id"> & {
   id: number;
   /** Kosong berarti memakai `created_at` sebagai tanggal periksa. */
@@ -301,10 +301,9 @@ export function kiaRekapFilename(namaDesa: string | null): string {
 // --- Skorcard Konvergensi Desa ---
 
 /**
- * Status satu indikator layanan, mengikuti kode OpenSID (`Rekap.php`):
- * `Y` memenuhi syarat, `T` tidak memenuhi syarat, `TS` tidak seharusnya /
- * datanya belum tersedia. Di tampilan `TS` ditulis `-`, sama seperti legenda
- * dialog panduan OpenSID.
+ * Status satu indikator layanan: `Y` memenuhi syarat, `T` tidak memenuhi
+ * syarat, `TS` tidak seharusnya / datanya belum tersedia. Di tampilan
+ * `TS` ditulis `-`.
  */
 export type StatusIndikator = "Y" | "T" | "TS";
 
@@ -314,7 +313,7 @@ export function statusIndikator(nilai: boolean | null | undefined): StatusIndika
   return "TS";
 }
 
-/** Delapan indikator konvergensi ibu hamil, berurutan seperti laporan OpenSID. */
+/** Delapan indikator konvergensi ibu hamil. */
 export const INDIKATOR_IBU_HAMIL_KEYS = [
   "periksa_kehamilan",
   "pil_fe",
@@ -337,7 +336,7 @@ export const KOLOM_INDIKATOR_IBU_HAMIL: Record<string, keyof IbuHamilRow> = {
   jaminan_kesehatan: "jaminanKesehatan",
 };
 
-/** Sepuluh indikator konvergensi anak 0-23 bulan, berurutan seperti OpenSID. */
+/** Sepuluh indikator konvergensi anak 0-23 bulan. */
 export const INDIKATOR_ANAK_KEYS = [
   "imunisasi",
   "pengukuran_berat_badan",
@@ -364,7 +363,7 @@ export const KOLOM_INDIKATOR_ANAK: Record<string, keyof BulananAnakRow> = {
   pengasuhan_paud: "pengasuhanPaud",
 };
 
-export interface CapaianIndikator {
+interface CapaianIndikator {
   Y: number;
   T: number;
   TS: number;
@@ -373,17 +372,16 @@ export interface CapaianIndikator {
   persen: number;
 }
 
-/** Tingkat konvergensi satu baris sasaran (kolom Diterima/Seharusnya/% OpenSID). */
-export interface KonvergensiBaris {
+/** Tingkat konvergensi satu baris sasaran (kolom Diterima/Seharusnya/%). */
+interface KonvergensiBaris {
   jumlah_diterima_lengkap: number;
   jumlah_seharusnya: number;
   persen: number;
 }
 
 /**
- * Menghitung konvergensi satu baris. Indikator berstatus `TS` tidak dihitung
- * sebagai kewajiban, sama seperti `jumlah_seharusnya = jumlah layanan - TS`
- * pada `Rekap.php` OpenSID.
+ * Menghitung konvergensi satu baris. Indikator berstatus `TS` tidak
+ * dihitung sebagai kewajiban (`jumlah_seharusnya = jumlah layanan - TS`).
  */
 export function hitungKonvergensiBaris(
   row: IbuHamilRow | BulananAnakRow,
@@ -407,7 +405,7 @@ export function hitungKonvergensiBaris(
   };
 }
 
-/** Label kategori usia anak pada laporan rekapitulasi OpenSID. */
+/** Label kategori usia anak pada laporan rekapitulasi. */
 export function kategoriUsiaAnak(umurBulan: number | null | undefined): string {
   const umur = umurBulan ?? 0;
   if (umur < 6) return "0 - < 6 Bulan";
@@ -416,7 +414,7 @@ export function kategoriUsiaAnak(umurBulan: number | null | undefined): string {
   return "> 18 - 23 Bulan";
 }
 
-export interface SkorcardKonvergensiIbuHamil {
+interface SkorcardKonvergensiIbuHamil {
   capaianKonvergensi: Record<string, CapaianIndikator> | null;
   tingkatKonvergensiDesa: {
     jumlah_diterima: number;
@@ -425,7 +423,7 @@ export interface SkorcardKonvergensiIbuHamil {
   } | null;
 }
 
-export interface SkorcardKonvergensiAnak {
+interface SkorcardKonvergensiAnak {
   capaianKonvergensi: Record<string, CapaianIndikator> | null;
   tingkatKonvergensiDesa: {
     jumlah_diterima: number;
@@ -512,7 +510,7 @@ export function buildSkorcardKonvergensi(
 
 /**
  * Menghitung capaian tiap indikator untuk footer tabel rekapitulasi.
- * `jumlah_seharusnya` mengikuti OpenSID: seluruh baris dikurangi status `TS`.
+ * `jumlah_seharusnya`: seluruh baris dikurangi status `TS`.
  */
 function hitungCapaianIndikator(
   rows: readonly Record<string, unknown>[],

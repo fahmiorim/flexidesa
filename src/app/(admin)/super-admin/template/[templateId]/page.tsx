@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { ButtonLink } from "@/components/ui/button-link";
+import { DefinitionItem, DefinitionList } from "@/components/ui/definition-list";
 import {
   ambilTemplateWebsite,
   daftarDesaUntukTemplate,
@@ -22,6 +23,7 @@ import {
   PlatformCard,
   PlatformPageHeader,
   PlatformStat,
+  PlatformStatGrid,
 } from "@/features/multi-desa/presentation/platform-ui";
 import { TemplatePreview } from "@/features/multi-desa/presentation/template-preview";
 
@@ -84,7 +86,7 @@ export default async function SuperAdminDetailTemplatePage({ params, searchParam
     <>
       <PlatformPageHeader
         actions={
-          <div className="platform-row-actions">
+          <div className="ui-toolbar-actions">
             <ButtonLink variant="secondary" href="/super-admin/template">
               Katalog
             </ButtonLink>
@@ -126,35 +128,24 @@ export default async function SuperAdminDetailTemplatePage({ params, searchParam
             </span>
           </div>
           <div className="platform-card-body">
-            <dl className="platform-def">
-              <div className="platform-def-row">
-                <dt>Kategori</dt>
-                <dd>
-                  {LABEL_KATEGORI_TEMPLATE[template.category as KategoriTemplate] ??
-                    template.category}
-                </dd>
-              </div>
-              <div className="platform-def-row">
-                <dt>Slug</dt>
-                <dd>
-                  <code>{template.slug}</code>
-                </dd>
-              </div>
-              <div className="platform-def-row">
-                <dt>Versi aktif</dt>
-                <dd>
-                  <strong>v{template.version}</strong>
-                </dd>
-              </div>
-              <div className="platform-def-row">
-                <dt>Dibuat</dt>
-                <dd>{tanggal.format(new Date(template.createdAt))}</dd>
-              </div>
-              <div className="platform-def-row">
-                <dt>Diperbarui</dt>
-                <dd>{tanggal.format(new Date(template.updatedAt))}</dd>
-              </div>
-            </dl>
+            <DefinitionList>
+              <DefinitionItem label="Kategori">
+                {LABEL_KATEGORI_TEMPLATE[template.category as KategoriTemplate] ??
+                  template.category}
+              </DefinitionItem>
+              <DefinitionItem label="Slug">
+                <code>{template.slug}</code>
+              </DefinitionItem>
+              <DefinitionItem label="Versi aktif">
+                <strong>v{template.version}</strong>
+              </DefinitionItem>
+              <DefinitionItem label="Dibuat">
+                {tanggal.format(new Date(template.createdAt))}
+              </DefinitionItem>
+              <DefinitionItem label="Diperbarui">
+                {tanggal.format(new Date(template.updatedAt))}
+              </DefinitionItem>
+            </DefinitionList>
 
             <div className="template-tags">
               <span>
@@ -167,7 +158,7 @@ export default async function SuperAdminDetailTemplatePage({ params, searchParam
           </div>
         </section>
 
-        <div className="platform-stat-grid template-detail-stats">
+        <PlatformStatGrid columns={3}>
           <PlatformStat
             icon={
               <>
@@ -204,7 +195,7 @@ export default async function SuperAdminDetailTemplatePage({ params, searchParam
             tone={template.jumlahTertinggal > 0 ? "oranye" : "hijau"}
             value={angka.format(template.jumlahTertinggal)}
           />
-        </div>
+        </PlatformStatGrid>
       </div>
 
       <nav aria-label="Bagian detail template" className="template-tabs">

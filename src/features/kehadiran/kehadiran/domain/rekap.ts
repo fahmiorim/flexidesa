@@ -10,12 +10,12 @@
 const TAHUN_MIN = 1900;
 const TAHUN_MAKS = 2100;
 
-export interface ParameterRekapKehadiran {
+interface ParameterRekapKehadiran {
   tahun: number;
   bulan?: number;
 }
 
-export type HasilParameterRekapKehadiran =
+type HasilParameterRekapKehadiran =
   { ok: true; parameter: ParameterRekapKehadiran } | { ok: false; pesan: string };
 
 function bilanganBulat(mentah: string): number | null {

@@ -6,7 +6,7 @@ import type { TriwulanBaris, TriwulanTotal } from "./laporan-triwulan";
  * `laporan-csv.ts`: separator `;`, BOM UTF-8, angka desimal polos).
  */
 
-export interface TriwulanCsvInput {
+interface TriwulanCsvInput {
   namaDesa: string | null;
   kecamatan: string | null;
   tahun: number;

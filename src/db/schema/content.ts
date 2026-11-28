@@ -55,7 +55,7 @@ export const profilDesa = mysqlTable(
     suhuRataRata: varchar("suhu_rata_rata", { length: 100 }),
     curahHujan: varchar("curah_hujan", { length: 100 }),
     topografi: varchar("topografi", { length: 150 }),
-    /** Profil ekologi (paritas OpenSID). */
+    /** Profil ekologi. */
     jenisTanah: varchar("jenis_tanah", { length: 150 }),
     sumberDayaAlam: text("sumber_daya_alam"),
     floraFauna: text("flora_fauna"),
@@ -554,14 +554,6 @@ export const halamanStatis = mysqlTable(
 );
 
 export type ProfilDesa = typeof profilDesa.$inferSelect;
-export type JabatanPerangkat = typeof jabatanPerangkat.$inferSelect;
-export type PerangkatDesa = typeof perangkatDesa.$inferSelect;
 export type Berita = typeof berita.$inferSelect;
-export type BeritaKategori = typeof beritaKategori.$inferSelect;
-export type GaleriAlbum = typeof galeriAlbum.$inferSelect;
-export type GaleriFoto = typeof galeriFoto.$inferSelect;
-export type MenuPublik = typeof menuPublik.$inferSelect;
 export type Widget = typeof widget.$inferSelect;
 export type Slider = typeof slider.$inferSelect;
-export type DokumenPublik = typeof dokumenPublik.$inferSelect;
-export type HalamanStatis = typeof halamanStatis.$inferSelect;

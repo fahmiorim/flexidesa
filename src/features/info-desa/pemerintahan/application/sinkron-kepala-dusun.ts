@@ -15,7 +15,7 @@ import {
 } from "@/features/info-desa/pemerintahan/infrastructure/perangkat-repository";
 
 /** Masukan sinkronisasi satu baris wilayah ke data aparat desa. */
-export interface InputSinkronKepalaDusun {
+interface InputSinkronKepalaDusun {
   villageId: number;
   wilayahId: number;
   /** Nama dusun pada baris wilayah, dipakai menyusun nama jabatan. */
@@ -82,7 +82,7 @@ async function pastikanJabatanKepalaDusun(
  *
  * Aturan yang dipakai:
  * - Hanya tingkat dusun yang menjadi aparat; ketua RW/RT tetap tercatat pada
- *   wilayah saja (sama seperti OpenSID yang memisahkan pamong dan wilayah).
+ *   wilayah saja.
  * - Kepala wilayah harus tertaut ke penduduk desa; nama teks tanpa penduduk
  *   tidak cukup untuk membuat aparat.
  * - Bila kepala diganti, baris aparat yang sama diperbarui sehingga riwayat

@@ -8,12 +8,12 @@ import {
  * Use case untuk komentar publik.
  */
 
-export interface DaftarKomentarParams {
+interface DaftarKomentarParams {
   villageId: number;
   filter?: FilterKomentar;
 }
 
-export interface KirimKomentarParams {
+interface KirimKomentarParams {
   villageId: number;
   namaPenulis: string;
   isi: string;

@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import "server-only";
 
 import { resolveVillageId } from "@/features/info-desa/desa/application/resolve-village";
@@ -11,7 +13,7 @@ import { notFound, validationError } from "@/lib/errors";
 import { cariPlugin, envBelumSiap, type PluginManifest } from "../domain/plugin";
 import { simpanStatusPlugin } from "../infrastructure/plugin-repository";
 
-export interface PluginView extends PluginManifest {
+interface PluginView extends PluginManifest {
   aktif: boolean;
   envKurang: string[];
 }

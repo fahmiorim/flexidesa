@@ -9,7 +9,7 @@ import { saveKeuanganNilai } from "@/features/keuangan-desa/keuangan/infrastruct
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-013 — `saveKeuanganNilai` membaca agregasi lama, menghitung ulang induk,
+ * `saveKeuanganNilai` membaca agregasi lama, menghitung ulang induk,
  * lalu menulis. Test ini membuktikan penyimpanan bersamaan tidak lagi saling
  * menimpa: nilai induk harus sama dengan jumlah anak setelah seluruh penulisan
  * selesai.
@@ -58,7 +58,7 @@ afterAll(async () => {
   await db.delete(villages).where(eq(villages.id, villageId));
 });
 
-describe("AUD-013 penyimpanan nilai keuangan bersamaan", () => {
+describe("Penyimpanan nilai keuangan bersamaan", () => {
   it("menjaga nilai induk tetap sama dengan jumlah anak", async () => {
     if (villageId === null || userId === null) throw new Error("Fixture tidak tersedia.");
     const desa = villageId;

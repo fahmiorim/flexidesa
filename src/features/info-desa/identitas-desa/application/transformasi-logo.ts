@@ -1,5 +1,5 @@
 /**
- * Transformasi logo persegi sesuai opsi `ukuran` form Identitas Desa OpenSID.
+ * Transformasi logo persegi sesuai opsi `ukuran` form Identitas Desa.
  *
  * `ukuran` kosong berarti dimensi bawaan (tidak ada transformasi) — perilaku
  * ini dipertahankan agar unggahan lama tidak berubah. Bila diisi, logo
@@ -18,7 +18,7 @@ import { validationError } from "@/lib/errors";
 /** Format keluaran yang didukung transformasi; SVG/GIF dibiarkan apa adanya. */
 const FORMAT_DAPAT_DIUKUR = new Set(["jpeg", "png", "webp"]);
 
-export interface HasilTransformasiLogo {
+interface HasilTransformasiLogo {
   isi: Uint8Array;
   mime: string;
 }

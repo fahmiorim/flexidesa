@@ -7,7 +7,7 @@ import { KELOMPOK_UMUR, type KelompokUmur } from "./rentang-umur";
 /**
  * Katalog dan perhitungan modul **Statistik Kependudukan**.
  *
- * Acuan cakupan: menu OpenSID `statistik` (`resources/views/admin/statistik`).
+ * Modul Statistik Kependudukan.
  * Seluruh pengelompokan dilakukan di domain agar aturan statistik dapat diuji
  * tanpa basis data; repository hanya menyiapkan baris penduduk yang sudah
  * dinormalisasi.
@@ -16,7 +16,7 @@ import { KELOMPOK_UMUR, type KelompokUmur } from "./rentang-umur";
 // --- Katalog kategori ------------------------------------------------------
 
 export const STATISTIK_GROUPS = ["penduduk", "keluarga", "rtm", "bantuan"] as const;
-export type StatistikGroupId = (typeof STATISTIK_GROUPS)[number];
+type StatistikGroupId = (typeof STATISTIK_GROUPS)[number];
 
 export const STATISTIK_GROUP_LABELS: Readonly<Record<StatistikGroupId, string>> = {
   penduduk: "Penduduk",
@@ -25,7 +25,7 @@ export const STATISTIK_GROUP_LABELS: Readonly<Record<StatistikGroupId, string>> 
   bantuan: "Program Bantuan",
 };
 
-export type SatuanStatistik = "jiwa" | "keluarga" | "rumah tangga" | "penerima";
+type SatuanStatistik = "jiwa" | "keluarga" | "rumah tangga" | "penerima";
 
 export interface KategoriStatistik {
   slug: string;
@@ -38,10 +38,10 @@ export interface KategoriStatistik {
 }
 
 /**
- * Urutan kategori mengikuti urutan enum OpenSID agar operator mudah
+ * Urutan kategori tetap agar operator mudah
  * menemukan statistik yang sama.
  */
-export const STATISTIK_KATEGORI: readonly KategoriStatistik[] = [
+const STATISTIK_KATEGORI: readonly KategoriStatistik[] = [
   {
     slug: "rentang-umur",
     label: "Rentang Umur",
@@ -240,7 +240,7 @@ export const STATISTIK_KATEGORI: readonly KategoriStatistik[] = [
   },
 ];
 
-/** Kategori awal mengikuti OpenSID (Pendidikan Dalam KK). */
+/** Kategori awal: Pendidikan Dalam KK. */
 export const STATISTIK_DEFAULT_KATEGORI = "pendidikan-dalam-kk";
 
 export function kategoriStatistik(slug: string | undefined | null): KategoriStatistik | null {
@@ -314,7 +314,7 @@ export interface PejabatPenandatanganStatistik {
   jenisJabatan: string | null;
 }
 
-export interface KatalogStatistik {
+interface KatalogStatistik {
   agama: string[];
   pendidikan: string[];
   pekerjaan: string[];
@@ -340,7 +340,7 @@ export interface BarisStatistik {
   jumlah: number;
 }
 
-export interface TotalStatistik {
+interface TotalStatistik {
   lakiLaki: number;
   perempuan: number;
   jumlah: number;
@@ -383,8 +383,8 @@ export function totalPenduduk(penduduk: readonly PendudukStatistik[]): TotalStat
 /**
  * Kelompokkan penduduk menurut nilai kategori.
  *
- * `opsi` menjaga urutan katalog (mis. seluruh agama) dan menampilkan kategori
- * berjumlah nol, seperti OpenSID. Bila `opsi` kosong (kategori teks bebas),
+ * `opsi` menjaga urutan katalog (mis. seluruh agama) dan menampilkan
+ * kategori berjumlah nol. Bila `opsi` kosong (kategori teks bebas),
  * baris diurutkan dari jumlah terbesar.
  */
 export function kelompokkan(
@@ -896,13 +896,13 @@ export function persen(bagian: number, total: number): string {
   return ((bagian / total) * 100).toLocaleString("id-ID", { maximumFractionDigits: 2 });
 }
 
-export interface StatistikCsvInput {
+interface StatistikCsvInput {
   namaDesa: string | null;
   hasil: HasilStatistikKependudukan;
   filter: string;
 }
 
-/** CSV statistik kependudukan dengan kolom setara tabel OpenSID. */
+/** CSV statistik kependudukan dengan kolom tabel laporan. */
 export function buildStatistikKependudukanCsv(input: StatistikCsvInput): string {
   const { hasil } = input;
   const total = hasil.total.jumlah;

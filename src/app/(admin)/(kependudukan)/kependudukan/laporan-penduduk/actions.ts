@@ -52,7 +52,7 @@ export async function hapusLaporanPendudukAction(formData: FormData): Promise<vo
   redirect(`${RUTE}?dihapus=1`);
 }
 
-/** Hapus massal sesuai ceklist, mengikuti tombol Hapus OpenSID. */
+/** Hapus massal sesuai ceklist. */
 export async function hapusMassalLaporanPendudukAction(formData: FormData): Promise<void> {
   const ids = formData
     .getAll("id_cb")

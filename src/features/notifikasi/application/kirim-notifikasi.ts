@@ -1,3 +1,5 @@
+import { escapeHtml } from "@/lib/sanitize";
+
 import "server-only";
 
 import { Resend } from "resend";
@@ -7,9 +9,9 @@ import { kirimPesanWhatsApp } from "@/features/notifikasi/infrastructure/whatsap
 import { env } from "@/lib/env";
 import { logger } from "@/lib/logger";
 
-export type KanalNotifikasi = "email" | "whatsapp";
+type KanalNotifikasi = "email" | "whatsapp";
 
-export interface KirimNotifikasiInput {
+interface KirimNotifikasiInput {
   villageId: number;
   residentId?: number | null;
   /** Jenis peristiwa, mis. `permohonan.status` atau `registrasi-warga.disetujui`. */
@@ -20,7 +22,7 @@ export interface KirimNotifikasiInput {
   pesan: string;
 }
 
-export interface HasilNotifikasi {
+interface HasilNotifikasi {
   sukses: boolean;
   dilewati: boolean;
   error?: string;
@@ -31,15 +33,6 @@ interface Bukti {
   dilewati: boolean;
   respons: unknown;
   pesanError?: string;
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#39;");
 }
 
 async function kirimEmail(target: string, subjek: string, pesan: string): Promise<Bukti> {

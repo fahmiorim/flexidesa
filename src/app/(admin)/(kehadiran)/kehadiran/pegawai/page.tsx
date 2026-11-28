@@ -17,6 +17,7 @@ import {
 } from "@/features/kehadiran/kepegawaian/application/pegawai";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { verifySession } from "@/lib/dal";
+import { mediaUrl } from "@/lib/media-url";
 
 import styles from "../absensi-kepegawaian.module.css";
 import {
@@ -29,18 +30,6 @@ import {
 import { simpanPegawaiFormAction } from "./form-actions";
 
 export const metadata: Metadata = { title: "Data Pegawai" };
-
-function mediaUrl(value: string | null | undefined, villageId: number): string | null {
-  if (!value) return null;
-  const segments = value.split(/[\\\\/]/).filter(Boolean);
-  if (
-    !segments.length ||
-    segments.some((part) => part === "." || part === ".." || part.includes(".."))
-  )
-    return null;
-  const path = segments[0] === String(villageId) ? segments : [String(villageId), ...segments];
-  return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
-}
 
 type PegawaiRow = Awaited<ReturnType<typeof daftarPegawai>>[number];
 type PerangkatRow = Awaited<ReturnType<typeof opsiPerangkatBelumTerhubung>>[number];

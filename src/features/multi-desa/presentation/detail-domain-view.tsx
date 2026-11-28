@@ -7,14 +7,9 @@ import { klasifikasiJenisDomain } from "@/features/multi-desa/domain/jenis-domai
 import type { DataDns } from "@/features/multi-desa/domain/status-dns";
 import { LABEL_STATUS_SSL, type DataSsl } from "@/features/multi-desa/domain/status-ssl";
 import type { ActionState } from "@/lib/action-state";
+import { mediaUrl } from "@/lib/media-url";
 
-import {
-  Badge,
-  mediaUrl,
-  Tabs,
-  type RiwayatDomainRow,
-  type TabDetailDomain,
-} from "./detail-domain-bagian";
+import { Badge, Tabs, type RiwayatDomainRow, type TabDetailDomain } from "./detail-domain-bagian";
 import { DetailDomainNetworkActions } from "./detail-domain-network-actions";
 import { InformasiOverview } from "./detail-domain-overview";
 import { TabDns, TabRedirect, TabRiwayat, TabSsl, TabVerifikasi } from "./detail-domain-tabs";
@@ -53,9 +48,9 @@ export function DetailDomainView({
     <>
       <PageHeading
         wadah="div"
-        kelas="platform-page-header"
+        kelas="ui-page-header"
         isiJudul={
-          <div className="platform-page-heading">
+          <div className="ui-page-heading">
             <div>
               <h1>Detail Domain — {judul}</h1>
               <p>Informasi dan pengaturan domain, DNS, SSL, serta riwayat perubahan.</p>
@@ -64,7 +59,7 @@ export function DetailDomainView({
         }
       />
 
-      <div className="platform-row-actions domain-detail-toolbar">
+      <div className="ui-toolbar-actions domain-detail-toolbar">
         <a
           className="button button-secondary"
           href={`https://${data.domain.domain}`}
@@ -96,22 +91,22 @@ export function DetailDomainView({
               alt=""
               className="domain-detail-logo"
               height={64}
+              key="logo"
               src={mediaUrl(data.desa.logo, data.desa.id) ?? "/images/logo.png"}
               unoptimized
               width={64}
             />
           ) : (
-            <span aria-hidden="true" className="domain-detail-logo is-fallback">
+            <span aria-hidden="true" className="domain-detail-logo is-fallback" key="logo">
               {judul.charAt(0).toUpperCase()}
             </span>
           )}
-          <div>
+          <div key="identitas">
             <span className="domain-detail-eyebrow">Tenant desa</span>
             <h2 id="identitas-domain">{judul}</h2>
             <p>{lokasi || "Wilayah desa belum diisi"}</p>
             <p className="domain-detail-muted">
-              Tenant #{data.desa.id}
-              {data.desa.code ? ` · Kode desa ${data.desa.code}` : ""}
+              {`Tenant #${data.desa.id}${data.desa.code ? ` · Kode desa ${data.desa.code}` : ""}`}
             </p>
             <p className="domain-detail-current">
               <span className="domain-detail-mono">{data.domain.domain}</span>
@@ -183,14 +178,24 @@ export function DetailDomainView({
       />
 
       {tab === "informasi" ? (
-        <InformasiOverview data={data} riwayat={riwayat} totalRiwayat={totalRiwayat} />
+        <InformasiOverview
+          data={data}
+          key="informasi"
+          riwayat={riwayat}
+          totalRiwayat={totalRiwayat}
+        />
       ) : null}
-      {tab === "dns" ? <TabDns data={data} /> : null}
-      {tab === "ssl" ? <TabSsl data={data} /> : null}
-      {tab === "redirect" ? <TabRedirect data={data} /> : null}
-      {tab === "verifikasi" ? <TabVerifikasi data={data} /> : null}
+      {tab === "dns" ? <TabDns data={data} key="dns" /> : null}
+      {tab === "ssl" ? <TabSsl data={data} key="ssl" /> : null}
+      {tab === "redirect" ? <TabRedirect data={data} key="redirect" /> : null}
+      {tab === "verifikasi" ? <TabVerifikasi data={data} key="verifikasi" /> : null}
       {tab === "riwayat" ? (
-        <TabRiwayat rows={riwayat} total={totalRiwayat} villageId={data.domain.villageId} />
+        <TabRiwayat
+          key="riwayat"
+          rows={riwayat}
+          total={totalRiwayat}
+          villageId={data.domain.villageId}
+        />
       ) : null}
     </>
   );

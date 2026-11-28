@@ -40,4 +40,3 @@ export const umpanBalik = mysqlTable(
   ],
 );
 
-export type UmpanBalik = typeof umpanBalik.$inferSelect;

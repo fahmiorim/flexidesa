@@ -12,7 +12,7 @@ import {
 import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { requirePermission } from "@/lib/dal";
 
-export interface ListRentangUmurParams {
+interface ListRentangUmurParams {
   villageId: number;
   search?: string;
 }

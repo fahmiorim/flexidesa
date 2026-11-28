@@ -9,7 +9,7 @@ import { randomInt } from "node:crypto";
  */
 const HURUF_SANDI = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
 
-export const PANJANG_SANDI_SEMENTARA = 12;
+const PANJANG_SANDI_SEMENTARA = 12;
 
 export function buatSandiSementara(panjang = PANJANG_SANDI_SEMENTARA): string {
   let sandi = "";

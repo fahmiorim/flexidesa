@@ -37,7 +37,7 @@ export const profilDesaSchema = z.object({
   /** Alamat dan koordinat kantor desa; dipakai peta publik dan halaman kontak. */
   alamat: z.string().trim().max(255).default(""),
   /**
-   * Kanal kontak desa (paritas form Identitas Desa OpenSID). Opsional agar
+   * Kanal kontak desa. Opsional agar
    * pemanggil lama (tab lain, pemulihan cadangan) tidak mengosongkan nilai
    * yang sudah tersimpan. String kosong tetap berarti menghapus nilai.
    */
@@ -46,7 +46,7 @@ export const profilDesaSchema = z.object({
     .trim()
     .max(100)
     .optional()
-    // OpenSID menolak email yang tidak valid; string kosong tetap boleh
+    // Email tidak valid ditolak; string kosong tetap boleh
     // untuk menghapus nilai lama.
     .refine(
       (nilai) => nilai === undefined || nilai === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nilai),
@@ -86,7 +86,7 @@ export const profilDesaSchema = z.object({
   suhuRataRata: z.string().trim().max(100).default(""),
   curahHujan: z.string().trim().max(100).default(""),
   topografi: z.string().trim().max(150).default(""),
-  /** Profil ekologi (paritas OpenSID). */
+  /** Profil ekologi. */
   jenisTanah: z.string().trim().max(150).default(""),
   sumberDayaAlam: z.string().trim().max(5000).default(""),
   floraFauna: z.string().trim().max(5000).default(""),

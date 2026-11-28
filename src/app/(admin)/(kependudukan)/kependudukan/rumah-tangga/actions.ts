@@ -121,7 +121,7 @@ export async function lepasAnggotaAction(rtmId: number, formData: FormData): Pro
   redirect(`/kependudukan/rumah-tangga/${rtmId}`);
 }
 
-/** Lepaskan banyak anggota yang dicentang sekaligus (paritas OpenSID). */
+/** Lepaskan banyak anggota yang dicentang sekaligus. */
 export async function lepasAnggotaMassalAction(rtmId: number, formData: FormData): Promise<never> {
   const residentIds = formData
     .getAll("idCb")

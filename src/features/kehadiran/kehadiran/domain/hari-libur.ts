@@ -5,8 +5,7 @@ import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 /**
  * Domain Hari Libur Kehadiran.
  *
- * Meniru menu Kehadiran → Hari Libur OpenSID (`kehadiran_hari_libur`):
- * satu tanggal hanya boleh tercatat sekali per desa dan keterangan wajib
+ * Satu tanggal hanya boleh tercatat sekali per desa dan keterangan wajib
  * diisi. Tanggal disimpan sebagai `YYYY-MM-DD` agar konsisten dengan kolom
  * `date` di database.
  */
@@ -14,7 +13,7 @@ import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 /** Slug modul sekaligus resource izin (lihat template tenant). */
 export const HARI_LIBUR_RESOURCE = RESOURCES.hariLibur;
 
-/** Panjang maksimal keterangan; sama dengan `maxlength="300"` form OpenSID. */
+/** Panjang maksimal keterangan (300 karakter). */
 export const KETERANGAN_HARI_LIBUR_MAKS = 300;
 
 /** Apakah string berupa tanggal ISO `YYYY-MM-DD` yang benar-benar ada. */

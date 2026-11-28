@@ -44,7 +44,7 @@ export interface DesaDetailDomainRow {
   updatedAt: Date;
 }
 
-export interface DetailDomainPlatformRow extends DomainDesaRow {
+interface DetailDomainPlatformRow extends DomainDesaRow {
   desa: DesaDetailDomainRow;
 }
 

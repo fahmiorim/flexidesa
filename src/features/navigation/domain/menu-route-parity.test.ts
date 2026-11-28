@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 import { RUTE_ADMIN_TERSEDIA } from "./menu-tampil";
 
 /**
- * Paritas registry menu ↔ filesystem App Router.
+ * Kesesuaian registry menu ↔ filesystem App Router.
  *
  * `RUTE_ADMIN_TERSEDIA` adalah daftar eksplisit; test ini memastikan tidak ada
  * entri yang menunjuk halaman yang tidak ada (tautan mati di sidebar). Arah
@@ -42,7 +42,7 @@ function semuaHalamanAdmin(): Set<string> {
   return found;
 }
 
-describe("paritas menu-route", () => {
+describe("kesesuaian menu-route", () => {
   it("setiap rute di RUTE_ADMIN_TERSEDIA memiliki page.tsx di filesystem", () => {
     const halaman = semuaHalamanAdmin();
     expect(halaman.size).toBeGreaterThan(0);

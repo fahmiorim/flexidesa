@@ -13,7 +13,7 @@ export function StatGrid({
   ariaLabel,
 }: {
   children: ReactNode;
-  columns?: 2 | 3 | 4 | 5;
+  columns?: 2 | 3 | 4 | 5 | 6;
   className?: string;
   ariaLabel?: string;
 }) {

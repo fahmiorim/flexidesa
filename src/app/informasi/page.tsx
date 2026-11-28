@@ -10,32 +10,16 @@ import {
   daftarDokumenPublik,
   profilDesaPublik,
 } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { isSafeDocumentLink } from "@/features/info-desa/publik/domain/dokumen";
+import { mediaUrl } from "@/lib/media-url";
+import { plainText } from "@/lib/plain-text";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./informasi.module.css";
 
 export const dynamic = "force-dynamic";
 
-function mediaUrl(value: string | null | undefined, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const safe = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return "/api/publik/media/" + safe.map(encodeURIComponent).join("/");
-}
-function plainText(value: string | null | undefined, max = 300): string {
-  return (value ?? "")
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, max);
-}
 function dateLabel(value: Date | string): string {
   const date = value instanceof Date ? value : new Date(value + "T00:00:00");
   if (Number.isNaN(date.getTime())) return "Tanggal belum tersedia";
@@ -57,6 +41,7 @@ export const metadata: Metadata = {
 
 export default async function InformasiDesaPage() {
   const desa = await getIdentitasFromRequest();
+  const tema = await muatTemaPublik(desa.id);
   const [profil, statistik, berita, agenda, dokumen] = await Promise.all([
     profilDesaPublik(desa.id),
     getStatistikDesa(desa.id),
@@ -113,7 +98,7 @@ export default async function InformasiDesaPage() {
     },
   ];
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/informasi" />
       <section className={styles.hero}>
         <div className={styles.container}>

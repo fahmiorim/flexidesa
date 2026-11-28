@@ -82,7 +82,7 @@ export async function PublicSiteHeader({ desa, logoUrl, activePath = "/" }: Prop
   const opsiTema = tema
     ? validasiOpsiTenant(resolveTema(tema.slug, tema.versi)?.opsi ?? [], tema.templateOptions)
     : {};
-  const natraPintasanMasuk = tema ? String(opsiTema.pintasan_masuk ?? "1") === "1" : true;
+  const cakrawalaPintasanMasuk = tema ? String(opsiTema.pintasan_masuk ?? "1") === "1" : true;
   const warnaDasar = warnaDasarDari(opsiTema);
   const menuItems =
     configuredMenu.length > 0
@@ -171,10 +171,7 @@ export async function PublicSiteHeader({ desa, logoUrl, activePath = "/" }: Prop
           </nav>
 
           <div className={styles.headerActions}>
-            <Link href="/cari" className={styles.searchLink} aria-label="Cari informasi">
-              ⌕
-            </Link>
-            {natraPintasanMasuk ? (
+            {cakrawalaPintasanMasuk ? (
               <details className={styles.loginMenu}>
                 <summary className={styles.login}>
                   ♙ <span>Masuk</span>
@@ -197,7 +194,7 @@ export async function PublicSiteFooter({ desa, location, logoUrl }: Props) {
   const definisi = tema ? resolveTema(tema.slug, tema.versi) : null;
   const opsiTema = definisi ? validasiOpsiTenant(definisi.opsi, tema?.templateOptions) : {};
   // Widget berasal dari paket tema aktif; opsi `jam`/`statistik_desa` mengatur
-  // tampil/tidaknya. Tema tanpa opsi tersebut (Esensi) tidak menampilkan widget.
+  // tampil/tidaknya. Tema tanpa opsi tersebut (Arunika) tidak menampilkan widget.
   const widgets: ThemeWidgets | null = definisi?.widgets ?? null;
   const propsWidget = {
     villageId: desa.id,
@@ -206,6 +203,32 @@ export async function PublicSiteFooter({ desa, location, logoUrl }: Props) {
   };
   const tampilJam = Boolean(widgets) && opsiYa(opsiTema, "jam", false);
   const tampilStatistik = Boolean(widgets) && opsiYa(opsiTema, "statistik_desa", false);
+  // Paket tema boleh menyediakan footer sendiri (seperti hero/beranda);
+  // Arunika/Cakrawala tidak memilikinya sehingga footer bersama tidak berubah.
+  if (definisi?.footer) {
+    const FooterTema = definisi.footer;
+    return (
+      <FooterTema
+        villageName={desa.namaDesa}
+        location={location}
+        logoUrl={logoUrl}
+        judul={tema?.judulHero || "Sistem Informasi Desa"}
+        tagline={
+          tema?.taglineFooter ||
+          "Portal informasi resmi desa untuk pelayanan publik yang transparan, informatif, dan mudah diakses masyarakat."
+        }
+        alamat={desa.alamatKantor}
+        telepon={desa.telepon}
+        email={desa.emailDesa}
+        widget={
+          <>
+            {tampilStatistik && widgets ? widgets.statistik(propsWidget) : null}
+            {tampilJam && widgets ? widgets.jam(propsWidget) : null}
+          </>
+        }
+      />
+    );
+  }
   return (
     <footer
       className={styles.footer}

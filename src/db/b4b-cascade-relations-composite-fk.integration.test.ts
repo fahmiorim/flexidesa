@@ -18,7 +18,7 @@ import {
 } from "@/db/schema";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
-/** AUD-034 Batch 4B: direct database enforcement for five CASCADE relations. */
+/** Direct database enforcement for five CASCADE relations. */
 const MIGRATIONS_FOLDER = fileURLToPath(new URL("./migrations", import.meta.url));
 const RUN = String(Date.now()).slice(-7);
 const KODE = String(Date.now()).slice(-5);
@@ -169,7 +169,7 @@ afterAll(async () => {
   await db.delete(villages).where(inArray(villages.id, [fixture.desaA, fixture.desaB]));
 });
 
-describe("AUD-034 B4B composite tenant FK", () => {
+describe("Composite tenant FK", () => {
   it("berjalan pada MySQL 8", async () => {
     const versi = (await db.execute(sql`SELECT VERSION() AS versi`)) as unknown as [
       Array<{ versi: string }>,

@@ -14,7 +14,7 @@ import type { mediaSettings } from "@/db/schema/media-settings";
 
 const MB = 1024 * 1024;
 
-export type BarisPengaturanBerkas = typeof mediaSettings.$inferSelect;
+type BarisPengaturanBerkas = typeof mediaSettings.$inferSelect;
 
 /**
  * Kategori yang dikenali untuk pengaturan lampiran.

@@ -29,33 +29,34 @@ describe("HEADER_PLATFORM", () => {
 
 describe("headerPlatform", () => {
   it("mengembalikan header rute yang tepat", () => {
-    expect(headerPlatform("/super-admin/audit").title).toBe("Audit trail");
-    expect(headerPlatform("/super-admin").title).toBe("Ringkasan platform");
+    expect(headerPlatform("/super-admin/audit").title).toBe("Audit Trail");
+    expect(headerPlatform("/super-admin").title).toBe("Ringkasan");
   });
 
-  it("memakai header menu induk untuk sub-rute", () => {
-    expect(headerPlatform("/super-admin/tenant/12").title).toBe("Konsol tenant");
+  it("memberi konteks detail tenant pada sub-rute ber-id", () => {
+    const header = headerPlatform("/super-admin/tenant/12");
+    expect(header.title).toBe("Detail Tenant");
+    expect(header.remah).toEqual([{ label: "Tenant", href: "/super-admin/tenant" }]);
+    expect(headerPlatform("/super-admin/tenant/tambah").title).toBe("Tambah tenant");
   });
 
-  it("memberi remah Domain & infrastruktur pada daftar domain", () => {
-    expect(headerPlatform("/super-admin/domain").remah).toEqual([
-      { label: "Domain & infrastruktur" },
-    ]);
-    expect(headerPlatform("/super-admin/domain").title).toBe("Daftar domain");
-    expect(headerPlatform("/super-admin/domain").eyebrow).toBe("Domain & infrastruktur");
+  it("memberi remah Domain pada halaman domain", () => {
+    expect(headerPlatform("/super-admin/domain").remah).toEqual([{ label: "Domain" }]);
+    expect(headerPlatform("/super-admin/domain").title).toBe("Domain");
+    expect(headerPlatform("/super-admin/domain").eyebrow).toBe("Desa & Tenant");
   });
 
   it("memisahkan remah Tenant dari Domain", () => {
     expect(headerPlatform("/super-admin/tenant").remah).toEqual([{ label: "Tenant" }]);
-    expect(headerPlatform("/super-admin/tenant").eyebrow).toBe("Tenant");
-    expect(headerPlatform("/super-admin/domain").eyebrow).not.toBe("Tenant");
+    expect(headerPlatform("/super-admin/tenant").eyebrow).toBe("Desa & Tenant");
+    expect(headerPlatform("/super-admin/domain").eyebrow).toBe("Desa & Tenant");
   });
 
-  it("memakai header Daftar domain untuk rute tambah lama yang dialihkan", () => {
+  it("memakai header Domain untuk rute tambah lama yang dialihkan", () => {
     const header = headerPlatform("/super-admin/domain/tambah");
 
-    expect(header.title).toBe("Daftar domain");
-    expect(header.remah).toEqual([{ label: "Domain & infrastruktur" }]);
+    expect(header.title).toBe("Domain");
+    expect(header.remah).toEqual([{ label: "Domain" }]);
   });
 
   it("menampilkan breadcrumb Detail Domain untuk id domain dinamis", () => {
@@ -63,12 +64,12 @@ describe("headerPlatform", () => {
 
     expect(header.title).toBe("Detail Domain");
     expect(header.remah).toEqual([
-      { label: "Domain & infrastruktur" },
-      { label: "Daftar domain", href: "/super-admin/domain" },
+      { label: "Domain" },
+      { label: "Domain", href: "/super-admin/domain" },
     ]);
   });
 
   it("jatuh ke ringkasan untuk pathname yang tidak dikenal", () => {
-    expect(headerPlatform("/super-admin/tidak-ada").title).toBe("Ringkasan platform");
+    expect(headerPlatform("/super-admin/tidak-ada").title).toBe("Ringkasan");
   });
 });

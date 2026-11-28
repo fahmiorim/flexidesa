@@ -15,8 +15,8 @@ vi.mock("@/features/multi-desa/application/template-website-use-cases", () => ({
 
 const template = {
   id: 7,
-  slug: "esensi",
-  name: "Esensi",
+  slug: "arunika",
+  name: "Arunika",
   category: "umum",
   description: "Tema bawaan platform untuk website desa.",
   version: "1.0.0",
@@ -52,8 +52,8 @@ describe("SuperAdminPenggunaanTemplatePage", () => {
           villageId: 42,
           namaDesa: "Desa Satu",
           domain: "satu.example.test",
-          themeSlug: "esensi",
-          themeNama: "Esensi",
+          themeSlug: "arunika",
+          themeNama: "Arunika",
           versi: "1.0.0",
           diperbaruiPada: new Date("2026-11-20T00:00:00Z"),
         },

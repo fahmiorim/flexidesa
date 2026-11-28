@@ -14,15 +14,6 @@ export type BeritaBeranda = Awaited<ReturnType<typeof daftarBerita>>[number];
 export type PengumumanBeranda = Awaited<ReturnType<typeof daftarDokumenPublik>>[number];
 export type RekapIdm = ReturnType<typeof hitungRekapIdm>;
 
-export function mediaUrl(value: string | null | undefined, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return `/api/publik/media/${path.map(encodeURIComponent).join("/")}`;
-}
-
 export function cleanText(value: string | null | undefined, limit = 320): string {
   return (value ?? "")
     .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
@@ -37,10 +28,6 @@ export function cleanText(value: string | null | undefined, limit = 320): string
     .replace(/\s+/g, " ")
     .trim()
     .slice(0, limit);
-}
-
-export function formatNumber(value: number): string {
-  return new Intl.NumberFormat("id-ID").format(value);
 }
 
 export function dateLabel(value: Date) {

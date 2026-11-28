@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { DialogHapus } from "@/components/ui/dialog-hapus";
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { PenggunaDTO, RoleOption } from "@/features/pengaturan/pengguna/domain/pengguna";
 import type { ActionState } from "@/lib/action-state";
@@ -116,8 +117,8 @@ export function PenggunaConsole({ rows, roles, currentUserId, canUpdate, canDele
         </select>
       </div>
 
-      <TableScroll className="tenant-table-scroll">
-        <Table className="tenant-table pengguna-table">
+      <TableScroll frame>
+        <Table className="pengguna-table">
           <THead>
             <Row>
               <HeaderCell scope="col">No.</HeaderCell>
@@ -152,7 +153,7 @@ export function PenggunaConsole({ rows, roles, currentUserId, canUpdate, canDele
                         </span>
                         <span>
                           <strong>{row.name}</strong>
-                          {diriSendiri ? <span className="tenant-secondary">Akun Anda</span> : null}
+                          {diriSendiri ? <SecondaryText>Akun Anda</SecondaryText> : null}
                         </span>
                       </span>
                     </Cell>

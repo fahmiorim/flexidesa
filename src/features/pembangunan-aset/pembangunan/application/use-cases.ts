@@ -41,7 +41,7 @@ import { conflict, notFound } from "@/lib/errors";
 /** Kategori media publik untuk foto dokumentasi proyek. */
 const KATEGORI_MEDIA = "umum" as const;
 
-export interface ListPembangunanInput {
+interface ListPembangunanInput {
   search: string;
   tahun: number | null;
   status: string;
@@ -190,7 +190,7 @@ export async function deleteDokumentasi(id: number): Promise<void> {
 
 // --- Publik (tanpa sesi) ----------------------------------------------------
 
-export interface PembangunanPublik {
+interface PembangunanPublik {
   rows: PembangunanProyekDTO[];
   ringkasan: RingkasanPembangunanPublik;
   tahunList: number[];

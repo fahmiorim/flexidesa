@@ -66,7 +66,7 @@ export async function listPenduduk(params: ListPendudukParams): Promise<Penduduk
   return listPendudukRows({ villageId, ...params });
 }
 
-/** Seluruh baris penduduk (sesuai filter) untuk ekspor 44 kolom OpenSID. */
+/** Seluruh baris penduduk (sesuai filter) untuk ekspor 44 kolom. */
 export async function listPendudukEksporData(filter: PendudukFilter): Promise<PendudukEksporRow[]> {
   const user = await requirePermission(PENDUDUK_RESOURCE, "read");
   const villageId = await resolveVillageId(user);
@@ -99,7 +99,7 @@ export async function getRingkasanPendudukData(): Promise<RingkasanPenduduk> {
   return getRingkasanPenduduk(villageId);
 }
 
-export interface PendudukFilterOptions {
+interface PendudukFilterOptions {
   dusun: string[];
   rw: string[];
   rt: string[];
@@ -161,7 +161,7 @@ export async function cariPendudukByNikData(nik: string) {
 
 /** Data referensi untuk mengisi formulir (butuh izin baca modul penduduk). */
 
-export interface PendudukFormData {
+interface PendudukFormData {
   references: PendudukReferenceData;
   /** Data lama untuk mode ubah; `null` pada mode tambah. */
   penduduk: PendudukDTO | null;

@@ -17,7 +17,7 @@ import { PENGGUNA_RESOURCE, type PenggunaDTO } from "../domain/pengguna";
 import { hitungStatistikPengguna, type StatistikPengguna } from "../domain/statistik-pengguna";
 import { listPengguna } from "../infrastructure/pengguna-repository";
 
-export interface PenggunaAdminData {
+interface PenggunaAdminData {
   rows: PenggunaDTO[];
   roles: RoleRecord[];
   statistik: StatistikPengguna;
@@ -64,7 +64,7 @@ export async function getPenggunaAdminData(): Promise<PenggunaAdminData> {
   };
 }
 
-export interface GrupAksesAdminData {
+interface GrupAksesAdminData {
   roles: RoleRecord[];
   statistik: StatistikPengguna;
   selected: Awaited<ReturnType<typeof getRoleDetail>> | null;

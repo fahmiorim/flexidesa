@@ -127,7 +127,7 @@ export async function simpanPerangkatDesa(id: number | null, input: PerangkatVal
     throw validationError("NIK sudah digunakan oleh perangkat desa lain.");
   if (input.nip && (await getPerangkatByNip(villageId, input.nip, id)))
     throw validationError("NIP sudah digunakan oleh perangkat desa lain.");
-  // OpenSID mewajibkan Tag ID Card unik di seluruh data pamong.
+  // Tag ID Card wajib unik di seluruh data pamong.
   if (input.tagIdCard && (await getPerangkatByTagIdCard(villageId, input.tagIdCard, id)))
     throw validationError("Tag ID Card sudah digunakan oleh perangkat desa lain.");
   if (
@@ -176,7 +176,7 @@ export async function simpanPerangkatDesa(id: number | null, input: PerangkatVal
     statusPejabat: input.statusPejabat ?? false,
   });
   validasiPejabatStruktural(pejabat, ringkasPejabat(await listPerangkat(villageId), id));
-  // OpenSID menetapkan urutan tetap: Kepala Desa 1, Sekretaris Desa 2, dan
+  // Urutan tetap: Kepala Desa 1, Sekretaris Desa 2, dan
   // aparat baru lainnya memperoleh nomor terakhir.
   const urutOtomatis = hitungUrutPerangkat({
     jenis: jenisJabatan,

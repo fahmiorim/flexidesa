@@ -7,6 +7,7 @@ import {
   PlatformCard,
   PlatformPageHeader,
   PlatformStat,
+  PlatformStatGrid,
 } from "@/features/multi-desa/presentation/platform-ui";
 
 import { pastikanSuperAdmin } from "../guard";
@@ -18,7 +19,7 @@ import {
 } from "./actions";
 
 export const metadata: Metadata = {
-  title: "Pengguna",
+  title: "Akun Platform",
   robots: { index: false, follow: false },
 };
 
@@ -35,7 +36,7 @@ export default async function SuperAdminPenggunaPage() {
   return (
     <>
       <PlatformPageHeader path="/super-admin/pengguna" />
-      <div className="platform-stat-grid">
+      <PlatformStatGrid columns={4}>
         <PlatformStat
           icon={
             <>
@@ -88,7 +89,7 @@ export default async function SuperAdminPenggunaPage() {
           tone="merah"
           value={angka.format(tanpaRole)}
         />
-      </div>
+      </PlatformStatGrid>
 
       <PlatformCard
         actions={<DialogTambahPengguna aksi={buatPenggunaAction} />}

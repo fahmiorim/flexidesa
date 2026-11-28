@@ -23,7 +23,7 @@ import {
  * application layer. Aturan bisnis (kuota, periode, status) tetap di use case.
  */
 
-export type PegawaiValues = Omit<
+type PegawaiValues = Omit<
   typeof kepegawaianPegawai.$inferInsert,
   "id" | "villageId" | "createdAt" | "updatedAt"
 >;
@@ -35,12 +35,12 @@ export type DokumenValues = Omit<
   typeof kepegawaianDokumen.$inferInsert,
   "id" | "villageId" | "createdAt"
 >;
-export type CutiValues = Omit<typeof cutiPegawai.$inferInsert, "id" | "villageId" | "createdAt">;
-export type PengaturanValues = Omit<
+type CutiValues = Omit<typeof cutiPegawai.$inferInsert, "id" | "villageId" | "createdAt">;
+type PengaturanValues = Omit<
   typeof kehadiranPengaturan.$inferInsert,
   "id" | "villageId" | "createdAt" | "updatedAt"
 >;
-export type AbsensiValues = Omit<
+type AbsensiValues = Omit<
   typeof kehadiranPerangkat.$inferInsert,
   "id" | "villageId" | "createdAt" | "updatedAt"
 >;

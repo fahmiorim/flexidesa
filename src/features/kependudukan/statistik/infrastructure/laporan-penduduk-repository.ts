@@ -65,7 +65,7 @@ export async function findLaporanPenduduk(
   return { ...keRow(row), jalurFile: row.jalurFile };
 }
 
-export interface LaporanPendudukInsert {
+interface LaporanPendudukInsert {
   judul: string;
   tahun: number;
   bulan: number;
@@ -107,7 +107,7 @@ export async function updateLaporanPenduduk(
     .where(and(eq(laporanPenduduk.villageId, villageId), eq(laporanPenduduk.id, id)));
 }
 
-/** Hapus beberapa arsip sekaligus (aksi "Hapus" massal OpenSID). */
+/** Hapus beberapa arsip sekaligus. */
 export async function deleteLaporanPendudukBanyak(villageId: number, ids: number[]): Promise<void> {
   if (ids.length === 0) return;
   await db

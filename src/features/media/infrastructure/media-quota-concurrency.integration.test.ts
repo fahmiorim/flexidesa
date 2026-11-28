@@ -15,7 +15,7 @@ import {
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-014 — kuota media diperiksa dari pemakaian disk sebelum berkas ditulis.
+ * Kuota media diperiksa dari pemakaian disk sebelum berkas ditulis.
  * Tanpa serialisasi, unggahan bersamaan sama-sama lolos pemeriksaan dan
  * melewati kuota. Test ini membuktikan pemeriksaan + penulisan berjalan di
  * bawah kunci per desa.
@@ -68,7 +68,7 @@ afterAll(async () => {
   await db.delete(villages).where(eq(villages.id, villageId));
 });
 
-describe("AUD-014 kuota media pada unggahan bersamaan", () => {
+describe("Kuota media pada unggahan bersamaan", () => {
   it("tidak melampaui kuota desa dan menolak kelebihan dengan pesan kuota", async () => {
     if (villageId === null) throw new Error("Fixture tidak tersedia.");
     const desa = villageId;

@@ -8,7 +8,7 @@ import { residents } from "@/db/schema/resident";
 import type { KiaRow, Posyandu } from "@/features/kependudukan/kesehatan/domain/kesehatan";
 
 /** Penduduk ringkas untuk formulir dan tabel Stunting (termasuk jenis kelamin). */
-export interface PendudukStuntingOption {
+interface PendudukStuntingOption {
   id: number;
   name: string;
   nationalId: string | null;

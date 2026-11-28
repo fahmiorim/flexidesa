@@ -61,7 +61,7 @@ export interface UrlProviderTervalidasi {
   alamat: AlamatDns[];
 }
 
-export interface PemeriksaanUrl {
+interface PemeriksaanUrl {
   url: URL | null;
   masalah: string[];
 }
@@ -78,7 +78,7 @@ const POLA_HOSTNAME = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]
 /** IPv6 literal dalam kurung siku, seperti bentuk `URL.hostname`. */
 const POLA_IPV6 = /^\[[0-9a-f:.]+\]$/;
 
-export interface AllowlistProvider {
+interface AllowlistProvider {
   /** Entri ternormalisasi `host:port`; kosong berarti semua provider ditolak. */
   entri: string[];
   /** Masalah konfigurasi; tidak kosong berarti seluruh allowlist tidak sah. */
@@ -199,7 +199,7 @@ export function periksaUrlProviderStatis(mentah: string): PemeriksaanUrl {
   return { url: masalah.length === 0 ? url : null, masalah };
 }
 
-export interface OpsiValidasiProvider {
+interface OpsiValidasiProvider {
   /** Entri `TTE_ALLOWED_HOSTS` yang sudah diurai; kosong berarti tolak semua. */
   allowedHosts: readonly string[];
   /** Batas waktu total operasi; dipakai juga untuk membatalkan resolusi DNS. */

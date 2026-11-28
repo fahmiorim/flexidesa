@@ -22,7 +22,7 @@ import { logger } from "@/lib/logger";
  * Baileys tidak cocok untuk platform serverless; jalankan aplikasi sebagai
  * proses Node persisten (VPS, Docker, PM2).
  */
-export interface HasilKirimWhatsApp {
+interface HasilKirimWhatsApp {
   sukses: boolean;
   dilewati: boolean;
   respons: unknown;

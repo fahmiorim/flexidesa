@@ -53,7 +53,7 @@ const IZIN_TAG = [
   "pre",
 ];
 
-export interface OpsiSanitasi {
+interface OpsiSanitasi {
   /** Bolehkan tag gambar? Nonaktifkan bila konten tidak butuh gambar. */
   gambar?: boolean;
 }
@@ -84,6 +84,16 @@ export function sanitasiHtml(html: string, opsi: OpsiSanitasi = {}): string {
       a: sanitizeHtml.simpleTransform("a", { rel: "noopener noreferrer" }),
     },
   });
+}
+
+/** Escape teks untuk konteks HTML (notifikasi email dsb.). */
+export function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
 
 /** Bersihkan HTML menjadi teks polos (untuk ringkasan/meta description). */

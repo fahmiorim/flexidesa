@@ -13,7 +13,7 @@ import {
   type SumberDokumen,
 } from "../domain/dokumen-warga";
 
-export interface DokumenWargaRow {
+interface DokumenWargaRow {
   id: number;
   jenis: JenisDokumenWarga;
   nama: string;

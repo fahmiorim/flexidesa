@@ -7,7 +7,7 @@ import {
 } from "./lembaga-desa";
 
 describe("validasiProfilLembaga", () => {
-  it("mewajibkan nama dan kode serta membatasi panjang sesuai OpenSID", () => {
+  it("mewajibkan nama dan kode serta membatasi panjang", () => {
     expect(() => validasiProfilLembaga({ nama: "", kode: "LPM" })).toThrow(/Nama lembaga wajib/);
     expect(() => validasiProfilLembaga({ nama: "LPM", kode: "" })).toThrow(/Kode lembaga wajib/);
     expect(() => validasiProfilLembaga({ nama: "LPM", kode: "X".repeat(17) })).toThrow(
@@ -26,7 +26,7 @@ describe("validasiProfilLembaga", () => {
 });
 
 describe("validasiMasterLembaga", () => {
-  it("mewajibkan nama kategori dan membatasi panjangnya seperti OpenSID", () => {
+  it("mewajibkan nama kategori dan membatasi panjangnya", () => {
     expect(() => validasiMasterLembaga({ nama: "   " })).toThrow(/Nama kategori wajib/);
     expect(() => validasiMasterLembaga({ nama: "X".repeat(51) })).toThrow(
       /Nama kategori maksimal 50/,

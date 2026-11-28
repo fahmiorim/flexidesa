@@ -111,7 +111,7 @@ describe("profilDesaSchema", () => {
     }
   });
 
-  it("menolak status desa di luar pilihan OpenSID", () => {
+  it("menolak status desa di luar pilihan", () => {
     expect(profilDesaSchema.safeParse({ ...dasar, statusDesa: "Campuran" }).success).toBe(false);
   });
 

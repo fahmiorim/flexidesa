@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720">
+  <rect width="1280" height="720" fill="#ece4d4"/>
+  <rect x="60" y="50" width="1160" height="620" fill="#faf7f0"/>
+  <rect x="60" y="50" width="1160" height="6" fill="#a93526"/>
+  <text x="110" y="130" font-family="Georgia, 'Times New Roman', serif" font-size="40" font-weight="bold" fill="#202126">Cakrawala</text>
+  <text x="1170" y="126" text-anchor="end" font-family="Arial, sans-serif" font-size="18" fill="#68665f">Edisi digital · Portal desa</text>
+  <rect x="110" y="150" width="1060" height="2" fill="#d9d0c1"/>
+  <text x="110" y="196" font-family="Arial, sans-serif" font-size="15" font-weight="bold" fill="#a93526">KABAR DESA</text>
+  <text x="110" y="256" font-family="Georgia, 'Times New Roman', serif" font-size="52" font-weight="bold" fill="#202126">Desa yang tumbuh,</text>
+  <text x="110" y="314" font-family="Georgia, 'Times New Roman', serif" font-size="52" font-weight="bold" fill="#202126">warga yang dilayani.</text>
+  <text x="110" y="350" font-family="Arial, sans-serif" font-size="19" fill="#68665f">Informasi, layanan, dan kabar desa dalam satu tempat.</text>
+  <rect x="110" y="374" width="180" height="48" fill="#a93526"/>
+  <text x="200" y="406" text-anchor="middle" font-family="Arial, sans-serif" font-size="19" font-weight="bold" fill="#fffdf8">Jelajahi desa</text>
+  <rect x="110" y="450" width="520" height="150" fill="#1f4c38"/>
+  <text x="140" y="508" font-family="Georgia, 'Times New Roman', serif" font-size="26" fill="#fffdf8">Berita utama</text>
+  <text x="140" y="544" font-family="Arial, sans-serif" font-size="18" fill="#cfe3d8">Kabar terbaru dari pemerintah desa.</text>
+  <rect x="662" y="450" width="508" height="150" fill="#fffdf8" stroke="#d9d0c1"/>
+  <text x="692" y="508" font-family="Georgia, 'Times New Roman', serif" font-size="26" fill="#202126">Pengumuman resmi</text>
+  <text x="692" y="544" font-family="Arial, sans-serif" font-size="18" fill="#68665f">Jadwal dan pemberitahuan warga.</text>
+  <rect x="110" y="620" width="1060" height="2" fill="#d9d0c1"/>
+  <text x="110" y="652" font-family="Arial, sans-serif" font-size="17" fill="#68665f">© Pemerintah Desa · Tema Cakrawala</text>
+</svg>

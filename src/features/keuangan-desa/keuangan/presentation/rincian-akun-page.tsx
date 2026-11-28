@@ -23,7 +23,7 @@ import {
  * hanya punya satu pintu tulis.
  */
 
-export interface RincianAkunProps {
+interface RincianAkunProps {
   akunKode: string;
   judul: string;
   deskripsi: ReactNode;

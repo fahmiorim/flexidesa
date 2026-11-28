@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 
+import { DefinitionItem, DefinitionList } from "@/components/ui/definition-list";
+import { SecondaryText } from "@/components/ui/secondary-text";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { getTemplateTenantPlatform } from "@/features/multi-desa/application/platform-info-use-cases";
 import {
@@ -7,13 +10,14 @@ import {
   PlatformEmpty,
   PlatformPageHeader,
   PlatformStat,
+  PlatformStatGrid,
   PlatformStatus,
 } from "@/features/multi-desa/presentation/platform-ui";
 
 import { pastikanSuperAdmin } from "../../guard";
 
 export const metadata: Metadata = {
-  title: "Fondasi Tenant",
+  title: "Fondasi tenant baru",
   robots: { index: false, follow: false },
 };
 
@@ -32,7 +36,7 @@ export default async function SuperAdminTemplatePage() {
   return (
     <>
       <PlatformPageHeader path="/super-admin/template/fondasi" />
-      <div className="platform-stat-grid">
+      <PlatformStatGrid columns={5}>
         <PlatformStat
           icon={
             <>
@@ -84,15 +88,15 @@ export default async function SuperAdminTemplatePage() {
           tone="oranye"
           value={angka.format(template.akses.length)}
         />
-      </div>
+      </PlatformStatGrid>
 
       <PlatformCard
         description="Jumlah modul yang dapat dibaca atau dikelola tiap role."
         flush
         title="Role dan akses"
       >
-        <TableScroll className="tenant-table-scroll">
-          <Table className="tenant-table">
+        <TableScroll frame>
+          <Table>
             <THead>
               <Row>
                 <HeaderCell scope="col">Role</HeaderCell>
@@ -123,8 +127,8 @@ export default async function SuperAdminTemplatePage() {
         title="Modul dan menu"
       >
         {template.modules.length > 0 ? (
-          <TableScroll className="tenant-table-scroll">
-            <Table className="tenant-table">
+          <TableScroll frame>
+            <Table>
               <THead>
                 <Row>
                   <HeaderCell scope="col">Modul</HeaderCell>
@@ -139,15 +143,15 @@ export default async function SuperAdminTemplatePage() {
                   <Row key={modul.slug}>
                     <Cell>
                       <strong>{modul.name}</strong>
-                      {modul.icon ? <span className="tenant-secondary">{modul.icon}</span> : null}
+                      {modul.icon ? <SecondaryText>{modul.icon}</SecondaryText> : null}
                     </Cell>
                     <Cell>{modul.slug}</Cell>
-                    <Cell>{modul.url ?? <span className="tenant-secondary">—</span>}</Cell>
+                    <Cell>{modul.url ?? <SecondaryText>—</SecondaryText>}</Cell>
                     <Cell>
                       {modul.parentSlug ? (
                         (namaInduk.get(modul.parentSlug) ?? modul.parentSlug)
                       ) : (
-                        <span className="tenant-secondary">Tingkat atas</span>
+                        <SecondaryText>Tingkat atas</SecondaryText>
                       )}
                     </Cell>
                     <Cell>
@@ -155,9 +159,7 @@ export default async function SuperAdminTemplatePage() {
                         aktif={modul.isActive}
                         label={modul.isActive ? "Aktif" : "Nonaktif"}
                       />
-                      {modul.isHidden ? (
-                        <span className="tenant-secondary">Disembunyikan</span>
-                      ) : null}
+                      {modul.isHidden ? <SecondaryText>Disembunyikan</SecondaryText> : null}
                     </Cell>
                   </Row>
                 ))}
@@ -176,30 +178,28 @@ export default async function SuperAdminTemplatePage() {
         description="Nilai awal yang dipakai website desa baru."
         title="Tema dan menu publik"
       >
-        <dl className="platform-def">
-          <div className="platform-def-row">
-            <dt>Tema bawaan</dt>
-            <dd>
-              {template.tema ? (
-                <>
-                  {template.tema.nama} · slug <strong>{template.tema.slug}</strong> · versi{" "}
-                  {template.tema.versi}
-                </>
-              ) : (
-                "Website desa baru memakai tema bawaan aplikasi."
-              )}
-            </dd>
-          </div>
-          <div className="platform-def-row">
-            <dt>Menu publik</dt>
-            <dd>
-              {template.menuPublik.length > 0
-                ? template.menuPublik.map((menu) => menu.nama).join(", ")
-                : "Belum ada menu publik pada template."}
-            </dd>
-            <span className="platform-badge">{angka.format(template.menuPublik.length)} menu</span>
-          </div>
-        </dl>
+        <DefinitionList>
+          <DefinitionItem label="Tema bawaan">
+            {template.tema ? (
+              <>
+                {template.tema.nama} · slug <strong>{template.tema.slug}</strong> · versi{" "}
+                {template.tema.versi}
+              </>
+            ) : (
+              "Website desa baru memakai tema bawaan aplikasi."
+            )}
+          </DefinitionItem>
+          <DefinitionItem
+            extra={
+              <StatusBadge tone="info">{angka.format(template.menuPublik.length)} menu</StatusBadge>
+            }
+            label="Menu publik"
+          >
+            {template.menuPublik.length > 0
+              ? template.menuPublik.map((menu) => menu.nama).join(", ")
+              : "Belum ada menu publik pada template."}
+          </DefinitionItem>
+        </DefinitionList>
 
         <p className="form-help">
           Template bersifat baca-saja di konsol dan diperbarui lewat rilis aplikasi, bukan dari

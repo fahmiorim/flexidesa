@@ -26,4 +26,3 @@ export const pluginRegistry = mysqlTable(
   (t) => [uniqueIndex("plugin_registry_village_slug_uq").on(t.villageId, t.slug)],
 );
 
-export type PluginRegistryRow = typeof pluginRegistry.$inferSelect;

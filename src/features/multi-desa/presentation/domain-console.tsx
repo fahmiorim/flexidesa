@@ -1,9 +1,23 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { ButtonLink } from "@/components/ui/button-link";
+import { FormField } from "@/components/ui/form-field";
+import { Pagination } from "@/components/ui/pagination";
+import { SecondaryText } from "@/components/ui/secondary-text";
+import { StatusBadge } from "@/components/ui/status-badge";
+import {
+  Cell,
+  EmptyRow,
+  HeaderCell,
+  Row,
+  Table,
+  TableScroll,
+  TBody,
+  THead,
+} from "@/components/ui/table";
 import type { JenisDomain } from "@/features/multi-desa/domain/jenis-domain";
 import {
   LABEL_STATUS_DNS,
@@ -24,7 +38,7 @@ import {
  * pernah diperiksa ditandai "Belum diperiksa", bukan dianggap aktif.
  */
 
-export interface DomainConsoleRow {
+interface DomainConsoleRow {
   id: number;
   villageId: number;
   villageName: string;
@@ -149,92 +163,92 @@ export function DomainConsole({
 
   return (
     <>
-      <div className="tenant-toolbar domain-toolbar">
-        <label className="tenant-search tenant-search-dengan-ikon">
-          <span className="sr-only">Cari nama desa, domain, atau tenant</span>
-          <span aria-hidden="true" className="tenant-search-icon">
-            <svg fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
-              <circle cx="10.8" cy="10.8" r="6.4" />
-              <path d="m15.6 15.6 4 4" />
-            </svg>
-          </span>
-          <input
-            className="form-input"
-            type="search"
-            placeholder="Cari nama desa, domain, atau tenant..."
-            value={query}
-            onChange={(event) => ubahFilter(() => setQuery(event.target.value))}
-          />
-        </label>
-        <select
-          aria-label="Filter kecamatan"
-          className="form-input tenant-filter"
+      <div className="ui-toolbar domain-toolbar">
+        <FormField
+          className="ui-toolbar-search"
+          containerClassName="ui-toolbar-search"
+          id="domain-q"
+          label="Cari nama desa, domain, atau tenant"
+          placeholder="Cari nama desa, domain, atau tenant..."
+          type="search"
+          value={query}
+          onChange={(event) => ubahFilter(() => setQuery(event.target.value))}
+        />
+        <FormField
+          className="ui-toolbar-filter"
+          containerClassName="ui-toolbar-filter"
+          id="domain-kecamatan"
+          kind="select"
+          label="Kecamatan"
+          options={[
+            { value: "semua", label: "Semua Kecamatan" },
+            ...pilihanKecamatan.map((item) => ({ value: item, label: item })),
+          ]}
           value={draft.kecamatan}
           onChange={(event) => ubahDraft({ kecamatan: event.target.value })}
-        >
-          <option value="semua">Semua Kecamatan</option>
-          {pilihanKecamatan.map((item) => (
-            <option key={item} value={item}>
-              {item}
-            </option>
-          ))}
-        </select>
-        <select
-          aria-label="Filter jenis domain"
-          className="form-input tenant-filter"
+        />
+        <FormField
+          className="ui-toolbar-filter"
+          containerClassName="ui-toolbar-filter"
+          id="domain-jenis"
+          kind="select"
+          label="Jenis domain"
+          options={[
+            { value: "semua", label: "Semua Jenis Domain" },
+            { value: "subdomain", label: "Subdomain" },
+            { value: "custom", label: "Custom" },
+          ]}
           value={draft.jenis}
           onChange={(event) => ubahDraft({ jenis: event.target.value as FilterJenis })}
-        >
-          <option value="semua">Semua Jenis Domain</option>
-          <option value="subdomain">Subdomain</option>
-          <option value="custom">Custom</option>
-        </select>
-        <select
-          aria-label="Filter status desa"
-          className="form-input tenant-filter"
+        />
+        <FormField
+          className="ui-toolbar-filter"
+          containerClassName="ui-toolbar-filter"
+          id="domain-status"
+          kind="select"
+          label="Status desa"
+          options={[
+            { value: "semua", label: "Semua Status" },
+            { value: "aktif", label: "Aktif" },
+            { value: "nonaktif", label: "Nonaktif" },
+          ]}
           value={draft.status}
           onChange={(event) => ubahDraft({ status: event.target.value as FilterStatus })}
-        >
-          <option value="semua">Semua Status</option>
-          <option value="aktif">Aktif</option>
-          <option value="nonaktif">Nonaktif</option>
-        </select>
-        <select
-          aria-label="Filter status SSL"
-          className="form-input tenant-filter"
+        />
+        <FormField
+          className="ui-toolbar-filter"
+          containerClassName="ui-toolbar-filter"
+          id="domain-ssl"
+          kind="select"
+          label="Status SSL"
+          options={[
+            { value: "semua", label: "Semua SSL" },
+            { value: "aktif", label: "Aktif" },
+            { value: "segera-expired", label: "Segera expired" },
+            { value: "bermasalah", label: "Bermasalah" },
+            { value: "belum-diperiksa", label: "Belum diperiksa" },
+          ]}
           value={draft.ssl}
           onChange={(event) => ubahDraft({ ssl: event.target.value as FilterSsl })}
-        >
-          <option value="semua">Semua SSL</option>
-          <option value="aktif">Aktif</option>
-          <option value="segera-expired">Segera expired</option>
-          <option value="bermasalah">Bermasalah</option>
-          <option value="belum-diperiksa">Belum diperiksa</option>
-        </select>
-        <button
-          className={
-            filterBerubah
-              ? "button button-secondary domain-filter-button is-dirty"
-              : "button button-secondary domain-filter-button"
-          }
-          onClick={terapkanFilter}
-          type="button"
-        >
-          <svg
-            aria-hidden="true"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            viewBox="0 0 24 24"
-          >
-            <path d="M4 5h16l-6.2 7.2V20l-3.6-2v-5.8Z" />
-          </svg>
-          Filter
-        </button>
+        />
+        <div className="ui-toolbar-actions">
+          <Button onClick={terapkanFilter} type="button" variant="secondary">
+            <svg
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.8}
+              viewBox="0 0 24 24"
+            >
+              <path d="M4 5h16l-6.2 7.2V20l-3.6-2v-5.8Z" />
+            </svg>
+            Filter{filterBerubah ? " •" : ""}
+          </Button>
+        </div>
       </div>
 
-      <TableScroll className="tenant-table-scroll">
-        <Table className="tenant-table tenant-table-list domain-table">
+      <TableScroll frame>
+        <Table className="domain-table">
           <THead>
             <Row>
               <HeaderCell scope="col">#</HeaderCell>
@@ -256,9 +270,9 @@ export function DomainConsole({
                   <Cell className="tenant-row-number">{mulai + index + 1}</Cell>
                   <Cell className="tenant-cell-name">
                     <strong>{item.villageName}</strong>
-                    <span className="tenant-secondary">
+                    <SecondaryText>
                       {item.villageSlug ? `Slug: ${item.villageSlug}` : "Slug belum diisi"}
-                    </span>
+                    </SecondaryText>
                   </Cell>
                   <Cell>
                     <div className="domain-host">
@@ -325,14 +339,14 @@ export function DomainConsole({
                     {item.ssl.validTo ? (
                       <>
                         <span>{tanggal.format(new Date(item.ssl.validTo))}</span>
-                        <span className="tenant-secondary">{teksSisaHari(item.ssl.validTo)}</span>
+                        <SecondaryText>{teksSisaHari(item.ssl.validTo)}</SecondaryText>
                       </>
                     ) : (
-                      <span className="tenant-secondary">
+                      <SecondaryText>
                         {item.ssl.status === "belum-diperiksa"
                           ? "Belum diperiksa"
                           : "Tidak terbaca"}
-                      </span>
+                      </SecondaryText>
                     )}
                   </Cell>
                   <Cell>
@@ -341,19 +355,14 @@ export function DomainConsole({
                     </span>
                   </Cell>
                   <Cell>
-                    <span
-                      className={
-                        item.villageActive ? "tenant-status is-active" : "tenant-status is-inactive"
-                      }
-                    >
-                      <span aria-hidden="true" />
+                    <StatusBadge tone={item.villageActive ? "success" : "warning"}>
                       {item.villageActive ? "Aktif" : "Nonaktif"}
-                    </span>
+                    </StatusBadge>
                   </Cell>
                   <Cell>
-                    <Link
+                    <ButtonLink
                       aria-label={`Detail domain ${item.domain}`}
-                      className="button button-secondary tenant-row-action"
+                      variant="secondary"
                       href={`/super-admin/domain/${item.id}`}
                     >
                       <svg
@@ -367,89 +376,48 @@ export function DomainConsole({
                         <circle cx="12" cy="12" r="2.8" />
                       </svg>
                       Kelola
-                    </Link>
+                    </ButtonLink>
                   </Cell>
                 </Row>
               ))
             ) : (
-              <Row>
-                <Cell className="tenant-empty" colSpan={10}>
-                  {rows.length === 0
-                    ? "Belum ada domain terdaftar."
-                    : "Tidak ada domain yang sesuai dengan pencarian atau filter."}
-                </Cell>
-              </Row>
+              <EmptyRow colSpan={10}>
+                {rows.length === 0
+                  ? "Belum ada domain terdaftar."
+                  : "Tidak ada domain yang sesuai dengan pencarian atau filter."}
+              </EmptyRow>
             )}
           </TBody>
         </Table>
       </TableScroll>
 
-      {filtered.length > 0 ? (
-        <div className="tenant-pagination">
-          <div className="tenant-pagination-summary">
-            <span>
-              {filtered.length > 1
-                ? `Menampilkan ${angka.format(mulai + 1)}–${angka.format(nomorAkhir)} dari ${angka.format(filtered.length)} domain`
-                : `Menampilkan ${angka.format(filtered.length)} dari ${angka.format(rows.length)} domain`}
-            </span>
-            <span className="sr-only">
-              Halaman {angka.format(halamanAktif)} dari {angka.format(totalHalaman)}
-            </span>
-          </div>
-          <div className="tenant-pagination-pages">
-            <button
-              aria-label="Halaman sebelumnya"
-              className="tenant-page-button"
-              disabled={halamanAktif === 1}
-              onClick={() => setHalaman((sebelumnya) => Math.max(1, sebelumnya - 1))}
-              type="button"
-            >
-              ‹
-            </button>
-            {nomorHalaman(halamanAktif, totalHalaman).map((nomor, index, daftar) => {
-              const sebelumnya = daftar[index - 1];
-              return (
-                <span className="tenant-page-slot" key={nomor}>
-                  {sebelumnya && nomor - sebelumnya > 1 ? (
-                    <span className="tenant-page-ellipsis">…</span>
-                  ) : null}
-                  <button
-                    aria-current={nomor === halamanAktif ? "page" : undefined}
-                    className="tenant-page-button"
-                    onClick={() => setHalaman(nomor)}
-                    type="button"
-                  >
-                    {angka.format(nomor)}
-                  </button>
-                </span>
-              );
-            })}
-            <button
-              aria-label="Halaman berikutnya"
-              className="tenant-page-button"
-              disabled={halamanAktif === totalHalaman}
-              onClick={() => setHalaman((sebelumnya) => Math.min(totalHalaman, sebelumnya + 1))}
-              type="button"
-            >
-              ›
-            </button>
-          </div>
-          <label className="tenant-page-size">
-            <span className="sr-only">Baris per halaman</span>
-            <select
-              className="form-input"
-              value={perHalaman}
-              onChange={(event) => ubahFilter(() => setPerHalaman(Number(event.target.value)))}
-            >
-              {PILIHAN_BARIS.map((jumlah) => (
-                <option key={jumlah} value={jumlah}>
-                  {jumlah} / halaman
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-      ) : null}
+      <Pagination
+        onPageChange={setHalaman}
+        page={halamanAktif}
+        pageCount={totalHalaman}
+        pageSize={
+          <FormField
+            className="ui-toolbar-filter"
+            containerClassName="ui-toolbar-filter"
+            id="domain-per-halaman"
+            kind="select"
+            label="Baris per halaman"
+            options={PILIHAN_BARIS.map((jumlah) => ({
+              value: String(jumlah),
+              label: `${jumlah} / halaman`,
+            }))}
+            value={String(perHalaman)}
+            onChange={(event) => ubahFilter(() => setPerHalaman(Number(event.target.value)))}
+          />
+        }
+        summary={
+          <span>
+            {filtered.length > 1
+              ? `Menampilkan ${angka.format(mulai + 1)}–${angka.format(nomorAkhir)} dari ${angka.format(filtered.length)} domain`
+              : `Menampilkan ${angka.format(filtered.length)} dari ${angka.format(rows.length)} domain`}
+          </span>
+        }
+      />
     </>
   );
 }
@@ -473,10 +441,4 @@ function teksSisaHari(validTo: Date): string {
   if (hari < 0) return "Sudah kedaluwarsa";
   if (hari === 0) return "Hari ini";
   return `${angka.format(hari)} hari`;
-}
-
-/** Nomor halaman yang ditampilkan: awal, akhir, dan sekitar halaman aktif. */
-function nomorHalaman(aktif: number, total: number): number[] {
-  const nomor = new Set([1, total, aktif - 1, aktif, aktif + 1]);
-  return [...nomor].filter((item) => item >= 1 && item <= total).sort((a, b) => a - b);
 }

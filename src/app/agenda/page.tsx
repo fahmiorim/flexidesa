@@ -10,10 +10,12 @@ import {
   geserBulanAgenda,
 } from "@/features/info-desa/agenda/domain/agenda";
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { plainText } from "@/lib/plain-text";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./agenda.module.css";
-import { BULAN, KATEGORI, plainText } from "./bagian-agenda";
+import { BULAN, KATEGORI } from "./bagian-agenda";
 import { DaftarAgenda } from "./bagian-daftar";
 import { KalenderAgenda } from "./bagian-kalender";
 import { SampingAgenda } from "./bagian-samping";
@@ -44,6 +46,7 @@ function locationLabel(desa: {
 
 export default async function AgendaPage({ searchParams }: Props) {
   const [desa, params] = await Promise.all([getIdentitasFromRequest(), searchParams]);
+  const tema = await muatTemaPublik(desa.id);
   const lokasi = locationLabel(desa);
   const now = new Date();
   const currentYear = now.getFullYear();
@@ -127,7 +130,7 @@ export default async function AgendaPage({ searchParams }: Props) {
     : null;
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={lokasi} logoUrl={logoUrl} activePath="/agenda" />
       <section className={styles.hero}>
         <div className={styles.heroInner}>

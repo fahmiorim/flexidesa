@@ -279,7 +279,7 @@ export function PengaturanSuratForm({
               <Field
                 label="Lebar logo (%)"
                 galat={galat("suratLogoLebar")}
-                hint="Persentase terhadap lebar isi surat (5–30%). Bawaan 10% seperti OpenSID."
+                hint="Persentase terhadap lebar isi surat (5–30%). Bawaan 10%."
               >
                 <input
                   className="form-input"

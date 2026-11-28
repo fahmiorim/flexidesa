@@ -86,6 +86,14 @@ export const sessions = mysqlTable(
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
+    // Konteks impersonasi Super Admin. Sesi tetap milik akun
+    // platform (`userId`); ketiga kolom ini menumpahkan identitas efektif
+    // menjadi administrator desa target selama masa berlaku. Sengaja TANPA
+    // foreign key: penghapusan akun/desa target tidak boleh menghapus sesi
+    // milik super admin — DAL membatalkan konteks bila target tak lagi valid.
+    impersonatedVillageId: int("impersonated_village_id"),
+    impersonatedUserId: varchar("impersonated_user_id", { length: 36 }),
+    impersonatedExpiresAt: timestamp("impersonated_expires_at"),
   },
   (t) => [uniqueIndex("sessions_token_uq").on(t.token), index("sessions_user_idx").on(t.userId)],
 );
@@ -154,5 +162,3 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 }));
 
 export type User = typeof users.$inferSelect;
-export type NewUser = typeof users.$inferInsert;
-export type SessionRow = typeof sessions.$inferSelect;

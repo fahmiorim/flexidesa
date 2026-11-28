@@ -24,7 +24,7 @@ import { deleteSurat } from "@/features/pelayanan-persuratan/surat/infrastructur
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-034 Batch B1 — database menegakkan tenant untuk delapan relasi
+ * Database menegakkan tenant untuk delapan relasi
  * `ON DELETE SET NULL` yang sebelumnya hanya dijaga application layer.
  *
  * Test memakai `db.insert`/`db.update` langsung agar kegagalan tidak tertutup
@@ -266,7 +266,7 @@ afterAll(async () => {
   await db.delete(villages).where(inArray(villages.id, desaIds));
 });
 
-describe("AUD-034 B1 composite tenant FK untuk relasi SET NULL", () => {
+describe("Composite tenant FK untuk relasi SET NULL", () => {
   it("memasang delapan constraint RESTRICT dan melepas FK single-column lama", async () => {
     const hasil = (await db.execute(
       `SELECT rc.CONSTRAINT_NAME AS nama, rc.DELETE_RULE AS aturan

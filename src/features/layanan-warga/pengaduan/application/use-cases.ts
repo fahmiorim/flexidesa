@@ -47,7 +47,7 @@ import { notifyStatusChange, notifyStatusChangeWhatsApp } from "./notification";
  * baik saat dipanggil dari halaman maupun langsung.
  */
 
-export interface FilterPengaduanData {
+interface FilterPengaduanData {
   status?: StatusPengaduan;
   kategori?: string;
   cari?: string;
@@ -73,7 +73,7 @@ export async function getPengaduanDetailData(id: number) {
   return getPengaduan(villageId, id);
 }
 
-export type StatusEmailNotification = "not-needed" | "sent" | "skipped" | "failed";
+type StatusEmailNotification = "not-needed" | "sent" | "skipped" | "failed";
 
 /** Simpan status & tanggapan petugas; hasil email tidak membatalkan penyimpanan. */
 export async function tanggapiPengaduanData(

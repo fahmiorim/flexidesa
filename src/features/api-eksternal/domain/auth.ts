@@ -2,7 +2,7 @@ import type { apiKeys } from "@/db/schema/api-keys";
 
 import { verifyApiKey } from "./api-key";
 
-export type ApiKeyRecord = typeof apiKeys.$inferSelect;
+type ApiKeyRecord = typeof apiKeys.$inferSelect;
 
 export type AuthResult =
   { ok: false; status: number; message: string } | { ok: true; apiKey: ApiKeyRecord };

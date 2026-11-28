@@ -7,7 +7,7 @@ import { SUPLEMEN_RESOURCE } from "@/features/kependudukan/penduduk/domain/suple
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { getCurrentUser } from "@/lib/dal";
 
-/** Unduh daftar terdata sesuai filter (paritas aksi "Unduh" OpenSID). */
+/** Unduh daftar terdata sesuai filter. */
 export async function GET(
   request: Request,
   context: RouteContext<"/kependudukan/penduduk/suplemen/[id]/cetak/unduh">,

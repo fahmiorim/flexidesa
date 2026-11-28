@@ -37,7 +37,7 @@ export function KopLaporanBulanan({
   );
 }
 
-/** Tabel 12 kolom Lampiran A-9, dipakai halaman laporan maupun cetak. */
+/** Tabel 12 kolom, dipakai halaman laporan maupun cetak. */
 export function TabelLaporanBulanan({ baris }: { baris: readonly BarisLaporanBulanan[] }) {
   return (
     <TableScroll>

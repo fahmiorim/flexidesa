@@ -128,7 +128,7 @@ describe("normalisasi nilai impor", () => {
     expect(normalisasiJenisKelamin("X")).toBeNull();
   });
 
-  it("menerima kode dan label enum OpenSID", () => {
+  it("menerima kode dan label enum", () => {
     expect(normalisasiKtpEl("2")).toBe("ktpEl");
     expect(normalisasiKtpEl("KIA")).toBe("kia");
     expect(normalisasiStatusRekam("3")).toBe("sudahRekam");
@@ -216,7 +216,7 @@ describe("validasiImporPenduduk", () => {
     });
   });
 
-  it("memetakan kolom tambahan OpenSID: wilayah, koordinat, dan enum", () => {
+  it("memetakan kolom tambahan: wilayah, koordinat, dan enum", () => {
     const hasil = validasiImporPenduduk(
       [
         baris(1, {
@@ -374,7 +374,7 @@ describe("template impor", () => {
 });
 
 describe("bacaBerkasImporPenduduk", () => {
-  it("membaca seluruh 44 header ekspor OpenSID", async () => {
+  it("membaca seluruh 44 header ekspor", async () => {
     const header = [
       "alamat",
       "dusun",
@@ -486,7 +486,7 @@ describe("bacaBerkasImporPenduduk", () => {
     });
   });
 
-  it("membaca CSV ekspor SID dan memetakan header", async () => {
+  it("membaca CSV ekspor data desa dan memetakan header", async () => {
     const csv = [
       "NIK,Nama,Jenis Kelamin,Tempat Lahir,Tanggal Lahir,Agama,No. KK,Akta Lahir,Akta Perkawinan,Tanggal Perkawinan,Akta Perceraian,Tanggal Perceraian,No. Paspor,Tanggal Akhir Paspor,No. KITAS,Suku/Etnis,Keterangan",
       "3201010101010009,ANI,P,BUKITTINGGI,17-08-1990,ISLAM,3201010101010001,AK-1,KW-1,17-05-2010,CR-1,17-05-2020,A123,17-05-2030,KITAS-1,Batak,Catatan",

@@ -24,7 +24,7 @@ import {
 } from "./kesehatan";
 
 describe("sasaran PAUD", () => {
-  it("memakai opsi kategori usia dan status bulanan seperti OpenSID", () => {
+  it("memakai opsi kategori usia dan status bulanan", () => {
     expect(KATEGORI_USIA_PAUD.map((item) => item.label)).toEqual([
       "Anak Usia 2 - < 3 Tahun",
       "Anak Usia 3 - 6 Tahun",
@@ -616,7 +616,7 @@ describe("buildSkorcardKonvergensi", () => {
 });
 
 describe("status indikator konvergensi", () => {
-  it("memetakan nilai boolean ke kode Y/T/TS seperti Rekap.php OpenSID", () => {
+  it("memetakan nilai boolean ke kode Y/T/TS", () => {
     expect(statusIndikator(true)).toBe("Y");
     expect(statusIndikator(false)).toBe("T");
     expect(statusIndikator(null)).toBe("TS");
@@ -737,7 +737,7 @@ describe("status indikator konvergensi", () => {
     expect(hasil.jumlah_seharusnya).toBe(9);
   });
 
-  it("memberi label kategori usia sesuai batas OpenSID", () => {
+  it("memberi label kategori usia sesuai batas", () => {
     expect(kategoriUsiaAnak(0)).toBe("0 - < 6 Bulan");
     expect(kategoriUsiaAnak(5)).toBe("0 - < 6 Bulan");
     expect(kategoriUsiaAnak(6)).toBe("6 - 12 Bulan");

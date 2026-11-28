@@ -9,11 +9,21 @@ import type { HTMLAttributes, ReactNode, TdHTMLAttributes, ThHTMLAttributes } fr
 export function TableScroll({
   children,
   className = "",
+  frame = false,
 }: {
   children: ReactNode;
   className?: string;
+  /** Beri bingkai saat tabel berdiri sendiri, bukan di dalam kartu. */
+  frame?: boolean;
 }) {
-  return <div className={`ui-table-scroll${className ? ` ${className}` : ""}`}>{children}</div>;
+  return (
+    <div
+      className={`ui-table-scroll${className ? ` ${className}` : ""}`}
+      data-frame={frame || undefined}
+    >
+      {children}
+    </div>
+  );
 }
 
 export function Table({ children, className = "" }: { children: ReactNode; className?: string }) {

@@ -38,7 +38,7 @@ export function PaketFormBaru({ aksi }: { aksi: AksiBuatPaket }) {
         </div>
       </div>
       <div className="platform-card-body form-stack">
-        <div className="platform-form-grid">
+        <div className="ui-form-grid">
           <label className="form-field">
             <span className="form-label">Nama paket</span>
             <input
@@ -95,7 +95,7 @@ export function PaketFormBaru({ aksi }: { aksi: AksiBuatPaket }) {
           </p>
         ) : null}
 
-        <div className="platform-row-actions">
+        <div className="ui-toolbar-actions">
           <button className="button button-primary" disabled={pending} type="submit">
             {pending ? "Membuat paket…" : "Buat paket draf"}
           </button>

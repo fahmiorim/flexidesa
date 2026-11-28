@@ -20,7 +20,7 @@ import { daftarWilayah, detailWilayahDesa } from "../infrastructure/data-wilayah
 export const PESAN_TINGKAT_TIDAK_VALID = `Parameter tingkat harus salah satu: ${TINGKAT_WILAYAH.join(", ")}.`;
 export const PESAN_INDUK_TIDAK_VALID = "Kode induk wilayah tidak valid.";
 
-export type HasilWilayah =
+type HasilWilayah =
   | { status: "ok"; data: Wilayah[] }
   | { status: "tingkat-tidak-valid" }
   | { status: "induk-tidak-valid" };

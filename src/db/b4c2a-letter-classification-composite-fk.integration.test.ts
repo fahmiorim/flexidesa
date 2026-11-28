@@ -16,7 +16,7 @@ import { deleteKlasifikasi } from "@/features/pelayanan-persuratan/surat/infrast
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-034 Batch 4C-2a: empat relasi `SET NULL` yang menunjuk
+ * Empat relasi `SET NULL` yang menunjuk
  * `letter_classifications` kini dijaga composite FK `RESTRICT`.
  *
  * Konsekuensi yang disengaja: menghapus klasifikasi yang masih dirujuk ditolak
@@ -152,7 +152,7 @@ afterAll(async () => {
   await db.delete(villages).where(inArray(villages.id, desaIds));
 });
 
-describe("AUD-034 B4C-2a composite tenant FK letter_classifications", () => {
+describe("Composite tenant FK letter_classifications", () => {
   it("berjalan pada MySQL 8", async () => {
     const versi = (await db.execute(sql`SELECT VERSION() AS versi`)) as unknown as [
       Array<{ versi: string }>,

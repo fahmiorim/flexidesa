@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { BULAN_LAPORAN, bulanLabel, laporanPendudukFormSchema } from "./laporan-penduduk";
 
 describe("BULAN_LAPORAN", () => {
-  it("memuat dua belas bulan berurutan seperti bulan() OpenSID", () => {
+  it("memuat dua belas bulan berurutan", () => {
     expect(BULAN_LAPORAN).toHaveLength(12);
     expect(BULAN_LAPORAN.map((item) => item.value)).toEqual([
       1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
@@ -31,7 +31,7 @@ describe("laporanPendudukFormSchema", () => {
     expect(hasil.success).toBe(false);
   });
 
-  it("menolak tahun di luar rentang OpenSID", () => {
+  it("menolak tahun di luar rentang", () => {
     expect(laporanPendudukFormSchema.safeParse({ ...valid, tahun: "1944" }).success).toBe(false);
     expect(laporanPendudukFormSchema.safeParse({ ...valid, tahun: "2031" }).success).toBe(false);
     expect(laporanPendudukFormSchema.safeParse({ ...valid, tahun: "1945" }).success).toBe(true);

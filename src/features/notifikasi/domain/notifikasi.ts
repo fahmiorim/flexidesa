@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-export const KANAL_NOTIFIKASI = ["email", "whatsapp"] as const;
-export const STATUS_NOTIFIKASI = ["semua", "sukses", "gagal", "dilewati"] as const;
+const KANAL_NOTIFIKASI = ["email", "whatsapp"] as const;
+const STATUS_NOTIFIKASI = ["semua", "sukses", "gagal", "dilewati"] as const;
 
-export type KanalNotifikasiFilter = (typeof KANAL_NOTIFIKASI)[number];
-export type StatusNotifikasiFilter = (typeof STATUS_NOTIFIKASI)[number];
+type KanalNotifikasiFilter = (typeof KANAL_NOTIFIKASI)[number];
+type StatusNotifikasiFilter = (typeof STATUS_NOTIFIKASI)[number];
 
 export interface FilterNotifikasi {
   kanal: KanalNotifikasiFilter | null;
@@ -45,7 +45,7 @@ export const broadcastSchema = z.object({
 });
 
 /** Status pengiriman satu baris bukti `notifikasi_terkirim`. */
-export type StatusPengiriman = "sukses" | "gagal" | "dilewati";
+type StatusPengiriman = "sukses" | "gagal" | "dilewati";
 
 export function statusPengiriman(row: { sukses: boolean; dilewati: boolean }): StatusPengiriman {
   if (row.sukses) return "sukses";

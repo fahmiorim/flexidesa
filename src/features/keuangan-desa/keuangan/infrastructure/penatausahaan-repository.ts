@@ -14,7 +14,7 @@ import type { JurnalBaris } from "@/features/keuangan-desa/keuangan/domain/jurna
  * tertimpa.
  */
 
-export interface SaldoBankBaris {
+interface SaldoBankBaris {
   id: number;
   rekeningBank: string;
   namaBank: string;
@@ -50,7 +50,7 @@ export async function listTahunJurnal(villageId: number): Promise<number[]> {
   return rows.map((row) => row.tahun);
 }
 
-export interface JurnalInput {
+interface JurnalInput {
   tahun: number;
   tanggal: string;
   kodeRekening: string;
@@ -105,7 +105,7 @@ export async function listSaldoBank(villageId: number, tahun: number): Promise<S
     .orderBy(asc(keuanganSaldoBank.namaBank), asc(keuanganSaldoBank.rekeningBank));
 }
 
-export interface SaldoBankInput {
+interface SaldoBankInput {
   tahun: number;
   rekeningBank: string;
   namaBank: string;

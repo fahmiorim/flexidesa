@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 /**
  * Agregasi hasil survei untuk halaman publik.
  *
@@ -7,7 +9,7 @@
  */
 
 /** Soal yang ikut ditampilkan pada rekap publik. */
-export interface SoalPublikRingkas {
+interface SoalPublikRingkas {
   id: number;
   pertanyaan: string;
   tipe: string;
@@ -15,14 +17,14 @@ export interface SoalPublikRingkas {
 }
 
 /** Hitungan satu pilihan jawaban (soal `choice`). */
-export interface HitunganPilihan {
+interface HitunganPilihan {
   soalId: number;
   label: string;
   jumlah: number;
 }
 
 /** Statistik soal angka (soal `number`). */
-export interface StatistikAngka {
+interface StatistikAngka {
   soalId: number;
   dijawab: number;
   rataRata: number | null;
@@ -31,20 +33,20 @@ export interface StatistikAngka {
 }
 
 /** Jumlah jawaban terkumpul untuk soal isian (soal `text`). */
-export interface JumlahJawaban {
+interface JumlahJawaban {
   soalId: number;
   dijawab: number;
 }
 
 /** Hitungan mentah seluruh soal satu survei. */
-export interface AgregatSurvei {
+interface AgregatSurvei {
   pilihan: HitunganPilihan[];
   angka: StatistikAngka[];
   teks: JumlahJawaban[];
 }
 
 /** Rekap publik satu soal; tidak memuat jawaban mentah. */
-export interface RekapSoalPublik {
+interface RekapSoalPublik {
   id: number;
   pertanyaan: string;
   tipe: string;
@@ -133,8 +135,8 @@ export function susunRekapSurvei(
 }
 
 /** Tahun minimum/maksimum yang diterima sebagai filter periode. */
-export const PERIODE_MIN = 1900;
-export const PERIODE_MAKS = 2100;
+const PERIODE_MIN = 1900;
+const PERIODE_MAKS = 2100;
 
 /**
  * Baca parameter `periode` (tahun) dari URL.

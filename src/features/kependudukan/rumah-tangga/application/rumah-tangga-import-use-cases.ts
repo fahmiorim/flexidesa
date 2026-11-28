@@ -44,7 +44,7 @@ export async function unduhTemplateImporRtm(): Promise<{ isi: string; nama: stri
 }
 
 /**
- * Impor pengelompokan RTM dari berkas CSV/XLSX (paritas OpenSID).
+ * Impor pengelompokan RTM dari berkas CSV/XLSX.
  *
  * All-or-nothing: bila ada baris yang tidak valid, tidak ada data yang
  * disimpan. Nomor RTM yang belum ada dibuatkan RTM baru; penduduk ditautkan

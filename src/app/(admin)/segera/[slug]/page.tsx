@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
  * Halaman placeholder untuk modul yang halamannya belum dibangun penuh.
  *
  * Halaman ini menggantikan label "Segera" non-klik di sidebar: menu kini dapat
- * diklik dan menampilkan ringkasan fungsi, padanan OpenSID, serta rencana
+ * diklik dan menampilkan ringkasan fungsi serta rencana
  * fitur. Modul yang sudah punya halaman kanonis tetap diarahkan lewat halaman
  * redirect statis di folder ini (mis. `/segera/kelompok`).
  */

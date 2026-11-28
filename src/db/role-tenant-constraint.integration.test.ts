@@ -138,7 +138,7 @@ afterAll(async () => {
   await db.delete(villages).where(inArray(villages.id, [fixture.desaA, fixture.desaB]));
 });
 
-describe("AUD-035 trigger role tenant", () => {
+describe("Trigger role tenant", () => {
   it("menerima role desa sendiri dan role platform pada akun platform", async () => {
     const current = dataUji();
     const rows = await db

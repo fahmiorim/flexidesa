@@ -3,16 +3,15 @@ import { describe, expect, it } from "vitest";
 import { validasiMediaIdentitas } from "./validasi-media";
 
 /**
- * Daftar tipe mengikuti form Identitas Desa OpenSID:
+ * Daftar tipe berkas:
  * - logo & foto kantor: .gif,.jpg,.jpeg,.png,.webp
  * - struktur adat: .jpg,.jpeg,.png,.webp
  * - dokumen adat: .pdf
- * SVG tetap diterima untuk logo sebagai tambahan FlexiDesa.
- * Batas ukuran mengikuti kebijakan FlexiDesa (OpenSID tidak membatasi foto kantor
- * dan memakai 2 MB untuk struktur/dokumen).
+ * SVG tetap diterima untuk logo.
+ * Batas ukuran: foto kantor tidak dibatasi; struktur/dokumen dibatasi 2 MB.
  */
 describe("validasiMediaIdentitas", () => {
-  it("menerima GIF untuk logo seperti OpenSID", () => {
+  it("menerima GIF untuk logo", () => {
     expect(validasiMediaIdentitas("logo", "image/gif", 1000).ok).toBe(true);
   });
 

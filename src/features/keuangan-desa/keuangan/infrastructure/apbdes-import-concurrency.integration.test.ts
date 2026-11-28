@@ -13,7 +13,7 @@ import {
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-013 lanjutan — impor APBDes (`upsertKeuanganBatch`) harus memakai kunci
+ * Impor APBDes (`upsertKeuanganBatch`) harus memakai kunci
  * per (desa, tahun) yang sama dengan penyimpanan manual, lalu mengagregasi ulang
  * induk. Tanpa kunci bersama, impor yang berjalan bersamaan dengan simpan
  * manual dapat meninggalkan nilai induk yang tidak sama dengan jumlah anaknya.
@@ -84,7 +84,7 @@ async function bacaTahun(desa: number, tahun: number) {
     .where(and(eq(keuangan.villageId, desa), eq(keuangan.tahun, tahun)));
 }
 
-describe("AUD-013 impor APBDes dan penyimpanan manual", () => {
+describe("Impor APBDes dan penyimpanan manual", () => {
   it("impor menunggu kunci (desa, tahun) yang sama dengan simpan nilai", async () => {
     if (villageId === null || userId === null) throw new Error("Fixture tidak tersedia.");
     const desa = villageId;

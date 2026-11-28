@@ -16,7 +16,7 @@ import { requirePermission } from "@/lib/dal";
 /** Slug modul sekaligus resource izin (lihat template tenant). */
 export const LAPORAN_KELOMPOK_RENTAN_RESOURCE = RESOURCES.laporanKelompokRentan;
 
-export interface LaporanKelompokRentanData {
+interface LaporanKelompokRentanData {
   rows: BarisKelompokRentan[];
   total: BarisKelompokRentan;
   dusunOptions: string[];
@@ -55,7 +55,7 @@ export async function susunLaporanKelompokRentan(
     getIdentitasDesaUseCase(villageId),
   ]);
 
-  // RT tanpa penduduk tidak ditampilkan, sama seperti OpenSID; nilainya memang
+  // RT tanpa penduduk tidak ditampilkan; nilainya memang
   // nol sehingga tidak mengubah total.
   const terisi = rows.filter((baris) => baris.total > 0);
 
@@ -81,7 +81,7 @@ export async function getLaporanKelompokRentanData(
 }
 
 /** Isi berkas ekspor kelompok rentan beserta header HTTP-nya. */
-export interface EksporKelompokRentan {
+interface EksporKelompokRentan {
   namaBerkas: string;
   tipeKonten: string;
   isi: string | Uint8Array;

@@ -43,10 +43,10 @@ export function kopDesaAlamat(desa: KopDesa): string {
 }
 
 /** Satu nilai sel buku resmi; `null`/`undefined` ditampilkan sebagai kosong. */
-export type SelBuku = string | number | null | undefined;
+type SelBuku = string | number | null | undefined;
 
 /** Tabel buku resmi siap cetak/ekspor: identitas buku + kolom + baris. */
-export interface BukuResmiTabel {
+interface BukuResmiTabel {
   kodeBuku: string;
   namaBuku: string;
   kolom: readonly string[];
@@ -83,7 +83,7 @@ export function namaBerkasBuku(
 }
 
 /** Satu item buku administrasi umum/sekretariat generik. */
-export interface ItemBukuBaris {
+interface ItemBukuBaris {
   nomorUrut: number;
   tanggal: string | null;
   uraian: string;
@@ -91,7 +91,7 @@ export interface ItemBukuBaris {
 }
 
 /** Kolom standar buku administrasi generik (A1–A8, B1–B5, E1). */
-export const KOLOM_ITEM_BUKU = ["No. Urut", "Tanggal", "Uraian", "Keterangan"] as const;
+const KOLOM_ITEM_BUKU = ["No. Urut", "Tanggal", "Uraian", "Keterangan"] as const;
 
 /** Susun tabel resmi dari item buku administrasi generik. */
 export function tabelItemBuku(
@@ -144,7 +144,7 @@ export function formatTanggalIndonesia(iso: string | null | undefined): string {
 }
 
 /** Kolom buku mutasi penduduk (B3) sesuai format resmi. */
-export const KOLOM_MUTASI_PENDUDUK = [
+const KOLOM_MUTASI_PENDUDUK = [
   "No. Urut",
   "Tanggal",
   "Jenis Mutasi",
@@ -152,7 +152,7 @@ export const KOLOM_MUTASI_PENDUDUK = [
 ] as const;
 
 /** Baris mutasi penduduk. */
-export interface BarisMutasiPenduduk {
+interface BarisMutasiPenduduk {
   nomorUrut: number;
   tanggal: string | null;
   jenisMutasi: string;
@@ -179,7 +179,7 @@ export function tabelMutasiPenduduk(
 }
 
 /** Kolom Buku Tanah Kas Desa (E1/A5) - format resmi. */
-export const KOLOM_TANAH_KAS = [
+const KOLOM_TANAH_KAS = [
   "No. Urut",
   "Nomor Persil",
   "Asal Tanah",
@@ -190,7 +190,7 @@ export const KOLOM_TANAH_KAS = [
   "Keterangan",
 ] as const;
 
-export interface BarisTanahKas {
+interface BarisTanahKas {
   nomorUrut: number;
   nomorPersil: string;
   asal: string | null;
@@ -224,7 +224,7 @@ export function tabelTanahKas(
 }
 
 /** Kolom mutasi tanah kas. */
-export const KOLOM_MUTASI_TANAH_KAS = [
+const KOLOM_MUTASI_TANAH_KAS = [
   "No. Urut",
   "Tanggal",
   "Jenis Mutasi",
@@ -234,7 +234,7 @@ export const KOLOM_MUTASI_TANAH_KAS = [
   "Keterangan",
 ] as const;
 
-export interface BarisMutasiTanahKas {
+interface BarisMutasiTanahKas {
   nomorUrut: number;
   tanggal: string;
   jenis: string;
@@ -266,7 +266,7 @@ export function tabelMutasiTanahKas(
 }
 
 /** Kolom Buku Pembangunan. */
-export const KOLOM_PEMBANGUNAN = [
+const KOLOM_PEMBANGUNAN = [
   "No. Urut",
   "Tahun",
   "Nama Kegiatan",
@@ -282,7 +282,7 @@ export const KOLOM_PEMBANGUNAN = [
   "Keterangan",
 ] as const;
 
-export interface BarisPembangunan {
+interface BarisPembangunan {
   nomorUrut: number;
   tahun: number;
   namaKegiatan: string;
@@ -326,7 +326,7 @@ export function tabelPembangunan(
 }
 
 /** Kolom Buku Kader Pembangunan. */
-export const KOLOM_KADER = [
+const KOLOM_KADER = [
   "No. Urut",
   "Nama",
   "Jabatan",
@@ -336,7 +336,7 @@ export const KOLOM_KADER = [
   "Keterangan",
 ] as const;
 
-export interface BarisKader {
+interface BarisKader {
   nomorUrut: number;
   nama: string;
   jabatan: string | null;
@@ -368,7 +368,7 @@ export function tabelKader(
 }
 
 /** Kolom Buku Peraturan Desa / Keputusan Kades (Sekretariat). */
-export const KOLOM_PERATURAN = [
+const KOLOM_PERATURAN = [
   "No. Urut",
   "Jenis",
   "Nomor",
@@ -379,7 +379,7 @@ export const KOLOM_PERATURAN = [
   "Keterangan",
 ] as const;
 
-export interface BarisPeraturan {
+interface BarisPeraturan {
   nomorUrut: number;
   jenis: string;
   nomor: string;
@@ -413,7 +413,7 @@ export function tabelPeraturan(
 }
 
 /** Kolom Buku Data Aparat Pemerintah Desa. */
-export const KOLOM_APARAT = [
+const KOLOM_APARAT = [
   "No. Urut",
   "Nama",
   "NIP",
@@ -427,7 +427,7 @@ export const KOLOM_APARAT = [
   "Keterangan",
 ] as const;
 
-export interface BarisAparat {
+interface BarisAparat {
   nomorUrut: number;
   nama: string;
   nip: string | null;
@@ -468,7 +468,7 @@ export function tabelAparat(
 }
 
 /** Kolom Buku Agenda (Surat Masuk/Keluar) / Ekspedisi. */
-export const KOLOM_AGENDA = [
+const KOLOM_AGENDA = [
   "No. Urut",
   "Jenis",
   "Tanggal",
@@ -478,7 +478,7 @@ export const KOLOM_AGENDA = [
   "Keterangan",
 ] as const;
 
-export interface BarisAgenda {
+interface BarisAgenda {
   nomorUrut: number;
   jenis: string;
   tanggal: string;

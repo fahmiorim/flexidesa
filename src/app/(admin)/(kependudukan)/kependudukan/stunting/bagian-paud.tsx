@@ -34,7 +34,7 @@ const NAMA_BULAN = [
 /**
  * Tab sasaran PAUD 2-6 tahun.
  *
- * Field mengikuti `pemantauan_paud_form.blade.php` OpenSID: nomor KIA,
+ * Field: nomor KIA,
  * posyandu, kategori usia (2 - <3 tahun / 3 - 6 tahun), dan status keikutsertaan
  * PAUD setiap bulan (Belum / Mengikuti / Tidak Mengikuti).
  */
@@ -90,7 +90,7 @@ export function BagianPaud({
                   ))}
                 </select>
                 <span className="form-help">
-                  OpenSID hanya menampilkan KIA dengan anak berumur 24 bulan ke atas.
+                  Hanya KIA dengan anak berumur 24 bulan ke atas yang ditampilkan.
                 </span>
               </label>
               <label className="form-field">

@@ -10,7 +10,7 @@ import { statusPembangunanLabel, type PembangunanProyekDTO } from "./pembangunan
  * dipakai bersama oleh halaman cetak dan ekspor CSV.
  */
 
-export interface BukuPembangunanBaris {
+interface BukuPembangunanBaris {
   tahun: number;
   jumlahProyek: number;
   selesai: number;
@@ -22,7 +22,7 @@ export interface BukuPembangunanBaris {
   proyek: PembangunanProyekDTO[];
 }
 
-export interface TotalBukuPembangunan {
+interface TotalBukuPembangunan {
   jumlahProyek: number;
   totalAnggaran: number;
   progresRataRata: number;

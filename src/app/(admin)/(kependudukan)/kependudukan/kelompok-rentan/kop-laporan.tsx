@@ -3,7 +3,7 @@
 /**
  * Kop laporan kelompok rentan.
  *
- * Meniru formulir OpenSID: identitas desa/kecamatan/bulan ditampilkan sebagai
+ * Identitas desa/kecamatan/bulan ditampilkan sebagai
  * isian mati, dan dusun dipilih lewat dropdown yang langsung memuat ulang
  * laporan. Tanpa JavaScript, dropdown tetap bisa dikirim dengan Enter.
  */

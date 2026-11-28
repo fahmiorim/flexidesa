@@ -68,7 +68,7 @@ export async function queryStatistikDesa(villageId: number): Promise<RingkasanPe
   };
 }
 
-export interface BarisSuratTerbit {
+interface BarisSuratTerbit {
   id: number;
   typeName: string | null;
   issuedAt: Date | null;

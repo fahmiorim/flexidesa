@@ -26,8 +26,7 @@ export const metadata: Metadata = { title: "Stunting" };
 const number = new Intl.NumberFormat("id-ID");
 
 /**
- * Tab mengikuti navigasi modul Stunting OpenSID
- * (`resources/views/admin/stunting/navigasi.blade.php`): Posyandu, KIA,
+ * Tab: Posyandu, KIA,
  * pemantauan bulanan ibu hamil/anak, rekapitulasi, dan scorecard konvergensi.
  */
 const TABS = [

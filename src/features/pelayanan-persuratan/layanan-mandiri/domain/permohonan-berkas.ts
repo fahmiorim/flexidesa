@@ -11,7 +11,7 @@ import { labelPermohonanStatus, type PermohonanAdminRow } from "./layanan-mandir
 
 export interface FilterPermohonan {
   /**
-   * Pencarian bebas seperti kotak cari OpenSID: cocok pada nama/NIK pemohon,
+   * Pencarian bebas: cocok pada nama/NIK pemohon,
    * nomor antrean, nomor HP, nama jenis surat, dan keterangan. Setiap kata
    * harus cocok agar "budi usaha" mempersempit hasil.
    */
@@ -25,7 +25,7 @@ export interface FilterPermohonan {
   status?: number | readonly number[];
 }
 
-export interface RekapPermohonanJenis {
+interface RekapPermohonanJenis {
   jenis: string;
   total: number;
   menunggu: number;

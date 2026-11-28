@@ -10,7 +10,7 @@ export const INVENTARIS_KATEGORI = [
   "aset_lainnya",
   "konstruksi_dalam_pengerjaan",
 ] as const;
-export type InventarisKategoriGolongan = (typeof INVENTARIS_KATEGORI)[number];
+type InventarisKategoriGolongan = (typeof INVENTARIS_KATEGORI)[number];
 
 export const INVENTARIS_ASAL = [
   "pembelian",
@@ -52,7 +52,7 @@ export const MUTASI_STEP_LABELS: Readonly<Record<MutasiStep, string>> = {
 };
 
 /** Slug role yang berwenang menjalankan tiap tahap. */
-export const MUTASI_STEP_ROLE_SLUGS: Readonly<Record<MutasiStep, readonly string[]>> = {
+const MUTASI_STEP_ROLE_SLUGS: Readonly<Record<MutasiStep, readonly string[]>> = {
   operator: ["operator"],
   sekdes: ["sekretaris-desa"],
   kades: ["kepala-desa"],
@@ -231,7 +231,7 @@ export interface InventarisRow {
 
 /** Kategori inventaris untuk pilihan formulir dan halaman kategori. */
 
-export interface HasilPenyusutanAset {
+interface HasilPenyusutanAset {
   nilaiPerolehan: number;
   akumulasiPenyusutan: number;
   nilaiBuku: number;
@@ -323,13 +323,6 @@ export interface MutasiRow {
 }
 
 /** Pilihan barang untuk formulir pengajuan mutasi. */
-export interface InventarisOption {
-  id: number;
-  namaBarang: string;
-  nomorInventaris: string | null;
-  jumlah: string;
-  satuan: string | null;
-}
 
 export interface MutasiAssetSnapshot {
   jumlah: string;
@@ -349,7 +342,7 @@ export interface MutasiDetailSnapshot {
   jumlahMutasi: string | null;
 }
 
-export interface InventarisAssetPatch {
+interface InventarisAssetPatch {
   jumlah?: string;
   nilaiAkhir?: string | null;
   akumulasiPenyusutan?: string;

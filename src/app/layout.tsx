@@ -3,6 +3,8 @@ import { headers } from "next/headers";
 import type { ReactNode } from "react";
 
 import "./globals.css";
+import "@/themes/cakrawala/1.0.0/cakrawala-publik.css";
+import "@/themes/samudra/1.0.0/samudra-publik.css";
 
 import { hostPlatform } from "@/features/info-desa/desa/application/platform-host";
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";

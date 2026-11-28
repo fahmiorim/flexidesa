@@ -9,6 +9,7 @@ import {
   labelSasaranSuplemen,
 } from "@/features/kependudukan/penduduk/application/suplemen-use-cases";
 import { labelKolomIsian } from "@/features/kependudukan/penduduk/domain/suplemen";
+import { formatTanggal } from "@/lib/format-tanggal";
 
 import styles from "../../suplemen.module.css";
 
@@ -19,12 +20,6 @@ const tanggalPanjang = new Intl.DateTimeFormat("id-ID", {
   month: "long",
   year: "numeric",
 });
-
-function formatTanggal(nilai: string | null): string {
-  if (!nilai) return "—";
-  const hasil = new Date(`${nilai.slice(0, 10)}T00:00:00`);
-  return Number.isNaN(hasil.getTime()) ? "—" : tanggalPanjang.format(hasil);
-}
 
 export default async function CetakSuplemenPage({
   params,

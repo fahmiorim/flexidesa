@@ -14,12 +14,12 @@
  * Fungsi di file ini murni (tanpa I/O) agar dapat diuji tanpa database.
  */
 
-export interface SubmenuPlatformItem {
+interface SubmenuPlatformItem {
   readonly href: string;
   readonly label: string;
 }
 
-export interface MenuPlatformItem {
+interface MenuPlatformItem {
   readonly href: string;
   readonly label: string;
   readonly icon: string;
@@ -35,18 +35,18 @@ export interface MenuPlatformItem {
 }
 
 export const MENU_PLATFORM: readonly MenuPlatformItem[] = [
-  { href: "/super-admin", label: "Dashboard", icon: "▦", grup: "Menu utama" },
+  { href: "/super-admin", label: "Ringkasan", icon: "▦", grup: "Ringkasan" },
   {
     href: "/super-admin/tenant",
     label: "Tenant",
     icon: "⌂",
-    grup: "Tenant",
+    grup: "Desa & Tenant",
   },
   {
     href: "/super-admin/paket",
-    label: "Paket & fitur",
+    label: "Paket Langganan",
     icon: "▤",
-    grup: "Tenant",
+    grup: "Desa & Tenant",
     submenu: [
       { href: "/super-admin/paket", label: "Katalog paket" },
       { href: "/super-admin/paket/tenant", label: "Paket tenant" },
@@ -54,31 +54,43 @@ export const MENU_PLATFORM: readonly MenuPlatformItem[] = [
   },
   {
     href: "/super-admin/domain",
-    label: "Domain & infrastruktur",
+    label: "Domain",
     icon: "⇄",
-    grup: "Domain & infrastruktur",
+    grup: "Desa & Tenant",
   },
-  {
-    href: "/super-admin/pengguna",
-    label: "Pengguna",
-    icon: "☺",
-    grup: "Platform",
-  },
-  { href: "/super-admin/audit", label: "Audit trail", icon: "≡", grup: "Platform" },
   {
     href: "/super-admin/template",
-    label: "Manajemen template",
+    label: "Template Website",
     icon: "◫",
-    grup: "Platform",
+    grup: "Desa & Tenant",
     submenu: [
       { href: "/super-admin/template", label: "Katalog template" },
       { href: "/super-admin/template/penggunaan", label: "Penggunaan & pembaruan" },
-      { href: "/super-admin/template/fondasi", label: "Fondasi tenant" },
+      { href: "/super-admin/template/fondasi", label: "Fondasi tenant baru" },
     ],
   },
   {
+    href: "/super-admin/pengguna",
+    label: "Akun Platform",
+    icon: "☺",
+    grup: "Akses & Audit",
+  },
+  {
+    href: "/super-admin/pengguna-desa",
+    label: "Pengguna Desa",
+    icon: "☷",
+    grup: "Akses & Audit",
+  },
+  { href: "/super-admin/audit", label: "Audit Trail", icon: "≡", grup: "Akses & Audit" },
+  {
+    href: "/super-admin/kesehatan",
+    label: "Kesehatan Sistem",
+    icon: "✚",
+    grup: "Operasional",
+  },
+  {
     href: "/super-admin/backup",
-    label: "Backup & restore",
+    label: "Backup & Restore",
     icon: "⤓",
     grup: "Operasional",
   },

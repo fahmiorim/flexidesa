@@ -29,5 +29,3 @@ export const domainSslChecks = mysqlTable(
   (table) => [index("domain_ssl_checks_status_idx").on(table.status)],
 );
 
-export type DomainSslCheck = typeof domainSslChecks.$inferSelect;
-export type NewDomainSslCheck = typeof domainSslChecks.$inferInsert;

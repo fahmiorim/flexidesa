@@ -12,7 +12,7 @@ import { and, asc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { jabatanPerangkat, perangkatDesa, perangkatRiwayatJabatan } from "@/db/schema";
 
-export type JabatanValues = {
+type JabatanValues = {
   nama: string;
   slug: string;
   jenis: string;

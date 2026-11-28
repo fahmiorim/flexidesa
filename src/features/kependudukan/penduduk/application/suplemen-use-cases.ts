@@ -60,7 +60,7 @@ export function labelSasaranSuplemen(sasaran: number): string {
   return labelSasaran(sasaran);
 }
 
-/** Opsi filter sasaran (hanya penduduk & keluarga, seperti OpenSID). */
+/** Opsi filter sasaran (hanya penduduk & keluarga). */
 export const OPSI_SASARAN = [SASARAN_PENDUDUK, SASARAN_KELUARGA].map((nilai) => ({
   value: nilai,
   label: SASARAN_LABELS[nilai] ?? "Penduduk",
@@ -68,7 +68,7 @@ export const OPSI_SASARAN = [SASARAN_PENDUDUK, SASARAN_KELUARGA].map((nilai) => 
 
 // --- Daftar ---------------------------------------------------------------
 
-export interface SuplemenDaftarData {
+interface SuplemenDaftarData {
   hasil: ListSuplemenResult;
   filter: { search: string; sasaran: number | null };
 }
@@ -91,7 +91,7 @@ export async function getDaftarSuplemenData(
 
 // --- Form suplemen --------------------------------------------------------
 
-export interface SuplemenFormData {
+interface SuplemenFormData {
   suplemen: {
     id: number;
     nama: string;
@@ -134,7 +134,7 @@ export async function createSuplemenUseCase(
 /**
  * Ubah suplemen.
  *
- * Paritas OpenSID: sasaran tidak boleh diubah bila sudah ada terdata, karena
+ * Sasaran tidak boleh diubah bila sudah ada terdata, karena
  * baris terdata lama menunjuk jenis sasaran yang berbeda.
  */
 export async function updateSuplemenUseCase(
@@ -156,7 +156,7 @@ export async function updateSuplemenUseCase(
   await updateSuplemen(villageId, input);
 }
 
-/** Hapus suplemen; ditolak bila masih memiliki peserta (paritas OpenSID). */
+/** Hapus suplemen; ditolak bila masih memiliki peserta. */
 export async function deleteSuplemenUseCase(villageId: number, id: number): Promise<void> {
   const existing = await getSuplemenById(villageId, id);
   if (!existing) throw new Error("Data suplemen tidak ditemukan.");
@@ -171,7 +171,7 @@ export async function deleteSuplemenUseCase(villageId: number, id: number): Prom
 
 // --- Rincian & terdata ----------------------------------------------------
 
-export interface SuplemenRincianData {
+interface SuplemenRincianData {
   suplemen: {
     id: number;
     nama: string;
@@ -283,7 +283,7 @@ export async function getFormTerdataData(
   return { suplemen: profil, terdata: null, sasaranDetail: null };
 }
 
-/** Pencarian warga untuk pemilih terdata (paritas Select2 AJAX OpenSID). */
+/** Pencarian warga untuk pemilih terdata. */
 export async function cariSasaranSuplemenData(
   suplemenId: number,
   cari: string,
@@ -381,7 +381,7 @@ export async function imporSuplemenUseCase(
     }
 
     // Kolom "Keterangan" pada berkas menjadi kolom keterangan, bukan isian
-    // dinamis (paritas kolom B format impor OpenSID).
+    // dinamis .
     const { keterangan, isian } = pisahkanKeterangan(row.isian);
 
     const berhasil = await addSuplemenTerdataImpor(
@@ -402,7 +402,7 @@ export async function imporSuplemenUseCase(
 }
 
 /** Pisahkan kolom keterangan dari isian dinamis (tanpa mengubah objek asal). */
-export function pisahkanKeterangan(isian: Record<string, string>): {
+function pisahkanKeterangan(isian: Record<string, string>): {
   keterangan: string | null;
   isian: Record<string, string>;
 } {
@@ -422,8 +422,8 @@ export function pisahkanKeterangan(isian: Record<string, string>): {
 /**
  * Data cetak/unduh daftar terdata (kop desa + penandatangan).
  *
- * OpenSID meminta penandatangan lewat dialog; FlexiDesa memakai pejabat aktif
- * sebagai bawaan — Kepala Desa (mengetahui) dan Sekretaris Desa.
+ * Penandatangan memakai pejabat aktif sebagai bawaan — Kepala Desa
+ * (mengetahui) dan Sekretaris Desa.
  */
 export async function getCetakSuplemenData(
   suplemenId: number,

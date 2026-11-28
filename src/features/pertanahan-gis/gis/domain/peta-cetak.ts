@@ -13,14 +13,14 @@ export interface KoordinatPeta {
   lon: number;
 }
 
-export interface TitikPeta {
+interface TitikPeta {
   x: number;
   y: number;
 }
 
-export type JenisLayerCetak = "area" | "garis" | "titik";
+type JenisLayerCetak = "area" | "garis" | "titik";
 
-export interface LayerCetak {
+interface LayerCetak {
   id: string;
   nama: string;
   warna: string;
@@ -28,13 +28,13 @@ export interface LayerCetak {
   titik: TitikPeta[];
 }
 
-export interface LegendaCetak {
+interface LegendaCetak {
   nama: string;
   warna: string;
   jenis: JenisLayerCetak;
 }
 
-export interface PetaCetak {
+interface PetaCetak {
   lebar: number;
   tinggi: number;
   kosong: boolean;
@@ -42,7 +42,7 @@ export interface PetaCetak {
   legenda: LegendaCetak[];
 }
 
-export interface OpsiPetaCetak {
+interface OpsiPetaCetak {
   lebar?: number;
   tinggi?: number;
   padding?: number;

@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     const cekBerkas = validasiMediaIdentitas(field, file.type, file.size);
     if (!cekBerkas.ok) return response({ error: cekBerkas.pesan }, cekBerkas.status);
 
-    // Opsi dimensi logo (paritas OpenSID) divalidasi ulang di server: nilai di
+    // Opsi dimensi logo divalidasi ulang di server: nilai di
     // luar 100–400 ditolak sebelum ada berkas yang ditulis, sehingga logo lama
     // tidak tersentuh saat unggahan gagal.
     const ukuranForm = field === "logo" ? form.get("ukuran") : null;

@@ -15,8 +15,7 @@ export const RUMAH_TANGGA_RESOURCE = RESOURCES.rumahTangga;
  * Keanggotaan dinyatakan lewat `residents.rtm_id`, dan peran tiap anggota
  * disimpan pada `residents.rtm_level`.
  *
- * Berbeda dari sistem rujukan yang memakai `no_kk` sebagai nomor RTM (satu kolom
- * dua makna), di sini RTM punya **nomor sendiri** (`number`) yang dibangkitkan
+ * RTM punya **nomor sendiri** (`number`) yang dibangkitkan
  * dari kode desa + nomor urut, sehingga tidak bertabrakan dengan nomor KK.
  */
 
@@ -25,16 +24,16 @@ export const RUMAH_TANGGA_RESOURCE = RESOURCES.rumahTangga;
 /**
  * Tingkat hubungan anggota RTM.
  *
- * Nilai numerik dipertahankan sama seperti katalog rujukan (1 kepala, 2 anggota)
+ * Nilai numerik mengikuti katalog tingkat (1 kepala, 2 anggota)
  * agar migrasi data lama tetap mudah. Disimpan sebagai angka pada baris penduduk.
  */
-export const RTM_LEVELS = [1, 2] as const;
-export type RtmLevel = (typeof RTM_LEVELS)[number];
+const RTM_LEVELS = [1, 2] as const;
+type RtmLevel = (typeof RTM_LEVELS)[number];
 
 export const RTM_LEVEL_KEPALA: RtmLevel = 1;
 export const RTM_LEVEL_ANGGOTA: RtmLevel = 2;
 
-export const RTM_LEVEL_LABELS: Readonly<Record<RtmLevel, string>> = {
+const RTM_LEVEL_LABELS: Readonly<Record<RtmLevel, string>> = {
   1: "Kepala Rumah Tangga",
   2: "Anggota",
 };
@@ -79,7 +78,7 @@ const NOMOR_URUT_LENGTH = 5;
 /**
  * Bangun nomor RTM dari kode desa dan nomor urut.
  *
- * Pola mengikuti sistem rujukan (`kode_desa` + nomor urut 5 digit) tetapi
+ * Pola `kode_desa` + nomor urut 5 digit
  * diterapkan pada nomor **RTM sendiri**. `urut` adalah nomor urut global desa
  * (mis. jumlah RTM + 1); bagian kode desa dipangkas agar hasilnya tidak terlalu
  * panjang dan tetap unik per desa berkat indeks unik `(village_id, number)`.
@@ -130,7 +129,7 @@ export const RTM_GENDER_LABELS: Readonly<Record<"male" | "female", string>> = {
 };
 
 /** Label status dasar kependudukan untuk daftar anggota RTM. */
-export const RTM_LIFE_STATUS_LABELS: Readonly<Record<string, string>> = {
+const RTM_LIFE_STATUS_LABELS: Readonly<Record<string, string>> = {
   alive: "Hidup",
   deceased: "Mati",
   moved: "Pindah",
@@ -145,7 +144,7 @@ export function rtmLifeStatusLabel(status: string): string {
 }
 
 /** Filter daftar anggota pada halaman detail RTM. */
-export interface RtmAnggotaFilter {
+interface RtmAnggotaFilter {
   sex: RtmSexFilter | null;
   /** `hidup` = status dasar hidup; `tidak` = selain hidup. */
   status: "hidup" | "tidak" | null;
@@ -193,11 +192,11 @@ export interface RumahTanggaReferenceData {
 // --- Filter daftar rumah tangga -------------------------------------------
 
 /** Pilihan penyaringan kepemilikan nomor BDT. */
-export const RTM_BDT_FILTERS = ["ada", "tidak"] as const;
-export type RtmBdtFilter = (typeof RTM_BDT_FILTERS)[number];
+const RTM_BDT_FILTERS = ["ada", "tidak"] as const;
+type RtmBdtFilter = (typeof RTM_BDT_FILTERS)[number];
 
 /**
- * Status RTM menurut kondisi kepala rumah tangga (paritas OpenSID).
+ * Status RTM menurut kondisi kepala rumah tangga.
  *
  * - `aktif` → ada kepala dan kepala masih hidup.
  * - `tidak-aktif` → ada kepala tetapi kepala sudah tidak hidup
@@ -205,7 +204,7 @@ export type RtmBdtFilter = (typeof RTM_BDT_FILTERS)[number];
  * - `tanpa-kepala` → tidak ada kepala rumah tangga.
  */
 export const RTM_STATUS_FILTERS = ["aktif", "tidak-aktif", "tanpa-kepala"] as const;
-export type RtmStatusFilter = (typeof RTM_STATUS_FILTERS)[number];
+type RtmStatusFilter = (typeof RTM_STATUS_FILTERS)[number];
 
 export const RTM_STATUS_LABELS: Readonly<Record<RtmStatusFilter, string>> = {
   aktif: "Aktif",
@@ -215,7 +214,7 @@ export const RTM_STATUS_LABELS: Readonly<Record<RtmStatusFilter, string>> = {
 
 /** Jenis kelamin kepala rumah tangga untuk filter daftar. */
 export const RTM_SEX_FILTERS = ["male", "female"] as const;
-export type RtmSexFilter = (typeof RTM_SEX_FILTERS)[number];
+type RtmSexFilter = (typeof RTM_SEX_FILTERS)[number];
 
 export const RTM_SEX_LABELS: Readonly<Record<RtmSexFilter, string>> = {
   male: "Laki-laki",
@@ -223,8 +222,8 @@ export const RTM_SEX_LABELS: Readonly<Record<RtmSexFilter, string>> = {
 };
 
 /** Pilihan penyaringan status DTKS. */
-export const RTM_DTKS_FILTERS = ["terdaftar", "belum"] as const;
-export type RtmDtksFilter = (typeof RTM_DTKS_FILTERS)[number];
+const RTM_DTKS_FILTERS = ["terdaftar", "belum"] as const;
+type RtmDtksFilter = (typeof RTM_DTKS_FILTERS)[number];
 
 export interface RtmFilter {
   search: string;
@@ -325,7 +324,7 @@ export const RTM_TANPA_KELAS = "(Belum ada kelas sosial)";
 export const RTM_TANPA_DUSUN = "(Belum ada dusun)";
 
 /** Satu baris rekapitulasi RTM (per kelas sosial atau per dusun). */
-export interface RtmRekapRow {
+interface RtmRekapRow {
   label: string;
   jumlahRtm: number;
   jumlahAnggota: number;

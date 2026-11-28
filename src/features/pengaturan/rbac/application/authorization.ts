@@ -19,7 +19,7 @@ import {
 } from "@/features/pengaturan/rbac/infrastructure/rbac-repository";
 
 /** Slug role super admin: melewati seluruh pemeriksaan izin. */
-export const SUPERADMIN_SLUG = "administrator";
+const SUPERADMIN_SLUG = "administrator";
 
 /** Modul bawaan yang selalu dapat dibaca setiap pengguna yang sudah masuk. */
 export const DEFAULT_RESOURCE = "beranda";

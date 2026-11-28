@@ -3,13 +3,12 @@ import { z } from "zod";
 /**
  * Domain Laporan Penduduk.
  *
- * Mengikuti menu OpenSID `laporan_penduduk` (controller mewarisi
- * `Laporan_apbdes`, penyimpanan `laporan_sinkronisasi`): arsip dokumen PDF
+ * Arsip dokumen PDF
  * resmi per **bulan** dan tahun yang diunggah operator. Angka laporan tidak
  * diturunkan dari dokumen ini.
  */
 
-/** Bulan 1–12 dengan label Indonesia, sama dengan `bulan()` OpenSID. */
+/** Bulan 1–12 dengan label Indonesia. */
 export const BULAN_LAPORAN: readonly { value: number; label: string }[] = [
   { value: 1, label: "Januari" },
   { value: 2, label: "Februari" },
@@ -29,7 +28,7 @@ export function bulanLabel(bulan: number): string {
   return BULAN_LAPORAN.find((item) => item.value === bulan)?.label ?? `Bulan ${bulan}`;
 }
 
-/** Tahun paling awal yang masuk akal untuk arsip laporan (sama dengan OpenSID). */
+/** Tahun paling awal yang masuk akal untuk arsip laporan. */
 export const TAHUN_MIN = 1945;
 export const TAHUN_MAX = 2030;
 

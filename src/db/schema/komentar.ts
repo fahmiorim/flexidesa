@@ -41,4 +41,3 @@ export const komentar = mysqlTable(
 );
 
 export type Komentar = typeof komentar.$inferSelect;
-export type NewKomentar = typeof komentar.$inferInsert;

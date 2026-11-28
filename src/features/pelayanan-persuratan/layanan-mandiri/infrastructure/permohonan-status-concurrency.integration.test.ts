@@ -12,7 +12,7 @@ import {
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-016 — `prosesPermohonan` membaca status, memvalidasi transisi, lalu
+ * `prosesPermohonan` membaca status, memvalidasi transisi, lalu
  * menulis. Dua operator bersamaan dapat menimpa hasil satu sama lain. Update
  * sekarang bersyarat pada status yang dibaca, sehingga hanya satu yang menang.
  *
@@ -117,7 +117,7 @@ afterAll(async () => {
   await db.delete(villages).where(eq(villages.id, desa));
 });
 
-describe("AUD-016 transisi status permohonan bersamaan", () => {
+describe("Transisi status permohonan bersamaan", () => {
   it("hanya mengizinkan satu transisi menang dan menolak yang lain sebagai konflik", async () => {
     if (villageId === null || residentId === null || letterTypeId === null) {
       throw new Error("Fixture tidak tersedia.");

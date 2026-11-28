@@ -7,7 +7,7 @@ import { pengunjungLog } from "@/db/schema";
  * Repository statistik pengunjung.
  */
 
-export interface StatistikPengunjungRow {
+interface StatistikPengunjungRow {
   tanggal: string;
   jumlah: number;
 }

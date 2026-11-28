@@ -72,8 +72,8 @@ function normalisasiTanggal<T extends { tanggalPeriksa?: string | null }>(input:
 /**
  * Seluruh data workspace Stunting dalam satu muatan.
  *
- * Menu OpenSID menggabungkan Posyandu, KIA, pemantauan ibu hamil/anak,
- * rekapitulasi, dan scorecard konvergensi dalam satu modul. Halaman FlexiDesa
+ * Workspace ini menggabungkan Posyandu, KIA, pemantauan ibu hamil/anak,
+ * rekapitulasi, dan scorecard konvergensi dalam satu modul. Halaman
  * memuat semuanya sekali agar perpindahan tab tidak memicu permintaan baru dan
  * angka rekap selalu memakai data yang sama dengan tabel.
  */
@@ -191,7 +191,7 @@ export async function hapusBulananAnak(id: number) {
   return deleteBulananAnak(id, villageId);
 }
 
-/** Pemantauan sasaran PAUD 2-6 tahun (padanan menu Stunting OpenSID). */
+/** Pemantauan sasaran PAUD 2-6 tahun. */
 export async function tambahSasaranPaud(
   input: Omit<Parameters<typeof createSasaranPaud>[0], "villageId">,
 ) {

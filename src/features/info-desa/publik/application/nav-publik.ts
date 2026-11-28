@@ -15,7 +15,7 @@ import {
  * menerjemahkan baris database menjadi item navigasi yang aman dirender.
  */
 
-export type NavPublikItem = {
+type NavPublikItem = {
   href: string;
   label: string;
   /** Tautan keluar dirender sebagai `<a>` biasa, bukan `next/link`. */

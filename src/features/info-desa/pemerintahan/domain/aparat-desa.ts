@@ -12,7 +12,7 @@ import { validationError } from "@/lib/errors";
  */
 
 export const JENIS_JABATAN = ["kades", "sekdes", "lainnya"] as const;
-export type JenisJabatan = (typeof JENIS_JABATAN)[number];
+type JenisJabatan = (typeof JENIS_JABATAN)[number];
 
 export const LABEL_JENIS_JABATAN: Record<JenisJabatan, string> = {
   kades: "Kepala Desa",
@@ -30,7 +30,7 @@ export type PejabatRingkas = {
   statusPejabat: boolean;
 };
 
-export type PejabatInput = {
+type PejabatInput = {
   jenis: string;
   status: string;
   ttdAn: boolean;
@@ -39,7 +39,7 @@ export type PejabatInput = {
 };
 
 /**
- * Menentukan urutan aparat seperti OpenSID: Kepala Desa 1, Sekretaris Desa 2,
+ * Menentukan urutan aparat: Kepala Desa 1, Sekretaris Desa 2,
  * dan aparat baru lainnya memperoleh nomor setelah urutan terakhir.
  */
 export function hitungUrutPerangkat(input: {
@@ -127,7 +127,7 @@ export type SimpulBagan = {
 
 export type BaganNode = SimpulBagan & { anak: BaganNode[] };
 
-export const SIMPUL_BPD: BaganNode = {
+const SIMPUL_BPD: BaganNode = {
   id: -1,
   nama: "Badan Permusyawaratan Desa",
   jabatan: "BPD",

@@ -13,7 +13,7 @@ import {
 import styles from "./rumah-tangga.module.css";
 
 /**
- * Form filter daftar RTM (paritas OpenSID): hanya Status, Jenis Kelamin, dan
+ * Form filter daftar RTM: hanya Status, Jenis Kelamin, dan
  * Dusun, ditambah pencarian teks. Semua filter digabung (AND) saat disubmit.
  */
 export function FilterRtm({

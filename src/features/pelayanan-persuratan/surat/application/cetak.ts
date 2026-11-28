@@ -36,7 +36,7 @@ import { getRequestOrigin } from "@/lib/request-origin";
 import { buildValues, loadAnggotaKeluarga, loadPengikutSurat } from "./bersama";
 
 /** Data lengkap satu surat untuk pratinjau, cetak, dan PDF. */
-export interface SuratPrintData {
+interface SuratPrintData {
   surat: SuratDetail;
   jenis: JenisSuratDTO;
   desa: IdentitasDesa;

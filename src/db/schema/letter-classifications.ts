@@ -25,12 +25,12 @@ export const letterClassifications = mysqlTable(
       .notNull()
       .references(() => villages.id, { onDelete: "cascade" }),
 
-    // Kode 50 karakter mengikuti `klasifikasi_surat.kode` OpenSID.
+    // Kode 50 karakter.
     code: varchar("code", { length: 50 }).notNull(),
     name: varchar("name", { length: 150 }).notNull(),
-    // `uraian` pada OpenSID.
+    // `uraian`.
     description: text("description"),
-    // `enabled` pada OpenSID; klasifikasi nonaktif tetap tersimpan untuk riwayat.
+    // `enabled`; klasifikasi nonaktif tetap tersimpan untuk riwayat.
     isActive: boolean("is_active").notNull().default(true),
 
     createdAt: timestamp("created_at").notNull().defaultNow(),

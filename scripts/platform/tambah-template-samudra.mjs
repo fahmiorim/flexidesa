@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Tambah template kedua "Samudra Modern" (published, varian modern + gelap).
+ * Tambah template kedua "Samudra" (published, varian modern + gelap).
  * Idempotent: bila slug sudah ada, tidak menambah lagi.
  * Dijalankan: node scripts/platform/tambah-template-samudra.mjs
  */
@@ -32,7 +32,7 @@ const tokens = {
 const conn = await mysql.createConnection(url);
 try {
   const [rows] = await conn.query("SELECT id FROM website_templates WHERE slug = ?", [
-    "samudra-modern",
+    "samudra",
   ]);
   if (rows.length > 0) {
     console.log("Template sudah ada (id=" + rows[0].id + "), dilewati.");
@@ -43,10 +43,10 @@ try {
     `INSERT INTO website_templates (slug, name, category, description, version, status, tokens, tags, created_by)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL)`,
     [
-      "samudra-modern",
-      "Samudra Modern",
+      "samudra",
+      "Samudra",
       "pedesaan",
-      "Varian modern gelap dengan aksen teal, hero di tengah, dan tulisan khas — untuk melihat perubahan tampilan situs publik.",
+      "Varian modern gelap: bilah atas lengket, hero di tengah, warna dasar teal dengan aksen amber — paket kode `samudra@1.0.0`.",
       "1.0.0",
       "published",
       JSON.stringify(tokens),
@@ -58,7 +58,7 @@ try {
     `INSERT INTO website_template_versions (template_id, version, changelog, tokens) VALUES (?, ?, ?, ?)`,
     [id, "1.0.0", "Versi awal template.", JSON.stringify(tokens)],
   );
-  console.log("Template dibuat: samudra-modern (id=" + id + ", published)");
+  console.log("Template dibuat: samudra (id=" + id + ", published)");
 } finally {
   await conn.end();
 }

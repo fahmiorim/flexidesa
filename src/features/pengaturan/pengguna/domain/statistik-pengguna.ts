@@ -1,4 +1,4 @@
-export interface BarisStatistikPengguna {
+interface BarisStatistikPengguna {
   active: boolean;
   roleId: number | null;
 }

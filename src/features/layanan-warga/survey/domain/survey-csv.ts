@@ -27,7 +27,7 @@ export const MAKS_BARIS_IMPOR = 2000;
 /** Batas ukuran teks CSV yang diterima Server Action (2 MB). */
 
 /** Kolom identitas tetap di awal berkas. */
-export const KOLOM_AWAL = ["Nama", "NIK", "Tanggal"] as const;
+const KOLOM_AWAL = ["Nama", "NIK", "Tanggal"] as const;
 
 function tanggalCsv(value: Date | null): string {
   if (!value) return "";
@@ -39,7 +39,7 @@ function tanggalCsv(value: Date | null): string {
   return `${tanggal.getFullYear()}-${bulan}-${hari}`;
 }
 
-export interface SurveyCsvInput {
+interface SurveyCsvInput {
   soal: readonly SoalRow[];
   responden: readonly RespondenRow[];
   jawaban: readonly JawabanRow[];
@@ -144,7 +144,7 @@ export function normalisasiNikCsv(value: string): string | null {
   return digit === "" ? null : digit;
 }
 
-export interface BarisImporSurvei {
+interface BarisImporSurvei {
   /** Nomor baris pada berkas (baris pertama = 1, termasuk header). */
   baris: number;
   nama: string;
@@ -158,7 +158,7 @@ export interface KesalahanImporSurvei {
   pesan: string;
 }
 
-export interface HasilParseSurveiCsv {
+interface HasilParseSurveiCsv {
   baris: BarisImporSurvei[];
   kesalahan: KesalahanImporSurvei[];
 }

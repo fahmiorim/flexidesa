@@ -27,7 +27,6 @@ export const dtksCreateSchema = z.object({
   versiKuisioner: z.enum(DTKS_VERSI).default("regsos_ek2022_k"),
 });
 
-export type DtksCreateInput = z.infer<typeof dtksCreateSchema>;
 
 /** Skema update metadata DTKS. */
 export const dtksUpdateSchema = z.object({

@@ -45,5 +45,3 @@ export const elections = mysqlTable(
   ],
 );
 
-export type Election = typeof elections.$inferSelect;
-export type NewElection = typeof elections.$inferInsert;

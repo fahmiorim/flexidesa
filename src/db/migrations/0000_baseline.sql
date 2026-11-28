@@ -129,6 +129,9 @@ CREATE TABLE `sessions` (
 	`user_id` varchar(36) NOT NULL,
 	`created_at` timestamp NOT NULL DEFAULT (now()),
 	`updated_at` timestamp NOT NULL DEFAULT (now()),
+	`impersonated_village_id` int,
+	`impersonated_user_id` varchar(36),
+	`impersonated_expires_at` timestamp,
 	CONSTRAINT `sessions_id` PRIMARY KEY(`id`),
 	CONSTRAINT `sessions_token_uq` UNIQUE(`token`)
 );
@@ -1188,6 +1191,17 @@ CREATE TABLE `kontak_grup` (
 	`updated_at` timestamp NOT NULL DEFAULT (now()),
 	CONSTRAINT `kontak_grup_id` PRIMARY KEY(`id`),
 	CONSTRAINT `kontak_grup_village_id_uq` UNIQUE(`village_id`,`id`)
+);
+--> statement-breakpoint
+CREATE TABLE `kontak_pesan_arsip` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`village_id` int NOT NULL,
+	`grup_id` int NOT NULL,
+	`subjek` varchar(200) NOT NULL,
+	`isi` text NOT NULL,
+	`created_by` varchar(36) NOT NULL,
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `kontak_pesan_arsip_id` PRIMARY KEY(`id`)
 );
 --> statement-breakpoint
 CREATE TABLE `mailbox_pesan` (
@@ -2989,6 +3003,8 @@ ALTER TABLE `anggota_grup_kontak` ADD CONSTRAINT `anggota_grup_kontak_kontak_ten
 ALTER TABLE `kontak` ADD CONSTRAINT `kontak_village_id_villages_id_fk` FOREIGN KEY (`village_id`) REFERENCES `villages`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `kontak` ADD CONSTRAINT `kontak_resident_tenant_fk` FOREIGN KEY (`village_id`,`resident_id`) REFERENCES `residents`(`village_id`,`id`) ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `kontak_grup` ADD CONSTRAINT `kontak_grup_village_id_villages_id_fk` FOREIGN KEY (`village_id`) REFERENCES `villages`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `kontak_pesan_arsip` ADD CONSTRAINT `kontak_pesan_arsip_village_id_villages_id_fk` FOREIGN KEY (`village_id`) REFERENCES `villages`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE `kontak_pesan_arsip` ADD CONSTRAINT `kontak_pesan_arsip_grup_tenant_fk` FOREIGN KEY (`village_id`,`grup_id`) REFERENCES `kontak_grup`(`village_id`,`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `mailbox_pesan` ADD CONSTRAINT `mailbox_pesan_village_id_villages_id_fk` FOREIGN KEY (`village_id`) REFERENCES `villages`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `lembaga_anggota` ADD CONSTRAINT `lembaga_anggota_village_id_villages_id_fk` FOREIGN KEY (`village_id`) REFERENCES `villages`(`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE `lembaga_anggota` ADD CONSTRAINT `lembaga_anggota_tenant_fk` FOREIGN KEY (`village_id`,`lembaga_id`) REFERENCES `lembaga_desa`(`village_id`,`id`) ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -3284,6 +3300,8 @@ CREATE INDEX `kontak_village_idx` ON `kontak` (`village_id`);--> statement-break
 CREATE INDEX `kontak_village_resident_idx` ON `kontak` (`village_id`,`resident_id`);--> statement-breakpoint
 CREATE INDEX `kontak_grup_village_idx` ON `kontak_grup` (`village_id`);--> statement-breakpoint
 CREATE INDEX `mailbox_pesan_village_created_idx` ON `mailbox_pesan` (`village_id`,`created_at`);--> statement-breakpoint
+CREATE INDEX `kontak_pesan_arsip_village_idx` ON `kontak_pesan_arsip` (`village_id`);--> statement-breakpoint
+CREATE INDEX `kontak_pesan_arsip_village_grup_idx` ON `kontak_pesan_arsip` (`village_id`,`grup_id`);--> statement-breakpoint
 CREATE INDEX `lembaga_anggota_village_lembaga_idx` ON `lembaga_anggota` (`village_id`,`lembaga_id`);--> statement-breakpoint
 CREATE INDEX `lembaga_desa_village_status_idx` ON `lembaga_desa` (`village_id`,`status`);--> statement-breakpoint
 CREATE INDEX `pemerintahan_dokumen_village_idx` ON `pemerintahan_dokumen` (`village_id`);--> statement-breakpoint

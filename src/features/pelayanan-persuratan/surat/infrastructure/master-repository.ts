@@ -121,7 +121,7 @@ export async function updateKlasifikasi(
  * Hapus klasifikasi surat.
  *
  * Empat FK yang menunjuk klasifikasi memakai composite `RESTRICT`
- * (AUD-034 Batch 4C-2a) karena composite `SET NULL` akan ikut mengosongkan
+ * karena composite `SET NULL` akan ikut mengosongkan
  * `village_id NOT NULL`. Referensi pada surat masuk, surat dinas, jenis surat,
  * dan surat keluar dilepas dalam transaksi yang sama sebelum parent dihapus,
  * sehingga perilaku bisnis "klasifikasi dihapus, referensi menjadi NULL" tetap

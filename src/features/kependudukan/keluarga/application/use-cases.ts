@@ -220,7 +220,7 @@ export async function listKeluargaMembers(familyId: number): Promise<KeluargaMem
  * dan seluruh anggota berstatus hidup dengan kolom baku KK. Route PDF memakai
  * ini agar tidak perlu menyusun data sendiri.
  */
-export interface KeluargaPrintData {
+interface KeluargaPrintData {
   keluarga: KeluargaDTO;
   anggota: KeluargaMemberDetail[];
   wilayah: {
@@ -344,7 +344,7 @@ export async function createKeluarga(input: KeluargaCreateInput): Promise<{ id: 
     );
   }
 
-  // OpenSID mengambil alamat/wilayah kepala keluarga dari penduduk yang sudah
+  // Alamat/wilayah kepala keluarga diambil dari penduduk yang sudah
   // ada. Isian manual pada formulir tetap diutamakan bila diisi.
   const fields: KeluargaFormInput = {
     number: await resolveNomorKeluarga(villageId, input, null),

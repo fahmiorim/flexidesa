@@ -15,8 +15,7 @@ export type AksiPutuskanIzin = (
  * Form keputusan satu pengajuan izin.
  *
  * Dua tombol mengirim nilai `status` berbeda (Setujui/Tolak), sehingga satu
- * pengajuan cukup diputuskan dengan satu form berisi catatan opsional —
- * setara tombol Setujui/Tolak pada daftar Persetujuan Izin OpenSID.
+ * pengajuan cukup diputuskan dengan satu form berisi catatan opsional.
  */
 export function FormKeputusanIzin({ aksi, id }: { aksi: AksiPutuskanIzin; id: number }) {
   const [state, formAction, pending] = useActionState(

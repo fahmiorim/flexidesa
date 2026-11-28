@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 import { formatSkor } from "@/features/program-data-desa/idm/domain/idm";
+import { formatNumber } from "@/lib/format-tanggal";
 
 import {
-  formatNumber,
   namaLengkap,
   type PerangkatBeranda,
   type RekapIdm,

@@ -48,7 +48,7 @@ import { hasPermission } from "@/features/pengaturan/rbac/application/authorizat
 import { requireAnyPermission, type CurrentUser } from "@/lib/dal";
 
 /** Izin pengguna atas satu modul, dipakai halaman untuk menyembunyikan form/aksi. */
-export interface IzinBagian {
+interface IzinBagian {
   baca: boolean;
   tambah: boolean;
   ubah: boolean;
@@ -257,7 +257,9 @@ export const muatTemaPublik = cache(async function muatTemaPublik(villageId: num
       templateOptions,
       primary: color("primary", "#075cf0", "warnaUtama"),
       secondary: color("secondary", "#0d2136"),
-      accent: color("accent", "#7a20f0", "warnaAksen"),
+      // Aksen selalu dari token tema/katalog. Pengaturan aksen branding
+      // dihapus agar warna tema tidak tertimpa nilai lama per tenant.
+      accent: color("accent", "#f59e0b"),
       background: color("background", "#f1f6ff"),
       surface: color("surface", "#ffffff"),
       text: color("text", "#101b4b"),

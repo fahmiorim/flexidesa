@@ -5,9 +5,8 @@ import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 /**
  * Domain Pengajuan Izin Kehadiran.
  *
- * Meniru modul Kehadiran OpenSID (`kehadiran_pengajuan_izin_pamong` untuk
- * pengajuan dan `kehadiran_pengajuan_izin` untuk persetujuan). Data disimpan
- * pada tabel `cuti_pegawai` yang sudah dipakai halaman Absensi & Kepegawaian →
+ * Pengajuan dan persetujuan disimpan pada tabel `cuti_pegawai` yang sudah
+ * dipakai halaman Absensi & Kepegawaian →
  * Cuti & Izin, sehingga tidak ada dua model pengajuan yang berjalan paralel.
  */
 
@@ -17,15 +16,15 @@ export const PENGAJUAN_IZIN_RESOURCE = RESOURCES.pengajuanIzin;
 /** Slug resource RBAC untuk keputusan pejabat/operator. */
 export const PERSETUJUAN_IZIN_RESOURCE = RESOURCES.persetujuanIzin;
 
-/** Batas keterangan; sama dengan `maxlength="500"` form OpenSID. */
+/** Batas keterangan (500 karakter). */
 export const KETERANGAN_PENGAJUAN_MAKS = 500;
 
 /**
- * Jenis pengajuan yang ditawarkan, mengikuti `JenisIzin` OpenSID.
+ * Jenis pengajuan yang ditawarkan.
  *
  * `nilai` adalah kode yang disimpan pada `cuti_pegawai.jenis`; empat nilai
- * pertama sudah dikenal mesin cuti/izin, dua sisanya ditambahkan agar seluruh
- * pilihan OpenSID tersedia.
+ * pertama sudah dikenal mesin cuti/izin, dua sisanya ditambahkan agar
+ * seluruh pilihan tersedia.
  */
 export const JENIS_PENGAJUAN_IZIN = [
   { nilai: "izin", label: "Izin", keterangan: "Izin karena keperluan pribadi atau keluarga" },
@@ -43,9 +42,9 @@ export const JENIS_PENGAJUAN_IZIN = [
   { nilai: "lainnya", label: "Lainnya", keterangan: "Alasan lain yang sah" },
 ] as const;
 
-export type JenisPengajuanIzin = (typeof JENIS_PENGAJUAN_IZIN)[number]["nilai"];
+type JenisPengajuanIzin = (typeof JENIS_PENGAJUAN_IZIN)[number]["nilai"];
 
-export const JENIS_PENGAJUAN_NILAI: readonly JenisPengajuanIzin[] = JENIS_PENGAJUAN_IZIN.map(
+const JENIS_PENGAJUAN_NILAI: readonly JenisPengajuanIzin[] = JENIS_PENGAJUAN_IZIN.map(
   (item) => item.nilai,
 );
 
@@ -54,7 +53,7 @@ export function labelJenisPengajuan(jenis: string): string {
   return JENIS_PENGAJUAN_IZIN.find((item) => item.nilai === jenis)?.label ?? jenis;
 }
 
-/** Lampiran surat dokter wajib untuk pengajuan sakit (aturan OpenSID). */
+/** Lampiran surat dokter wajib untuk pengajuan sakit. */
 export function lampiranWajib(jenis: string): boolean {
   return jenis === "cuti_sakit";
 }

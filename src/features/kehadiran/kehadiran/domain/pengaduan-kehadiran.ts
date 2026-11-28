@@ -3,16 +3,15 @@ import { z } from "zod";
 /**
  * Domain Pengaduan Kehadiran.
  *
- * Meniru menu Kehadiran → Pengaduan OpenSID (`kehadiran_pengaduan`): baris
- * dibuat warga dari layanan mandiri ketika melaporkan perangkat, lalu operator
- * hanya dapat menyunting keterangannya. Tidak ada tombol tambah di admin,
- * sama seperti OpenSID.
+ * Baris dibuat warga dari layanan mandiri ketika melaporkan perangkat,
+ * lalu operator hanya dapat menyunting keterangannya. Tidak ada
+ * tombol tambah di admin.
  */
 
 /** Slug modul sekaligus resource izin (lihat template tenant). */
 export const PENGADUAN_KEHADIRAN_RESOURCE = "pengaduan-kehadiran";
 
-/** Panjang maksimal keterangan; sama dengan `maxlength="300"` form OpenSID. */
+/** Panjang maksimal keterangan (300 karakter). */
 export const KETERANGAN_MAKS = 300;
 
 export const pengaduanKehadiranFormSchema = z.object({
@@ -26,7 +25,7 @@ export const pengaduanKehadiranFormSchema = z.object({
 /** Satu baris pengaduan untuk UI. */
 export interface PengaduanKehadiranRow {
   id: number;
-  /** Waktu dilaporkan (ISO); ditampilkan seperti `tgl_indo2` OpenSID. */
+  /** Waktu dilaporkan (ISO); ditampilkan sebagai tanggal lengkap. */
   waktu: string;
   /** Nama pelapor (penduduk layanan mandiri), `null` bila tidak tercatat. */
   pelapor: string | null;

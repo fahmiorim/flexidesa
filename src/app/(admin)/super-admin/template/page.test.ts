@@ -27,8 +27,8 @@ const token = {
 
 const template = {
   id: 1,
-  slug: "esensi",
-  name: "Esensi",
+  slug: "arunika",
+  name: "Arunika",
   category: "umum",
   description: "Tema bawaan platform untuk portal desa baru.",
   version: "1.0.0",
@@ -72,7 +72,7 @@ describe("SuperAdminTemplatePage", () => {
 
     const html = renderToStaticMarkup(await Page());
 
-    expect(html).toContain("Esensi");
+    expect(html).toContain("Arunika");
     expect(html).toContain("1 perlu pembaruan");
     expect(html).toContain("Menampilkan 1 dari 1 template");
   });

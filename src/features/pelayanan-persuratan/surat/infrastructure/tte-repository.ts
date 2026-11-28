@@ -11,7 +11,7 @@ import {
   type KonfigTteTersimpan,
 } from "../domain/tte";
 
-export interface BarisKonfigTte {
+interface BarisKonfigTte {
   provider: string | null;
   aktif: boolean;
   konfigurasi: string | null;

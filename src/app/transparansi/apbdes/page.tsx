@@ -2,9 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { listLaporanDokumenApbdesPublik } from "@/features/keuangan-desa/keuangan/application/laporan-dokumen-publik-use-cases";
 import { getLaporanApbdesPublik } from "@/features/keuangan-desa/keuangan/application/laporan-publik-use-cases";
 import { formatMoney, toMinor } from "@/features/keuangan-desa/keuangan/domain/keuangan";
+import { mediaUrl } from "@/lib/media-url";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
 import styles from "./apbdes.module.css";
@@ -27,17 +29,10 @@ function locationLabel(desa: {
 }) {
   return [desa.namaKecamatan, desa.namaKabupaten, desa.namaPropinsi].filter(Boolean).join(", ");
 }
-function mediaUrl(value: string | null, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
-}
 
 export default async function ApbdesPublikPage({ searchParams }: Props) {
   const [desa, params] = await Promise.all([getIdentitasFromRequest(), searchParams]);
+  const tema = await muatTemaPublik(desa.id);
   const requestedYear = Number(params.tahun);
   const tahun =
     Number.isInteger(requestedYear) && requestedYear >= 2000 && requestedYear <= 2100
@@ -95,7 +90,7 @@ export default async function ApbdesPublikPage({ searchParams }: Props) {
   );
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader
         desa={desa}
         location={location}

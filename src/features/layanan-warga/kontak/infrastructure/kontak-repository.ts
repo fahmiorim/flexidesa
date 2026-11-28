@@ -1,9 +1,9 @@
 import "server-only";
 
-import { and, desc, eq } from "drizzle-orm";
+import { and, asc, count, desc, eq } from "drizzle-orm";
 
 import { db } from "@/db";
-import { anggotaGrupKontak, kontak, kontakGrup, residents } from "@/db/schema";
+import { anggotaGrupKontak, kontak, kontakGrup, kontakPesanArsip, residents, users } from "@/db/schema";
 
 export async function listKontak(villageId: number) {
   return db.select().from(kontak).where(eq(kontak.villageId, villageId)).orderBy(desc(kontak.id));
@@ -12,7 +12,7 @@ export async function listKontak(villageId: number) {
 /** Kontak milik desa tersebut; `null` bila tidak ada atau milik desa lain. */
 export async function findKontak(villageId: number, id: number) {
   const [row] = await db
-    .select({ id: kontak.id })
+    .select()
     .from(kontak)
     .where(and(eq(kontak.villageId, villageId), eq(kontak.id, id)))
     .limit(1);
@@ -27,6 +27,26 @@ export async function residentExists(villageId: number, residentId: number): Pro
     .where(and(eq(residents.villageId, villageId), eq(residents.id, residentId)))
     .limit(1);
   return Boolean(row);
+}
+
+/** Daftar penduduk untuk opsi taut kontak; batas 100 pertama secara alfabetis. */
+export async function listResidentOptions(villageId: number) {
+  return db
+    .select({ id: residents.id, nama: residents.name })
+    .from(residents)
+    .where(eq(residents.villageId, villageId))
+    .orderBy(asc(residents.name))
+    .limit(100);
+}
+
+/** Data dasar penduduk bila ditautkan; `null` bila tidak ada/milik desa lain. */
+export async function findResident(villageId: number, residentId: number) {
+  const [row] = await db
+    .select({ id: residents.id, nama: residents.name })
+    .from(residents)
+    .where(and(eq(residents.villageId, villageId), eq(residents.id, residentId)))
+    .limit(1);
+  return row ?? null;
 }
 
 export async function createKontak(input: typeof kontak.$inferInsert) {
@@ -58,6 +78,18 @@ export async function listKontakGrup(villageId: number) {
     .orderBy(desc(kontakGrup.id));
 }
 
+/** Jumlah anggota per grup untuk menampilkan jumlah pada pilihan kirim pesan. */
+export async function countAnggotaPerGrup(villageId: number) {
+  const rows = await db
+    .select({ grupId: anggotaGrupKontak.grupId, jumlah: count() })
+    .from(anggotaGrupKontak)
+    .where(eq(anggotaGrupKontak.villageId, villageId))
+    .groupBy(anggotaGrupKontak.grupId);
+  const hasil = new Map<number, number>();
+  for (const row of rows) hasil.set(row.grupId, Number(row.jumlah));
+  return hasil;
+}
+
 export async function createKontakGrup(input: typeof kontakGrup.$inferInsert) {
   const [res] = await db.insert(kontakGrup).values(input);
   const result = res as { insertId: bigint | number };
@@ -67,7 +99,7 @@ export async function createKontakGrup(input: typeof kontakGrup.$inferInsert) {
 /** Grup kontak milik desa tersebut; `null` bila tidak ada atau milik desa lain. */
 export async function findKontakGrup(villageId: number, id: number) {
   const [row] = await db
-    .select({ id: kontakGrup.id })
+    .select()
     .from(kontakGrup)
     .where(and(eq(kontakGrup.villageId, villageId), eq(kontakGrup.id, id)))
     .limit(1);
@@ -97,6 +129,28 @@ export async function addAnggotaGrup(input: typeof anggotaGrupKontak.$inferInser
   return Number(result.insertId);
 }
 
+/** Anggota grup milik desa tersebut; `null` bila tidak ada atau milik desa lain. */
+export async function findAnggotaGrup(villageId: number, anggotaId: number) {
+  const [row] = await db
+    .select()
+    .from(anggotaGrupKontak)
+    .where(and(eq(anggotaGrupKontak.villageId, villageId), eq(anggotaGrupKontak.id, anggotaId)))
+    .limit(1);
+  return row ?? null;
+}
+
+/** Perbarui peran anggota grup; hanya kolom yang di-whitelist. */
+export async function updateAnggotaGrup(
+  anggotaId: number,
+  villageId: number,
+  input: { peran: string | null },
+) {
+  await db
+    .update(anggotaGrupKontak)
+    .set(input)
+    .where(and(eq(anggotaGrupKontak.id, anggotaId), eq(anggotaGrupKontak.villageId, villageId)));
+}
+
 export async function removeAnggotaGrup(id: number, villageId: number) {
   await db
     .delete(anggotaGrupKontak)
@@ -112,6 +166,7 @@ export async function listAnggotaGrupDetail(villageId: number, grupId: number) {
       telepon: kontak.telepon,
       email: kontak.email,
       telegram: kontak.telegram,
+      peran: anggotaGrupKontak.peran,
     })
     .from(anggotaGrupKontak)
     .innerJoin(
@@ -120,4 +175,31 @@ export async function listAnggotaGrupDetail(villageId: number, grupId: number) {
     )
     .where(and(eq(anggotaGrupKontak.villageId, villageId), eq(anggotaGrupKontak.grupId, grupId)))
     .orderBy(desc(anggotaGrupKontak.id));
+}
+
+/** Simpan arsip pesan broadcast. */
+export async function createPesanArsip(input: typeof kontakPesanArsip.$inferInsert) {
+  const [res] = await db.insert(kontakPesanArsip).values(input);
+  const result = res as { insertId: bigint | number };
+  return Number(result.insertId);
+}
+
+/** Daftar arsip pesan broadcast untuk halaman riwayat; menyertakan nama grup dan pengirim. */
+export async function listPesanArsip(villageId: number) {
+  return db
+    .select({
+      id: kontakPesanArsip.id,
+      grupId: kontakPesanArsip.grupId,
+      namaGrup: kontakGrup.namaGrup,
+      subjek: kontakPesanArsip.subjek,
+      isi: kontakPesanArsip.isi,
+      createdBy: kontakPesanArsip.createdBy,
+      creatorName: users.name,
+      createdAt: kontakPesanArsip.createdAt,
+    })
+    .from(kontakPesanArsip)
+    .innerJoin(kontakGrup, eq(kontakPesanArsip.grupId, kontakGrup.id))
+    .innerJoin(users, eq(kontakPesanArsip.createdBy, users.id))
+    .where(eq(kontakPesanArsip.villageId, villageId))
+    .orderBy(desc(kontakPesanArsip.id));
 }

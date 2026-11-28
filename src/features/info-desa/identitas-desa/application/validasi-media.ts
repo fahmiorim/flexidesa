@@ -1,22 +1,22 @@
 /**
  * Aturan unggah media Identitas Desa (murni, tanpa I/O).
  *
- * Tipe berkas mengikuti form Identitas Desa OpenSID:
+ * Tipe berkas:
  * - logo & foto kantor: `.gif,.jpg,.jpeg,.png,.webp`
  * - struktur adat: `.jpg,.jpeg,.png,.webp`
  * - dokumen regulasi adat: `.pdf`
  *
- * Tambahan FlexiDesa: logo juga menerima SVG (sudah dipakai sebelum paritas).
- * Batas ukuran adalah kebijakan FlexiDesa; penyimpanan media tetap memeriksa
+ * Logo juga menerima SVG.
+ * Batas ukuran ditetapkan di sini; penyimpanan media tetap memeriksa
  * ulang MIME, ukuran, dan isi berkas.
  */
 
-export type MediaUnggah =
+type MediaUnggah =
   "logo" | "foto-kantor" | "tanda-tangan" | "stempel" | "struktur-adat" | "dokumen-adat";
 
 const MB = 1024 * 1024;
 
-export const TIPE_DIIZINKAN: Record<MediaUnggah, readonly string[]> = {
+const TIPE_DIIZINKAN: Record<MediaUnggah, readonly string[]> = {
   logo: ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"],
   "foto-kantor": ["image/jpeg", "image/png", "image/gif", "image/webp"],
   "tanda-tangan": ["image/jpeg", "image/png", "image/gif", "image/webp"],
@@ -25,7 +25,7 @@ export const TIPE_DIIZINKAN: Record<MediaUnggah, readonly string[]> = {
   "dokumen-adat": ["application/pdf"],
 };
 
-export const BATAS_UKURAN: Record<MediaUnggah, number> = {
+const BATAS_UKURAN: Record<MediaUnggah, number> = {
   logo: 2 * MB,
   "foto-kantor": 5 * MB,
   "tanda-tangan": 5 * MB,
@@ -52,7 +52,7 @@ const SEBUTAN_TIPE: Record<MediaUnggah, string> = {
   "dokumen-adat": "PDF",
 };
 
-export type HasilValidasiMediaIdentitas =
+type HasilValidasiMediaIdentitas =
   { ok: true } | { ok: false; status: 413 | 422; pesan: string };
 
 /** Periksa MIME dan ukuran satu berkas media identitas. */

@@ -56,9 +56,8 @@ type BarisIbu = IbuHamilRow & { createdAt?: Date | string | null };
  * Rekapitulasi bulanan ibu hamil dan anak 0-2 tahun.
  *
  * Susunan kolom, status `Y`/`T`/`-`, kolom Diterima/Seharusnya/%, dan footer
- * "Tingkat Capaian Konvergensi" mengikuti `rekapitulasi-ibu-hamil.blade.php`
- * serta `rekapitulasi-bulanan-anak.blade.php` OpenSID. Tampilan FlexiDesa memakai
- * tabel yang bisa digeser, badge, dan batang capaian agar lebih mudah dibaca.
+ * "Tingkat Capaian Konvergensi". Tampilan memakai tabel yang bisa digeser,
+ * badge, dan batang capaian agar lebih mudah dibaca.
  */
 export function BagianRekap({
   ibuHamil,
@@ -91,7 +90,7 @@ export function BagianRekap({
     return <SkorcardKonvergensi skorcard={skorcard} />;
   }
 
-  // Filter periode mengikuti `filter.blade.php` OpenSID: rentang bulan, tahun,
+  // Filter periode: rentang bulan, tahun,
   // dan posyandu. Tanggal yang dipakai adalah tanggal periksa efektif.
   const cocokFilter = (row: BarisIbu | BarisAnak) => {
     const nilai = tanggalPeriksaEfektif(row.tanggalPeriksa, row.createdAt);

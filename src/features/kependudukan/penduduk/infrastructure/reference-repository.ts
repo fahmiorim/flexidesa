@@ -25,7 +25,7 @@ import type { PendudukReferenceData } from "@/features/kependudukan/penduduk/dom
  * halaman cukup sekali query.
  */
 /** Katalog untuk filter daftar penduduk, tanpa memuat KK dan wilayah desa. */
-export type PendudukFilterCatalog = Pick<
+type PendudukFilterCatalog = Pick<
   PendudukReferenceData,
   "religions" | "educations" | "occupations" | "maritalStatuses"
 >;

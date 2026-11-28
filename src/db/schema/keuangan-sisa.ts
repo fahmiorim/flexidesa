@@ -14,4 +14,3 @@ export const sisaLebih = mysqlTable("sisa_lebih", {
 });
 
 export type SisaLebih = typeof sisaLebih.$inferSelect;
-export type NewSisaLebih = typeof sisaLebih.$inferInsert;

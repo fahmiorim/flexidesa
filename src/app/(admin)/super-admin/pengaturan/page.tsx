@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 
+import { DefinitionItem, DefinitionList } from "@/components/ui/definition-list";
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { getKonfigurasiPlatform } from "@/features/multi-desa/application/platform-info-use-cases";
 import {
   PlatformCard,
   PlatformPageHeader,
   PlatformStat,
+  PlatformStatGrid,
   PlatformStatus,
 } from "@/features/multi-desa/presentation/platform-ui";
 
 import { pastikanSuperAdmin } from "../guard";
 
 export const metadata: Metadata = {
-  title: "Pengaturan Platform",
+  title: "Pengaturan",
   robots: { index: false, follow: false },
 };
 
@@ -87,7 +90,7 @@ export default async function SuperAdminPengaturanPage() {
         description="Kebijakan retensi dijalankan oleh pekerjaan terjadwal platform."
         title="Kebijakan retensi"
       >
-        <div className="platform-stat-grid">
+        <PlatformStatGrid columns={4}>
           <PlatformStat
             icon={
               <>
@@ -127,7 +130,7 @@ export default async function SuperAdminPengaturanPage() {
             tone="hijau"
             value={angka.format(konfigurasi.retensi.retensiAuditBulan)}
           />
-        </div>
+        </PlatformStatGrid>
 
         <p className="form-help">Diatur lewat environment; perlu restart aplikasi.</p>
       </PlatformCard>
@@ -136,27 +139,31 @@ export default async function SuperAdminPengaturanPage() {
         description="Nilai ini berasal dari environment deployment; konsol hanya membaca."
         title="Alamat dan integrasi"
       >
-        <dl className="platform-def">
+        <DefinitionList>
           {pengaturanAkses.map((item) => {
             const nilai = nilaiAkses[item.kunci];
             return (
-              <div className="platform-def-row" key={item.kunci}>
-                <dt>
-                  {item.label}
-                  <span>{item.kunci}</span>
-                </dt>
-                <dd>
-                  {nilai?.nilai ?? "—"}
-                  <span className="tenant-secondary">{item.keterangan}</span>
-                </dd>
-                <PlatformStatus
-                  aktif={Boolean(nilai?.aktif)}
-                  label={nilai?.aktif ? "Aktif" : "Nonaktif"}
-                />
-              </div>
+              <DefinitionItem
+                extra={
+                  <PlatformStatus
+                    aktif={Boolean(nilai?.aktif)}
+                    label={nilai?.aktif ? "Aktif" : "Nonaktif"}
+                  />
+                }
+                key={item.kunci}
+                label={
+                  <>
+                    {item.label}
+                    <SecondaryText>{item.kunci}</SecondaryText>
+                  </>
+                }
+              >
+                {nilai?.nilai ?? "—"}
+                <SecondaryText>{item.keterangan}</SecondaryText>
+              </DefinitionItem>
             );
           })}
-        </dl>
+        </DefinitionList>
 
         <p className="form-help">
           Sandi basis data, secret autentikasi, passphrase TTE, dan kunci API sengaja tidak dibaca

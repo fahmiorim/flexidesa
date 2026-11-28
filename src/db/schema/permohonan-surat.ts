@@ -74,5 +74,3 @@ export const permohonanSurat = mysqlTable(
   ],
 );
 
-export type PermohonanSurat = typeof permohonanSurat.$inferSelect;
-export type NewPermohonanSurat = typeof permohonanSurat.$inferInsert;

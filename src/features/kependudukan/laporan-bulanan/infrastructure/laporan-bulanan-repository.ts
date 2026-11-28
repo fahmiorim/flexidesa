@@ -23,7 +23,7 @@ import { HEAD_OF_FAMILY_RELATION_ID } from "@/features/kependudukan/penduduk/dom
  * Penduduk lama tanpa riwayat mutasi (data impor) dihitung sejak awal, sesuai
  * tanggal lahirnya. Kewarganegaraan `null` dianggap WNI karena katalog
  * kewarganegaraan boleh kosong pada data yang belum lengkap; `citizenshipId`
- * selain 1 (WNA/dua kewarganegaraan) masuk kolom WNA seperti OpenSID.
+ * selain 1 (WNA/dua kewarganegaraan) masuk kolom WNA.
  */
 
 /** Potongan SQL jumlah penduduk per kewarganegaraan dan gender. */
@@ -42,7 +42,7 @@ const jumlahKk = {
 
 /**
  * Mutasi yang dicatat saat penduduk menjadi kepala keluarga. Dipakai untuk kolom
- * KK baris kematian/pindah/hilang, paritas `log_keluarga` OpenSID.
+ * KK baris kematian/pindah/hilang.
  */
 const mutasiKepalaKeluarga = sql`COALESCE(
   JSON_UNQUOTE(JSON_EXTRACT(${residentMutations.meta}, '$.kepalaKeluarga')),
@@ -162,7 +162,7 @@ export async function hitungKelompokPada(
 }
 
 /** Peristiwa penduduk sebulan, dipisah menurut jenis mutasi. */
-export interface MutasiBulanan {
+interface MutasiBulanan {
   kelahiran: JumlahBulanan;
   kematian: JumlahBulanan;
   pendatang: JumlahBulanan;
@@ -180,7 +180,7 @@ function jumlahKosong(): JumlahBulanan {
  *
  * Penduduk hilang dicatat sebagai mutasi `missing` oleh perubahan status dasar,
  * sehingga baris "Penduduk hilang" terisi. Kolom KK dihitung dari mutasi yang
- * ditandai `meta.kepalaKeluarga`, paritas `log_keluarga` OpenSID.
+ * ditandai `meta.kepalaKeluarga`.
  */
 export async function hitungMutasiBulan(
   villageId: number,

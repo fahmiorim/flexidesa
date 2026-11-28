@@ -19,7 +19,7 @@ const form = (override: Partial<Record<string, string>> = {}) => ({
 });
 
 describe("jenis pengajuan izin", () => {
-  it("memuat lima jenis OpenSID beserta labelnya", () => {
+  it("memuat lima jenis beserta labelnya", () => {
     expect(JENIS_PENGAJUAN_IZIN.map((item) => item.label)).toEqual([
       "Izin",
       "Sakit",

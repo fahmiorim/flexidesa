@@ -21,8 +21,8 @@ const token = {
 } as const;
 
 const dasar = {
-  name: "Esensi Baru",
-  slug: "esensi-baru",
+  name: "Arunika Baru",
+  slug: "arunika-baru",
   category: "umum",
   description: "Template untuk kebutuhan portal desa dengan tampilan sederhana.",
   version: "1.0.0",
@@ -33,7 +33,7 @@ const dasar = {
 describe("websiteTemplateInputSchema", () => {
   it("menerima metadata dan token yang valid", () => {
     const hasil = websiteTemplateInputSchema.parse(dasar);
-    expect(hasil.slug).toBe("esensi-baru");
+    expect(hasil.slug).toBe("arunika-baru");
     expect(hasil.tokens.primary).toBe("#2563eb");
   });
 
@@ -59,7 +59,7 @@ describe("websiteTemplateInputSchema", () => {
   it("menolak slug yang tidak stabil dan warna bukan heksadesimal", () => {
     const hasil = websiteTemplateInputSchema.safeParse({
       ...dasar,
-      slug: "Esensi Baru",
+      slug: "Arunika Baru",
       tokens: { ...token, primary: "blue" },
     });
 

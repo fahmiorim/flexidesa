@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import "server-only";
 
 import { kirimNotifikasi } from "@/features/notifikasi/application/kirim-notifikasi";

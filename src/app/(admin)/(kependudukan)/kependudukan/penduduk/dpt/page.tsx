@@ -23,6 +23,7 @@ import {
 } from "@/features/kependudukan/penduduk/domain/penduduk";
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { verifySession } from "@/lib/dal";
+import { formatTanggal } from "@/lib/format-tanggal";
 
 import { MenuCetakDpt } from "./menu-cetak-dpt";
 import { PanelPemilihan } from "./pemilihan-panel";
@@ -31,11 +32,6 @@ export const metadata: Metadata = { title: "Calon Pemilih" };
 
 const PER_HALAMAN = 20;
 const angka = new Intl.NumberFormat("id-ID");
-const tanggalPanjang = new Intl.DateTimeFormat("id-ID", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
 
 function bacaFilter(params: Record<string, string | string[] | undefined>): ListDptParams {
   const mentah: Record<string, string> = {};
@@ -110,11 +106,6 @@ function inisial(nama: string): string {
     .slice(0, 2)
     .map((bagian) => bagian.charAt(0).toUpperCase())
     .join("");
-}
-
-function formatTanggal(iso: string | null): string {
-  if (!iso) return "—";
-  return tanggalPanjang.format(new Date(`${iso.slice(0, 10)}T00:00:00`));
 }
 
 function wilayah(row: { dusun: string | null; rw: string | null; rt: string | null }): string {

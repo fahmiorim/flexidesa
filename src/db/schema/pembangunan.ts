@@ -116,6 +116,3 @@ export const pembangunanDokumentasi = mysqlTable(
   ],
 );
 
-export type PembangunanProyek = typeof pembangunanProyek.$inferSelect;
-export type NewPembangunanProyek = typeof pembangunanProyek.$inferInsert;
-export type PembangunanDokumentasi = typeof pembangunanDokumentasi.$inferSelect;

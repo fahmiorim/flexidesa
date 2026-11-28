@@ -1,5 +1,5 @@
 /**
- * Kebijakan retensi dan lifecycle tenant (Fase 2).
+ * Kebijakan retensi dan lifecycle tenant.
  *
  * Kebijakan yang disetujui:
  * - Desa dinonaktifkan → data disimpan selama **masa tenggang 90 hari**.

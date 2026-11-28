@@ -221,7 +221,7 @@ export function TambahTenantWizard({
                   </div>
                 </div>
 
-                <div className="platform-form-grid">
+                <div className="ui-form-grid">
                   <PickerWilayah onPilihDesa={terapkanDesa} />
                   <label className="form-field">
                     <span className="form-label">Nama desa</span>
@@ -573,7 +573,7 @@ export function TambahTenantWizard({
                   </div>
                 </div>
 
-                <div className="platform-form-grid">
+                <div className="ui-form-grid">
                   <label className="form-field">
                     <span className="form-label">Nama administrator</span>
                     <input

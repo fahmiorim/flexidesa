@@ -3,7 +3,7 @@ import { buildRekapitulasiKehadiranXlsx } from "@/features/kehadiran/kehadiran/a
 import { bacaFilterRekapitulasi } from "@/features/kehadiran/kehadiran/domain/rekapitulasi";
 import { isAppError } from "@/lib/errors";
 
-/** Unduh rekapitulasi kehadiran sebagai Excel (setara tombol ekspor OpenSID). */
+/** Unduh rekapitulasi kehadiran sebagai Excel. */
 export async function GET(request: Request): Promise<Response> {
   const url = new URL(request.url);
   const filter = bacaFilterRekapitulasi({

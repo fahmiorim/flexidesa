@@ -10,12 +10,6 @@ export const roleFormSchema = z.object({
 
 export type RoleFormInput = z.infer<typeof roleFormSchema>;
 
-export interface RoleDTO {
-  id: number;
-  name: string;
-  description?: string | null;
-  isSystem: boolean;
-}
 
 export interface ModulePermissionRow {
   moduleId: number;

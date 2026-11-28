@@ -8,7 +8,7 @@ import type { SuplemenFormField } from "@/features/kependudukan/penduduk/domain/
 import { PesanDialog } from "@/features/multi-desa/presentation/dialog-bagian";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
-export interface SasaranTerdataDetail {
+interface SasaranTerdataDetail {
   sasaran: number;
   nomorKk: string | null;
   nik: string | null;
@@ -94,7 +94,7 @@ function KolomIsian({
 /**
  * Form tambah/ubah data terdata suplemen.
  *
- * Paritas `form_terdata` OpenSID: identitas sasaran ditampilkan sebagai blok
+ * Identitas sasaran ditampilkan sebagai blok
  * konfirmasi (tidak dapat disunting), lalu kolom isian dinamis suplemen dan
  * keterangan. Mode "beberapa data warga" kembali ke form kosong setelah simpan.
  */

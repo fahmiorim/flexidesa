@@ -3,7 +3,7 @@ import "server-only";
 import { parseDaftarLampiran } from "@/features/pelayanan-persuratan/surat/domain/surat";
 import { listJenisSuratAktifPublik } from "@/features/pelayanan-persuratan/surat/infrastructure/master-repository";
 
-export interface JenisSuratPublik {
+interface JenisSuratPublik {
   id: number;
   kode: string;
   nama: string;

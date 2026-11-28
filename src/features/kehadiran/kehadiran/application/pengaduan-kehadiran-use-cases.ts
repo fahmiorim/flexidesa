@@ -24,7 +24,7 @@ export async function getPengaduanKehadiranData(): Promise<PengaduanKehadiranRow
 /**
  * Sunting keterangan satu pengaduan.
  *
- * Sesuai OpenSID, hanya kolom keterangan yang dapat diubah operator; waktu,
+ * Hanya kolom keterangan yang dapat diubah operator; waktu,
  * pelapor, dan terlapor berasal dari pelaporan warga.
  */
 export async function ubahKeteranganPengaduan(id: number, metadata: unknown) {

@@ -73,7 +73,7 @@ export function DialogTambahPengguna({ aksi }: { aksi: AksiBuatPengguna }) {
         </div>
 
         <form action={formAction} className="platform-dialog-form form-stack">
-          <div className="platform-form-grid">
+          <div className="ui-form-grid">
             <label className="form-field">
               <span className="form-label">Nama lengkap</span>
               <input className="form-input" maxLength={255} minLength={3} name="name" required />

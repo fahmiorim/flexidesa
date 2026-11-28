@@ -54,7 +54,7 @@ function keBaris(row: Awaited<ReturnType<typeof listCutiTahun>>[number]): Pengaj
   };
 }
 
-export interface PengajuanIzinPageData {
+interface PengajuanIzinPageData {
   /** Pegawai yang tertaut ke akun yang sedang masuk; `null` bila belum tertaut. */
   pegawaiAkun: { id: number; nama: string } | null;
   /** Pengguna berwenang memutuskan boleh mengajukan untuk pegawai lain. */
@@ -90,7 +90,7 @@ export async function getPengajuanIzinData(tahun = tahunLokal()): Promise<Pengaj
 /**
  * Data halaman Kehadiran → Persetujuan Izin (seluruh pengajuan desa).
  *
- * Tanpa `tahun`, seluruh pengajuan ditampilkan seperti daftar OpenSID, agar
+ * Tanpa `tahun`, seluruh pengajuan ditampilkan agar
  * pengajuan yang menyeberang tahun tetap dapat diputuskan.
  */
 export async function getPersetujuanIzinData(
@@ -117,7 +117,7 @@ export async function ajukanPengajuanIzin(input: {
   keterangan: string;
   lampiran: string | null;
 }): Promise<{ id: number | null }> {
-  // OpenSID membiarkan setiap pamong mengajukan izin untuk dirinya, jadi cukup
+  // Setiap pamong dapat mengajukan izin untuk dirinya, jadi cukup
   // login seperti `ajukanCuti`; batas "hanya diri sendiri" dijaga di bawah.
   const user = await requireUser();
   const villageId = await resolveVillageId(user);

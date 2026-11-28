@@ -4,11 +4,13 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { getPembangunanPublikBySlug } from "@/features/pembangunan-aset/pembangunan/application/use-cases";
 import {
   formatAnggaran,
   statusPembangunanLabel,
 } from "@/features/pembangunan-aset/pembangunan/domain/pembangunan";
+import { mediaUrl } from "@/lib/media-url";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../../public-site-layout";
 import styles from "../pembangunan.module.css";
@@ -32,19 +34,13 @@ export async function generateMetadata({
   }
 }
 
-function mediaUrl(value: string | null | undefined, villageId: number) {
-  if (!value) return null;
-  const parts = value.split(/[\\\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((x) => x === ".." || x.includes(".."))) return null;
-  const safe = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return "/api/publik/media/" + safe.map(encodeURIComponent).join("/");
-}
 export default async function DetailPembangunanPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
   const [{ slug }, desa] = await Promise.all([params, getIdentitasFromRequest()]);
+  const tema = await muatTemaPublik(desa.id);
   let data;
   try {
     data = await getPembangunanPublikBySlug(slug);
@@ -54,7 +50,7 @@ export default async function DetailPembangunanPage({
   const logoUrl = mediaUrl(desa.logo, desa.id);
   const p = data.proyek;
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader
         desa={desa}
         location={[desa.namaKecamatan, desa.namaKabupaten, desa.namaPropinsi]

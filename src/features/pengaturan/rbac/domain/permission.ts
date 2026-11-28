@@ -9,7 +9,7 @@ export interface ModuleActions {
 export const ACCESS_LEVELS = ["read", "write", "manage"] as const;
 export type AccessLevel = (typeof ACCESS_LEVELS)[number];
 
-export const ACCESS_RANK: Readonly<Record<AccessLevel, number>> = {
+const ACCESS_RANK: Readonly<Record<AccessLevel, number>> = {
   read: 1,
   write: 2,
   manage: 3,
@@ -69,7 +69,7 @@ export function levelToActions(level: AccessLevel | null | undefined): Action[] 
   if (levelAllows(level, "delete")) actions.push("delete");
   return actions;
 }
-export interface CrudPermissions {
+interface CrudPermissions {
   canRead: boolean;
   canCreate: boolean;
   canUpdate: boolean;

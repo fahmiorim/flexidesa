@@ -1,3 +1,8 @@
+/*
+ * 404 mengikuti tema desa aktif lewat variabel `--public-*` yang disuntikkan
+ * `not-found.tsx` pada `<main data-tema>`. Nilai fallback adalah tampilan
+ * netral lama, sehingga host platform/tak dikenal tetap terbaca.
+ */
 .page {
   position: relative;
   isolation: isolate;
@@ -7,9 +12,18 @@
   overflow: hidden;
   padding: 64px 24px;
   background:
-    radial-gradient(58% 52% at 14% 0%, #dce8ff 0%, transparent 62%),
-    radial-gradient(52% 48% at 88% 4%, #efe5ff 0%, transparent 58%),
-    linear-gradient(180deg, #f4f8fe 0%, #ffffff 72%);
+    radial-gradient(
+      58% 52% at 14% 0%,
+      color-mix(in srgb, var(--public-primary, #0b65f5) 16%, transparent) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      52% 48% at 88% 4%,
+      color-mix(in srgb, var(--public-accent, #8a58f5) 16%, transparent) 0%,
+      transparent 58%
+    ),
+    var(--public-background, #f4f8fe);
+  color: var(--public-text, var(--color-text));
 }
 
 .page::before,
@@ -26,7 +40,11 @@
   height: 260px;
   top: -120px;
   left: -80px;
-  background: radial-gradient(circle, rgb(11 101 245 / 14%), transparent 70%);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--public-primary, #0b65f5) 14%, transparent),
+    transparent 70%
+  );
 }
 
 .page::after {
@@ -34,7 +52,11 @@
   height: 320px;
   right: -120px;
   bottom: -160px;
-  background: radial-gradient(circle, rgb(138 88 245 / 14%), transparent 70%);
+  background: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--public-accent, #8a58f5) 14%, transparent),
+    transparent 70%
+  );
 }
 
 .inner {
@@ -53,12 +75,17 @@
 }
 
 .code {
-  font-family: var(--font-display);
+  font-family: var(--public-heading-font, var(--font-display));
   font-size: clamp(104px, 17vw, 176px);
   font-weight: 800;
   line-height: 0.82;
   letter-spacing: -0.05em;
-  background: linear-gradient(135deg, #0b65f5 12%, #5f5ff7 58%, #8a58f5 92%);
+  background: linear-gradient(
+    135deg,
+    var(--public-primary, #0b65f5) 12%,
+    color-mix(in srgb, var(--public-primary, #0b65f5) 55%, var(--public-accent, #8a58f5)) 58%,
+    var(--public-accent, #8a58f5) 92%
+  );
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -71,31 +98,33 @@
   width: clamp(66px, 9vw, 92px);
   height: auto;
   fill: none;
-  stroke: #0b65f5;
+  stroke: var(--public-primary, #0b65f5);
   stroke-width: 6;
   stroke-linecap: round;
   transform: rotate(-8deg);
-  filter: drop-shadow(0 12px 20px rgb(11 101 245 / 26%));
+  filter: drop-shadow(
+    0 12px 20px color-mix(in srgb, var(--public-primary, #0b65f5) 26%, transparent)
+  );
 }
 
 .glint {
-  stroke: #ffffff;
+  stroke: var(--public-surface, #ffffff);
   opacity: 0.92;
 }
 
 .inner h1 {
   margin: 10px 0 12px;
-  font-family: var(--font-display);
+  font-family: var(--public-heading-font, var(--font-display));
   font-size: clamp(27px, 4vw, 38px);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--color-text);
+  color: var(--public-text, var(--color-text));
 }
 
 .lead {
   max-width: 52ch;
   margin: 0 auto 30px;
-  color: var(--color-text-muted);
+  color: color-mix(in srgb, var(--public-text, var(--color-text-muted)) 80%, transparent);
   font-size: 15.5px;
   line-height: 1.7;
 }
@@ -114,7 +143,7 @@
   justify-content: center;
   gap: 8px;
   padding: 14px 24px;
-  border-radius: 12px;
+  border-radius: var(--public-radius, 12px);
   font-size: 14px;
   font-weight: 700;
   text-decoration: none;
@@ -125,31 +154,35 @@
 }
 
 .primary {
-  background: var(--color-brand);
-  color: var(--color-brand-foreground);
-  box-shadow: 0 12px 24px rgb(11 101 245 / 26%);
+  background: var(--public-accent, var(--color-brand));
+  color: var(--public-background, var(--color-brand-foreground));
+  box-shadow: 0 12px 24px color-mix(in srgb, var(--public-accent, #0b65f5) 26%, transparent);
 }
 
 .primary:hover {
-  background: var(--color-brand-strong);
+  background: color-mix(
+    in srgb,
+    var(--public-accent, var(--color-brand-strong)) 88%,
+    var(--public-text, #ffffff)
+  );
   transform: translateY(-1px);
 }
 
 .secondary {
-  background: #ffffff;
-  border: 1px solid #cfdcf6;
-  color: var(--color-brand-strong);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--public-text, #cfdcf6) 28%, transparent);
+  color: var(--public-text, var(--color-brand-strong));
 }
 
 .secondary:hover {
-  border-color: #9fc1ff;
-  background: #f7faff;
+  border-color: var(--public-accent, #9fc1ff);
+  background: color-mix(in srgb, var(--public-surface, #f7faff) 55%, transparent);
   transform: translateY(-1px);
 }
 
 .primary:focus-visible,
 .secondary:focus-visible {
-  outline: 3px solid #8ab4ff;
+  outline: 3px solid var(--public-accent, #8ab4ff);
   outline-offset: 2px;
 }
 

@@ -30,7 +30,7 @@ export interface PenggunaPlatformRow {
   sesiAktif: number;
 }
 
-export interface PeranPlatformRow {
+interface PeranPlatformRow {
   id: number;
   name: string;
 }
@@ -71,7 +71,7 @@ export async function listPenggunaPlatform(): Promise<PenggunaPlatformRow[]> {
   return rows.map((row) => ({ ...row, sesiAktif: Number(row.sesiAktif) }));
 }
 
-export interface PenggunaPlatformDetail {
+interface PenggunaPlatformDetail {
   id: string;
   name: string;
   email: string;

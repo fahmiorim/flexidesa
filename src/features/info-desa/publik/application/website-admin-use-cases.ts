@@ -64,6 +64,7 @@ import type { BerkasUnggahan } from "@/features/media/domain/media";
 import { hapusMedia } from "@/features/media/infrastructure/media-storage";
 import { requirePermission } from "@/lib/dal";
 import { sanitasiHtml } from "@/lib/sanitize";
+import { slugify } from "@/lib/utils";
 
 /**
  * Use case aksi Website (tanpa efek Next.js).
@@ -75,7 +76,7 @@ import { sanitasiHtml } from "@/lib/sanitize";
  */
 
 /** Hasil aksi: path untuk `revalidatePath` dan tujuan `redirect`. */
-export interface HasilAksiWebsite {
+interface HasilAksiWebsite {
   revalidate: string[];
   redirectTo: string;
 }
@@ -107,15 +108,6 @@ function tanggalDari(fd: FormData, key: string): Date | null {
   const tanggal = new Date(`${nilai}T00:00:00`);
   return Number.isNaN(tanggal.getTime()) ? null : tanggal;
 }
-
-const slugify = (value: string) =>
-  value
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "")
-    .slice(0, 190);
 
 export async function simpanIdentitasWebsiteAction(fd: FormData): Promise<HasilAksiWebsite> {
   const user = await requirePermission(IDENTITAS_DESA_RESOURCE, "update");

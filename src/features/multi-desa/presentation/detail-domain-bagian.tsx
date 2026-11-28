@@ -1,7 +1,8 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { StatusBadge } from "@/components/ui/status-badge";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
+import { Tabs as TabsBersama } from "@/components/ui/tabs";
 import type { DataDns } from "@/features/multi-desa/domain/status-dns";
 import { AUDIT_EVENT_LABELS, type AuditEvent } from "@/features/pengaturan/audit/domain/audit";
 
@@ -30,21 +31,6 @@ const TAB: readonly { id: TabDetailDomain; label: string }[] = [
 
 const tanggal = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium" });
 const tanggalWaktu = new Intl.DateTimeFormat("id-ID", { dateStyle: "medium", timeStyle: "short" });
-
-export function mediaUrl(value: string | null | undefined, villageId: number): string | null {
-  if (!value) return null;
-
-  const segments = value.split(/[\\/]/).filter(Boolean);
-  if (
-    segments.length === 0 ||
-    segments.some((segment) => segment === "." || segment === ".." || segment.includes(".."))
-  ) {
-    return null;
-  }
-
-  const path = segments[0] === String(villageId) ? segments : [String(villageId), ...segments];
-  return `/api/publik/media/${path.map(encodeURIComponent).join("/")}`;
-}
 
 export function tanggalAtau(nilai: Date | null | undefined, kosong = "Belum tersedia"): string {
   return nilai ? tanggal.format(nilai) : kosong;
@@ -78,6 +64,7 @@ function detailPeristiwa(row: RiwayatDomainRow): string {
   return [row.resource, row.resourceId].filter(Boolean).join(" · ") || "—";
 }
 
+/** @deprecated Gunakan `StatusBadge` dari komponen bersama. */
 export function Badge({
   children,
   tone = "neutral",
@@ -85,7 +72,7 @@ export function Badge({
   children: ReactNode;
   tone?: "success" | "warning" | "danger" | "info" | "neutral";
 }) {
-  return <span className={`domain-badge is-${tone}`}>{children}</span>;
+  return <StatusBadge tone={tone}>{children}</StatusBadge>;
 }
 
 export function Tabs({
@@ -108,30 +95,19 @@ export function Tabs({
   };
 
   return (
-    <nav aria-label="Bagian detail domain" className="domain-detail-tabs">
-      {TAB.map((item) => {
-        const href =
+    <TabsBersama
+      active={tab}
+      items={TAB.map((item) => ({
+        id: item.id,
+        label: item.label,
+        href:
           item.id === "informasi"
             ? `/super-admin/domain/${domainId}`
-            : `/super-admin/domain/${domainId}?tab=${item.id}`;
-        const aktif = item.id === tab;
-        const total = jumlah[item.id];
-
-        return (
-          <Link
-            aria-current={aktif ? "page" : undefined}
-            className={`domain-detail-tab${aktif ? " is-active" : ""}`}
-            href={href}
-            key={item.id}
-          >
-            <span>{item.label}</span>
-            {typeof total === "number" && total > 0 ? (
-              <span className="domain-detail-tab-count">{total}</span>
-            ) : null}
-          </Link>
-        );
-      })}
-    </nav>
+            : `/super-admin/domain/${domainId}?tab=${item.id}`,
+        count: jumlah[item.id],
+      }))}
+      label="Bagian detail domain"
+    />
   );
 }
 
@@ -157,7 +133,7 @@ export function DnsRecords({ dns, ringkas = false }: { dns: DataDns; ringkas?: b
 
   return (
     <TableScroll className="domain-detail-table-wrap">
-      <Table className="tenant-table domain-record-table">
+      <Table className="domain-record-table">
         <THead>
           <Row>
             <HeaderCell>Tipe</HeaderCell>
@@ -195,7 +171,7 @@ export function RiwayatTable({ rows }: { rows: readonly RiwayatDomainRow[] }) {
 
   return (
     <TableScroll className="domain-detail-table-wrap">
-      <Table className="tenant-table domain-history-table">
+      <Table className="domain-history-table">
         <THead>
           <Row>
             <HeaderCell>Tanggal &amp; Waktu</HeaderCell>

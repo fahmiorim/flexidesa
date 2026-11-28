@@ -1,0 +1,1398 @@
+/*
+ * Samudra — kanvas gelap dengan pemisah bagian teal.
+ *
+ * Header dan hero memakai komponen bersama yang diwarnai token tema, jadi
+ * paket ini memusatkan gaya pada konten: setiap bagian beranda dipisahkan
+ * garis aksen, panel memakai permukaan token, dan tautan mengikuti warna
+ * tema. Tidak ada transition/animation (reduced-motion inheren).
+ */
+.tema {
+  background: var(--public-background, #f4fbfa);
+  color: var(--public-text, #0f172a);
+  min-height: 100%;
+}
+
+.konten {
+  padding: 0 0 2.5rem;
+  min-width: 0;
+}
+
+.konten :global(h1),
+.konten :global(h2),
+.konten :global(h3) {
+  letter-spacing: -0.02em;
+}
+
+/* Komposisi beranda Samudra: sambutan di atas, dua kolom, banner menutup. */
+.beranda {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+  display: grid;
+  gap: 1rem;
+  padding-top: 0.5rem;
+}
+
+.duaKolom {
+  display: grid;
+  grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.utama {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.sisi {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+  padding-top: 0.9rem;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, transparent);
+}
+
+/* Di rel samping, akses cepat dan tautan menjadi daftar vertikal. */
+.sisi :global(nav[aria-label="Akses cepat"]) {
+  grid-template-columns: 1fr;
+  margin-top: 0;
+}
+
+.sisi :global([class*="__relatedLinks"] > div) {
+  grid-template-columns: 1fr;
+}
+
+.blokPenuh {
+  min-width: 0;
+}
+
+.permukaan {
+  width: min(68rem, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.permukaanLebar {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+/* Panel/ kartu konten: sudut dari token, garis tipis, tanpa bayangan terang. */
+.konten :global([class*="__welcomeCard"]),
+.konten :global([class*="__statsCard"]),
+.konten :global([class*="__newsPanel"]),
+.konten :global([class*="__announcementPanel"]),
+.konten :global([class*="__profileCard"]),
+.konten :global([class*="__profileMenu"]),
+.konten :global([class*="__galleryPanel"]) {
+  border-radius: var(--public-radius, 15px);
+  box-shadow: none;
+}
+
+.jam {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--public-primary, #0e7a6d) 16%, transparent);
+}
+
+.jamLabel {
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.63rem;
+  opacity: 0.7;
+}
+
+.jam strong {
+  font-size: 0.88rem;
+}
+
+.jamDesa {
+  opacity: 0.7;
+}
+
+.statistik {
+  margin: 0;
+  font-size: 0.84rem;
+}
+
+.statistik a {
+  color: var(--public-accent, #f59e0b);
+  font-weight: 600;
+}
+
+.masuk {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+}
+
+.masuk a {
+  color: var(--public-accent, #f59e0b);
+  font-weight: 600;
+}
+
+.fotoFallback {
+  width: 100%;
+  height: auto;
+  border-radius: calc(var(--public-radius, 15px) * 0.6);
+  object-fit: cover;
+  background: color-mix(in srgb, var(--public-text, #0f172a) 8%, transparent);
+}
+
+@media (max-width: 56rem) {
+  .konten {
+    padding: 0 0 1.75rem;
+  }
+  .duaKolom {
+    grid-template-columns: 1fr;
+  }
+  .sisi {
+    border-top: 2px solid color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, transparent);
+  }
+  .sisi :global(nav[aria-label="Akses cepat"]) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/*
+ * Hero Samudra: sampul gelap bergradasi dengan sorot aksen, teks besar di
+ * kiri, potret kepala desa berbingkai lengkung di kanan, gelombang di kaki.
+ * Warna seluruhnya dari token tema; tanpa animasi/transisi.
+ */
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #f4fbfa;
+  background:
+    radial-gradient(
+      circle at 82% 12%,
+      color-mix(in srgb, var(--public-accent, #f59e0b) 26%, transparent),
+      transparent 46%
+    ),
+    radial-gradient(
+      circle at 12% 90%,
+      color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--public-secondary, #083344) 94%, black),
+      color-mix(in srgb, var(--public-primary, #0e7a6d) 62%, black)
+    );
+}
+
+.heroFoto {
+  object-fit: cover;
+  opacity: 0.22;
+  mix-blend-mode: luminosity;
+}
+
+.heroTirai {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, #04141bcc 0%, #04141b8c 46%, transparent 100%),
+    repeating-linear-gradient(90deg, #ffffff0d 0 1px, transparent 1px 88px);
+  pointer-events: none;
+}
+
+.heroIsi {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  align-items: center;
+  gap: 2.5rem;
+  padding: 3.25rem 0 4.5rem;
+}
+
+.heroTeks {
+  display: grid;
+  gap: 0.85rem;
+  max-width: 34rem;
+}
+
+.heroChip {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-self: start;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #f59e0b) 55%, transparent);
+  border-radius: 999px;
+  background: #ffffff14;
+  color: #f8fafc;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  backdrop-filter: blur(4px);
+}
+
+.heroTitik {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--public-accent, #f59e0b);
+}
+
+.heroJudul {
+  margin: 0;
+  font-size: clamp(2rem, 4.6vw, 3.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  font-weight: 850;
+  color: #f8fbff;
+}
+
+.heroNama {
+  color: var(--public-accent, #f59e0b);
+}
+
+.heroSub {
+  margin: 0;
+  max-width: 30rem;
+  color: color-mix(in srgb, #f8fbff 78%, transparent);
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+.heroLokasi {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: color-mix(in srgb, #f8fbff 66%, transparent);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.heroAksi {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.heroUtama,
+.heroSekunder {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.9rem;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.heroUtama {
+  background: var(--public-accent, #f59e0b);
+  color: #10202b;
+  box-shadow: 0 12px 26px #04141b66;
+}
+
+.heroUtama:hover {
+  background: color-mix(in srgb, var(--public-accent, #f59e0b) 82%, white);
+}
+
+.heroSekunder {
+  border: 1px solid #ffffff59;
+  color: #f8fbff;
+  background: #ffffff14;
+}
+
+.heroSekunder:hover {
+  border-color: #ffffffa6;
+  background: #ffffff24;
+}
+
+.heroPotret {
+  position: relative;
+  justify-self: center;
+  width: min(340px, 100%);
+}
+
+.heroBingkai {
+  position: relative;
+  aspect-ratio: 3 / 3.4;
+  overflow: hidden;
+  border-radius: 14rem 14rem 1.4rem 1.4rem;
+  border: 1px solid #ffffff2e;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--public-primary, #0e7a6d) 24%, transparent),
+    #04141b99
+  );
+  box-shadow: 0 30px 60px #02101766;
+}
+
+.heroPotretFoto {
+  object-fit: cover;
+  object-position: center bottom;
+}
+
+.heroPotretKosong {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  display: grid;
+  place-content: center;
+  gap: 0.35rem;
+  text-align: center;
+  color: color-mix(in srgb, #f8fbff 72%, transparent);
+  font-size: 0.85rem;
+}
+
+.heroPotretKosong small {
+  font-size: 0.72rem;
+  opacity: 0.7;
+}
+
+.heroKartu {
+  position: absolute;
+  left: -0.75rem;
+  right: 1.5rem;
+  bottom: -0.9rem;
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.7rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--public-accent, #f59e0b) 45%, transparent);
+  background: color-mix(in srgb, var(--public-secondary, #083344) 94%, black);
+  box-shadow: 0 16px 30px #02101766;
+}
+
+.heroKartu strong {
+  font-size: 0.86rem;
+  letter-spacing: 0.04em;
+  color: #f8fbff;
+}
+
+.heroKartu span {
+  font-size: 0.74rem;
+  color: color-mix(in srgb, #f8fbff 68%, transparent);
+}
+
+.heroGelombang {
+  position: absolute;
+  inset: auto 0 -1px;
+  width: 100%;
+  height: 90px;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .heroIsi {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2.5rem 0 3.5rem;
+    justify-items: start;
+  }
+  .heroPotret {
+    justify-self: start;
+    width: min(260px, 72%);
+  }
+  .heroKartu {
+    left: 0.6rem;
+    right: 0.6rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .heroIsi {
+    width: calc(100% - 28px);
+    padding: 1.9rem 0 3rem;
+  }
+  .heroSub {
+    font-size: 0.92rem;
+  }
+  .heroAksi {
+    gap: 0.5rem;
+  }
+  .heroUtama,
+  .heroSekunder {
+    min-height: 2.65rem;
+    padding: 0 1.1rem;
+    font-size: 0.85rem;
+  }
+  .heroGelombang {
+    height: 54px;
+  }
+}
+
+/*
+ * Isi beranda Samudra: bahasa visual "koran digital" — garis rambut, angka
+ * besar, linimasa, dan akses bernomor, bukan kartu bertumpuk.
+ */
+.isiBeranda {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+  padding-top: 1.5rem;
+  display: grid;
+  gap: 1.6rem;
+}
+
+.pita {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.15fr);
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent);
+}
+
+.pitaItem,
+.pitaIdm {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.95rem 1rem;
+  border-right: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent);
+}
+
+.pitaItem span,
+.pitaIdm span {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.pitaItem strong {
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  font-weight: 850;
+  letter-spacing: -0.03em;
+  color: var(--public-text, #e6f4f1);
+}
+
+.pitaIdm {
+  border-right: 0;
+  background: color-mix(in srgb, var(--public-accent, #f59e0b) 12%, transparent);
+  color: inherit;
+}
+
+.pitaIdm strong {
+  font-size: clamp(1.35rem, 2.4vw, 1.9rem);
+  font-weight: 850;
+  color: var(--public-accent, #f59e0b);
+  letter-spacing: -0.03em;
+}
+
+.pitaIdm small {
+  font-size: 0.74rem;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 72%, transparent);
+}
+
+.duaBagian {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 1.6rem;
+}
+
+.bagian {
+  min-width: 0;
+  padding-top: 0.9rem;
+  border-top: 2px solid color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, transparent);
+}
+
+.bagianKepala {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.kicker {
+  margin: 0 0 0.25rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--public-accent, #f59e0b);
+}
+
+.bagianKepala h2,
+.sambutan h2 {
+  margin: 0;
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  letter-spacing: -0.02em;
+  color: var(--public-text, #e6f4f1);
+}
+
+.tautanKecil {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--public-accent, #f59e0b);
+  white-space: nowrap;
+}
+
+.sorotan {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.sorotanFoto {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 168px;
+  overflow: hidden;
+  border-radius: calc(var(--public-radius, 15px) * 0.55);
+  background: color-mix(
+    in srgb,
+    var(--public-primary, #0e7a6d) 22%,
+    var(--public-surface, #0f2b36)
+  );
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+  font-size: 0.72rem;
+  letter-spacing: 0.2em;
+}
+
+.sorotanFoto img {
+  object-fit: cover;
+}
+
+.sorotanTeks {
+  display: grid;
+  align-content: start;
+  gap: 0.5rem;
+}
+
+.tanggal {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.sorotanTeks h3 {
+  margin: 0;
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  line-height: 1.22;
+  letter-spacing: -0.02em;
+}
+
+.sorotanTeks h3 a {
+  color: var(--public-text, #e6f4f1);
+}
+
+.sorotanTeks h3 a:hover {
+  color: var(--public-accent, #f59e0b);
+}
+
+.linimasa {
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+}
+
+.linimasa li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 10%, transparent);
+}
+
+.linimasa li:last-child {
+  border-bottom: 0;
+}
+
+.linimasa time {
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.linimasa a {
+  color: var(--public-text, #e6f4f1);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.linimasa a:hover {
+  color: var(--public-accent, #f59e0b);
+}
+
+.sambutan {
+  min-width: 0;
+  padding-top: 0.9rem;
+  border-top: 2px solid color-mix(in srgb, var(--public-accent, #f59e0b) 55%, transparent);
+}
+
+.kutipan {
+  margin: 0;
+  padding-left: 0.9rem;
+  border-left: 3px solid var(--public-accent, #f59e0b);
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 84%, transparent);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.penanda {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.penandaFoto {
+  border-radius: 999px;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.penanda span {
+  display: grid;
+}
+
+.penanda strong {
+  font-size: 0.84rem;
+  letter-spacing: 0.03em;
+  color: var(--public-text, #e6f4f1);
+}
+
+.penanda small {
+  font-size: 0.74rem;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.akses {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 1.6rem;
+}
+
+.akses a {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  gap: 0.6rem;
+  align-items: baseline;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 10%, transparent);
+}
+
+.akses li:last-child a {
+  border-bottom: 0;
+}
+
+.akses b {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--public-accent, #f59e0b);
+}
+
+.akses span {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.akses strong {
+  font-size: 0.88rem;
+  color: var(--public-text, #e6f4f1);
+}
+
+.akses small {
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.akses a:hover strong {
+  color: var(--public-accent, #f59e0b);
+}
+
+.profil {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: 1.2rem;
+  align-items: start;
+}
+
+.profilTeks {
+  margin: 0;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 82%, transparent);
+  font-size: 0.92rem;
+  line-height: 1.7;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 6;
+}
+
+.profilFoto {
+  width: 100%;
+  height: auto;
+  border-radius: calc(var(--public-radius, 15px) * 0.6);
+  object-fit: cover;
+}
+
+.profilTautan {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.profilTautan a {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent);
+  border-radius: 0.7rem;
+}
+
+.profilTautan strong {
+  font-size: 0.85rem;
+  color: var(--public-text, #e6f4f1);
+}
+
+.profilTautan small {
+  font-size: 0.73rem;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.profilTautan a:hover {
+  border-color: var(--public-accent, #f59e0b);
+}
+
+.galeri {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+.galeri a {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--public-text, #e6f4f1) 8%, var(--public-surface, #0f2b36));
+}
+
+.galeri img {
+  object-fit: cover;
+}
+
+.tautanTerkait {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tautanTerkait > span {
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.tautanTerkait ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+}
+
+.tautanTerkait a {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--public-text, #e6f4f1);
+}
+
+.tautanTerkait a small {
+  font-weight: 400;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.tautanTerkait a:hover {
+  color: var(--public-accent, #f59e0b);
+}
+
+.kosong {
+  margin: 0.4rem 0 0;
+  padding: 1rem 0;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+  font-size: 0.88rem;
+  border-bottom: 1px dashed color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent);
+}
+
+@media (max-width: 900px) {
+  .pita {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pitaIdm {
+    grid-column: 1 / -1;
+  }
+  .pitaItem:nth-child(2n) {
+    border-right: 0;
+  }
+  .duaBagian,
+  .sorotan,
+  .profil {
+    grid-template-columns: 1fr;
+  }
+  .profilTautan {
+    grid-template-columns: 1fr;
+  }
+  .akses {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .galeri {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 620px) {
+  .isiBeranda,
+  .beranda,
+  .permukaan,
+  .permukaanLebar {
+    width: calc(100% - 28px);
+  }
+  .pitaItem,
+  .pitaIdm {
+    padding: 0.8rem 0.7rem;
+  }
+  .galeri {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .akses {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*
+ * Footer Samudra: pita ajakan layanan bergradasi, identitas editorial,
+ * peta situs bernomor, dan kontak berlabel — bukan lima kolom kartu seperti
+ * footer bersama Arunika. Warna dari token tema; permukaan gelap mengikuti
+ * --public-secondary seperti hero.
+ */
+.kaki {
+  color: #f4fbfa;
+  background:
+    radial-gradient(
+      circle at 88% 0%,
+      color-mix(in srgb, var(--public-accent, #f59e0b) 22%, transparent),
+      transparent 42%
+    ),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--public-secondary, #083344) 96%, black),
+      color-mix(in srgb, var(--public-primary, #0e7a6d) 55%, black)
+    );
+}
+
+.kakiCta {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  padding: 1.75rem 0 1.5rem;
+  border-bottom: 1px solid #ffffff1f;
+}
+
+.kakiCtaTeks h2 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.4vw, 1.7rem);
+  letter-spacing: -0.025em;
+  color: #f8fbff;
+}
+
+.kakiCtaTeks p:last-child {
+  margin: 0.35rem 0 0;
+  max-width: 36rem;
+  color: color-mix(in srgb, #f8fbff 72%, transparent);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.kakiCtaAksi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.kakiUtama,
+.kakiSekunder {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1.3rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.kakiUtama {
+  background: var(--public-accent, #f59e0b);
+  color: #10202b;
+}
+
+.kakiUtama:hover {
+  background: color-mix(in srgb, var(--public-accent, #f59e0b) 82%, white);
+}
+
+.kakiSekunder {
+  border: 1px solid #ffffff59;
+  color: #f8fbff;
+  background: #ffffff14;
+}
+
+.kakiSekunder:hover {
+  border-color: #ffffffa6;
+  background: #ffffff24;
+}
+
+.kakiUtama2 {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1.3fr) minmax(0, 0.9fr);
+  gap: 2rem;
+  padding: 1.75rem 0;
+}
+
+.kakiIdentitas {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.kakiIdentitas img {
+  object-fit: contain;
+  flex: none;
+}
+
+.kakiIdentitas div {
+  display: grid;
+  line-height: 1.2;
+}
+
+.kakiIdentitas strong {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #f8fbff 65%, transparent);
+}
+
+.kakiIdentitas b {
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+  color: #f8fbff;
+}
+
+.kakiIdentitas small {
+  margin-top: 0.2rem;
+  font-size: 0.72rem;
+  color: color-mix(in srgb, #f8fbff 60%, transparent);
+}
+
+.kakiBrand > p {
+  margin: 0.8rem 0 0;
+  max-width: 20rem;
+  color: color-mix(in srgb, #f8fbff 68%, transparent);
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+
+.kakiPeta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.kakiPeta strong,
+.kakiKontak > strong {
+  display: block;
+  margin-bottom: 0.6rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--public-accent, #f59e0b);
+}
+
+.kakiPeta ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+}
+
+.kakiPeta a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.55rem;
+  padding: 0.32rem 0;
+  color: color-mix(in srgb, #f8fbff 82%, transparent);
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.kakiPeta a b {
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--public-accent, #f59e0b);
+}
+
+.kakiPeta a:hover {
+  color: #ffffff;
+}
+
+.kakiKontak p {
+  margin: 0 0 0.55rem;
+  display: grid;
+  gap: 0.1rem;
+  color: color-mix(in srgb, #f8fbff 82%, transparent);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+
+.kakiKontak p span {
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, #f8fbff 52%, transparent);
+}
+
+.kakiKontak a {
+  color: inherit;
+  font-weight: 600;
+}
+
+.kakiKontak a:hover {
+  color: var(--public-accent, #f59e0b);
+}
+
+.kakiBawah {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.25rem;
+  padding: 0.95rem 0;
+  border-top: 1px solid #ffffff1f;
+  color: color-mix(in srgb, #f8fbff 62%, transparent);
+  font-size: 0.76rem;
+}
+
+.kakiBawah .jam,
+.kakiBawah .statistik {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .kakiUtama2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .kakiBrand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 620px) {
+  .kakiCta,
+  .kakiUtama2,
+  .kakiBawah {
+    width: calc(100% - 28px);
+  }
+  .kakiUtama2 {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .kakiPeta {
+    grid-template-columns: 1fr 1fr;
+  }
+  .kakiCtaAksi {
+    width: 100%;
+  }
+}
+
+/*
+ * Profil Desa Samudra: pita hero gelap, navigasi anchor bernomor, fakta
+ * sebagai pita angka, visi sebagai kutipan, dan daftar bernomor — bukan
+ * sidebar + kartu Arunika. Memakai ulang .bagian/.kicker/.profil* beranda.
+ */
+.pHero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  color: #f4fbfa;
+  background:
+    radial-gradient(
+      circle at 82% 12%,
+      color-mix(in srgb, var(--public-accent, #f59e0b) 26%, transparent),
+      transparent 46%
+    ),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, var(--public-secondary, #083344) 94%, black),
+      color-mix(in srgb, var(--public-primary, #0e7a6d) 62%, black)
+    );
+}
+
+.pHeroFoto {
+  object-fit: cover;
+  opacity: 0.22;
+  mix-blend-mode: luminosity;
+}
+
+.pHeroTirai {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #04141bcc 0%, #04141b8c 46%, transparent 100%);
+  pointer-events: none;
+}
+
+.pHeroIsi {
+  position: relative;
+  z-index: 1;
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+  padding: 2rem 0 2.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.pCrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.76rem;
+  color: color-mix(in srgb, #f8fbff 66%, transparent);
+}
+
+.pCrumb a {
+  color: inherit;
+}
+
+.pCrumb a:hover {
+  color: var(--public-accent, #f59e0b);
+}
+
+.pHeroIsi h1 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3.6vw, 2.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  font-weight: 850;
+  color: #f8fbff;
+}
+
+.pHeroIsi > p {
+  margin: 0;
+  max-width: 36rem;
+  color: color-mix(in srgb, #f8fbff 78%, transparent);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.isiProfil {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
+  padding: 1.5rem 0 2.5rem;
+  display: grid;
+  gap: 1.6rem;
+}
+
+.pNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.4rem;
+  padding: 0.7rem 0;
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent);
+}
+
+.pNav a {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.pNav a b {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--public-accent, #f59e0b);
+}
+
+.pNav a:hover {
+  color: var(--public-accent, #f59e0b);
+}
+
+.pFakta {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent);
+}
+
+.pFaktaItem {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.85rem 1rem;
+  border-right: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 12%, transparent);
+}
+
+.pFaktaItem:last-child {
+  border-right: 0;
+}
+
+.pFaktaItem span {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.pFaktaItem strong {
+  font-size: 1.3rem;
+  font-weight: 850;
+  letter-spacing: -0.03em;
+  color: var(--public-text, #e6f4f1);
+}
+
+.pVisi {
+  margin: 0;
+  padding-left: 0.9rem;
+  border-left: 3px solid var(--public-accent, #f59e0b);
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 88%, transparent);
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.65;
+}
+
+.pMisi,
+.pDaftar {
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 2rem;
+}
+
+.pMisi li,
+.pDaftar li {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  gap: 0.6rem;
+  align-items: baseline;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 10%, transparent);
+}
+
+.pMisi b,
+.pDaftar b {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--public-accent, #f59e0b);
+}
+
+.pMisi span,
+.pDaftar span {
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 84%, transparent);
+}
+
+.pDaftar strong {
+  font-size: 0.92rem;
+  color: var(--public-text, #e6f4f1);
+}
+
+.pDaftar small {
+  font-size: 0.76rem;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.pTeks {
+  margin: 0 0 0.8rem;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 82%, transparent);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.pBerkas {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 16%, transparent);
+}
+
+.pBerkas > div {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.75rem 1rem 0.75rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--public-text, #e6f4f1) 10%, transparent);
+}
+
+.pBerkas dt {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--public-text, #e6f4f1) 78%, transparent);
+}
+
+.pBerkas dd {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--public-text, #e6f4f1);
+}
+
+@media (max-width: 900px) {
+  .pHeroIsi,
+  .isiProfil {
+    width: calc(100% - 28px);
+  }
+  .pMisi,
+  .pDaftar {
+    grid-template-columns: 1fr;
+  }
+  .pBerkas {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+  .pBerkas {
+    grid-template-columns: 1fr;
+  }
+}

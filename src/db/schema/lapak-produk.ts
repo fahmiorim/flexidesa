@@ -34,5 +34,4 @@ export const lapakProduk = mysqlTable(
   ],
 );
 
-export type LapakProduk = typeof lapakProduk.$inferSelect;
 export type NewLapakProduk = typeof lapakProduk.$inferInsert;

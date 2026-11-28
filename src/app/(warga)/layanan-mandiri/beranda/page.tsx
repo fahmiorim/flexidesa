@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { Alert } from "@/components/ui/alert";
 import { Card } from "@/components/ui/card";
+import { Table, TableScroll } from "@/components/ui/table";
 import { listPengajuanLayananWargaData } from "@/features/layanan-warga/pelayanan/application/pengajuan-warga-use-cases";
 import { getSurveiWargaPageData } from "@/features/layanan-warga/pelayanan/application/survei-use-cases";
 import { ambilProfilWargaData } from "@/features/pelayanan-persuratan/layanan-mandiri/application/profil-warga-use-cases";
@@ -129,31 +130,33 @@ export default async function BerandaWargaPage() {
         {pengajuanLayanan.length === 0 ? (
           <p>Belum ada pengajuan layanan publik.</p>
         ) : (
-          <div className="tenant-table-scroll" style={{ marginTop: 14 }}>
-            <table className="tenant-table">
-              <thead>
-                <tr>
-                  <th>Tiket</th>
-                  <th>Layanan</th>
-                  <th>Status</th>
-                  <th>Tanggal</th>
-                  <th>Detail</th>
-                </tr>
-              </thead>
-              <tbody>
-                {pengajuanLayanan.slice(0, 8).map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.nomorTiket}</td>
-                    <td>{row.namaLayanan ?? "Layanan"}</td>
-                    <td>{row.status}</td>
-                    <td>{formatTanggal(row.createdAt)}</td>
-                    <td>
-                      <Link href={`/layanan-mandiri/pengajuan/${row.id}`}>Lihat</Link>
-                    </td>
+          <div style={{ marginTop: 14 }}>
+            <TableScroll frame>
+              <Table>
+                <thead>
+                  <tr>
+                    <th>Tiket</th>
+                    <th>Layanan</th>
+                    <th>Status</th>
+                    <th>Tanggal</th>
+                    <th>Detail</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {pengajuanLayanan.slice(0, 8).map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.nomorTiket}</td>
+                      <td>{row.namaLayanan ?? "Layanan"}</td>
+                      <td>{row.status}</td>
+                      <td>{formatTanggal(row.createdAt)}</td>
+                      <td>
+                        <Link href={`/layanan-mandiri/pengajuan/${row.id}`}>Lihat</Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </TableScroll>
           </div>
         )}
       </section>
@@ -189,35 +192,37 @@ export default async function BerandaWargaPage() {
         {permohonan.length === 0 ? (
           <p>Belum ada permohonan. Ajukan surat melalui kantor desa atau petugas layanan.</p>
         ) : (
-          <div className="tenant-table-scroll" style={{ marginTop: 14 }}>
-            <table className="tenant-table">
-              <thead>
-                <tr>
-                  <th scope="col">Jenis surat</th>
-                  <th scope="col">Nomor antrean</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Diajukan</th>
-                  <th scope="col">Surat</th>
-                </tr>
-              </thead>
-              <tbody>
-                {permohonan.slice(0, PERMOHONAN_DITAMPILKAN).map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.namaSurat ?? "Jenis surat tidak ditemukan"}</td>
-                    <td>{row.noAntrian ?? "—"}</td>
-                    <td>{labelPermohonanStatus(row.status)}</td>
-                    <td>{formatTanggal(row.createdAt)}</td>
-                    <td>
-                      {row.letterId !== null ? (
-                        <Link href={`/layanan-mandiri/surat/${row.letterId}/pdf`}>Unduh PDF</Link>
-                      ) : (
-                        "Belum terbit"
-                      )}
-                    </td>
+          <div style={{ marginTop: 14 }}>
+            <TableScroll frame>
+              <Table>
+                <thead>
+                  <tr>
+                    <th scope="col">Jenis surat</th>
+                    <th scope="col">Nomor antrean</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Diajukan</th>
+                    <th scope="col">Surat</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {permohonan.slice(0, PERMOHONAN_DITAMPILKAN).map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.namaSurat ?? "Jenis surat tidak ditemukan"}</td>
+                      <td>{row.noAntrian ?? "—"}</td>
+                      <td>{labelPermohonanStatus(row.status)}</td>
+                      <td>{formatTanggal(row.createdAt)}</td>
+                      <td>
+                        {row.letterId !== null ? (
+                          <Link href={`/layanan-mandiri/surat/${row.letterId}/pdf`}>Unduh PDF</Link>
+                        ) : (
+                          "Belum terbit"
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </TableScroll>
           </div>
         )}
       </section>
@@ -228,31 +233,33 @@ export default async function BerandaWargaPage() {
         {dokumen.length === 0 ? (
           <p>Belum ada dokumen tersimpan.</p>
         ) : (
-          <div className="tenant-table-scroll" style={{ marginTop: 14 }}>
-            <table className="tenant-table">
-              <thead>
-                <tr>
-                  <th scope="col">Nama dokumen</th>
-                  <th scope="col">Jenis</th>
-                  <th scope="col">Sumber</th>
-                  <th scope="col">Diunggah</th>
-                  <th scope="col">Berkas</th>
-                </tr>
-              </thead>
-              <tbody>
-                {dokumen.slice(0, DOKUMEN_DITAMPILKAN).map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.nama}</td>
-                    <td>{labelJenisDokumen(row.jenis)}</td>
-                    <td>{row.sumber === "operator" ? "Operator desa" : "Unggahan saya"}</td>
-                    <td>{formatTanggal(row.createdAt)}</td>
-                    <td>
-                      <Link href={`/layanan-mandiri/dokumen/${row.id}/berkas`}>Unduh</Link>
-                    </td>
+          <div style={{ marginTop: 14 }}>
+            <TableScroll frame>
+              <Table>
+                <thead>
+                  <tr>
+                    <th scope="col">Nama dokumen</th>
+                    <th scope="col">Jenis</th>
+                    <th scope="col">Sumber</th>
+                    <th scope="col">Diunggah</th>
+                    <th scope="col">Berkas</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {dokumen.slice(0, DOKUMEN_DITAMPILKAN).map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.nama}</td>
+                      <td>{labelJenisDokumen(row.jenis)}</td>
+                      <td>{row.sumber === "operator" ? "Operator desa" : "Unggahan saya"}</td>
+                      <td>{formatTanggal(row.createdAt)}</td>
+                      <td>
+                        <Link href={`/layanan-mandiri/dokumen/${row.id}/berkas`}>Unduh</Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </TableScroll>
           </div>
         )}
       </section>

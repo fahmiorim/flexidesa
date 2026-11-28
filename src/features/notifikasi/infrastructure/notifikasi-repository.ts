@@ -8,7 +8,7 @@ import { notifikasiTerkirim } from "@/db/schema/notifikasi-terkirim";
 import type { FilterNotifikasi } from "../domain/notifikasi";
 
 /** Baris bukti pengiriman yang siap disimpan. */
-export type BuktiNotifikasiBaru = typeof notifikasiTerkirim.$inferInsert;
+type BuktiNotifikasiBaru = typeof notifikasiTerkirim.$inferInsert;
 
 export interface BarisNotifikasi {
   id: number;

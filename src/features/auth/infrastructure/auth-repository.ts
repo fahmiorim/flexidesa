@@ -15,7 +15,7 @@ import { residents, users } from "@/db/schema";
  */
 
 /** Konteks minimum untuk menentukan apakah login memerlukan OTP. */
-export interface LoginOtpContext {
+interface LoginOtpContext {
   id: string;
   active: boolean;
   otpLoginAktif: boolean;

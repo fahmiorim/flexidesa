@@ -53,5 +53,3 @@ export const notifikasiTerkirim = mysqlTable(
   ],
 );
 
-export type NotifikasiTerkirim = typeof notifikasiTerkirim.$inferSelect;
-export type NewNotifikasiTerkirim = typeof notifikasiTerkirim.$inferInsert;

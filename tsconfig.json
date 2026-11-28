@@ -24,7 +24,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "noUnusedLocals": true
   },
   "include": [
     "next-env.d.ts",

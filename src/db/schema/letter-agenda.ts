@@ -104,12 +104,6 @@ export const letterAgendaLogs = mysqlTable(
   (table) => [index("letter_agenda_logs_village_idx").on(table.villageId)],
 );
 
-export type IncomingLetterDisposition = typeof incomingLetterDispositions.$inferSelect;
-export type NewIncomingLetterDisposition = typeof incomingLetterDispositions.$inferInsert;
-export type OutgoingLetterShipment = typeof outgoingLetterShipments.$inferSelect;
-export type NewOutgoingLetterShipment = typeof outgoingLetterShipments.$inferInsert;
-export type LetterAgendaLog = typeof letterAgendaLogs.$inferSelect;
-export type NewLetterAgendaLog = typeof letterAgendaLogs.$inferInsert;
 
 /**
  * Ekspedisi terpadu (lintas modul).
@@ -185,7 +179,3 @@ export const suratAuditTrail = mysqlTable(
   ],
 );
 
-export type UnifiedShipment = typeof unifiedShipments.$inferSelect;
-export type NewUnifiedShipment = typeof unifiedShipments.$inferInsert;
-export type SuratAuditTrail = typeof suratAuditTrail.$inferSelect;
-export type NewSuratAuditTrail = typeof suratAuditTrail.$inferInsert;

@@ -10,7 +10,7 @@ import { env } from "@/lib/env";
 import { parseDatabaseUrl } from "./database-url";
 
 /** Sumber dump: Readable (mis. bagian multipart) atau iterable potongan byte. */
-export type RestoreSource = Readable | AsyncIterable<Uint8Array>;
+type RestoreSource = Readable | AsyncIterable<Uint8Array>;
 
 /**
  * Salurkan dump langsung ke stdin proses `mysql` tanpa menampung seluruh isi

@@ -43,6 +43,7 @@ export async function PublicShell({
   return (
     <main
       className={styles.site}
+      data-tema={tema?.slug}
       data-gelap={tema?.style === "gelap" ? "ya" : undefined}
       data-varian={tema?.layout ?? "klasik"}
     >

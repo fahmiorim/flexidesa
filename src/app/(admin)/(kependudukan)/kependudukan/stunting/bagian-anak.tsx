@@ -36,7 +36,7 @@ function labelTikar(nilai: number): { label: string; kelas: string | undefined }
 /**
  * Tab pemantauan bulanan anak 0-2 tahun.
  *
- * Field mengikuti `pemantauan_anak_form.blade.php` OpenSID: No Register KIA,
+ * Field: No Register KIA,
  * posyandu, status gizi, umur (bulan), status tikar, imunisasi campak, berat
  * dan tinggi badan, serta sebelas indikator layanan.
  */

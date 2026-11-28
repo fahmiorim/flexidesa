@@ -14,7 +14,7 @@ import { conflict, isDuplicateKeyError, notFound } from "@/lib/errors";
 
 import type { StatusPaket, StatusVersiPaket } from "../domain/paket-langganan";
 
-export interface PaketRingkas {
+interface PaketRingkas {
   id: number;
   slug: string;
   name: string;
@@ -47,7 +47,7 @@ export interface PaketTenantRow {
   planVersion: number | null;
 }
 
-export interface DetailPaket {
+interface DetailPaket {
   paket: PaketRingkas;
   versions: PaketVersiDetail[];
   tenants: Array<

@@ -1,4 +1,6 @@
-import { formatNumber, type ProfilWilayah } from "./bagian-wilayah";
+import { formatNumber } from "@/lib/format-tanggal";
+
+import { type ProfilWilayah } from "./bagian-wilayah";
 import styles from "./wilayah.module.css";
 
 export function InformasiWilayah({

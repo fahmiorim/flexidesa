@@ -27,5 +27,3 @@ export const pengaturanDesa = mysqlTable(
   (t) => [uniqueIndex("pengaturan_desa_village_kunci_uq").on(t.villageId, t.kunci)],
 );
 
-export type PengaturanDesa = typeof pengaturanDesa.$inferSelect;
-export type NewPengaturanDesa = typeof pengaturanDesa.$inferInsert;

@@ -68,5 +68,3 @@ export const letterDinas = mysqlTable(
   ],
 );
 
-export type LetterDinas = typeof letterDinas.$inferSelect;
-export type NewLetterDinas = typeof letterDinas.$inferInsert;

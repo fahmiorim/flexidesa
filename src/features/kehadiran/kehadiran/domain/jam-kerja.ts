@@ -5,19 +5,18 @@ import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 /**
  * Domain Jam Kerja Kehadiran.
  *
- * Meniru menu Kehadiran → Jam Kerja OpenSID (`kehadiran_jam_kerja`): satu
- * baris per nama hari dengan jam masuk/keluar, status hari kerja atau libur,
- * dan keterangan. Operator hanya menyunting baris yang sudah ada; tidak ada
- * tambah/hapus, sama seperti OpenSID.
+ * Satu baris per nama hari dengan jam masuk/keluar, status hari kerja
+ * atau libur, dan keterangan. Operator hanya menyunting baris yang
+ * sudah ada; tidak ada tambah/hapus.
  */
 
 /** Slug modul sekaligus resource izin (lihat template tenant). */
 export const JAM_KERJA_RESOURCE = RESOURCES.jamKerja;
 
-/** Urutan hari yang dipakai OpenSID (Carbon `dayName`). */
-export const NAMA_HARI = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"] as const;
+/** Urutan hari (Senin–Minggu). */
+const NAMA_HARI = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"] as const;
 
-/** Panjang maksimal keterangan; sama dengan `maxlength="300"` form OpenSID. */
+/** Panjang maksimal keterangan (300 karakter). */
 export const KETERANGAN_JAM_KERJA_MAKS = 300;
 
 const jamSchema = z

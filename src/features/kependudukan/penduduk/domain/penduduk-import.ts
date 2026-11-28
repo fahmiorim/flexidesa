@@ -2,8 +2,8 @@
  * Impor data penduduk dari berkas CSV/XLSX.
  *
  * Aturan di berkas ini murni (tanpa `db`/sesi) supaya mudah diuji. Header
- * memakai nama kolom yang lazim pada ekspor SID, sehingga berkas hasil
- * ekspor desa dapat dipakai langsung tanpa diubah. Nilai katalog (agama,
+ * memakai nama kolom yang lazim pada ekspor data desa, sehingga berkas
+ * hasil ekspor desa dapat dipakai langsung tanpa diubah. Nilai katalog (agama,
  * pendidikan, pekerjaan, dst.) dicocokkan berdasarkan **nama**, bukan id,
  * karena id katalog berbeda antar instalasi.
  */
@@ -29,7 +29,7 @@ import {
 import { bacaTabelImpor, petakanKolom, type BarisImpor, type KolomImpor } from "@/lib/spreadsheet";
 
 /** Batas jumlah baris data per berkas agar satu unggahan tidak mengunci server. */
-export const MAKS_BARIS_IMPOR_PENDUDUK = 2000;
+const MAKS_BARIS_IMPOR_PENDUDUK = 2000;
 
 /** Kunci kolom impor penduduk. */
 export type KunciImporPenduduk =
@@ -83,7 +83,7 @@ export type KunciImporPenduduk =
 /**
  * Kolom yang dibaca dari berkas.
  *
- * Label utama mengikuti judul kolom ekspor SID; alias menerima variasi umum
+ * Label utama mengikuti judul kolom ekspor data desa; alias menerima variasi umum
  * (singkatan, spasi/tanda hubung berbeda, atau nama kolom berbahasa Inggris).
  */
 export const KOLOM_IMPOR_PENDUDUK: readonly KolomImpor<KunciImporPenduduk>[] = [
@@ -207,7 +207,7 @@ export interface KatalogImpor {
 }
 
 /** Satu baris yang lolos validasi dan siap disimpan. */
-export interface BarisSiapImporPenduduk {
+interface BarisSiapImporPenduduk {
   /** Nomor baris data (1 = baris pertama di bawah header). */
   baris: number;
   input: PendudukFormInput;
@@ -216,7 +216,7 @@ export interface BarisSiapImporPenduduk {
 }
 
 /** Hasil validasi seluruh berkas. */
-export interface HasilValidasiImporPenduduk {
+interface HasilValidasiImporPenduduk {
   siap: BarisSiapImporPenduduk[];
   galat: { baris: number; pesan: string }[];
   /** Header berkas yang tidak dikenali. */
@@ -259,8 +259,8 @@ export function normalisasiJenisKelamin(nilai: string): "male" | "female" | null
   return null;
 }
 
-/** Terima status dasar ekspor SID maupun nilai internal FlexiDesa. */
-export function normalisasiStatusPenduduk(nilai: string): PendudukFormInput["lifeStatus"] | null {
+/** Terima status dasar ekspor data desa maupun nilai internal. */
+function normalisasiStatusPenduduk(nilai: string): PendudukFormInput["lifeStatus"] | null {
   const teks = normal(nilai);
   const peta: Record<string, PendudukFormInput["lifeStatus"]> = {
     "": "alive",
@@ -287,7 +287,7 @@ export function normalisasiStatusPenduduk(nilai: string): PendudukFormInput["lif
   return peta[teks] ?? null;
 }
 
-/** Cocokkan nilai enum dari kode angka, nilai internal, atau label OpenSID. */
+/** Cocokkan nilai enum dari kode angka, nilai internal, atau label ekspor. */
 function cocokEnum<T extends string>(
   nilai: string,
   kode: Readonly<Record<string, T>>,
@@ -302,7 +302,7 @@ function cocokEnum<T extends string>(
   return null;
 }
 
-/** Status kepemilikan identitas: kode OpenSID 1/2/3 atau labelnya. */
+/** Status kepemilikan identitas: kode 1/2/3 atau labelnya. */
 export function normalisasiKtpEl(nilai: string): PendudukFormInput["ktpEl"] {
   return cocokEnum(
     nilai,
@@ -312,7 +312,7 @@ export function normalisasiKtpEl(nilai: string): PendudukFormInput["ktpEl"] {
   );
 }
 
-/** Status rekam KTP: kode OpenSID 1–8 atau labelnya. */
+/** Status rekam KTP: kode 1–8 atau labelnya. */
 export function normalisasiStatusRekam(nilai: string): PendudukFormInput["statusRekam"] {
   return cocokEnum(
     nilai,
@@ -331,7 +331,7 @@ export function normalisasiStatusRekam(nilai: string): PendudukFormInput["status
   );
 }
 
-/** Disabilitas: kode OpenSID 1–7 atau labelnya. */
+/** Disabilitas: kode 1–7 atau labelnya. */
 export function normalisasiDisabilitas(nilai: string): PendudukFormInput["disability"] {
   return cocokEnum(
     nilai,
@@ -349,7 +349,7 @@ export function normalisasiDisabilitas(nilai: string): PendudukFormInput["disabi
   );
 }
 
-/** Cara KB: kode OpenSID 1–7, 99, 100 atau labelnya. */
+/** Cara KB: kode 1–7, 99, 100 atau labelnya. */
 export function normalisasiCaraKb(nilai: string): PendudukFormInput["kbMethod"] {
   return cocokEnum(
     nilai,
@@ -369,7 +369,7 @@ export function normalisasiCaraKb(nilai: string): PendudukFormInput["kbMethod"] 
   );
 }
 
-/** Status kehamilan: kode OpenSID 1/2 atau labelnya. */
+/** Status kehamilan: kode 1/2 atau labelnya. */
 export function normalisasiStatusHamil(nilai: string): PendudukFormInput["pregnancyStatus"] {
   return cocokEnum(
     nilai,
@@ -379,7 +379,7 @@ export function normalisasiStatusHamil(nilai: string): PendudukFormInput["pregna
   );
 }
 
-/** Asuransi: kode OpenSID 1–4, 99 atau labelnya. */
+/** Asuransi: kode 1–4, 99 atau labelnya. */
 export function normalisasiAsuransi(nilai: string): PendudukFormInput["insurance"] {
   return cocokEnum(
     nilai,
@@ -396,7 +396,7 @@ export function normalisasiAsuransi(nilai: string): PendudukFormInput["insurance
 }
 
 /** Terima status tempat tinggal tetap/tidak tetap. */
-export function normalisasiStatusTinggal(
+function normalisasiStatusTinggal(
   nilai: string,
 ): PendudukFormInput["residenceStatus"] | null {
   const teks = normal(nilai);

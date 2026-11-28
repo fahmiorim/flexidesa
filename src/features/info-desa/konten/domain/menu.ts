@@ -1,14 +1,11 @@
-import { z } from "zod";
-
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 /** Menu navigasi situs publik. */
 
 /** Setiap desa memiliki baris `menu_publik`. Form ini disinkronkan dengan
  * baris tersebut. Untuk instalasi baru bila belum ada menu, dipakai
  * `PUBLIC_NAV` bawaan.
  */
-
-/** Tipe tautan yang didukung menu publik. */
-export const MENU_LINK_TIPE = ["internal", "external"] as const;
 
 /** Baris menu yang aman dikirim ke komponen klien. */
 export interface MenuRow {
@@ -22,18 +19,6 @@ export interface MenuRow {
 }
 
 /** Skema form menu publik. */
-export const menuPublikFormSchema = z.object({
-  nama: z.string().trim().min(1, "Nama menu wajib diisi.").max(50, "Maksimal 50 karakter."),
-  link: z.string().trim().min(1, "Link wajib diisi.").max(500, "Maksimal 500 karakter."),
-  linkTipe: z.enum(MENU_LINK_TIPE, { error: "Tipe link tidak dikenal." }).default("internal"),
-  parentId: z.number().int().positive("Menu induk tidak valid.").nullish(),
-  urut: z.coerce
-    .number({ error: "Urutan harus angka." })
-    .int("Urutan harus bilangan bulat.")
-    .min(0, "Urutan minimal 0.")
-    .default(0),
-  aktif: z.boolean().default(true),
-});
 
 /**
  * Periksa apakah `parentId` boleh dipakai.

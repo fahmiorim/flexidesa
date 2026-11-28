@@ -18,7 +18,7 @@ import {
 import { requirePermission } from "@/lib/dal";
 import { isDuplicateKeyError, notFound, validationError } from "@/lib/errors";
 
-/** Pesan sama dengan validasi `is_unique` OpenSID untuk kolom tanggal. */
+/** Pesan sama dengan validasi keunikan untuk kolom tanggal. */
 const PESAN_TANGGAL_GANDA = "Tanggal tersebut sudah terdaftar sebagai hari libur.";
 
 function bacaInput(input: unknown) {
@@ -103,7 +103,7 @@ export async function hapusHariLibur(id: number): Promise<{ id: number }> {
   return { id };
 }
 
-/** Hapus beberapa hari libur sekaligus (aksi massal OpenSID). */
+/** Hapus beberapa hari libur sekaligus. */
 export async function hapusHariLiburBanyak(ids: readonly number[]): Promise<{ jumlah: number }> {
   const user = await requirePermission(HARI_LIBUR_RESOURCE, "delete");
   const villageId = await resolveVillageId(user);

@@ -33,6 +33,10 @@ function pengguna(overrides: Partial<CurrentUser> = {}): CurrentUser {
     mustChangePin: false,
     passwordExpired: false,
     mustEnrollTwoFactor: false,
+    realActorId: "pengguna-uji",
+    impersonating: false,
+    impersonationTargetUserId: null,
+    impersonationExpiresAt: null,
     permissions: { isSuperadmin: false, levelByResource: new Map(), actionByResource: new Map() },
     ...overrides,
   };

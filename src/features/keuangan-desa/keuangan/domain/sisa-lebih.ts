@@ -1,3 +1,5 @@
+// Cadangan fitur: teruji, belum dipakai produksi. Pertahankan bersama test-nya;
+// hapus berkas + test-nya bila diputuskan tidak dipakai.
 import { z } from "zod";
 
 import { formatMoney, toMinor } from "./keuangan";
@@ -11,7 +13,7 @@ import { formatMoney, toMinor } from "./keuangan";
  * negatif dan teks nonangka ditolak agar jumlah tidak pernah masuk ke APBDes
  * sebagai NaN atau angka yang berbeda dari yang terlihat.
  */
-export function normalisasiJumlahSisaLebih(value: string): string | null {
+function normalisasiJumlahSisaLebih(value: string): string | null {
   let teks = value
     .trim()
     .replace(/^Rp\s*/i, "")

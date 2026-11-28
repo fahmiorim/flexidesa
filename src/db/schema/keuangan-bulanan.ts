@@ -50,4 +50,3 @@ export const keuanganBulanan = mysqlTable(
   ],
 );
 
-export type KeuanganBulanan = typeof keuanganBulanan.$inferSelect;

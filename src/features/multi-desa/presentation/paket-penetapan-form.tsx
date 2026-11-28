@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type {
   PaketTenantRow,
@@ -86,7 +87,7 @@ export function PaketPenetapanForm({
 
   return (
     <form action={formAction} className="form-stack">
-      <div className="platform-form-grid">
+      <div className="ui-form-grid">
         <label className="form-field">
           <span className="form-label">Paket dan versi terbit</span>
           <select
@@ -129,8 +130,8 @@ export function PaketPenetapanForm({
         </p>
       ) : null}
 
-      <TableScroll className="tenant-table-scroll">
-        <Table className="tenant-table tenant-table-list">
+      <TableScroll frame>
+        <Table>
           <THead>
             <Row>
               <HeaderCell scope="col">
@@ -160,7 +161,7 @@ export function PaketPenetapanForm({
                   </Cell>
                   <Cell>
                     <strong>{label}</strong>
-                    {tenant.code ? <div className="tenant-secondary">{tenant.code}</div> : null}
+                    {tenant.code ? <SecondaryText>{tenant.code}</SecondaryText> : null}
                   </Cell>
                   <Cell>
                     <span
@@ -179,7 +180,7 @@ export function PaketPenetapanForm({
                         {tenant.planVersion ? ` · v${tenant.planVersion}` : ""}
                       </span>
                     ) : (
-                      <span className="tenant-secondary">Belum ditetapkan</span>
+                      <SecondaryText>Belum ditetapkan</SecondaryText>
                     )}
                   </Cell>
                 </Row>
@@ -219,7 +220,7 @@ export function PaketPenetapanForm({
           </span>
         </label>
 
-        <div className="platform-row-actions">
+        <div className="ui-toolbar-actions">
           <span className="form-help" aria-live="polite">
             {angka.format(selectedTenants.size)} dari {angka.format(tenants.length)} tenant dipilih
             {selectedTenants.size === 500 ? " · batas maksimum 500 tenant per penetapan" : ""}

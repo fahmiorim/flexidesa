@@ -12,6 +12,7 @@ import {
   PlatformCard,
   PlatformPageHeader,
   PlatformStat,
+  PlatformStatGrid,
 } from "@/features/multi-desa/presentation/platform-ui";
 import { TombolPemeriksaan } from "@/features/multi-desa/presentation/tombol-pemeriksaan";
 import { env } from "@/lib/env";
@@ -20,7 +21,7 @@ import { periksaDnsMassalAction, periksaSslMassalAction } from "../actions";
 import { pastikanSuperAdmin } from "../guard";
 
 export const metadata: Metadata = {
-  title: "Daftar Domain",
+  title: "Domain",
   robots: { index: false, follow: false },
 };
 
@@ -85,7 +86,7 @@ export default async function SuperAdminDomainPage({ searchParams }: Props) {
   return (
     <>
       <PlatformPageHeader path="/super-admin/domain" />
-      <div className="platform-stat-grid is-enam is-domain">
+      <PlatformStatGrid columns={6}>
         <PlatformStat
           icon={
             <>
@@ -160,9 +161,9 @@ export default async function SuperAdminDomainPage({ searchParams }: Props) {
           tone="merah"
           value={angka.format(sslBermasalah)}
         />
-      </div>
+      </PlatformStatGrid>
 
-      <div className="platform-row-actions domain-mass-check">
+      <div className="ui-toolbar-actions domain-mass-check">
         <TombolPemeriksaan
           aksi={periksaSslMassalAction}
           jenis="ssl"
@@ -175,17 +176,8 @@ export default async function SuperAdminDomainPage({ searchParams }: Props) {
           label="Cek DNS massal"
           labelPending="Memeriksa DNS..."
         />
-        <ButtonLink variant="primary" href="/super-admin/tenant/tambah">
-          <svg
-            aria-hidden="true"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            viewBox="0 0 24 24"
-          >
-            <path d="M12 5v14M5 12h14" />
-          </svg>
-          Tambah Tenant
+        <ButtonLink variant="primary" href="/super-admin/tenant">
+          Kelola tenant
         </ButtonLink>
       </div>
 

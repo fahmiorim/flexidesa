@@ -3,7 +3,7 @@ import { and, asc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { bumindesTanahKas, bumindesTanahKasMutasi } from "@/db/schema/bumindes-tanahkas";
 
-export interface TanahKasValues {
+interface TanahKasValues {
   nomorPersil: string;
   asal: string | null;
   luas: string;
@@ -13,7 +13,7 @@ export interface TanahKasValues {
   keterangan: string | null;
 }
 
-export interface TanahKasMutasiValues {
+interface TanahKasMutasiValues {
   tanahKasId: number;
   tanggal: string;
   jenis: string;

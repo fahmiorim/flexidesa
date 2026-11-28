@@ -145,7 +145,7 @@ afterAll(async () => {
   await db.delete(villages).where(inArray(villages.id, desaIds));
 });
 
-describe("AUD-034 B4C-2b composite tenant FK", () => {
+describe("Composite tenant FK", () => {
   it("menolak insert lintas desa pada keempat relasi", async () => {
     const f = dataUji();
     const attempts = [

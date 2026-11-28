@@ -3,11 +3,12 @@
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import type { StatusTemplate } from "@/features/multi-desa/domain/template-website";
 import { createIdleActionState, type ActionState } from "@/lib/action-state";
 
-export interface PenggunaanTemplateTampil {
+interface PenggunaanTemplateTampil {
   villageId: number;
   namaDesa: string | null;
   domain: string | null;
@@ -124,7 +125,7 @@ export function FormDistribusiTemplate({
               : "Semua tenant sudah memakai versi ini."}
           </p>
         </div>
-        <div className="platform-row-actions">
+        <div className="ui-toolbar-actions">
           <button
             className="button button-secondary"
             onClick={() =>
@@ -144,8 +145,8 @@ export function FormDistribusiTemplate({
         </div>
       </div>
 
-      <TableScroll className="tenant-table-scroll">
-        <Table className="tenant-table">
+      <TableScroll frame>
+        <Table>
           <THead>
             <Row>
               <HeaderCell scope="col">
@@ -180,9 +181,7 @@ export function FormDistribusiTemplate({
                 <Cell>
                   <strong>{item.namaDesa ?? "Tanpa nama"}</strong>
                 </Cell>
-                <Cell>
-                  {item.domain ?? <span className="tenant-secondary">Belum ada domain</span>}
-                </Cell>
+                <Cell>{item.domain ?? <SecondaryText>Belum ada domain</SecondaryText>}</Cell>
                 <Cell>{item.themeNama}</Cell>
                 <Cell>
                   <span

@@ -53,7 +53,7 @@ export type NewKehadiranPerangkat = typeof kehadiranPerangkat.$inferInsert;
 /**
  * `kehadiran_pengaduan` — laporan warga atas kehadiran perangkat desa.
  *
- * Meniru `kehadiran_pengaduan` OpenSID: baris dibuat dari layanan mandiri
+ * Baris dibuat dari layanan mandiri
  * (warga menekan "Laporkan" pada daftar kehadiran perangkat), lalu operator
  * hanya dapat menyunting keterangannya pada menu Kehadiran → Pengaduan.
  */
@@ -66,7 +66,7 @@ export const kehadiranPengaduan = mysqlTable(
       .references(() => villages.id, { onDelete: "cascade" }),
     /** Waktu perangkat dilaporkan. */
     waktu: timestamp("waktu").notNull().defaultNow(),
-    /** `false` = belum ditindaklanjuti, `true` = sudah (setara tinyint OpenSID). */
+    /** `false` = belum ditindaklanjuti, `true` = sudah. */
     status: boolean("status").notNull().default(false),
     keterangan: text("keterangan"),
     /** Pelapor: penduduk yang melaporkan lewat layanan mandiri. */
@@ -90,13 +90,11 @@ export const kehadiranPengaduan = mysqlTable(
   ],
 );
 
-export type KehadiranPengaduan = typeof kehadiranPengaduan.$inferSelect;
-export type NewKehadiranPengaduan = typeof kehadiranPengaduan.$inferInsert;
 
 /**
  * `kehadiran_jam_kerja` — jadwal jam kerja per nama hari.
  *
- * Meniru `kehadiran_jam_kerja` OpenSID: satu baris per hari (Senin–Minggu),
+ * Satu baris per hari (Senin–Minggu),
  * masing-masing punya jam masuk/keluar, status hari kerja/libur, dan
  * keterangan. Unik per desa + nama hari.
  */
@@ -110,7 +108,7 @@ export const kehadiranJamKerja = mysqlTable(
     namaHari: varchar("nama_hari", { length: 65 }).notNull(),
     jamMasuk: time("jam_masuk").notNull(),
     jamKeluar: time("jam_keluar").notNull(),
-    /** `true` = hari kerja, `false` = hari libur (setara tinyint OpenSID). */
+    /** `true` = hari kerja, `false` = hari libur. */
     status: boolean("status").notNull().default(true),
     keterangan: text("keterangan"),
   },
@@ -125,7 +123,7 @@ export type NewKehadiranJamKerja = typeof kehadiranJamKerja.$inferInsert;
 /**
  * `kehadiran_hari_libur` — daftar tanggal libur selain libur mingguan.
  *
- * Meniru `kehadiran_hari_libur` OpenSID: tanggal unik per desa dan keterangan
+ * Tanggal unik per desa dan keterangan
  * wajib diisi. Dipakai untuk menandai hari libur nasional/cuti bersama.
  */
 export const kehadiranHariLibur = mysqlTable(
@@ -149,7 +147,7 @@ export type NewKehadiranHariLibur = typeof kehadiranHariLibur.$inferInsert;
 /**
  * `kehadiran_alasan_keluar` — master alasan keluar saat jam kerja.
  *
- * Meniru `kehadiran_alasan_keluar` OpenSID: alasan wajib, keterangan opsional,
+ * Alasan wajib, keterangan opsional,
  * dan jejak pembuat/pengubah.
  */
 export const kehadiranAlasanKeluar = mysqlTable(

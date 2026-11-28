@@ -54,7 +54,7 @@ export function PaketIdentitasActions({
       <div className="form-stack">
         <form action={ubahFormAction} className="form-stack">
           <input name="id" type="hidden" value={paket.id} />
-          <div className="platform-form-grid">
+          <div className="ui-form-grid">
             <label className="form-field">
               <span className="form-label">Nama paket</span>
               <input
@@ -94,7 +94,7 @@ export function PaketIdentitasActions({
               {ubahState.message}
             </p>
           ) : null}
-          <div className="platform-row-actions">
+          <div className="ui-toolbar-actions">
             <button
               className="button button-primary"
               disabled={ubahPending || !aktif}
@@ -131,7 +131,7 @@ export function PaketIdentitasActions({
               {statusState.message}
             </p>
           ) : null}
-          <div className="platform-row-actions">
+          <div className="ui-toolbar-actions">
             <button
               className={aktif ? "button button-secondary" : "button button-primary"}
               disabled={statusPending || !confirmed}

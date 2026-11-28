@@ -311,7 +311,7 @@ export async function addAnggotaKelompok(
 }
 
 /**
- * Perbarui data seorang anggota (paritas form anggota OpenSID).
+ * Perbarui data seorang anggota.
  *
  * Penduduknya tidak dapat diganti — ganti anggota berarti keluarkan dulu
  * lalu tambahkan lagi.
@@ -336,7 +336,7 @@ export async function updateAnggotaKelompok(
   if (!ok) throw notFound("Anggota tidak ditemukan.");
 }
 
-/** Lepaskan banyak anggota dari kelompoknya sekaligus (paritas OpenSID). */
+/** Lepaskan banyak anggota dari kelompoknya sekaligus. */
 export async function removeAnggotaKelompokMassal(
   kelompokId: number,
   memberIds: readonly number[],
@@ -353,7 +353,7 @@ export async function removeAnggotaKelompokMassal(
   return removeKelompokMemberMassalRow(villageId, kelompokId, ids);
 }
 
-/** Hapus banyak kelompok sekaligus (paritas `delete_all` OpenSID). */
+/** Hapus banyak kelompok sekaligus. */
 export async function deleteKelompokMassal(
   ids: readonly number[],
 ): Promise<HasilHapusMassalKelompok> {
@@ -366,7 +366,7 @@ export async function deleteKelompokMassal(
   return deleteKelompokMassalRow(villageId, unik);
 }
 
-/** Hapus banyak kategori sekaligus (paritas `delete_all` OpenSID). */
+/** Hapus banyak kategori sekaligus. */
 export async function deleteKategoriMassal(
   ids: readonly number[],
 ): Promise<HasilHapusMassalKategori> {

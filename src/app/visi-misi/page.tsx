@@ -8,6 +8,9 @@ import {
   daftarSliderBeranda,
   profilDesaPublik,
 } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { mediaUrl } from "@/lib/media-url";
+import { plainText } from "@/lib/plain-text";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import styles from "./visi-misi.module.css";
@@ -18,30 +21,6 @@ export const metadata: Metadata = {
 };
 export const dynamic = "force-dynamic";
 
-function mediaUrl(value: string | null | undefined, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return `/api/publik/media/${path.map(encodeURIComponent).join("/")}`;
-}
-
-function plainText(value: string | null | undefined): string {
-  return (value ?? "")
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
 function splitMisi(value: string | null | undefined): string[] {
   return (value ?? "")
     .split(/\r?\n|<br\s*\/?\s*>|<\/p>/i)
@@ -51,6 +30,7 @@ function splitMisi(value: string | null | undefined): string[] {
 
 export default async function VisiMisiPage() {
   const desa = await getIdentitasFromRequest();
+  const tema = await muatTemaPublik(desa.id);
   const [profil, albums, slides] = await Promise.all([
     profilDesaPublik(desa.id),
     daftarAlbumGaleri(desa.id),
@@ -79,7 +59,7 @@ export default async function VisiMisiPage() {
       .find(Boolean) ?? null;
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/visi-misi" />
       <section
         className={styles.hero}

@@ -4,7 +4,7 @@ import { SUPLEMEN_RESOURCE } from "@/features/kependudukan/penduduk/domain/suple
 import { hasPermission } from "@/features/pengaturan/rbac/application/authorization";
 import { getCurrentUser } from "@/lib/dal";
 
-/** Unduh contoh format impor terdata (paritas tautan format OpenSID). */
+/** Unduh contoh format impor terdata. */
 export async function GET(
   _request: Request,
   context: RouteContext<"/kependudukan/penduduk/suplemen/[id]/impor/template">,

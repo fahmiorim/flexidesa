@@ -45,7 +45,7 @@ async function pastikanDesaAda(villageId: number): Promise<DesaRetensiRow> {
   return desa;
 }
 
-export interface StatusLifecycleDesa {
+interface StatusLifecycleDesa {
   id: number;
   name: string | null;
   slug: string | null;

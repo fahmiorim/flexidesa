@@ -27,7 +27,7 @@ export function buatTokenFormEksternal(
   return `${kedaluwarsa}.${tandaTangan(secret, surveyId, kedaluwarsa)}`;
 }
 
-export type HasilVerifikasiTokenForm = "valid" | "kedaluwarsa" | "tidak-valid";
+type HasilVerifikasiTokenForm = "valid" | "kedaluwarsa" | "tidak-valid";
 
 /** Periksa token formulir eksternal terhadap survei yang dituju. */
 export function verifikasiTokenFormEksternal(

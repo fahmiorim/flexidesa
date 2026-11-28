@@ -9,10 +9,11 @@ import {
   daftarPerangkatPublik,
   daftarSliderBeranda,
 } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
+import { mediaUrl } from "@/lib/media-url";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import { BpdSection, LembagaDesaSection, PerangkatDesaSection } from "./bagian-lembaga";
-import { mediaUrl } from "./bagian-pemerintahan";
 import { StrukturOrganisasi } from "./bagian-struktur";
 import { TugasFungsiSection } from "./bagian-tugas";
 import styles from "./pemerintahan.module.css";
@@ -25,6 +26,7 @@ export const dynamic = "force-dynamic";
 
 export default async function PemerintahanPage() {
   const desa = await getIdentitasFromRequest();
+  const tema = await muatTemaPublik(desa.id);
   const [perangkat, slides, albums, lembagaPublik] = await Promise.all([
     daftarPerangkatPublik(desa.id),
     daftarSliderBeranda(desa.id),
@@ -50,7 +52,7 @@ export default async function PemerintahanPage() {
   );
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader
         desa={desa}
         location={location}

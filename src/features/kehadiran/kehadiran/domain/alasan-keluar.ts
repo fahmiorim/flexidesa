@@ -5,14 +5,13 @@ import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 /**
  * Domain Alasan Keluar Kehadiran.
  *
- * Meniru menu Kehadiran → Alasan Keluar OpenSID
- * (`kehadiran_alasan_keluar`): alasan wajib diisi, keterangan opsional.
+ * Alasan wajib diisi, keterangan opsional.
  */
 
 /** Slug modul sekaligus resource izin (lihat template tenant). */
 export const ALASAN_KELUAR_RESOURCE = RESOURCES.alasanKeluar;
 
-/** Panjang maksimal keterangan; sama dengan `maxlength="300"` form OpenSID. */
+/** Panjang maksimal keterangan (300 karakter). */
 export const KETERANGAN_ALASAN_MAKS = 300;
 
 /** Batas kolom `kehadiran_alasan_keluar.alasan` (varchar 255). */

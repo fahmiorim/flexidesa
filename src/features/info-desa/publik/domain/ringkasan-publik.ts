@@ -14,7 +14,7 @@ export interface BarisInventarisPublik {
   kondisi: string;
 }
 
-export interface RekapKategoriInventaris {
+interface RekapKategoriInventaris {
   nama: string;
   jumlah: number;
   unit: string;

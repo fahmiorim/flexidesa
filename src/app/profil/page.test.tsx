@@ -14,6 +14,8 @@ const sumber = vi.hoisted(() => ({
   daftarFotoAlbum: vi.fn(),
   daftarPotensiDesa: vi.fn(),
   daftarSaranaPrasarana: vi.fn(),
+  muatTemaPublik: vi.fn(),
+  resolveTema: vi.fn(),
 }));
 
 vi.mock("@/features/info-desa/desa/application/resolve-village", () => ({
@@ -32,6 +34,15 @@ vi.mock("@/features/info-desa/publik/application/konten-publik", () => ({
 vi.mock("@/features/program-data-desa/potensi-sarana/application/kontrak", () => ({
   daftarPotensiDesa: sumber.daftarPotensiDesa,
   daftarSaranaPrasarana: sumber.daftarSaranaPrasarana,
+}));
+vi.mock("@/features/info-desa/publik/application/website-admin", () => ({
+  muatTemaPublik: sumber.muatTemaPublik,
+}));
+// Registry tema asli tidak diimpor: halaman memanggil `resolveTema` hanya
+// untuk memilih renderer tema, dan test mau bukti markup bawaan. Mock ini
+// membuat test hermetis — tidak ada akses DB/registry sungguhan.
+vi.mock("@/themes/registry", () => ({
+  resolveTema: sumber.resolveTema,
 }));
 vi.mock("../public-site-layout", () => ({
   PublicSiteHeader: () => null,
@@ -109,6 +120,9 @@ describe("ProfilDesaPage", () => {
     sumber.daftarFotoAlbum.mockResolvedValue([]);
     sumber.daftarPotensiDesa.mockResolvedValue([]);
     sumber.daftarSaranaPrasarana.mockResolvedValue([]);
+    // Tidak ada tema aktif: halaman memakai markup bawaan, bukan renderer tema.
+    sumber.muatTemaPublik.mockResolvedValue(null);
+    sumber.resolveTema.mockReturnValue(null);
   });
 
   it("menampilkan luas wilayah yang tersimpan dalam profil desa", async () => {

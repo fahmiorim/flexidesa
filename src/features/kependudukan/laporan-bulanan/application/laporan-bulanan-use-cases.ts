@@ -20,7 +20,7 @@ import { RESOURCES } from "@/features/pengaturan/rbac/domain/resources";
 import { requirePermission } from "@/lib/dal";
 
 /** Laporan bulanan lengkap dengan identitas desa untuk kepala laporan. */
-export interface LaporanBulanan {
+interface LaporanBulanan {
   periode: PeriodeBulanan;
   labelPeriode: string;
   namaDesa: string | null;
@@ -88,8 +88,8 @@ export interface PamongPenandaTangan {
 }
 
 /**
- * Daftar aparat aktif untuk pemilih penanda tangan cetak (paritas dialog cetak
- * OpenSID). Kepala desa dipakai sebagai pilihan awal bila tersedia.
+ * Daftar aparat aktif untuk pemilih penanda tangan cetak. Kepala desa
+ * dipakai sebagai pilihan awal bila tersedia.
  */
 export async function getPamongPenandaTangan(): Promise<PamongPenandaTangan[]> {
   const user = await requirePermission(RESOURCES.laporanBulanan, "read");

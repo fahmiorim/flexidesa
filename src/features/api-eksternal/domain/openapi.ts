@@ -10,7 +10,7 @@
  * status yang tidak pernah dikembalikan route.
  */
 
-export const JALUR_API_EKSTERNAL = {
+const JALUR_API_EKSTERNAL = {
   openapi: "/api/eksternal/openapi",
   tteTandaTangan: "/api/eksternal/tte/tanda-tangan",
   surat: "/api/eksternal/surat",
@@ -31,7 +31,7 @@ export function buatSpesifikasiOpenApiEksternal(serverUrl: string) {
   return {
     openapi: "3.1.0",
     info: {
-      title: "API Eksternal SID Desa",
+      title: "API Eksternal FlexiDesa",
       version: "1.0.0",
       description:
         "API mitra untuk verifikasi surat dan tanda tangan elektronik. " +

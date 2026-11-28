@@ -33,7 +33,7 @@ describe("kelompokUmurUntuk", () => {
 });
 
 describe("susunNamaRentang", () => {
-  it("membentuk label rentang seperti OpenSID", () => {
+  it("membentuk label rentang", () => {
     expect(susunNamaRentang(0, 5)).toBe("0 s/d 5 Tahun");
     expect(susunNamaRentang(6, 6)).toBe("6 Tahun");
     expect(susunNamaRentang(60, null)).toBe("Di atas 60 Tahun");

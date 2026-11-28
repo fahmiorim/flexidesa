@@ -5,23 +5,12 @@ import Link from "next/link";
 import { PageHeading } from "@/components/shell/page-heading";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { getDashboardAbsensiData } from "@/features/kehadiran/kepegawaian/application/absensi";
+import { mediaUrl } from "@/lib/media-url";
 
 import styles from "./absensi-kepegawaian.module.css";
 
 export const metadata: Metadata = { title: "Absensi & Kepegawaian" };
 const angka = new Intl.NumberFormat("id-ID");
-
-function mediaUrl(value: string | null | undefined, villageId: number): string | null {
-  if (!value) return null;
-  const segments = value.split(/[\\\\/]/).filter(Boolean);
-  if (
-    !segments.length ||
-    segments.some((part) => part === "." || part === ".." || part.includes(".."))
-  )
-    return null;
-  const path = segments[0] === String(villageId) ? segments : [String(villageId), ...segments];
-  return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
-}
 
 export default async function DashboardAbsensiPage() {
   const data = await getDashboardAbsensiData();

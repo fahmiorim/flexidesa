@@ -104,8 +104,8 @@ export type Umum = {
   penomoranSurat: number;
 };
 
-/** Satu opsi paket tema, bentuknya mengikuti `config.json` tema (ala OpenSID). */
-export type TemaOpsiDefinisi = {
+/** Satu opsi paket tema, bentuknya mengikuti `config.json` tema. */
+type TemaOpsiDefinisi = {
   key: string;
   label: string;
   description: string;
@@ -186,7 +186,7 @@ export type ProfilForm = {
   sejarah: string;
   sambutan: string;
   alamat: string;
-  /** Kanal kontak yang juga disunting dari Identitas Desa (paritas OpenSID). */
+  /** Kanal kontak yang juga disunting dari Identitas Desa. */
   email: string;
   telepon: string;
   nomorOperator: string;

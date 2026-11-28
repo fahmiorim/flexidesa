@@ -28,7 +28,7 @@ const buatKunciSchema = z.object({
   expiresAt: z.coerce.date().nullable().optional(),
 });
 
-export interface KunciApiBaru {
+interface KunciApiBaru {
   id: number;
   key: string;
   prefix: string;

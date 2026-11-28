@@ -145,6 +145,7 @@ const envSchema = z
         APP_URL,
         PLATFORM_HOSTS,
         TENANT_LEGACY_SINGLE_HOST_FALLBACK,
+        TRUST_PROXY,
         RESEND_API_KEY,
         RESEND_FROM,
       },
@@ -171,10 +172,22 @@ const envSchema = z
             "TENANT_LEGACY_SINGLE_HOST_FALLBACK tidak boleh aktif pada production FlexiDesa.",
         });
       }
+
+      // Audit keamanan F1: rate limit publik & audit IP memakai alamat IP
+      // klien. Tanpa proxy tepercaya, semua pengunjung anonim berbagi satu
+      // bucket rate limit (DoS silang) dan IP audit tidak dapat dipercaya.
+      if (NODE_ENV === "production" && !TRUST_PROXY) {
+        context.addIssue({
+          code: "custom",
+          path: ["TRUST_PROXY"],
+          message:
+            "TRUST_PROXY wajib true pada production agar alamat IP klien dapat dipercaya untuk rate limit dan audit.",
+        });
+      }
     },
   );
 
-export type Env = z.infer<typeof envSchema>;
+type Env = z.infer<typeof envSchema>;
 
 /** Validasi objek environment dan kembalikan nilai bertipe. */
 export function parseEnv(source: Record<string, string | undefined> = process.env): Env {

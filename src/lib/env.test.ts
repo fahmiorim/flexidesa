@@ -43,10 +43,10 @@ describe("parseEnv", () => {
       DATABASE_URL: "mysql://x",
       BETTER_AUTH_SECRET: SECRET,
       RESEND_API_KEY: "re_test_key",
-      RESEND_FROM: "SID Desa <notifikasi@example.test>",
+      RESEND_FROM: "FlexiDesa <notifikasi@example.test>",
     });
 
-    expect(env.RESEND_FROM).toBe("SID Desa <notifikasi@example.test>");
+    expect(env.RESEND_FROM).toBe("FlexiDesa <notifikasi@example.test>");
   });
   it("menolak token webhook email yang terlalu pendek", () => {
     expect(() =>
@@ -105,9 +105,24 @@ describe("parseEnv", () => {
 
     expect(parseEnv(dasar).TENANT_LEGACY_SINGLE_HOST_FALLBACK).toBe(true);
     expect(
-      parseEnv({ ...dasar, NODE_ENV: "production", APP_URL: "https://sid.example.go.id" })
-        .TENANT_LEGACY_SINGLE_HOST_FALLBACK,
+      parseEnv({
+        ...dasar,
+        NODE_ENV: "production",
+        APP_URL: "https://sid.example.go.id",
+        TRUST_PROXY: "true",
+      }).TENANT_LEGACY_SINGLE_HOST_FALLBACK,
     ).toBe(true);
+  });
+
+  it("menolak TRUST_PROXY false pada production (audit keamanan F1)", () => {
+    expect(() =>
+      parseEnv({
+        NODE_ENV: "production",
+        APP_URL: "https://sid.example.go.id",
+        DATABASE_URL: "mysql://x",
+        BETTER_AUTH_SECRET: SECRET,
+      }),
+    ).toThrow(/TRUST_PROXY wajib true pada production/);
   });
 
   it("menerima token webhook email yang kuat", () => {

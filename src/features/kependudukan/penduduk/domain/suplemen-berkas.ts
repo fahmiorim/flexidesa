@@ -13,18 +13,18 @@ import type { KolomImpor } from "@/lib/spreadsheet";
 
 /** Panjang maksimum nama kolom isian dan nilai teksnya. */
 export const MAKS_PANJANG_KOLOM_ISIAN = 60;
-export const MAKS_PANJANG_NILAI_ISIAN = 200;
+const MAKS_PANJANG_NILAI_ISIAN = 200;
 /** Batas jumlah kolom isian per suplemen agar tabel tetap terbaca. */
-export const MAKS_KOLOM_ISIAN = 20;
+const MAKS_KOLOM_ISIAN = 20;
 
 /** Satu pasangan nama kolom → nilai isian. */
-export interface IsianPasangan {
+interface IsianPasangan {
   nama: string;
   nilai: string;
 }
 
 /** Data isian satu baris terdata. */
-export type IsianTerdata = Record<string, string>;
+type IsianTerdata = Record<string, string>;
 
 /**
  * Rapikan pasangan isian menjadi objek.
@@ -84,7 +84,7 @@ export function kolomIsian(rows: readonly { isian: IsianTerdata }[]): string[] {
 // --- Impor ------------------------------------------------------------------
 
 /** Kunci kolom impor terdata suplemen. */
-export type KunciImporSuplemen = "sasaran";
+type KunciImporSuplemen = "sasaran";
 
 /**
  * Kolom tetap pada berkas impor terdata.
@@ -104,7 +104,7 @@ export const KOLOM_IMPOR_SUPLEMEN: readonly KolomImpor<KunciImporSuplemen>[] = [
 
 // --- Ekspor & laporan -------------------------------------------------------
 
-/** Satu baris terdata untuk ekspor (paritas kolom "Ekspor" OpenSID). */
+/** Satu baris terdata untuk ekspor. */
 export interface SuplemenEksporRow {
   /** NIK penduduk atau nomor KK, sesuai sasaran. */
   peserta: string;
@@ -117,11 +117,11 @@ export interface SuplemenEksporRow {
 }
 
 /**
- * Catatan kaki berkas ekspor (paritas catatan `ekspor` OpenSID).
+ * Catatan kaki berkas ekspor.
  * Ditulis di bawah tabel agar berkas hasil ekspor bisa dipakai ulang sebagai
  * berkas impor setelah kolom peserta disesuaikan.
  */
-export const CATATAN_EKSPOR_SUPLEMEN: readonly string[] = [
+const CATATAN_EKSPOR_SUPLEMEN: readonly string[] = [
   "Catatan:",
   "1. Sesuaikan kolom peserta (A) berdasarkan sasaran : - penduduk = nik, - keluarga = no. kk",
   "2. Kolom Peserta (A) wajib di isi",
@@ -201,21 +201,21 @@ export function suplemenFilename(namaSuplemen: string): string {
 }
 
 /** Rekapitulasi seluruh suplemen desa. */
-export interface SuplemenRekapInput {
+interface SuplemenRekapInput {
   id: number;
   nama: string;
   sasaran: number;
   jumlahTerdata: number;
 }
 
-export interface SuplemenRekapRow {
+interface SuplemenRekapRow {
   nama: string;
   sasaran: string;
   jumlahTerdata: number;
   percentage: number;
 }
 
-export interface SuplemenRekap {
+interface SuplemenRekap {
   totalSuplemen: number;
   totalTerdata: number;
   rows: SuplemenRekapRow[];

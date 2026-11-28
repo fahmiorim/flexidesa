@@ -162,7 +162,7 @@ describe("validasi suplemen - data_form_isian", () => {
   });
 });
 
-describe("form isian dinamis (paritas form_isian OpenSID)", () => {
+describe("form isian dinamis", () => {
   it("membaca bentuk kanonis camelCase", () => {
     const fields = bacaFormIsian([
       {
@@ -182,7 +182,7 @@ describe("form isian dinamis (paritas form_isian OpenSID)", () => {
     expect(fields[0]?.kolom).toBe(6);
   });
 
-  it("menerima bentuk snake_case OpenSID dan string JSON", () => {
+  it("menerima bentuk snake_case dan string JSON", () => {
     const fields = bacaFormIsian(
       JSON.stringify([
         {

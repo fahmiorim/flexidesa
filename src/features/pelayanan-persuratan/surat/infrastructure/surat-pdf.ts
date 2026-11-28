@@ -11,7 +11,7 @@ import { toBuffer as qrToBuffer } from "qrcode";
 import { bacaMedia } from "@/features/media/infrastructure/media-storage";
 import { formatTanggalIndonesia } from "@/features/pelayanan-persuratan/surat/domain/surat";
 
-export interface SuratPdfIdentity {
+interface SuratPdfIdentity {
   namaDesa: string | null;
   kodeDesa: string | null;
   namaKecamatan: string | null;
@@ -53,7 +53,7 @@ export interface SuratPdfInput {
   tinggiFooterCm?: number | null;
   /** Logo kop dari Pengaturan Surat; kosong = logo identitas desa. */
   kopLogo?: string | null;
-  /** Garis ganda di bawah kop (bawaan OpenSID). */
+  /** Garis ganda di bawah kop. */
   garisGanda?: boolean;
   /** Lebar logo kop dalam persen lebar isi (bawaan 10%). */
   lebarLogoPersen?: number | null;

@@ -14,7 +14,7 @@ import {
 
 // --- Chart of accounts ------------------------------------------------------
 
-export interface TemplateRow {
+interface TemplateRow {
   uuid: string;
   parentUuid: string | null;
   uraian: string;
@@ -76,13 +76,13 @@ export async function listKeuanganTahunTersedia(villageId: number): Promise<numb
   return rows.map((row) => row.tahun);
 }
 
-export interface KeuanganBarisUpsert {
+interface KeuanganBarisUpsert {
   templateUuid: string;
   anggaran: string;
   realisasi: string;
 }
 
-export interface OpsiSimpanKeuangan {
+interface OpsiSimpanKeuangan {
   /**
    * Abaikan `realisasi` pada input dan pertahankan nilai yang sudah tersimpan.
    *
@@ -211,7 +211,7 @@ export async function saveKeuanganNilai(
 
 // --- Realisasi per triwulan ------------------------------------------------
 
-export interface TriwulanRow {
+interface TriwulanRow {
   templateUuid: string;
   tw1: string;
   tw2: string;

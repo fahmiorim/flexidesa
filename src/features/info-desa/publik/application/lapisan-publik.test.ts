@@ -5,15 +5,18 @@ import { describe, expect, it } from "vitest";
 /**
  * Guard batas lapisan seluruh route aplikasi.
  *
- * Nama berkas dipertahankan agar rujukan dokumen tetap, tetapi cakupannya kini
- * bukan hanya route publik: admin, warga, publik, dan API sama-sama wajib
- * melewati use case, bukan mengimpor `@/db` atau folder infrastructure fitur.
+ * Cakupannya bukan hanya route publik: admin, warga, publik, dan API
+ * sama-sama wajib melewati use case, bukan mengimpor `@/db` atau folder
+ * infrastructure fitur.
  */
 const AKAR_APP = path.join(process.cwd(), "src", "app");
 const AKAR_FITUR = path.join(process.cwd(), "src", "features");
 const POLA_INFRASTRUKTUR = /from\s+["']@\/features\/[^"']+\/infrastructure\/|from\s+["']@\/db["']/;
 /** Lapisan application boleh memanggil repository, tetapi tidak boleh menyentuh `db`. */
 const POLA_DB = /from\s+["']@\/db(?:\/[^"']*)?["']/;
+/** Impor lintas fitur wajib alias `@/`; relatif hanya untuk sefolder/CSS. */
+const POLA_RELATIF_LINTAS_FITUR =
+  /from\s+["']\.\.\/[^"']*features\/|from\s+["']\.\.\/[^"']*\/db["']/;
 
 function daftarBerkas(direktori: string): string[] {
   return readdirSync(direktori, { withFileTypes: true }).flatMap((entri) => {
@@ -52,6 +55,32 @@ describe("batas lapisan route aplikasi", () => {
     ).map(relatif);
 
     expect(pelanggaran).toEqual([]);
+  });
+
+  it("tidak memakai impor relatif lintas fitur atau db", () => {
+    const semua = [...BERKAS_APP, ...daftarBerkas(AKAR_FITUR)];
+    const pelanggaran = semua
+      .filter((berkas) => POLA_RELATIF_LINTAS_FITUR.test(readFileSync(berkas, "utf8")))
+      .map(relatif);
+
+    expect(pelanggaran).toEqual([]);
+  });
+
+  /**
+   * `not-found.tsx` adalah berkas khusus Next.js di root app: ia ikut dipindai
+   * guard di atas dan WAJIB lolos. Resolusi tema sadar-404 tidak memakai
+   * `getIdentitasFromRequest` (ia memanggil `notFound()` sendiri), melainkan
+   * use case application `getVillageIdByHost`/`muatTemaPublik` plus registry
+   * tema statis — jadi tidak ada import infrastructure/db langsung.
+   * Test ini mengunci perilaku itu agar refactor 404 tidak kembali melanggar.
+   */
+  it("not-found.tsx tetap lewat use case application", () => {
+    const berkas = path.join(AKAR_APP, "not-found.tsx");
+    expect(BERKAS_APP).toContain(berkas);
+
+    const isi = readFileSync(berkas, "utf8");
+    expect(POLA_INFRASTRUKTUR.test(isi)).toBe(false);
+    expect(isi).toMatch(/getVillageIdByHost|muatTemaPublik/);
   });
 });
 

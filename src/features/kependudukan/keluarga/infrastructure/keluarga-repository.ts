@@ -483,7 +483,7 @@ export async function listBantuanKeluargaOptions(
 
 /**
  * Nomor KK sementara berikutnya: `0` + kode desa 10 digit + urutan 5 digit.
- * Format ini sama dengan OpenSID dan tetap 16 angka sehingga index unik berlaku.
+ * Format ini tetap 16 angka sehingga index unik berlaku.
  */
 export async function nextTemporaryKeluargaNumber(villageId: number): Promise<string> {
   const [village] = await db
@@ -569,8 +569,8 @@ export async function findKeluargaHeadCandidate(
 
 /**
  * Simpan KK baru; bila kepala keluarga dipilih, hubungkan penduduk dan catat
- * riwayat keanggotaan dalam transaksi yang sama. Ini meniru alur OpenSID
- * "Tambah KK dari penduduk sudah ada" agar tidak ada KK tanpa kepala keluarga
+ * riwayat keanggotaan dalam transaksi yang sama agar tidak ada KK
+ * tanpa kepala keluarga
  * akibat kegagalan di tengah proses.
  */
 export async function insertKeluarga(
@@ -654,7 +654,7 @@ export async function pindahWilayahKeluarga(
 /**
  * Pecah KK: buat KK baru dari seluruh anggota yang masih hidup, lalu jadikan
  * salah satunya kepala keluarga. KK lama tetap menyimpan riwayat anggota yang
- * sudah meninggal/pindah, sesuai perilaku OpenSID.
+ * sudah meninggal/pindah.
  */
 export async function pecahKeluarga(
   villageId: number,

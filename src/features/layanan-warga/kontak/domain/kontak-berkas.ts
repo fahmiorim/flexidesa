@@ -30,8 +30,6 @@ export interface AnggotaGrupEksporRow {
 // --- Impor ------------------------------------------------------------------
 
 /** Kunci kolom impor kontak. */
-export type KunciImporKontak =
-  "nama" | "telepon" | "email" | "telegram" | "hubungWarga" | "keterangan" | "residentId";
 
 /**
  * Kolom yang dibaca dari berkas impor.

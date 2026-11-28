@@ -41,13 +41,13 @@ export const letterTypes = mysqlTable(
     formIsian: text("form_isian"),
     /** Kode isian kustom (JSON) */
     kodeIsian: text("kode_isian"),
-    /** Daftar id syarat surat (JSON array), parity `syarat_surat`. */
+    /** Daftar id syarat surat (JSON array). */
     syaratSurat: text("syarat_surat"),
-    /** Nama lampiran yang menyertai surat (JSON array string), parity `lampiran`. */
+    /** Nama lampiran yang menyertai surat (JSON array string). */
     lampiran: text("lampiran"),
     requiresResident: boolean("requires_resident").notNull().default(true),
     isActive: boolean("is_active").notNull().default(true),
-    /** Tersedia di layanan mandiri warga, parity `mandiri` OpenSID. */
+    /** Tersedia di layanan mandiri warga. */
     mandiri: boolean("mandiri").notNull().default(false),
 
     /** Pola penomoran, mis. `[kode_surat]/[nomor]/[kode_desa]/[tahun]`. */
@@ -97,5 +97,3 @@ export const letterTypes = mysqlTable(
   ],
 );
 
-export type LetterType = typeof letterTypes.$inferSelect;
-export type NewLetterType = typeof letterTypes.$inferInsert;

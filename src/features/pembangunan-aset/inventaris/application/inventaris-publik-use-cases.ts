@@ -13,7 +13,7 @@ import {
 import type { InventarisRow } from "@/features/pembangunan-aset/inventaris/domain/inventaris";
 import { listInventaris } from "@/features/pembangunan-aset/inventaris/infrastructure/inventaris-repository";
 
-export type InventarisPublikRow = Pick<
+type InventarisPublikRow = Pick<
   InventarisRow,
   | "id"
   | "kategoriId"
@@ -57,7 +57,7 @@ function barisAmanUntukPublik(
   };
 }
 
-export interface InventarisPublik {
+interface InventarisPublik {
   rows: InventarisPublikRow[];
   rekap: RekapInventaris;
   /** Pilihan filter dari seluruh data desa (bukan hanya hasil saringan). */

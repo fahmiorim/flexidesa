@@ -64,7 +64,7 @@ function mapRow(row: BarisPengaduan): PengaduanRow {
   return { ...row, kategori: normalizeKategori(row.kategori), status: normalizeStatus(row.status) };
 }
 
-export interface FilterPengaduan {
+interface FilterPengaduan {
   status?: StatusPengaduan;
   kategori?: string;
   cari?: string;
@@ -133,7 +133,7 @@ export async function getPengaduanByTiket(
   return row ? mapRow(row) : null;
 }
 
-export interface NilaiPengaduanBaru {
+interface NilaiPengaduanBaru {
   nomorTiket: string;
   kategori: string;
   judul: string;
@@ -160,7 +160,7 @@ export async function insertPengaduan(
   return row.id;
 }
 
-export interface NilaiTanggapan {
+interface NilaiTanggapan {
   status: StatusPengaduan;
   tanggapan: string | null;
   publik: boolean;

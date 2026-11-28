@@ -12,7 +12,7 @@ import {
 } from "@/features/pelayanan-persuratan/surat/infrastructure/master-repository";
 import { requirePermission } from "@/lib/dal";
 
-export interface CetakSuratPageData {
+interface CetakSuratPageData {
   rows: CetakSuratRow[];
   /** Jumlah jenis surat aktif yang dapat dicetak. */
   jumlahJenis: number;
@@ -23,8 +23,8 @@ export interface CetakSuratPageData {
 /**
  * Katalog Cetak Surat desa aktif.
  *
- * Hanya jenis surat aktif yang ditampilkan; sama seperti OpenSID yang
- * menyaring `kunci = KUNCI_DISABLE` pada `Surat@index`. Jumlah surat dihitung
+ * Hanya jenis surat aktif (tidak dinonaktifkan) yang ditampilkan. Jumlah
+ * surat dihitung
  * sekali untuk semua jenis agar halaman tetap ringan.
  */
 export async function getCetakSuratData(): Promise<CetakSuratPageData> {

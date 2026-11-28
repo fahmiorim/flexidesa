@@ -176,14 +176,14 @@ export async function buildDptPdf(params: ListDptParams, sensor: boolean): Promi
   return buildDptPdfFile({ ...data, namaDesa: data.namaDesa ?? "Desa", sensor });
 }
 
-/** XLSX daftar calon pemilih; kolom cetak OpenSID. */
+/** XLSX daftar calon pemilih; kolom cetak. */
 export async function buildDptXlsx(params: ListDptParams, sensor: boolean): Promise<Uint8Array> {
   const data = await ambilDataEksporDpt(params);
   return buildDptXlsxFile({ ...data, namaDesa: data.namaDesa ?? "Desa", sensor });
 }
 
 /** Identitas pemilihan aktif + rekapitulasi pemilih per wilayah. */
-export interface DptRekapData {
+interface DptRekapData {
   rekap: DptRekap;
   election: ElectionDTO | null;
   namaDesa: string | null;

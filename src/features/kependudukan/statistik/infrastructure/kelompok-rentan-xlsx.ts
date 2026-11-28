@@ -10,12 +10,12 @@ import {
 /**
  * Unduhan laporan kelompok rentan dalam bentuk Excel.
  *
- * Isi mengikuti hasil cetak OpenSID (kop, judul Lampiran A-9, header dua baris,
+ * Isi mengikuti hasil cetak (kop, judul laporan, header dua baris,
  * baris wilayah, dan total), bukan CSV, sehingga berkas Excel yang diunduh
  * memuat tabel yang sama dengan yang tercetak.
  */
 
-export interface KelompokRentanXlsxInput {
+interface KelompokRentanXlsxInput {
   rows: readonly BarisKelompokRentan[];
   total: BarisKelompokRentan;
   kabupaten: string | null;
@@ -71,7 +71,7 @@ export async function buildKelompokRentanXlsx(input: KelompokRentanXlsxInput): P
     ...Array.from({ length: 18 }, () => ({ width: 9 })),
   ];
 
-  // Kop laporan, sama dengan halaman cetak OpenSID.
+  // Kop laporan.
   sheet.mergeCells(`A1:${KOLOM_TERAKHIR}1`);
   const kop = sheet.getCell("A1");
   kop.value = `PEMERINTAH KABUPATEN/KOTA ${input.kabupaten?.toUpperCase() ?? "—"}`;
@@ -175,7 +175,7 @@ export async function buildKelompokRentanXlsx(input: KelompokRentanXlsxInput): P
     beriBingkai(row);
   }
 
-  // Total mengikuti tfoot OpenSID: label melebar sampai kolom RT, lalu angka
+  // Total: label melebar sampai kolom RT, lalu angka
   // dimulai dari kolom umur (kolom KK dan sebelumnya kosong).
   const totalRow = sheet.addRow(["Total", "", "", ...new Array(18).fill(null)]);
   sheet.mergeCells(totalRow.number, 1, totalRow.number, 5);

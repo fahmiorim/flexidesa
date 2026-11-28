@@ -33,4 +33,3 @@ export const mailboxPesan = mysqlTable(
   ],
 );
 
-export type MailboxPesan = typeof mailboxPesan.$inferSelect;

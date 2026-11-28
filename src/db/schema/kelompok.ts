@@ -32,7 +32,7 @@ export const kelompokMaster = mysqlTable(
     /** Tipe kategori; lihat `KELOMPOK_TIPE` ("kelompok"). Lembaga desa dikelola di `lembaga_master`. */
     type: varchar("type", { length: 20 }).notNull(),
 
-    /** Deskripsi kategori (paritas `deskripsi` OpenSID). */
+    /** Deskripsi kategori. */
     description: varchar("description", { length: 500 }),
 
     createdAt: timestamp("created_at").notNull().defaultNow(),
@@ -51,10 +51,8 @@ export const kelompokMaster = mysqlTable(
  * `kelompok` — kelompok masyarakat.
  *
  * Lembaga desa dikelola terpisah di `lembaga_desa` (modul pemerintahan).
- * Berbeda dari sistem rujukan yang menyimpan `id_ketua` di tabel kelompok
- * (berisiko tidak sinkron dengan jabatan anggota), di sini **ketua diturunkan**
- * dari anggota yang berjabatan KETUA — satu sumber kebenaran, tanpa penanda
- * sentinel `-9999`.
+ * Ketua **diturunkan** dari anggota yang berjabatan KETUA — satu sumber
+ * kebenaran, tanpa penanda sentinel `-9999`.
  */
 export const kelompok = mysqlTable(
   "kelompok",
@@ -127,7 +125,7 @@ export const kelompokAnggota = mysqlTable(
     /** Nomor SK jabatan (opsional). */
     decreeNumber: varchar("decree_number", { length: 100 }),
 
-    /** Keterangan anggota (paritas `keterangan` OpenSID). */
+    /** Keterangan anggota. */
     keterangan: varchar("keterangan", { length: 300 }),
 
     /**

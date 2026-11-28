@@ -103,7 +103,7 @@ export async function getRumahTanggaReference(): Promise<RumahTanggaReferenceDat
  * Kelas sosial & daftar wilayah diambil dari data desa yang benar-benar ada,
  * sehingga pilihan filter selalu relevan.
  */
-export interface RtmFilterOptions {
+interface RtmFilterOptions {
   kelasSosial: number[];
   dusun: string[];
   rw: string[];
@@ -323,7 +323,7 @@ export async function removeAnggotaRumahTangga(residentId: number): Promise<void
 }
 
 /**
- * Lepaskan banyak anggota dari RTM-nya sekaligus (paritas OpenSID).
+ * Lepaskan banyak anggota dari RTM-nya sekaligus.
  *
  * Mengembalikan jumlah anggota yang benar-benar dilepas.
  */

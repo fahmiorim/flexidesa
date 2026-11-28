@@ -22,7 +22,7 @@ import type {
   SuratListRow,
 } from "@/features/pelayanan-persuratan/surat/domain/surat";
 
-export interface ListSuratParams {
+interface ListSuratParams {
   villageId: number;
   search: string;
   status: LetterStatus | null;
@@ -30,7 +30,7 @@ export interface ListSuratParams {
   pageSize: number;
 }
 
-export interface SuratListResult {
+interface SuratListResult {
   rows: SuratListRow[];
   total: number;
   page: number;
@@ -138,7 +138,7 @@ export async function listAntreanVerifikasi(
   return rows.map((row) => ({ ...row, typeCode: row.typeCode ?? "" }));
 }
 
-export interface SuratRecapRow {
+interface SuratRecapRow {
   status: LetterStatus;
   total: number;
 }
@@ -516,7 +516,7 @@ export async function suratNumberExistsWithAgenda(
  * Hanya metadata yang aman dibagikan; data pribadi pemohon tidak ikut.
  */
 
-export interface ListLetterNumberArchiveParams {
+interface ListLetterNumberArchiveParams {
   q?: string;
   year?: number;
   typeId?: number;

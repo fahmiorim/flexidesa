@@ -17,7 +17,7 @@ import {
  * yang menyediakan data ter-scope tenant.
  */
 
-export interface LaporanIdmInput {
+interface LaporanIdmInput {
   tahun: number;
   indikator: readonly IdmIndikatorDTO[];
   sdgs: readonly SdgsDTO[];

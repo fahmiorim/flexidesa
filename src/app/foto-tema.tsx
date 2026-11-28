@@ -4,7 +4,7 @@ import { fotoFallbackUrl } from "@/themes/types";
 
 /**
  * Gambar "foto tidak tersedia" milik tema aktif tenant (opsi
- * `foto_tidak_tersedia` pada konfigurasi tema ala OpenSID).
+ * `foto_tidak_tersedia` pada konfigurasi tema).
  *
  * Opsi ini berisi path media tenant, bukan biner di JSON; path divalidasi
  * `fotoFallbackUrl` agar tidak dapat menunjuk berkas desa lain atau URL luar.

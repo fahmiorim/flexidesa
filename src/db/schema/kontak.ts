@@ -103,3 +103,30 @@ export const anggotaGrupKontak = mysqlTable(
     }).onDelete("cascade"),
   ],
 );
+
+export const kontakPesanArsip = mysqlTable(
+  "kontak_pesan_arsip",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    villageId: int("village_id")
+      .notNull()
+      .references(() => villages.id, { onDelete: "cascade" }),
+    grupId: int("grup_id").notNull(),
+    subjek: varchar("subjek", { length: 200 }).notNull(),
+    isi: text("isi").notNull(),
+    createdBy: varchar("created_by", { length: 36 }).notNull(),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    index("kontak_pesan_arsip_village_idx").on(t.villageId),
+    index("kontak_pesan_arsip_village_grup_idx").on(t.villageId, t.grupId),
+    // Composite `CASCADE` mengikuti pola `anggota_grup_kontak.grup_id`:
+    // arsip pesan milik grup ikut terhapus bersama grupnya, dan pasangan
+    // (`village_id`, `grup_id`) lintas desa ditolak database.
+    foreignKey({
+      name: "kontak_pesan_arsip_grup_tenant_fk",
+      columns: [t.villageId, t.grupId],
+      foreignColumns: [kontakGrup.villageId, kontakGrup.id],
+    }).onDelete("cascade"),
+  ],
+);

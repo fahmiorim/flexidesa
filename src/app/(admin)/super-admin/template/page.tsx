@@ -7,12 +7,14 @@ import {
   PlatformCard,
   PlatformPageHeader,
   PlatformStat,
+  PlatformStatGrid,
 } from "@/features/multi-desa/presentation/platform-ui";
+import { resolveTema } from "@/themes/registry";
 
 import { pastikanSuperAdmin } from "../guard";
 
 export const metadata: Metadata = {
-  title: "Katalog Template",
+  title: "Template Website",
   robots: { index: false, follow: false },
 };
 
@@ -21,7 +23,13 @@ const angka = new Intl.NumberFormat("id-ID");
 export default async function SuperAdminTemplatePage() {
   await pastikanSuperAdmin();
 
-  const templates = await daftarTemplateWebsite();
+  const baris = await daftarTemplateWebsite();
+  // Preview SVG berasal dari manifest paket tema di registry statis
+  // (`slug@version` → manifest.preview), bukan dari input katalog.
+  const templates = baris.map((item) => ({
+    ...item,
+    preview: resolveTema(item.slug, item.version)?.manifest.preview ?? null,
+  }));
   const terbit = templates.filter((item) => item.status === "published").length;
   const totalTenant = templates.reduce((total, item) => total + item.jumlahTenant, 0);
   const perluPembaruan = templates.reduce((total, item) => total + item.jumlahTertinggal, 0);
@@ -42,7 +50,7 @@ export default async function SuperAdminTemplatePage() {
         path="/super-admin/template"
       />
 
-      <div className="platform-stat-grid template-stat-grid">
+      <PlatformStatGrid columns={4}>
         <PlatformStat
           icon={
             <>
@@ -91,7 +99,7 @@ export default async function SuperAdminTemplatePage() {
           tone="oranye"
           value={angka.format(perluPembaruan)}
         />
-      </div>
+      </PlatformStatGrid>
 
       <PlatformCard description="Katalog tema website desa." title="Katalog template">
         {templates.length > 0 ? (

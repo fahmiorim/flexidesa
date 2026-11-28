@@ -1,6 +1,6 @@
 import "server-only";
 
-export type DatabaseConnection = {
+type DatabaseConnection = {
   username: string;
   password: string;
   host: string;

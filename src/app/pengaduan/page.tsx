@@ -6,6 +6,7 @@ import { getNavPublik } from "@/features/info-desa/publik/application/nav-publik
 import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { listPengaduanPublikData } from "@/features/layanan-warga/pengaduan/application/use-cases";
 import { labelKategori, labelStatus } from "@/features/layanan-warga/pengaduan/domain/pengaduan";
+import { plainText } from "@/lib/plain-text";
 import { resolveTema } from "@/themes/registry";
 import { validasiOpsiTenant } from "@/themes/types";
 
@@ -17,21 +18,6 @@ export const metadata: Metadata = {
   description: "Sampaikan pengaduan dan aspirasi kepada pemerintah desa.",
 };
 export const dynamic = "force-dynamic";
-
-function plainText(value: string) {
-  return value
-    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, " ")
-    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, " ")
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/gi, " ")
-    .replace(/&amp;/gi, "&")
-    .replace(/&lt;/gi, "<")
-    .replace(/&gt;/gi, ">")
-    .replace(/&quot;/gi, '"')
-    .replace(/&#39;/gi, "'")
-    .replace(/\s+/g, " ")
-    .trim();
-}
 
 export default async function PengaduanPage({
   searchParams,

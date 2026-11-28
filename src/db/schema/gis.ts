@@ -44,7 +44,6 @@ export const polygons = mysqlTable(
 );
 
 export type Polygon = typeof polygons.$inferSelect;
-export type NewPolygon = typeof polygons.$inferInsert;
 
 /**
  * `area` — area/wilayah peta (merujuk ke polygon).
@@ -79,7 +78,6 @@ export const areas = mysqlTable(
 );
 
 export type Area = typeof areas.$inferSelect;
-export type NewArea = typeof areas.$inferInsert;
 
 /**
  * `garis` — garis/jalan peta.
@@ -107,7 +105,6 @@ export const garis = mysqlTable("garis", _garisColumns, (t) => [
 ]);
 
 export type Garis = typeof garis.$inferSelect;
-export type NewGaris = typeof garis.$inferInsert;
 
 /**
  * `point` — titik/lokasi peta.
@@ -137,7 +134,6 @@ export const points = mysqlTable(
 );
 
 export type Point = typeof points.$inferSelect;
-export type NewPoint = typeof points.$inferInsert;
 
 /**
  * `gis_simbol` — katalog simbol peta (ikon/marker).
@@ -156,8 +152,6 @@ export const gisSimbol = mysqlTable(
   (t) => [index("gis_simbol_simbol_idx").on(t.simbol)],
 );
 
-export type GisSimbol = typeof gisSimbol.$inferSelect;
-export type NewGisSimbol = typeof gisSimbol.$inferInsert;
 
 /**
  * `persil` — data persil tanah desa.
@@ -186,7 +180,6 @@ export const persil = mysqlTable(
 );
 
 export type Persil = typeof persil.$inferSelect;
-export type NewPersil = typeof persil.$inferInsert;
 
 /**
  * `cdesa` — data Cdesa/Sertifikat Tanah.
@@ -225,7 +218,6 @@ export const cdesa = mysqlTable(
 );
 
 export type Cdesa = typeof cdesa.$inferSelect;
-export type NewCdesa = typeof cdesa.$inferInsert;
 
 /**
  * `cdesa_rincian` — rincian Cdesa (nama, alamat, DLLB).
@@ -254,8 +246,6 @@ export const cdesaRincian = mysqlTable(
   ],
 );
 
-export type CdesaRincian = typeof cdesaRincian.$inferSelect;
-export type NewCdesaRincian = typeof cdesaRincian.$inferInsert;
 
 /**
  * `cdesa_mutasi` — riwayat mutasi Cdesa.
@@ -285,5 +275,3 @@ export const cdesaMutasi = mysqlTable(
   ],
 );
 
-export type CdesaMutasi = typeof cdesaMutasi.$inferSelect;
-export type NewCdesaMutasi = typeof cdesaMutasi.$inferInsert;

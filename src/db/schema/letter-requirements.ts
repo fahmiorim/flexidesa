@@ -12,10 +12,10 @@ import {
 import { villages } from "./village";
 
 /**
- * `letter_requirements` — master persyaratan surat (parity `ref_syarat_surat`).
+ * `letter_requirements` — master persyaratan surat.
  *
- * Satu syarat dapat dipakai banyak jenis surat; jenis surat menyimpan daftar
- * id syarat sebagai JSON (parity `tweb_surat_format.syarat_surat`).
+ * Satu syarat dapat dipakai banyak jenis surat; jenis surat menyimpan
+ * daftar id syarat sebagai JSON.
  */
 export const letterRequirements = mysqlTable(
   "letter_requirements",
@@ -45,5 +45,3 @@ export const letterRequirements = mysqlTable(
   ],
 );
 
-export type LetterRequirement = typeof letterRequirements.$inferSelect;
-export type NewLetterRequirement = typeof letterRequirements.$inferInsert;

@@ -13,7 +13,7 @@ import { db } from "@/db";
 import { galeriAlbum, galeriFoto, galeriVideo, slider } from "@/db/schema";
 import { polaLike } from "@/features/info-desa/publik/domain/pencarian";
 
-export interface AlbumRingkas {
+interface AlbumRingkas {
   id: number;
   nama: string;
   slug: string;
@@ -112,7 +112,7 @@ export async function getAlbumBySlug(
   return { ...row, jumlahFoto: jumlah?.value ?? 0 };
 }
 
-export interface FotoRingkas {
+interface FotoRingkas {
   id: number;
   gambar: string;
   judul: string | null;
@@ -182,7 +182,7 @@ export async function listSliderBeranda(villageId: number): Promise<FotoRingkas[
 
 /* ---------------------------------------------------------------- widget */
 
-export interface VideoGaleriPublik {
+interface VideoGaleriPublik {
   id: number;
   judul: string;
   keterangan: string | null;
@@ -220,7 +220,7 @@ export async function listVideoGaleriPublik(
 
 /* ---------------------------------------------------------------- potensi desa */
 
-export interface VideoGaleriAdmin {
+interface VideoGaleriAdmin {
   id: number;
   judul: string;
   url: string;
@@ -283,17 +283,8 @@ export async function hapusVideoGaleriAdmin(villageId: number, videoId: number):
 
 /* ------------------------------------------------------ kelola potensi admin */
 
-export interface SliderRingkas {
-  id: number;
-  gambar: string;
-  judul: string | null;
-  keterangan: string | null;
-  tautan: string | null;
-  urut: number;
-  aktif: boolean;
-}
 
-export interface SliderInput {
+interface SliderInput {
   gambar: string;
   judul: string | null;
   keterangan: string | null;

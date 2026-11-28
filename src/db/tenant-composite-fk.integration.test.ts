@@ -30,7 +30,7 @@ import { validasiDatabaseUji } from "@/testing/db-test-guard";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-002 — bukti bahwa integritas tenant ditegakkan oleh database, bukan hanya
+ * Bukti bahwa integritas tenant ditegakkan oleh database, bukan hanya
  * oleh use case/repository.
  *
  * Test ini sengaja memakai `db.insert`/`db.update` langsung. Bila seseorang
@@ -342,7 +342,7 @@ afterAll(async () => {
   await db.delete(villages).where(inArray(villages.id, desaIds));
 });
 
-describe("AUD-002 composite tenant foreign keys", () => {
+describe("Composite tenant foreign keys", () => {
   it("memasang seluruh constraint composite inti pada database uji", async () => {
     const hasil = (await db.execute(sql`
       SELECT DISTINCT CONSTRAINT_NAME AS nama
@@ -404,6 +404,7 @@ describe("AUD-002 composite tenant foreign keys", () => {
       "kepegawaian_riwayat_pegawai_tenant_fk",
       "kia_anak_tenant_fk",
       "kia_ibu_tenant_fk",
+      "kontak_pesan_arsip_grup_tenant_fk",
       "kontak_resident_tenant_fk",
       "lapak_produk_lapak_tenant_fk",
       "lapak_resident_tenant_fk",

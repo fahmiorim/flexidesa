@@ -27,7 +27,13 @@ export async function jalankanApiPublik<T>(
   format?: FormatResponsApiPublik<T>,
 ): Promise<NextResponse> {
   const ip = alamatIp(request);
-  const batas = await batasiPermintaan(`${nama}:${ip}`, { batas: BATAS_PER_MENIT });
+  // Audit keamanan F1: kunci rate limit dikunci per host+IP agar tenant lain
+  // tidak ikut terpengaruh saat IP tidak dapat diidentifikasi. Host berasal
+  // dari header `Host` yang sama dengan resolusi tenant; nilai yang tidak
+  // sah (mengandung pemisah) ditolak ke fallback aman.
+  const hostMentah = request.headers.get("host") ?? "";
+  const host = /^[a-z0-9.:\-[\]]+$/i.test(hostMentah) ? hostMentah.toLowerCase() : "tanpa-host";
+  const batas = await batasiPermintaan(`${nama}:${host}:${ip}`, { batas: BATAS_PER_MENIT });
   if (batas.dibatasi) {
     return NextResponse.json(
       { success: false, error: "Terlalu banyak permintaan. Coba lagi beberapa saat." },

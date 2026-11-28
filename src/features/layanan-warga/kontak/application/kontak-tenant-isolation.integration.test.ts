@@ -18,7 +18,7 @@ import { validasiDatabaseUji } from "@/testing/db-test-guard";
 import { siapkanDatabaseUji } from "@/testing/migrasi-uji";
 
 /**
- * AUD-034 Batch 2 — isolasi tenant pada direktori kontak.
+ * Isolasi tenant pada direktori kontak.
  *
  * Dua desa sintetis dipakai untuk membuktikan bahwa `residentId` dan
  * `kontakId` yang berasal dari input tidak dapat menautkan data desa lain.
@@ -189,7 +189,7 @@ afterAll(async () => {
   if (fixture === null) return;
   const desaIds = [fixture.desaA, fixture.desaB];
 
-  // `anggota_grup_kontak` belum memakai composite FK (Batch 4), jadi anak
+  // Anak `anggota_grup_kontak`
   // dihapus eksplisit sebelum desa.
   await db.delete(anggotaGrupKontak).where(inArray(anggotaGrupKontak.villageId, desaIds));
   await db.delete(kontak).where(inArray(kontak.villageId, desaIds));

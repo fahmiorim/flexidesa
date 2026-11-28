@@ -34,7 +34,7 @@ function template(overrides: Partial<TemplateTenant> = {}): TemplateTenant {
       },
     ],
     akses: [{ roleSlug: ROLE_ADMINISTRATOR, moduleSlug: "penduduk", access: "manage" }],
-    tema: { slug: "esensi", nama: "Esensi", versi: "1.0.0", opsi: null },
+    tema: { slug: "arunika", nama: "Arunika", versi: "1.0.0", opsi: null },
     menuPublik: [],
     ...overrides,
   };
@@ -118,7 +118,7 @@ describe("template bawaan yang dikirim", () => {
     ]);
   });
 
-  it("menghapus modul menu tanpa padanan OpenSID dari template dan izin", () => {
+  it("menghapus modul menu tanpa padanan dari template dan izin", () => {
     const dihapus = [
       "dashboard-kependudukan",
       "kehadiran-dashboard",

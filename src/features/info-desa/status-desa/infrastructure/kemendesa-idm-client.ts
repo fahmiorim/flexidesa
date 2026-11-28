@@ -9,7 +9,7 @@ const HOST = "idm.kemendesa.go.id";
 const BASE_URL = `https://${HOST}/open/api/desa/rumusan`;
 const BATAS_RESPONS = 5 * 1024 * 1024;
 
-export interface RingkasanSinkronIdm {
+interface RingkasanSinkronIdm {
   skorMinimal: number | null;
   targetStatus: string | null;
   statusApi: string | null;
@@ -17,7 +17,7 @@ export interface RingkasanSinkronIdm {
   penambahan: number | null;
 }
 
-export interface IndikatorSinkronIdm {
+interface IndikatorSinkronIdm {
   kode: string;
   nama: string;
   /** Skor 0–100 agar sesuai dengan skema indikator FlexiDesa. */
@@ -26,7 +26,7 @@ export interface IndikatorSinkronIdm {
   keterangan: string | null;
 }
 
-export interface HasilSinkronIdm {
+interface HasilSinkronIdm {
   ringkasan: RingkasanSinkronIdm;
   indikator: IndikatorSinkronIdm[];
 }
@@ -142,7 +142,7 @@ function unduhJson(url: string): Promise<unknown> {
           "X-Requested-With": "XMLHttpRequest",
           "User-Agent": "FlexiDesa/IDM-Sync",
         },
-        // Sertifikat API Kemendesa sudah kedaluwarsa. OpenSID juga menonaktifkan
+        // Sertifikat API Kemendesa sudah kedaluwarsa; verifikasi dinonaktifkan
         // verifikasi untuk endpoint ini. Host tetap dikunci ke domain resmi.
         rejectUnauthorized: false,
         timeout: 20_000,

@@ -21,9 +21,8 @@ export interface PendudukRingkas {
 /**
  * Label indikator konvergensi pencegahan stunting.
  *
- * Urutan dan istilah mengikuti form OpenSID
- * (`pemantauan_ibu_hamil_form.blade.php` dan `pemantauan_anak_form.blade.php`)
- * agar tabel pemantauan menampilkan indikator yang sama urutannya.
+ * Urutan dan istilah tetap agar tabel pemantauan menampilkan indikator
+ * yang sama urutannya.
  */
 export const INDIKATOR_IBU_HAMIL: Array<{ key: keyof IbuHamilRow; label: string }> = [
   { key: "pemeriksaanKehamilan", label: "Pemeriksaan Kehamilan" },
@@ -62,8 +61,8 @@ export function formatTanggal(nilai: Date | string | null | undefined): string {
 /**
  * Tanggal periksa efektif: kolom isian operator bila ada, selain itu `created_at`.
  *
- * OpenSID menyimpan tanggal periksa di `created_at`; FlexiDesa menyediakan kolom
- * khusus agar operator boleh mengoreksi tanggal tanpa mengubah riwayat baris.
+ * Tanggal periksa disimpan pada kolom khusus agar operator boleh
+ * mengoreksi tanggal tanpa mengubah riwayat baris.
  */
 export function tanggalPeriksaEfektif(
   tanggalPeriksa: string | null | undefined,
@@ -107,8 +106,8 @@ export function periodeTahun(nilai: Date | string | null | undefined): number | 
 /**
  * Cocokkan `created_at` dengan filter bulan/tahun.
  *
- * Tabel pemantauan FlexiDesa tidak menyimpan kolom periode terpisah seperti
- * OpenSID, jadi bulan/tahun periksa dibaca dari waktu pencatatan baris.
+ * Tabel pemantauan tidak menyimpan kolom periode terpisah, jadi
+ * bulan/tahun periksa dibaca dari waktu pencatatan baris.
  */
 export function cocokPeriode(
   nilai: Date | string | null | undefined,

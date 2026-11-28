@@ -18,7 +18,7 @@ interface FieldBase {
 type FormFieldProps = FieldBase &
   (
     | (InputHTMLAttributes<HTMLInputElement> & {
-        kind?: "input";
+        kind?: "input" | "file" | "checkbox";
         options?: never;
         rows?: never;
       })
@@ -90,6 +90,28 @@ export function FormField(props: FormFieldProps) {
   } = props;
   const inputId = id ?? name;
 
+  if (kind === "checkbox") {
+    return (
+      <div className={`form-field${containerClassName ? ` ${containerClassName}` : ""}`}>
+        <label className="form-check" htmlFor={inputId}>
+          <input
+            id={inputId}
+            name={name}
+            type="checkbox"
+            {...(rest as InputHTMLAttributes<HTMLInputElement>)}
+          />
+          <span>{label}</span>
+        </label>
+        {helpText ? <span className="form-help">{helpText}</span> : null}
+        {error ? (
+          <span className="form-help" role="alert">
+            {error}
+          </span>
+        ) : null}
+      </div>
+    );
+  }
+
   const describedBy = [
     helpText && inputId ? `${inputId}-help` : undefined,
     error && inputId ? `${inputId}-error` : undefined,
@@ -124,7 +146,15 @@ export function FormField(props: FormFieldProps) {
       ) : kind === "textarea" ? (
         <textarea {...shared} {...(rest as TextareaHTMLAttributes<HTMLTextAreaElement>)} />
       ) : (
-        <input {...shared} {...(rest as InputHTMLAttributes<HTMLInputElement>)} />
+        <input
+          {...shared}
+          {...(rest as InputHTMLAttributes<HTMLInputElement>)}
+          type={
+            kind === "file"
+              ? "file"
+              : ((rest as InputHTMLAttributes<HTMLInputElement>).type ?? "text")
+          }
+        />
       )}
     </FieldShell>
   );

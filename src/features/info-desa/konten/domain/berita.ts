@@ -14,13 +14,9 @@ import { optionalIsoDate, optionalSelectId, optionalText } from "@/lib/forms";
  *   `terbitPada` lewat; `null` berarti langsung tampil).
  */
 
-export const STATUS_BERITA = ["draft", "published"] as const;
-export type StatusBerita = (typeof STATUS_BERITA)[number];
+const STATUS_BERITA = ["draft", "published"] as const;
+type StatusBerita = (typeof STATUS_BERITA)[number];
 
-export const STATUS_BERITA_LABELS: Readonly<Record<StatusBerita, string>> = {
-  draft: "Draf",
-  published: "Terbit",
-};
 
 /** Skema form berita (draft/publish, jadwal, headline, slider, komentar). */
 export const beritaFormSchema = z.object({
@@ -99,16 +95,6 @@ export function tanggalTerbitEfektif(
 /** Status yang bisa dipilih operator. */
 
 /** Baris daftar berita di admin (tanpa kolom isi yang besar). */
-export interface BeritaAdminRow {
-  id: number;
-  judul: string;
-  slug: string;
-  kategori: string | null;
-  status: string;
-  terbitPada: Date | null;
-  headline: boolean;
-  updatedAt: Date;
-}
 
 /** Data lengkap berita untuk form ubah. */
 

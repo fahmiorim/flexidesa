@@ -11,7 +11,6 @@ import {
   type DtksRekap,
 } from "@/features/kependudukan/penduduk/domain/dtks-berkas";
 import { listDtksEkspor } from "@/features/kependudukan/penduduk/infrastructure/dtks-repository";
-import { simpanUnggahanMedia as simpanBerkasLampiranDtks } from "@/features/media/infrastructure/media-storage";
 
 /** Ambil daftar RTM yang belum terdaftar di DTKS untuk dialog "Data Baru". */
 
@@ -24,10 +23,10 @@ import { simpanUnggahanMedia as simpanBerkasLampiranDtks } from "@/features/medi
  * total) supaya satu baris salah tidak menggagalkan seluruh impor. RTM yang
  * sudah punya DTKS pada versi kuisioner ini dilewati agar impor idempoten.
  */
-export { simpanBerkasLampiranDtks };
+;
 
 /** Rekapitulasi DTKS mengikuti filter daftar. */
-export interface DtksRekapData {
+interface DtksRekapData {
   rekap: DtksRekap;
   namaDesa: string | null;
 }

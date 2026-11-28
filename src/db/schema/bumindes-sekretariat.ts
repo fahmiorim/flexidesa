@@ -82,6 +82,3 @@ export const bumindesAgenda = mysqlTable(
   (t) => [index("bumindes_agenda_village_jenis_idx").on(t.villageId, t.jenis)],
 );
 
-export type BumindesPeraturan = typeof bumindesPeraturan.$inferSelect;
-export type BumindesAparat = typeof bumindesAparat.$inferSelect;
-export type BumindesAgenda = typeof bumindesAgenda.$inferSelect;

@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-export const STATUS_PAKET = ["active", "archived"] as const;
+const STATUS_PAKET = ["active", "archived"] as const;
 export type StatusPaket = (typeof STATUS_PAKET)[number];
 
-export const STATUS_VERSI_PAKET = ["draft", "published", "archived"] as const;
+const STATUS_VERSI_PAKET = ["draft", "published", "archived"] as const;
 export type StatusVersiPaket = (typeof STATUS_VERSI_PAKET)[number];
 
 const slugSchema = z
@@ -72,7 +72,7 @@ export const penetapanPaketSchema = z.object({
   confirmed: z.literal(true),
 });
 
-export interface ModulPaketSumber {
+interface ModulPaketSumber {
   slug: string;
   name: string;
   url: string | null;

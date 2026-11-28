@@ -2,7 +2,7 @@
  * Info halaman "Segera" untuk modul tenant yang halamannya belum dibangun penuh.
  *
  * Data ini hanya untuk presentasi: judul, grup menu, ringkasan fungsi yang
- * akan tersedia, padanan OpenSID, dan rencana fitur. Halaman dinamis
+ * akan tersedia, dan rencana fitur. Halaman dinamis
  * `/segera/[slug]` me-render data ini; slug yang tidak ada di peta ini akan
  * mengembalikan 404. Test `template-tenant.test.ts` memastikan setiap modul
  * ber-URL `/segera/<slug>` memiliki entri di peta ini.
@@ -15,7 +15,7 @@ export interface InfoSegera {
   grup: string;
   /** Ringkasan fungsi yang akan tersedia di halaman ini. */
   ringkasan: string;
-  /** Acuan fitur pada OpenSID. */
+  /** Acuan fitur. */
   padanan: string;
   /** Rencana kemampuan yang akan dibangun. */
   rencana: readonly string[];
@@ -27,7 +27,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     grup: "Persuratan",
     ringkasan:
       "Arsip layanan surat yang sudah diproses: riwayat permohonan, surat terbit, dan dokumen lampiran dalam satu tempat.",
-    padanan: "Padanan arsip layanan pada OpenSID (arsip surat dan layanan).",
+    padanan: "Arsip layanan (arsip surat dan layanan).",
     rencana: [
       "Daftar arsip layanan dengan pencarian dan filter tahun/jenis surat",
       "Tautan ke detail surat, PDF, dan lampiran",
@@ -39,7 +39,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     grup: "Administrasi Desa",
     ringkasan:
       "Penyimpanan arsip desa: dokumen masuk, keluar, dan berkas administrasi yang dapat ditelusur kembali.",
-    padanan: "Padanan arsip desa pada OpenSID.",
+    padanan: "Arsip desa.",
     rencana: [
       "Katalog arsip berdasarkan kategori dan tahun",
       "Unggah, unduh, dan hapus berkas arsip",
@@ -51,7 +51,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     grup: "Keuangan",
     ringkasan:
       "Pencatatan kegiatan pembangunan desa: usulan, tahapan, realisasi, dan foto dokumentasi.",
-    padanan: "Padanan modul pembangunan pada OpenSID.",
+    padanan: "Modul pembangunan.",
     rencana: [
       "Daftar kegiatan pembangunan beserta status tahapan",
       "Catatan realisasi anggaran dan foto dokumentasi",
@@ -63,7 +63,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     grup: "Keuangan",
     ringkasan:
       "Impor data massal (mis. data keuangan atau penduduk) dari berkas CSV/Excel ke sistem.",
-    padanan: "Padanan fitur impor data pada OpenSID.",
+    padanan: "Fitur impor data.",
     rencana: [
       "Unggah berkas CSV/Excel dengan pratinjau data",
       "Pemetaan kolom dan validasi baris sebelum simpan",
@@ -75,7 +75,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     grup: "Keuangan",
     ringkasan:
       "Susun laporan keuangan manual di luar APBDes terstruktur, misalnya laporan kegiatan khusus.",
-    padanan: "Padanan laporan manual pada OpenSID.",
+    padanan: "Laporan manual.",
     rencana: [
       "Buat laporan manual dari pos-pos anggaran bebas",
       "Lampirkan dokumen pendukung",
@@ -86,7 +86,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Laporan APBDes",
     grup: "Keuangan",
     ringkasan: "Laporan APBDes dan realisasi anggaran yang disusun dari data keuangan desa.",
-    padanan: "Padanan laporan APBDes pada OpenSID.",
+    padanan: "Laporan APBDes.",
     rencana: [
       "Laporan APBDes per tahun anggaran dan per bidang",
       "Perbandingan anggaran vs realisasi",
@@ -97,7 +97,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Master Analisis",
     grup: "Analisis",
     ringkasan: "Master data untuk analisis: indikator, kategori, dan bobot perhitungan IDM/SDGs.",
-    padanan: "Padanan master analisis pada OpenSID.",
+    padanan: "Master analisis.",
     rencana: [
       "Kelola indikator dan kategori analisis",
       "Atur bobot dan rumus perhitungan",
@@ -109,7 +109,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     grup: "Analisis",
     ringkasan:
       "Pengaturan periode, status aktif, dan ambang nilai untuk perhitungan analisis desa.",
-    padanan: "Padanan pengaturan analisis pada OpenSID.",
+    padanan: "Pengaturan analisis.",
     rencana: [
       "Atur periode analisis aktif",
       "Ubah ambang kategori status desa",
@@ -120,7 +120,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "C-Desa",
     grup: "Pertanahan & GIS",
     ringkasan: "Buku C desa: pendaftaran tanah milik desa beserta riwayat perubahannya.",
-    padanan: "Padanan buku C pada OpenSID.",
+    padanan: "Buku C.",
     rencana: [
       "Daftar bidang tanah milik desa (C-Desa)",
       "Riwayat mutasi dan perubahan kepemilikan",
@@ -131,7 +131,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Daftar Persil",
     grup: "Pertanahan & GIS",
     ringkasan: "Daftar persil (bidang tanah) warga beserta pemilik, luas, dan status sertifikat.",
-    padanan: "Padanan daftar persil pada OpenSID.",
+    padanan: "Daftar persil.",
     rencana: [
       "Daftar persil dengan pemilik dan luas bidang",
       "Filter per dusun, kelas tanah, dan status sertifikat",
@@ -142,7 +142,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Pengaturan Peta",
     grup: "Pertanahan & GIS",
     ringkasan: "Pengaturan tampilan dan lapisan peta desa pada halaman peta.",
-    padanan: "Padanan pengaturan peta pada OpenSID.",
+    padanan: "Pengaturan peta.",
     rencana: [
       "Atur titik pusat dan zoom awal peta",
       "Kelola lapisan batas wilayah dan titik penting",
@@ -153,7 +153,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Kirim Pesan",
     grup: "Layanan Warga",
     ringkasan: "Kirim pesan massal atau perorangan ke warga melalui kanal yang tersedia.",
-    padanan: "Padanan kirim pesan pada OpenSID.",
+    padanan: "Kirim pesan.",
     rencana: [
       "Komposisi pesan massal ke grup warga atau perorangan",
       "Riwayat pesan terkirim dan statusnya",
@@ -165,7 +165,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     grup: "Layanan Warga",
     ringkasan:
       "Daftar kontak warga dan perangkat desa untuk keperluan pengiriman pesan dan pengumuman.",
-    padanan: "Padanan daftar kontak pada OpenSID.",
+    padanan: "Daftar kontak.",
     rencana: [
       "Daftar kontak dengan nomor HP dan kategori",
       "Tambah, ubah, dan hapus kontak",
@@ -176,7 +176,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Aplikasi",
     grup: "Pengaturan",
     ringkasan: "Pengaturan umum aplikasi: identitas aplikasi, logo, dan opsi tampilan admin.",
-    padanan: "Padanan pengaturan aplikasi pada OpenSID.",
+    padanan: "Pengaturan aplikasi.",
     rencana: [
       "Ubah nama dan logo aplikasi",
       "Atur tema dan tampilan admin",
@@ -187,7 +187,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Modul",
     grup: "Pengaturan",
     ringkasan: "Aktif/nonaktifkan modul per desa sesuai paket langganan.",
-    padanan: "Padanan manajemen modul pada OpenSID.",
+    padanan: "Manajemen modul.",
     rencana: [
       "Daftar modul beserta status aktifnya",
       "Aktif/nonaktifkan modul sesuai paket",
@@ -198,7 +198,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Database",
     grup: "Pengaturan",
     ringkasan: "Pemeliharaan database desa: cadangan, optimasi, dan pemeriksaan integritas data.",
-    padanan: "Padanan pemeliharaan database pada OpenSID.",
+    padanan: "Pemeliharaan database.",
     rencana: [
       "Cadangkan database desa",
       "Optimasi dan periksa tabel",
@@ -209,7 +209,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Info Sistem",
     grup: "Pengaturan",
     ringkasan: "Informasi sistem: versi aplikasi, kebutuhan server, dan status layanan.",
-    padanan: "Padanan info sistem pada OpenSID.",
+    padanan: "Info sistem.",
     rencana: [
       "Tampilkan versi aplikasi dan environment",
       "Status koneksi database dan layanan pendukung",
@@ -220,7 +220,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "QR Code",
     grup: "Pengaturan",
     ringkasan: "Buat dan kelola QR code untuk tautan dan layanan desa.",
-    padanan: "Padanan QR code pada OpenSID.",
+    padanan: "QR code.",
     rencana: [
       "Buat QR code untuk URL dan teks bebas",
       "Unduh QR code sebagai gambar",
@@ -231,7 +231,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Optimasi Gambar",
     grup: "Pengaturan",
     ringkasan: "Optimasi ukuran berkas gambar yang diunggah ke website desa.",
-    padanan: "Padanan optimasi gambar pada OpenSID.",
+    padanan: "Optimasi gambar.",
     rencana: [
       "Kompresi gambar massal pada galeri dan konten",
       "Atur kualitas dan ukuran maksimum",
@@ -242,7 +242,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Slider",
     grup: "Info Desa",
     ringkasan: "Kelola gambar slider pada beranda website desa.",
-    padanan: "Padanan slider website pada OpenSID.",
+    padanan: "Slider website.",
     rencana: [
       "Tambah, ubah, dan urutkan slide",
       "Atur judul, tautan, dan durasi tampil",
@@ -253,7 +253,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Menu Website",
     grup: "Info Desa",
     ringkasan: "Susun menu navigasi website publik desa.",
-    padanan: "Padanan menu website pada OpenSID.",
+    padanan: "Menu website.",
     rencana: [
       "Tambah dan urutkan menu website",
       "Atur tautan internal atau eksternal",
@@ -264,7 +264,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Widget",
     grup: "Info Desa",
     ringkasan: "Kelola widget pada website desa, misalnya statistik, pengumuman, dan tautan cepat.",
-    padanan: "Padanan widget website pada OpenSID.",
+    padanan: "Widget website.",
     rencana: [
       "Aktif/nonaktifkan widget per posisi",
       "Atur isi dan urutan widget",
@@ -275,7 +275,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Komentar",
     grup: "Info Desa",
     ringkasan: "Moderasi komentar warga pada berita dan konten website.",
-    padanan: "Padanan komentar website pada OpenSID.",
+    padanan: "Komentar website.",
     rencana: [
       "Daftar komentar berdasarkan konten",
       "Setujui, tolak, atau hapus komentar",
@@ -286,7 +286,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Media Sosial",
     grup: "Info Desa",
     ringkasan: "Atur tautan media sosial resmi desa yang tampil di website.",
-    padanan: "Padanan media sosial pada OpenSID.",
+    padanan: "Media sosial.",
     rencana: [
       "Tambah tautan media sosial desa",
       "Atur ikon dan urutan tampil",
@@ -297,7 +297,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Teks Berjalan",
     grup: "Info Desa",
     ringkasan: "Kelola teks berjalan (running text) pengumuman pada website desa.",
-    padanan: "Padanan teks berjalan pada OpenSID.",
+    padanan: "Teks berjalan.",
     rencana: [
       "Tambah dan urutkan teks pengumuman",
       "Atur kecepatan dan status tampil",
@@ -308,7 +308,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Pengunjung",
     grup: "Info Desa",
     ringkasan: "Statistik kunjungan website desa: harian, bulanan, dan halaman terpopuler.",
-    padanan: "Padanan statistik pengunjung pada OpenSID.",
+    padanan: "Statistik pengunjung.",
     rencana: [
       "Grafik kunjungan harian dan bulanan",
       "Halaman dan asal kunjungan terbanyak",
@@ -319,7 +319,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Kotak Pesan",
     grup: "Layanan Warga",
     ringkasan: "Pesan masuk dari warga melalui formulir website desa.",
-    padanan: "Padanan kotak pesan pada OpenSID.",
+    padanan: "Kotak pesan.",
     rencana: [
       "Daftar pesan masuk beserta pengirimnya",
       "Balas atau tandai pesan selesai",
@@ -330,7 +330,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Pendaftar Layanan Mandiri",
     grup: "Layanan Warga",
     ringkasan: "Daftar warga yang mendaftar layanan mandiri (akses mandiri warga).",
-    padanan: "Padanan pendaftar layanan mandiri pada OpenSID.",
+    padanan: "Pendaftar layanan mandiri.",
     rencana: [
       "Daftar pendaftar beserta status aktifnya",
       "Setujui atau tolak pendaftaran baru",
@@ -341,7 +341,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Gawai Layanan",
     grup: "Layanan Warga",
     ringkasan: "Kelola perangkat (gawai) yang terdaftar untuk layanan mandiri warga.",
-    padanan: "Padanan gawai layanan pada OpenSID.",
+    padanan: "Gawai layanan.",
     rencana: [
       "Daftar perangkat terdaftar per warga",
       "Lepas perangkat yang tidak lagi dipakai",
@@ -352,7 +352,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Pendapat",
     grup: "Layanan Warga",
     ringkasan: "Pendapat dan masukan warga dari survei kepuasan layanan.",
-    padanan: "Padanan pendapat warga pada OpenSID.",
+    padanan: "Pendapat warga.",
     rencana: [
       "Daftar pendapat beserta kategori layanan",
       "Rekap penilaian kepuasan",
@@ -363,7 +363,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Pengaturan Layanan Mandiri",
     grup: "Layanan Warga",
     ringkasan: "Pengaturan fitur layanan mandiri: pendaftaran terbuka, syarat, dan tampilan.",
-    padanan: "Padanan pengaturan layanan mandiri pada OpenSID.",
+    padanan: "Pengaturan layanan mandiri.",
     rencana: [
       "Buka/tutup pendaftaran layanan mandiri",
       "Atur syarat dan pesan pendaftaran",
@@ -374,7 +374,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Daftar Anjungan",
     grup: "Anjungan",
     ringkasan: "Daftar anjungan mandiri (kiosk) yang terhubung ke sistem desa.",
-    padanan: "Padanan daftar anjungan pada OpenSID.",
+    padanan: "Daftar anjungan.",
     rencana: [
       "Daftar anjungan beserta lokasi dan status",
       "Tambah dan hapus anjungan",
@@ -385,7 +385,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Menu Anjungan",
     grup: "Anjungan",
     ringkasan: "Susun menu layanan yang tampil di anjungan mandiri.",
-    padanan: "Padanan menu anjungan pada OpenSID.",
+    padanan: "Menu anjungan.",
     rencana: [
       "Pilih layanan yang tampil di anjungan",
       "Urutan dan ikon menu anjungan",
@@ -396,7 +396,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Pengaturan Anjungan",
     grup: "Anjungan",
     ringkasan: "Pengaturan umum anjungan: layar sentuh, mode kiosk, dan identitas desa.",
-    padanan: "Padanan pengaturan anjungan pada OpenSID.",
+    padanan: "Pengaturan anjungan.",
     rencana: [
       "Atur mode layar anjungan",
       "Identitas dan logo pada anjungan",
@@ -408,7 +408,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     grup: "Data Desa",
     ringkasan:
       "Data Terpadu Kesejahteraan Sosial: penerima bantuan beserta kelayakan dan riwayatnya.",
-    padanan: "Padanan DTKS pada OpenSID.",
+    padanan: "DTKS.",
     rencana: [
       "Daftar penerima DTKS dengan kategori",
       "Verifikasi kelayakan penerima",
@@ -419,7 +419,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Data Tamu",
     grup: "Layanan Warga",
     ringkasan: "Data buku tamu digital: tamu yang berkunjung dan keperluan kunjungannya.",
-    padanan: "Padanan data tamu pada OpenSID.",
+    padanan: "Data tamu.",
     rencana: [
       "Daftar tamu beserta keperluan kunjungan",
       "Statistik kunjungan per hari/bulan",
@@ -430,14 +430,14 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Data Kepuasan",
     grup: "Layanan Warga",
     ringkasan: "Hasil survei kepuasan layanan desa dari warga dan pengunjung.",
-    padanan: "Padanan data kepuasan pada OpenSID.",
+    padanan: "Data kepuasan.",
     rencana: ["Rekap nilai kepuasan per layanan", "Grafik tren kepuasan", "Ekspor hasil survei"],
   },
   "data-pertanyaan": {
     judul: "Data Pertanyaan",
     grup: "Layanan Warga",
     ringkasan: "Pertanyaan warga yang masuk melalui kanal layanan desa.",
-    padanan: "Padanan data pertanyaan pada OpenSID.",
+    padanan: "Data pertanyaan.",
     rencana: [
       "Daftar pertanyaan beserta kategori",
       "Tandai pertanyaan terjawab/belum",
@@ -448,7 +448,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Data Keperluan",
     grup: "Layanan Warga",
     ringkasan: "Data keperluan warga yang tercatat dari layanan dan kunjungan.",
-    padanan: "Padanan data keperluan pada OpenSID.",
+    padanan: "Data keperluan.",
     rencana: [
       "Daftar keperluan terbanyak warga",
       "Kelompokkan per jenis layanan",
@@ -460,7 +460,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     grup: "Pengaturan",
     ringkasan:
       "Pesan dari/ke OpenDK (Open Data Kabupaten): notifikasi dan antrean pesan sinkronisasi.",
-    padanan: "Padanan pesan OpenDK pada OpenSID.",
+    padanan: "Pesan OpenDK.",
     rencana: [
       "Daftar pesan sinkronisasi OpenDK",
       "Status terkirim dan kegagalan",
@@ -471,7 +471,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     judul: "Sinkronisasi OpenDK",
     grup: "Pengaturan",
     ringkasan: "Sinkronisasi data desa ke OpenDK: konfigurasi server dan riwayat sinkron.",
-    padanan: "Padanan sinkronisasi OpenDK pada OpenSID.",
+    padanan: "Sinkronisasi OpenDK.",
     rencana: [
       "Atur URL dan kunci API OpenDK",
       "Jalankan sinkronisasi manual",
@@ -483,7 +483,7 @@ export const SEGERA_INFO: Readonly<Record<string, InfoSegera>> = {
     grup: "Administrasi Desa",
     ringkasan:
       "Agenda kegiatan desa: jadwal rapat, musyawarah, dan kegiatan resmi pemerintah desa.",
-    padanan: "Padanan agenda kegiatan pada OpenSID.",
+    padanan: "Agenda kegiatan.",
     rencana: [
       "Kalender kegiatan desa per bulan",
       "Tambah, ubah, dan batalkan agenda",

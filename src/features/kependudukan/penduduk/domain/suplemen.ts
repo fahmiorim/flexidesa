@@ -13,7 +13,7 @@ export const SASARAN_LABELS: Record<number, string> = {
 };
 
 /**
- * Tipe kolom isian dinamis (paritas `form_isian` OpenSID).
+ * Tipe kolom isian dinamis.
  *
  * `select-manual` memakai `pilihanKode` (daftar pilihan manual),
  * `select-otomatis` memakai `referensiKode` (nama tabel referensi).
@@ -28,7 +28,7 @@ export const TIPE_FORM_ISIAN = [
   "select-otomatis",
 ] as const;
 
-export type TipeFormIsian = (typeof TIPE_FORM_ISIAN)[number];
+type TipeFormIsian = (typeof TIPE_FORM_ISIAN)[number];
 
 export const TIPE_FORM_ISIAN_LABELS: Record<string, string> = {
   date: "Tanggal",
@@ -44,10 +44,10 @@ export const TIPE_FORM_ISIAN_LABELS: Record<string, string> = {
  * Satu definisi kolom isian dinamis.
  *
  * Bentuk kanonis memakai camelCase; `bacaFormIsian` menerima bentuk
- * snake_case OpenSID (`nama_kode`, `label_kode`, `deskripsi_kode`,
+ * snake_case (`nama_kode`, `label_kode`, `deskripsi_kode`,
  * `pilihan_kode`, `referensi_kode`, `atribut`, `kolom`).
  */
-export const suplemenFormFieldSchema = z.object({
+const suplemenFormFieldSchema = z.object({
   label: z.string().min(1).max(100),
   tipe: z.enum(TIPE_FORM_ISIAN),
   required: z.boolean().optional().default(false),
@@ -62,7 +62,7 @@ export const suplemenFormFieldSchema = z.object({
 
 export type SuplemenFormField = z.infer<typeof suplemenFormFieldSchema>;
 
-/** Normalisasi satu field dari bentuk snake_case OpenSID maupun kanonis. */
+/** Normalisasi satu field dari bentuk snake_case maupun kanonis. */
 function normalisasiField(raw: Record<string, unknown>): SuplemenFormField | null {
   const teks = (key: string): string => (typeof raw[key] === "string" ? (raw[key] as string) : "");
   const label = teks("label") || teks("label_kode");
@@ -143,7 +143,7 @@ export const suplemenUpdateSchema = suplemenCreateSchema.extend({
 
 export type SuplemenUpdateInput = z.infer<typeof suplemenUpdateSchema>;
 
-export interface SuplemenListRow {
+interface SuplemenListRow {
   id: number;
   nama: string;
   slug: string;
@@ -168,8 +168,8 @@ export interface ListSuplemenResult {
   pageCount: number;
 }
 
-/** Keterangan satu baris terdata; paritas kolom varchar(100) OpenSID. */
-export const keteranganTerdataSchema = z
+/** Keterangan satu baris terdata; varchar(100). */
+const keteranganTerdataSchema = z
   .string()
   .max(100, "Keterangan maksimal 100 karakter.")
   .optional()
@@ -200,7 +200,7 @@ export const suplemenTerdataUpdateSchema = z.object({
 
 export type SuplemenTerdataUpdateInput = z.infer<typeof suplemenTerdataUpdateSchema>;
 
-/** Filter daftar terdata: paritas filter OpenSID (sex + dusun/RW/RT). */
+/** Filter daftar terdata: jenis kelamin + dusun/RW/RT. */
 export interface SuplemenTerdataFilter {
   search: string;
   gender: "male" | "female" | "all";
@@ -267,7 +267,7 @@ export interface SuplemenTerdataRow {
   createdAt: string;
 }
 
-/** Opsi pemilih warga terdata (pencarian server-side ala Select2 OpenSID). */
+/** Opsi pemilih warga terdata (pencarian server-side). */
 export interface SuplemenSasaranOption {
   id: number;
   /** Id penduduk untuk sasaran penduduk, id keluarga untuk sasaran keluarga. */
@@ -286,14 +286,14 @@ export interface WilayahFilterOptions {
   rt: string[];
 }
 
-/** Label kolom isian: `jumlah_anak` → `Jumlah Anak` (paritas formatColumnName). */
+/** Label kolom isian: `jumlah_anak` → `Jumlah Anak`. */
 export function labelKolomIsian(nama: string): string {
   const teks = nama.replace(/_/g, " ").trim();
   if (teks === "") return nama;
   return teks.charAt(0).toUpperCase() + teks.slice(1);
 }
 
-/** Susun alamat "alamat RT x / RW y Dusun z" seperti tabel terdata OpenSID. */
+/** Susun alamat "alamat RT x / RW y Dusun z". */
 export function formatAlamatTerdata(input: {
   alamat: string | null;
   rt: string | null;

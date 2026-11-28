@@ -3,9 +3,9 @@ import { z } from "zod";
 import { formatMoney, toMinor, totalLaporan, type RpApbdBaris, type RpApbdTotal } from "./keuangan";
 
 /**
- * Laporan APBDes **sebagai dokumen** (Lapis D pada sistem rujukan).
+ * Laporan APBDes **sebagai dokumen**.
  *
- * Berbeda dari RP APBDes yang dihitung dari pohon rekening, lapis ini tidak
+ * Berbeda dari RP APBDes yang dihitung dari pohon rekening, arsip ini tidak
  * menurunkan angka apa pun: operator menyusun/mengunggah sendiri dokumen
  * laporan per semester, lalu mencatat tanggal penyerahannya. Karena itu
  * modulnya adalah **arsip dokumen**, bukan pembangkit laporan.
@@ -17,9 +17,9 @@ export const LAPORAN_TIPE = {
   penduduk: "laporan_penduduk",
 } as const;
 
-export type LaporanTipe = (typeof LAPORAN_TIPE)[keyof typeof LAPORAN_TIPE];
+type LaporanTipe = (typeof LAPORAN_TIPE)[keyof typeof LAPORAN_TIPE];
 
-export const LAPORAN_TIPE_OPTIONS: readonly { value: LaporanTipe; label: string }[] = [
+const LAPORAN_TIPE_OPTIONS: readonly { value: LaporanTipe; label: string }[] = [
   { value: LAPORAN_TIPE.apbdes, label: "Laporan APBDes" },
   { value: LAPORAN_TIPE.penduduk, label: "Laporan Penduduk" },
 ];
@@ -118,7 +118,7 @@ export interface LaporanDokumenRow {
 
 // --- Rangkuman periode -----------------------------------------------------
 
-export interface LaporanPeriode {
+interface LaporanPeriode {
   /** Jumlah dokumen yang sudah diunggah. */
   jumlahDokumen: number;
   /** Pasangan semester yang sudah tercatat (mis. `["2026-S1"]`). */
@@ -157,7 +157,7 @@ export function tanggalUntukInput(diserahkanPada: string | null): string {
 /**
  * Rangkum kelengkapan dokumen laporan sebuah tahun.
  *
- * Sistem rujukan mengirim laporan **per semester**, jadi satu tahun dianggap
+ * Laporan dikirim **per semester**, jadi satu tahun dianggap
  * lengkap bila semester I & II sama-sama ada. Dipakai sebagai peringatan
  * lunak di UI — bukan penghalang menyimpan.
  */
@@ -205,7 +205,7 @@ export function selAngka(value: string): string {
   return `<Cell><Data ss:Type="Number">${escapeXml(formatMoney(toMinor(value)))}</Data></Cell>`;
 }
 
-export interface LaporanExcelInput {
+interface LaporanExcelInput {
   namaDesa: string | null;
   kecamatan: string | null;
   tahun: number;

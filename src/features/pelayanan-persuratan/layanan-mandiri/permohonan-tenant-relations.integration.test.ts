@@ -126,7 +126,7 @@ function dataUji(): Fixture {
   return fixture;
 }
 
-describe("AUD-006 tenant ownership relasi permohonan surat", () => {
+describe("Tenant ownership relasi permohonan surat", () => {
   it("mencari penduduk hanya pada tenant yang diminta", async () => {
     const f = dataUji();
     expect(await findPendudukById(f.villageA, f.residentA)).not.toBeNull();

@@ -50,7 +50,7 @@ function IsiDialogImpor({ onSelesai }: { onSelesai: () => void }) {
         <div>
           <strong>Belum punya berkas?</strong>
           <span>
-            Unduh template berisi kolom ekspor OpenSID dan sheet Contoh yang bisa disalin.
+            Unduh template berisi kolom ekspor dan sheet Contoh yang bisa disalin.
           </span>
         </div>
         <ButtonLink variant="secondary" href="/kependudukan/penduduk/impor/template">
@@ -117,7 +117,7 @@ export function DialogImporPenduduk() {
         <div className="platform-dialog-head">
           <div>
             <h2 id={`${id}-judul`}>Impor Penduduk</h2>
-            <p>Unggah Excel/CSV ekspor OpenSID. Satu baris salah membatalkan semua.</p>
+            <p>Unggah Excel/CSV ekspor. Satu baris salah membatalkan semua.</p>
           </div>
           <button
             aria-label="Tutup dialog"

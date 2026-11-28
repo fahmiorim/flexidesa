@@ -1,6 +1,6 @@
 /** Status editorial kegiatan; bukan status surat. */
-export const AGENDA_STATUS = ["rencana", "berlangsung", "selesai"] as const;
-export type AgendaStatus = (typeof AGENDA_STATUS)[number];
+const AGENDA_STATUS = ["rencana", "berlangsung", "selesai"] as const;
+type AgendaStatus = (typeof AGENDA_STATUS)[number];
 
 /** Baris agenda kegiatan apa adanya dari database. */
 export interface AgendaRow {
@@ -31,7 +31,7 @@ export interface AgendaPublikRow {
   deskripsi: string | null;
 }
 
-export interface BulanAgenda {
+interface BulanAgenda {
   tahun: number;
   bulan: number;
 }

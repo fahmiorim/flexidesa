@@ -401,7 +401,7 @@ export async function listWilayahFilterOptions(villageId: number): Promise<Wilay
 /**
  * Cari warga yang belum terdata pada suplemen ini.
  *
- * Meniru `apipenduduksuplemen` OpenSID: sasaran penduduk mencari NIK/nama
+ * Sasaran penduduk mencari NIK/nama
  * penduduk hidup, sasaran keluarga mencari No. KK/nama kepala keluarga.
  */
 export async function cariSasaranSuplemen(
@@ -519,7 +519,7 @@ export async function cariSasaranSuplemen(
 
 /**
  * Data ringkas sasaran untuk blok konfirmasi terdata
- * (paritas `konfirmasi_terdata` OpenSID: TTL/umur, alamat, pendidikan,
+ * (TTL/umur, alamat, pendidikan,
  * warga negara, agama).
  */
 export async function getSasaranTerdataDetail(
@@ -868,7 +868,7 @@ export async function removeSuplemenTerdata(villageId: number, id: number): Prom
     .where(and(eq(suplemenTerdata.id, id), eq(suplemenTerdata.villageId, villageId)));
 }
 
-/** Hapus massal terdata terpilih pada satu suplemen (paritas `delete_all_terdata`). */
+/** Hapus massal terdata terpilih pada satu suplemen. */
 export async function removeSuplemenTerdataMassal(
   villageId: number,
   suplemenId: number,
@@ -890,7 +890,7 @@ export async function removeSuplemenTerdataMassal(
 /**
  * Pilihan untuk kolom isian bertipe `select-otomatis`.
  *
- * Paritas `ReferensiEnum` OpenSID: nilai pilihan diambil dari katalog desa
+ * Nilai pilihan diambil dari katalog desa
  * (agama, pendidikan, pekerjaan, dst.) sehingga petugas tidak mengetik ulang
  * dan nilai antar-suplemen tetap konsisten.
  */

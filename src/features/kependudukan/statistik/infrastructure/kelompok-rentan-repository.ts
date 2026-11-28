@@ -18,9 +18,9 @@ function hitungBila(kondisi: SQL): SQL<number> {
 }
 
 /**
- * Laporan kelompok rentan per RT (paritas Lampiran A-9 OpenSID).
+ * Laporan kelompok rentan per RT.
  *
- * Hanya penduduk berstatus hidup dan berwilayah yang dihitung; OpenSID juga
+ * Hanya penduduk berstatus hidup dan berwilayah yang dihitung;
  * menghitung per RT sehingga penduduk tanpa wilayah tidak punya baris.
  */
 export async function listKelompokRentan(

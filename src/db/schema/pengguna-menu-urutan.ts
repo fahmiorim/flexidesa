@@ -23,4 +23,3 @@ export const penggunaMenuUrutan = mysqlTable(
   (t) => [uniqueIndex("pengguna_menu_urutan_user_slug_uq").on(t.userId, t.slug)],
 );
 
-export type PenggunaMenuUrutan = typeof penggunaMenuUrutan.$inferSelect;

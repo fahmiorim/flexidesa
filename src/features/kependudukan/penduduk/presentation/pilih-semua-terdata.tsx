@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Checkbox "pilih semua" untuk tabel terdata suplemen.
  *
- * Sama seperti checkbox massal OpenSID: menandai seluruh baris pada halaman ini
+ * Menandai seluruh baris pada halaman ini
  * sehingga tombol Hapus massal bisa dipakai. Status indeterminate dipakai saat
  * hanya sebagian baris terpilih.
  */

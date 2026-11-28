@@ -271,7 +271,7 @@ export async function imporTerdataAction(
       berkas.name,
       "Peserta",
     );
-    // Baris penutup `###` menandai akhir data pada format OpenSID.
+    // Baris penutup `###` menandai akhir data pada format berkas.
     const bersih = tabel.filter((baris) => (baris[0] ?? "").trim() !== "###");
     const peta = petakanKolom(bersih, KOLOM_IMPOR_SUPLEMEN);
     if (peta.galat.some((galat) => galat.baris === 0)) {

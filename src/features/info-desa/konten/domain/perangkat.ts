@@ -17,18 +17,18 @@ import {
  * Domain ini murni; unggah foto dan sanitasi dilakukan application layer.
  */
 
-export const STATUS_PERANGKAT = ["aktif", "nonaktif"] as const;
-export type StatusPerangkat = (typeof STATUS_PERANGKAT)[number];
+const STATUS_PERANGKAT = ["aktif", "nonaktif"] as const;
+type StatusPerangkat = (typeof STATUS_PERANGKAT)[number];
 
-export const STATUS_PERANGKAT_LABELS: Readonly<Record<StatusPerangkat, string>> = {
+const STATUS_PERANGKAT_LABELS: Readonly<Record<StatusPerangkat, string>> = {
   aktif: "Aktif",
   nonaktif: "Nonaktif",
 };
 
-export const JENIS_KELAMIN = ["male", "female"] as const;
-export type JenisKelamin = (typeof JENIS_KELAMIN)[number];
+const JENIS_KELAMIN = ["male", "female"] as const;
+type JenisKelamin = (typeof JENIS_KELAMIN)[number];
 
-export const JENIS_KELAMIN_LABELS: Readonly<Record<JenisKelamin, string>> = {
+const JENIS_KELAMIN_LABELS: Readonly<Record<JenisKelamin, string>> = {
   male: "Laki-laki",
   female: "Perempuan",
 };
@@ -44,8 +44,6 @@ export function labelStatusPerangkat(nilai: string): string {
 }
 
 /** Periode menjabat perangkat. Format: "YYYY" atau "YYYY-YYYY". */
-export const PERIODE_JABATAN = ["aktif"] as const;
-export type PeriodeJabatan = (typeof PERIODE_JABATAN)[number];
 
 /** Skema form jabatan. */
 export const jabatanFormSchema = z.object({

@@ -54,7 +54,7 @@ export function buatSpesifikasiOpenApi(serverUrl: string) {
   return {
     openapi: "3.1.0",
     info: {
-      title: "API Data Publik SID Desa",
+      title: "API Data Publik FlexiDesa",
       version: "1.0.0",
       description:
         "Endpoint baca-saja untuk data publik desa. Desa ditentukan dari header Host, " +

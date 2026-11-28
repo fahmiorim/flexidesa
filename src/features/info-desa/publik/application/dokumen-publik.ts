@@ -10,7 +10,7 @@ import {
   type CariDokumenPublikFilter,
 } from "@/features/info-desa/publik/infrastructure/dokumen-repository";
 
-export interface DokumenPublikHasil {
+interface DokumenPublikHasil {
   rows: Awaited<ReturnType<typeof cariDokumenPublik>>["rows"];
   total: number;
   page: number;

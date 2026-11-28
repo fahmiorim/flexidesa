@@ -16,5 +16,3 @@ export const tteConfig = mysqlTable(
   (table) => [uniqueIndex("tte_config_village_uq").on(table.villageId)],
 );
 
-export type TteConfig = typeof tteConfig.$inferSelect;
-export type NewTteConfig = typeof tteConfig.$inferInsert;

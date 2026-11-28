@@ -117,7 +117,7 @@ function whereRiwayat(villageId: number, params: ListRiwayatParams) {
   return and(...conditions);
 }
 
-/** Join pendukung kolom paritas `penduduk_log` OpenSID (agama, KK, wilayah). */
+/** Join pendukung kolom riwayat (agama, KK, wilayah). */
 function joinParitas<T>(query: T, villageId: number): T {
   let hasil = query;
   const joins: Array<[unknown, unknown]> = [
@@ -252,7 +252,7 @@ export async function getRiwayatById(
   };
 }
 
-/** Perbarui catatan riwayat (paritas `penduduk_log/edit`). */
+/** Perbarui catatan riwayat. */
 export async function ubahRiwayatPenduduk(
   villageId: number,
   id: number,
@@ -273,7 +273,7 @@ export async function ubahRiwayatPenduduk(
 
 /**
  * Konteks penduduk untuk form ubah status dasar: status tinggal, peran KK,
- * dan jumlah anggota KK (untuk pengecualian kepala KK paritas OpenSID).
+ * dan jumlah anggota KK (untuk pengecualian kepala KK).
  */
 export async function getKonteksMutasi(
   villageId: number,

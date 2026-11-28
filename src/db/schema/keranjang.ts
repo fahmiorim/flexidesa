@@ -19,5 +19,3 @@ export const keranjang = mysqlTable("keranjang", {
   sessionKey: varchar("session_key", { length: 100 }).notNull(),
 });
 
-export type Keranjang = typeof keranjang.$inferSelect;
-export type NewKeranjang = typeof keranjang.$inferInsert;

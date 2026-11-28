@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { PageHeading } from "@/components/shell/page-heading";
 import { DialogHapus } from "@/components/ui/dialog-hapus";
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { getGrupAksesAdminData } from "@/features/pengaturan/pengguna/application/pengguna-admin";
 
 import {
@@ -112,9 +113,9 @@ export default async function GrupAksesPage({
                     </span>
                     <span>
                       <strong>{role.name}</strong>
-                      <span className="tenant-secondary">
+                      <SecondaryText>
                         {role.isSystem ? "Role sistem" : "Role kustom"} · {role.slug}
-                      </span>
+                      </SecondaryText>
                     </span>
                     <span className="pengguna-role-jumlah">
                       {angka.format(data.statistik.perRole[role.id] ?? 0)} anggota

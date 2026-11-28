@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
-import { Button } from "@/components/ui/button";
 import { ButtonLink } from "@/components/ui/button-link";
+import { Pagination } from "@/components/ui/pagination";
+import { SearchToolbar } from "@/components/ui/search-toolbar";
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import { ambilAuditPlatform } from "@/features/multi-desa/application/audit-platform-use-cases";
 import { daftarDesaSuperAdmin } from "@/features/multi-desa/application/provisioning-use-cases";
@@ -15,7 +17,7 @@ import { AUDIT_EVENT_LABELS, type AuditEvent } from "@/features/pengaturan/audit
 import { pastikanSuperAdmin } from "../guard";
 
 export const metadata: Metadata = {
-  title: "Audit Trail Platform",
+  title: "Audit Trail",
   robots: { index: false, follow: false },
 };
 
@@ -91,57 +93,44 @@ export default async function SuperAdminAuditPage({
         title="Riwayat aktivitas"
       >
         <div className="platform-card-body">
-          <form action="/super-admin/audit" className="platform-toolbar" method="get" role="search">
-            <label className="tenant-search">
-              <span className="sr-only">Cari peristiwa, aktor, desa, atau sumber daya</span>
-              <input
-                className="form-input"
-                defaultValue={kataKunci}
-                maxLength={120}
-                name="q"
-                placeholder="Cari peristiwa, aktor, desa, atau resource..."
-                type="search"
-              />
-            </label>
-            <select
-              aria-label="Filter desa"
-              className="form-input platform-filter"
-              defaultValue={desaTerpilih}
-              name="desa"
-            >
-              <option value="">Semua desa &amp; platform</option>
-              {desa.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name || `Desa #${item.id}`}
-                </option>
-              ))}
-            </select>
-            <select
-              aria-label="Filter peristiwa"
-              className="form-input platform-filter"
-              defaultValue={peristiwaTerpilih}
-              name="event"
-            >
-              <option value="">Semua peristiwa</option>
-              {opsiPeristiwa.map(([kode, label]) => (
-                <option key={kode} value={kode}>
-                  {label}
-                </option>
-              ))}
-            </select>
-            <Button variant="primary" type="submit">
-              Terapkan
-            </Button>
-            {adaFilter ? (
-              <ButtonLink variant="secondary" href="/super-admin/audit">
-                Bersihkan
-              </ButtonLink>
-            ) : null}
-          </form>
+          <SearchToolbar
+            action="/super-admin/audit"
+            filters={[
+              {
+                name: "desa",
+                label: "Desa",
+                defaultValue: desaTerpilih,
+                options: [
+                  { value: "", label: "Semua desa & platform" },
+                  ...desa.map((item) => ({
+                    value: String(item.id),
+                    label: item.name || `Desa #${item.id}`,
+                  })),
+                ],
+              },
+              {
+                name: "event",
+                label: "Peristiwa",
+                defaultValue: peristiwaTerpilih,
+                options: [
+                  { value: "", label: "Semua peristiwa" },
+                  ...opsiPeristiwa.map(([kode, label]) => ({ value: kode, label })),
+                ],
+              },
+            ]}
+            resetHref={adaFilter ? "/super-admin/audit" : undefined}
+            search={{
+              name: "q",
+              label: "Cari peristiwa, aktor, desa, atau sumber daya",
+              placeholder: "Cari peristiwa, aktor, desa, atau resource...",
+              defaultValue: kataKunci,
+              maxLength: 120,
+            }}
+          />
 
           {data.rows.length > 0 ? (
-            <TableScroll className="tenant-table-scroll">
-              <Table className="tenant-table">
+            <TableScroll frame>
+              <Table>
                 <THead>
                   <Row>
                     <HeaderCell scope="col">Waktu</HeaderCell>
@@ -158,25 +147,21 @@ export default async function SuperAdminAuditPage({
                     <Row key={item.id}>
                       <Cell>{waktu.format(new Date(item.createdAt))}</Cell>
                       <Cell>
-                        {item.actorName ?? <span className="tenant-secondary">Sistem</span>}
+                        {item.actorName ?? <SecondaryText>Sistem</SecondaryText>}
                         {item.actorId ? (
-                          <span className="tenant-secondary">{item.actorId.slice(0, 8)}</span>
+                          <SecondaryText>{item.actorId.slice(0, 8)}</SecondaryText>
                         ) : null}
                       </Cell>
                       <Cell>
                         <strong>{labelPeristiwa(item.event)}</strong>
-                        <span className="tenant-secondary">{item.event}</span>
+                        <SecondaryText>{item.event}</SecondaryText>
                       </Cell>
                       <Cell>
                         {item.resource}
-                        {item.resourceId ? (
-                          <span className="tenant-secondary">#{item.resourceId}</span>
-                        ) : null}
+                        {item.resourceId ? <SecondaryText>#{item.resourceId}</SecondaryText> : null}
                       </Cell>
-                      <Cell>
-                        {item.villageName ?? <span className="tenant-secondary">Platform</span>}
-                      </Cell>
-                      <Cell>{item.ipAddress ?? <span className="tenant-secondary">—</span>}</Cell>
+                      <Cell>{item.villageName ?? <SecondaryText>Platform</SecondaryText>}</Cell>
+                      <Cell>{item.ipAddress ?? <SecondaryText>—</SecondaryText>}</Cell>
                       <Cell>
                         {item.details ? (
                           <details>
@@ -184,7 +169,7 @@ export default async function SuperAdminAuditPage({
                             <code className="platform-detail">{item.details}</code>
                           </details>
                         ) : (
-                          <span className="tenant-secondary">—</span>
+                          <SecondaryText>—</SecondaryText>
                         )}
                       </Cell>
                     </Row>
@@ -210,31 +195,16 @@ export default async function SuperAdminAuditPage({
             />
           )}
 
-          {data.pageCount > 1 ? (
-            <div className="platform-pagination">
-              {data.page > 1 ? (
-                <ButtonLink variant="secondary" href={tautan(data.page - 1)}>
-                  Sebelumnya
-                </ButtonLink>
-              ) : (
-                <span aria-disabled="true" className="button button-secondary">
-                  Sebelumnya
-                </span>
-              )}
-              <span className="tenant-result-count">
+          <Pagination
+            hrefForPage={tautan}
+            page={data.page}
+            pageCount={data.pageCount}
+            summary={
+              <span>
                 Halaman {angka.format(data.page)} / {angka.format(data.pageCount)}
               </span>
-              {data.page < data.pageCount ? (
-                <ButtonLink variant="secondary" href={tautan(data.page + 1)}>
-                  Berikutnya
-                </ButtonLink>
-              ) : (
-                <span aria-disabled="true" className="button button-secondary">
-                  Berikutnya
-                </span>
-              )}
-            </div>
-          ) : null}
+            }
+          />
         </div>
       </PlatformCard>
     </>

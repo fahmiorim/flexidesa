@@ -3,7 +3,7 @@ import { DISABILITIES, type Disability } from "@/features/kependudukan/penduduk/
 /**
  * Kategori disabilitas pada laporan kelompok rentan.
  *
- * Mengikuti Lampiran A-9 OpenSID: kategori "Tidak Cacat" tidak dihitung dari
+ * Kategori "Tidak Cacat" tidak dihitung dari
  * isian, melainkan sisa total penduduk setelah seluruh kategori disabilitas.
  */
 export const DISABILITAS_RENTAN = DISABILITIES.filter(
@@ -12,7 +12,7 @@ export const DISABILITAS_RENTAN = DISABILITIES.filter(
 
 export type DisabilitasRentan = (typeof DISABILITAS_RENTAN)[number];
 
-/** Label kolom cacat, sama persis dengan judul kolom OpenSID. */
+/** Label kolom cacat. */
 export const DISABILITAS_RENTAN_LABELS: Record<DisabilitasRentan, string> = {
   physical: "Cacat Fisik",
   blind: "Cacat Netra/ Buta",
@@ -22,7 +22,7 @@ export const DISABILITAS_RENTAN_LABELS: Record<DisabilitasRentan, string> = {
   other: "Cacat Lainnya",
 };
 
-/** Kelompok umur yang dilaporkan (batas dan label mengikuti OpenSID). */
+/** Kelompok umur yang dilaporkan. */
 export const KELOMPOK_UMUR_RENTAN = [
   { key: "bayi", label: "Di bawah 1 Tahun", min: 0, max: 0 },
   { key: "balita", label: "1-5 Tahun", min: 1, max: 5 },
@@ -35,7 +35,7 @@ export const KELOMPOK_UMUR_RENTAN = [
 export type KelompokUmurRentan = (typeof KELOMPOK_UMUR_RENTAN)[number]["key"];
 
 /** Angka mentah satu baris laporan, sebelum turunan dihitung. */
-export interface AngkaKelompokRentan {
+interface AngkaKelompokRentan {
   lakiLaki: number;
   perempuan: number;
   bayi: number;
@@ -61,20 +61,20 @@ export interface BarisKelompokRentan extends AngkaKelompokRentan {
 }
 
 /** Total penduduk pada satu baris (laki-laki + perempuan). */
-export function totalPendudukBaris(baris: AngkaKelompokRentan): number {
+function totalPendudukBaris(baris: AngkaKelompokRentan): number {
   return baris.lakiLaki + baris.perempuan;
 }
 
 /** Jumlah penduduk dengan disabilitas tercatat. */
-export function jumlahDisabilitasBaris(baris: AngkaKelompokRentan): number {
+function jumlahDisabilitasBaris(baris: AngkaKelompokRentan): number {
   return DISABILITAS_RENTAN.reduce((jumlah, value) => jumlah + baris.disabilitas[value], 0);
 }
 
 /**
  * Lengkapi angka mentah menjadi baris laporan.
  *
- * "Tidak cacat" = total penduduk − penduduk dengan disabilitas, sama seperti
- * perhitungan OpenSID; nilainya tidak pernah negatif meski data isian tidak
+ * "Tidak cacat" = total penduduk − penduduk dengan disabilitas;
+ * nilainya tidak pernah negatif meski data isian tidak
  * konsisten.
  */
 export function lengkapiBarisKelompokRentan(
@@ -197,7 +197,7 @@ export function buildKelompokRentanCsv(input: {
     barisCsv([baris.dusun, baris.rw, baris.rt, ...angka(baris)]),
   );
 
-  // Total mengikuti tfoot OpenSID: mulai dari kolom kelompok umur.
+  // Total dimulai dari kolom kelompok umur.
   const total = barisCsv(["Total", "", "", "", "", ...angka(input.total).slice(2)]);
 
   return [barisCsv(JUDUL_CSV), ...isi, total].join("\r\n");

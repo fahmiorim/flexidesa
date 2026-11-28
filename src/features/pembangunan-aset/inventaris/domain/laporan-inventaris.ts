@@ -40,7 +40,7 @@ function kategoriKey(item: LaporanInventarisItem): string {
   return item.kategoriId != null ? `id:${item.kategoriId}` : `nama:${kategoriLabel(item)}`;
 }
 
-export interface RekapKategoriBaris {
+interface RekapKategoriBaris {
   kategoriId: number | null;
   nama: string;
   kode: string | null;
@@ -49,7 +49,7 @@ export interface RekapKategoriBaris {
   totalNilai: string;
 }
 
-export interface RekapPerKategori {
+interface RekapPerKategori {
   baris: RekapKategoriBaris[];
   total: { jumlahBarang: number; totalUnit: string; totalNilai: string };
 }
@@ -124,7 +124,7 @@ export function rekapPerKategori(items: readonly LaporanInventarisItem[]): Rekap
   };
 }
 
-export interface NeracaKategoriBaris {
+interface NeracaKategoriBaris {
   kategoriId: number | null;
   nama: string;
   kode: string | null;
@@ -134,7 +134,7 @@ export interface NeracaKategoriBaris {
   totalNilai: string;
 }
 
-export interface NeracaAset {
+interface NeracaAset {
   baris: NeracaKategoriBaris[];
   totalPerKondisi: Record<InventarisKondisi, string>;
   grandTotal: string;

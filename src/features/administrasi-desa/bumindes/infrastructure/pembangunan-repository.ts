@@ -3,7 +3,7 @@ import { and, asc, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { bumindesKader, bumindesPembangunan } from "@/db/schema/bumindes-pembangunan";
 
-export interface PembangunanValues {
+interface PembangunanValues {
   tahun: number;
   namaKegiatan: string;
   lokasi: string | null;
@@ -18,7 +18,7 @@ export interface PembangunanValues {
   keterangan: string | null;
 }
 
-export interface KaderValues {
+interface KaderValues {
   nama: string;
   jabatan: string | null;
   bidang: string | null;

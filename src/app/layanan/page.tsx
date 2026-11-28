@@ -3,7 +3,9 @@ import Link from "next/link";
 
 import { getIdentitasFromRequest } from "@/features/info-desa/desa/application/resolve-village";
 import { daftarLayananDesaPublik } from "@/features/info-desa/publik/application/konten-publik";
+import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { listJenisSuratPublik } from "@/features/pelayanan-persuratan/surat/application/surat-publik-use-cases";
+import { mediaUrl } from "@/lib/media-url";
 
 import { PublicSiteFooter, PublicSiteHeader } from "../public-site-layout";
 import { KatalogLayanan } from "./katalog-layanan-client";
@@ -23,17 +25,9 @@ function locationLabel(desa: {
   return [desa.namaKecamatan, desa.namaKabupaten, desa.namaPropinsi].filter(Boolean).join(", ");
 }
 
-function mediaUrl(value: string | null, villageId: number): string | null {
-  if (!value) return null;
-  const parts = value.split(/[\\/]/).filter(Boolean);
-  if (!parts.length || parts.some((part) => part === "." || part === ".." || part.includes("..")))
-    return null;
-  const path = parts[0] === String(villageId) ? parts : [String(villageId), ...parts];
-  return "/api/publik/media/" + path.map(encodeURIComponent).join("/");
-}
-
 export default async function KatalogLayananPage() {
   const desa = await getIdentitasFromRequest();
+  const tema = await muatTemaPublik(desa.id);
   const [jenisSurat, layananDesa] = await Promise.all([
     listJenisSuratPublik(desa.id),
     daftarLayananDesaPublik(desa.id),
@@ -42,7 +36,7 @@ export default async function KatalogLayananPage() {
   const logoUrl = mediaUrl(desa.logo, desa.id);
 
   return (
-    <main className={styles.site}>
+    <main className={styles.site} data-tema={tema?.slug}>
       <PublicSiteHeader desa={desa} location={location} logoUrl={logoUrl} activePath="/layanan" />
       <section className={styles.hero}>
         <div className={styles.container}>

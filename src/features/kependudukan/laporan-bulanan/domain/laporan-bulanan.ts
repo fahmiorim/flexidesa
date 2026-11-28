@@ -1,8 +1,7 @@
 import { toCsv } from "@/lib/csv";
 
 /**
- * Logika murni Laporan Kependudukan Bulanan (OpenSID: Laporan Perkembangan
- * Penduduk, Lampiran A-9).
+ * Logika murni Laporan Kependudukan Bulanan.
  *
  * Laporan ini membandingkan keadaan penduduk pada awal dan akhir bulan serta
  * mencatat peristiwa yang terjadi di antaranya. Angka awal/akhir dihitung
@@ -37,7 +36,7 @@ export interface JumlahBulanan {
   kkP: number;
 }
 
-/** Kode baris laporan, mengikuti urutan Lampiran A-9. */
+/** Kode baris laporan. */
 export const BARIS_LAPORAN_BULANAN = [
   { kode: "awal", label: "Penduduk/Keluarga awal bulan ini" },
   { kode: "kelahiran", label: "Kelahiran/Keluarga baru bulan ini" },
@@ -48,7 +47,7 @@ export const BARIS_LAPORAN_BULANAN = [
   { kode: "akhir", label: "Penduduk/Keluarga akhir bulan ini" },
 ] as const;
 
-export type KodeBarisBulanan = (typeof BARIS_LAPORAN_BULANAN)[number]["kode"];
+type KodeBarisBulanan = (typeof BARIS_LAPORAN_BULANAN)[number]["kode"];
 
 /** Data mentah seluruh baris laporan. */
 export type SumberLaporanBulanan = Record<KodeBarisBulanan, JumlahBulanan>;
@@ -72,7 +71,7 @@ export function jumlahKosong(): JumlahBulanan {
   return { wniL: 0, wniP: 0, wnaL: 0, wnaP: 0, kkL: 0, kkP: 0 };
 }
 
-/** Susun baris laporan sesuai urutan Lampiran A-9. */
+/** Susun baris laporan. */
 export function susunBarisLaporan(sumber: SumberLaporanBulanan): BarisLaporanBulanan[] {
   return BARIS_LAPORAN_BULANAN.map(({ kode, label }) => {
     const nilai = sumber[kode];
@@ -153,7 +152,7 @@ export function rentangPeriode({ tahun, bulan }: PeriodeBulanan): {
   };
 }
 
-export interface LaporanBulananCsvInput {
+interface LaporanBulananCsvInput {
   namaDesa: string | null;
   kecamatan: string | null;
   periode: PeriodeBulanan;

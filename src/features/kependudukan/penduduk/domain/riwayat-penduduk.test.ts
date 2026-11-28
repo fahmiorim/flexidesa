@@ -161,7 +161,7 @@ const barisRiwayat: RiwayatPendudukRow = {
   rt: "002",
 };
 
-describe("ubah status dasar (paritas OpenSID)", () => {
+describe("ubah status dasar", () => {
   it("menawarkan opsi sesuai status tinggal dan peran KK", () => {
     expect(
       opsiStatusDasar({ residenceStatus: "permanent", kepalaKeluarga: false, jumlahAnggotaKk: 3 }),

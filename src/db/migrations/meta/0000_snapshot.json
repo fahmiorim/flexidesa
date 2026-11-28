@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "6c72bd48-c419-41dd-a0d9-60e76903c8e4",
-  "prevId": "4092749b-198e-4988-9901-5e2b6d478a15",
+  "id": "55f7367c-456c-431c-8ef6-3a55e3e7eb8f",
+  "prevId": "5110cfc6-1414-4501-b14c-0b20fa76b9cc",
   "tables": {
     "agenda_kegiatan": {
       "name": "agenda_kegiatan",
@@ -995,6 +995,27 @@
           "notNull": true,
           "autoincrement": false,
           "default": "(now())"
+        },
+        "impersonated_village_id": {
+          "name": "impersonated_village_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "impersonated_user_id": {
+          "name": "impersonated_user_id",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "impersonated_expires_at": {
+          "name": "impersonated_expires_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {
@@ -10468,6 +10489,118 @@
       "uniqueConstraints": {},
       "checkConstraint": {}
     },
+    "kontak_pesan_arsip": {
+      "name": "kontak_pesan_arsip",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "village_id": {
+          "name": "village_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "grup_id": {
+          "name": "grup_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "subjek": {
+          "name": "subjek",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "isi": {
+          "name": "isi",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "varchar(36)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "kontak_pesan_arsip_village_idx": {
+          "name": "kontak_pesan_arsip_village_idx",
+          "columns": [
+            "village_id"
+          ],
+          "isUnique": false
+        },
+        "kontak_pesan_arsip_village_grup_idx": {
+          "name": "kontak_pesan_arsip_village_grup_idx",
+          "columns": [
+            "village_id",
+            "grup_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "kontak_pesan_arsip_village_id_villages_id_fk": {
+          "name": "kontak_pesan_arsip_village_id_villages_id_fk",
+          "tableFrom": "kontak_pesan_arsip",
+          "tableTo": "villages",
+          "columnsFrom": [
+            "village_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "kontak_pesan_arsip_grup_tenant_fk": {
+          "name": "kontak_pesan_arsip_grup_tenant_fk",
+          "tableFrom": "kontak_pesan_arsip",
+          "tableTo": "kontak_grup",
+          "columnsFrom": [
+            "village_id",
+            "grup_id"
+          ],
+          "columnsTo": [
+            "village_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "kontak_pesan_arsip_id": {
+          "name": "kontak_pesan_arsip_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
     "mailbox_pesan": {
       "name": "mailbox_pesan",
       "columns": {
@@ -13954,13 +14087,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": 0
-        },
-        "kirim": {
-          "name": "kirim",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
         },
         "created_by": {
           "name": "created_by",

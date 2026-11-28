@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import type { NextRequest } from "next/server";
 
 import { authenticateApiKey } from "@/features/api-eksternal/application/authenticate";
@@ -89,11 +90,14 @@ export async function POST(request: NextRequest) {
     pdf,
   });
 
+  // Audit keamanan F3: catat hash isi PDF yang diserahkan mitra agar ada
+  // jejak dokumen apa yang ditandatangani (bukan alasan kegagalan provider).
+  const hashPdf = createHash("sha256").update(pdf).digest("hex");
   await recordAuditEvent({
     villageId: auth.apiKey.villageId,
     event: AUDIT_EVENTS.externalTteSign,
     resource: "surat-tte",
-    details: { nomor, ok: hasil.ok },
+    details: { nomor, ok: hasil.ok, hashPdf, ukuranPdf: pdf.byteLength },
   });
 
   if (!hasil.ok) {

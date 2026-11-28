@@ -30,7 +30,7 @@ export const theme = mysqlTable(
       .notNull()
       .references(() => villages.id, { onDelete: "cascade" }),
 
-    /** Slug tema terpasang, mis. `esensi` atau `natra`. */
+    /** Slug tema terpasang, mis. `arunika` atau `cakrawala`. */
     slug: varchar("slug", { length: 50 }).notNull(),
     /** Nama tampilan tema (cache dari manifest agar mudah ditampilkan). */
     nama: varchar("nama", { length: 100 }).notNull(),
@@ -53,5 +53,3 @@ export const theme = mysqlTable(
   (table) => [uniqueIndex("theme_village_slug_unique").on(table.villageId, table.slug)],
 );
 
-export type Theme = typeof theme.$inferSelect;
-export type NewTheme = typeof theme.$inferInsert;

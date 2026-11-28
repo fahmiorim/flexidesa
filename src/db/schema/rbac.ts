@@ -136,8 +136,3 @@ export const rolePermissionsRelations = relations(rolePermissions, ({ one }) => 
 }));
 
 export type Role = typeof roles.$inferSelect;
-export type NewRole = typeof roles.$inferInsert;
-export type Module = typeof modules.$inferSelect;
-export type NewModule = typeof modules.$inferInsert;
-export type RolePermission = typeof rolePermissions.$inferSelect;
-export type NewRolePermission = typeof rolePermissions.$inferInsert;

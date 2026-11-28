@@ -13,7 +13,7 @@ import { bacaBerkasLaporan } from "@/features/keuangan-desa/keuangan/infrastruct
 import { notFound } from "@/lib/errors";
 
 /** Dokumen APBDes yang boleh tampil di situs publik. */
-export interface LaporanDokumenPublikRow {
+interface LaporanDokumenPublikRow {
   id: number;
   judul: string;
   tahun: number;

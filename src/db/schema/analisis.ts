@@ -15,5 +15,3 @@ export const analisisKategori = mysqlTable(
   (table) => [uniqueIndex("analisis_kategori_village_id_uq").on(table.villageId, table.id)],
 );
 
-export type AnalisisKategori = typeof analisisKategori.$inferSelect;
-export type NewAnalisisKategori = typeof analisisKategori.$inferInsert;

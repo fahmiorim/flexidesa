@@ -57,5 +57,3 @@ export const outgoingLetters = mysqlTable(
   ],
 );
 
-export type OutgoingLetter = typeof outgoingLetters.$inferSelect;
-export type NewOutgoingLetter = typeof outgoingLetters.$inferInsert;

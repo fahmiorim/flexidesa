@@ -17,10 +17,13 @@ import {
 import { muatTemaPublik } from "@/features/info-desa/publik/application/website-admin";
 import { bacaPengaturan } from "@/features/pengaturan/pengaturan/application/pengaturan-use-cases";
 import { ringkasanIdmPublik } from "@/features/program-data-desa/idm/application/idm-use-cases";
-import { hitungRekapIdm } from "@/features/program-data-desa/idm/domain/idm";
+import { formatSkor, hitungRekapIdm } from "@/features/program-data-desa/idm/domain/idm";
+import { mediaUrl } from "@/lib/media-url";
+import { resolveTema } from "@/themes/registry";
 import { TemaRenderer } from "@/themes/renderer";
+import type { ThemeBerandaData } from "@/themes/types";
 
-import { cleanText, mediaUrl } from "./bagian-beranda";
+import { cleanText, dateLabel, namaLengkap } from "./bagian-beranda";
 import { HeroBeranda } from "./bagian-hero";
 import { BeritaPengumuman } from "./bagian-konten";
 import { BannerIdm, TautanTerkait } from "./bagian-layanan";
@@ -92,10 +95,100 @@ export default async function PublicHomePage() {
     (item.jabatan ?? "").toLocaleLowerCase("id-ID").includes("kepala desa"),
   );
   const heroImage = mediaUrl(slider[0]?.gambar, desa.id);
+  // Paket tema boleh menyediakan hero sendiri; data hero tetap dari use case
+  // yang sama sehingga identitas, kepala desa, dan aksi tidak berubah.
+  const definisiTema = tema ? resolveTema(tema.slug, tema.versi) : null;
+  const heroTema = definisiTema?.hero
+    ? {
+        villageId: desa.id,
+        villageName: desa.namaDesa ?? null,
+        location,
+        leaderName: leader ? namaLengkap(leader) : null,
+        leaderRole: leader?.jabatan ?? null,
+        leaderPhotoUrl: mediaUrl(leader?.foto, desa.id),
+        heroImageUrl: heroImage,
+        judulHero: tema?.judulHero || "Sistem Informasi Desa",
+        subHero:
+          tema?.subHero ||
+          `Media informasi, layanan publik, dan keterbukaan data untuk masyarakat ${desa.namaDesa ?? "desa"}.`,
+        ctaUtama: { href: "/layanan/surat", label: "Ajukan Surat Online" },
+        ctaSekunder: { href: "/profil", label: "Lihat Profil Desa" },
+      }
+    : undefined;
   const profileImage = mediaUrl(slider[1]?.gambar ?? galleryPhotos[0]?.gambar, desa.id);
   const intro =
     cleanText(profil?.sambutan) ||
     `Selamat datang di portal resmi ${desa.namaDesa ?? "desa"}. Media informasi, layanan publik, dan keterbukaan data desa.`;
+
+  const berandaTema: ThemeBerandaData | undefined = definisiTema?.beranda
+    ? {
+        villageId: desa.id,
+        villageName: desa.namaDesa ?? null,
+        location,
+        statistik: {
+          penduduk: statistik.total,
+          keluarga: statistik.keluarga,
+          dusun: statistik.perDusun.length,
+          wargaTerdata: statistik.perDusun.reduce((sum, row) => sum + row.total, 0),
+        },
+        idm: {
+          tahun: idm.tahun,
+          skor: rekapIdm.skor === null ? null : formatSkor(rekapIdm.skor),
+          status: rekapIdm.status ?? null,
+          dimensi: rekapIdm.dimensi.map((d) => ({ label: d.label, skor: formatSkor(d.skor) })),
+        },
+        berita: berita.slice(0, 5).map((item) => ({
+          id: item.id,
+          slug: item.slug,
+          judul: item.judul,
+          tanggal: dateLabel(item.terbitPada ?? item.createdAt),
+          gambarUrl: mediaUrl(item.gambar, desa.id),
+        })),
+        pengumuman: announcements.map((item) => ({
+          id: item.id,
+          nama: item.nama,
+          keterangan:
+            item.keterangan ??
+            (item.tahun === null || item.tahun === undefined ? null : String(item.tahun)),
+          href: item.tautan || "/pengumuman",
+        })),
+        sambutan: {
+          teks: intro,
+          nama: leader ? namaLengkap(leader) : null,
+          jabatan: leader?.jabatan ?? null,
+          fotoUrl: mediaUrl(leader?.foto, desa.id),
+        },
+        profil: {
+          teks: cleanText(profil?.sejarah) || intro,
+          gambarUrl: profileImage,
+          tautan: [
+            {
+              href: "/visi-misi",
+              label: "Visi & Misi",
+              deskripsi: `Arah pembangunan ${desa.namaDesa ?? "desa"}`,
+            },
+            {
+              href: "/profil#potensi",
+              label: "Potensi Desa",
+              deskripsi: "Potensi unggulan dan ekonomi desa",
+            },
+            {
+              href: "/pemerintahan",
+              label: "Struktur Pemerintahan",
+              deskripsi: "Susunan perangkat dan lembaga desa",
+            },
+          ],
+        },
+        galeri: {
+          albumSlug: galleryAlbum?.slug ?? null,
+          foto: galleryPhotos.slice(0, 5).map((foto) => ({
+            id: foto.id,
+            url: mediaUrl(foto.gambar, desa.id) ?? "",
+            judul: foto.judul || foto.keterangan || "Dokumentasi kegiatan desa",
+          })),
+        },
+      }
+    : undefined;
 
   // Setiap varian template menyusun ulang bagian beranda tanpa membuang data:
   // semua bagian tetap tampil, hanya urutannya yang berbeda per desain.
@@ -134,6 +227,7 @@ export default async function PublicHomePage() {
   return (
     <main
       className={styles.site}
+      data-tema={tema?.slug}
       data-gelap={tema?.style === "gelap" ? "ya" : undefined}
       data-varian={varian}
     >
@@ -144,14 +238,16 @@ export default async function PublicHomePage() {
         activePath="/"
       />
 
-      <HeroBeranda
-        desa={desa}
-        leader={leader}
-        heroImage={heroImage}
-        varian={varian}
-        judulHero={tema?.judulHero}
-        subHero={tema?.subHero}
-      />
+      {heroTema ? null : (
+        <HeroBeranda
+          desa={desa}
+          leader={leader}
+          heroImage={heroImage}
+          varian={varian}
+          judulHero={tema?.judulHero}
+          subHero={tema?.subHero}
+        />
+      )}
 
       <TemaRenderer
         villageId={desa.id}
@@ -159,6 +255,9 @@ export default async function PublicHomePage() {
         location={location}
         activePath="/"
         surface="beranda"
+        slots={bagian}
+        heroData={heroTema}
+        berandaData={berandaTema}
       >
         <div className={styles.container}>
           {URUTAN_BAGIAN[varian].map((kunci) => (

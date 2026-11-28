@@ -8,7 +8,7 @@ import {
   bumindesPeraturan,
 } from "@/db/schema/bumindes-sekretariat";
 
-export interface PeraturanValues {
+interface PeraturanValues {
   jenis: string;
   nomor: string;
   tahun: number | null;
@@ -18,7 +18,7 @@ export interface PeraturanValues {
   keterangan: string | null;
 }
 
-export interface AparatValues {
+interface AparatValues {
   nama: string;
   nip: string | null;
   jabatan: string;
@@ -32,7 +32,7 @@ export interface AparatValues {
   keterangan: string | null;
 }
 
-export interface AgendaValues {
+interface AgendaValues {
   jenis: string;
   tanggal: string;
   nomorSurat: string | null;
@@ -120,7 +120,7 @@ export async function deleteBumindesAparat(villageId: number, id: number) {
   return result.affectedRows > 0;
 }
 
-export interface AgendaBukuRow {
+interface AgendaBukuRow {
   id: number;
   villageId: number;
   jenis: string;

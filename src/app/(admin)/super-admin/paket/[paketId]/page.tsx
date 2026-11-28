@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { ButtonLink } from "@/components/ui/button-link";
+import { DefinitionItem, DefinitionList } from "@/components/ui/definition-list";
+import { SecondaryText } from "@/components/ui/secondary-text";
 import { Cell, HeaderCell, Row, Table, TableScroll, TBody, THead } from "@/components/ui/table";
 import {
   daftarFiturPaketPlatform,
@@ -91,35 +93,24 @@ export default async function SuperAdminDetailPaketPage({
       />
 
       <PlatformCard title="Identitas paket">
-        <dl className="platform-def">
-          <div className="platform-def-row">
-            <dt>Slug</dt>
-            <dd>
-              <code>{paket.slug}</code>
-            </dd>
-          </div>
-          <div className="platform-def-row">
-            <dt>Status</dt>
-            <dd>
-              <PlatformStatus
-                aktif={paket.status === "active"}
-                label={paket.status === "active" ? "Aktif" : "Diarsipkan"}
-              />
-            </dd>
-          </div>
-          <div className="platform-def-row">
-            <dt>Versi diterbitkan</dt>
-            <dd>{published ? `v${published.version}` : "Belum diterbitkan"}</dd>
-          </div>
-          <div className="platform-def-row">
-            <dt>Draf</dt>
-            <dd>{draft ? `v${draft.version}` : "Tidak ada"}</dd>
-          </div>
-          <div className="platform-def-row">
-            <dt>Deskripsi</dt>
-            <dd>{paket.description || "Belum ada deskripsi."}</dd>
-          </div>
-        </dl>
+        <DefinitionList>
+          <DefinitionItem label="Slug">
+            <code>{paket.slug}</code>
+          </DefinitionItem>
+          <DefinitionItem label="Status">
+            <PlatformStatus
+              aktif={paket.status === "active"}
+              label={paket.status === "active" ? "Aktif" : "Diarsipkan"}
+            />
+          </DefinitionItem>
+          <DefinitionItem label="Versi diterbitkan">
+            {published ? `v${published.version}` : "Belum diterbitkan"}
+          </DefinitionItem>
+          <DefinitionItem label="Draf">{draft ? `v${draft.version}` : "Tidak ada"}</DefinitionItem>
+          <DefinitionItem label="Deskripsi">
+            {paket.description || "Belum ada deskripsi."}
+          </DefinitionItem>
+        </DefinitionList>
       </PlatformCard>
 
       <PaketIdentitasActions
@@ -152,8 +143,8 @@ export default async function SuperAdminDetailPaketPage({
               title="Belum ada tenant"
             />
           ) : (
-            <TableScroll className="tenant-table-scroll">
-              <Table className="tenant-table">
+            <TableScroll>
+              <Table>
                 <THead>
                   <Row>
                     <HeaderCell scope="col">Tenant</HeaderCell>
@@ -166,7 +157,7 @@ export default async function SuperAdminDetailPaketPage({
                     <Row key={tenant.villageId}>
                       <Cell>
                         <strong>{tenant.name ?? `Desa #${tenant.villageId}`}</strong>
-                        {tenant.code ? <div className="tenant-secondary">{tenant.code}</div> : null}
+                        {tenant.code ? <SecondaryText>{tenant.code}</SecondaryText> : null}
                       </Cell>
                       <Cell>
                         <PlatformStatus

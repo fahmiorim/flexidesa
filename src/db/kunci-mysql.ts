@@ -22,7 +22,7 @@ import { pool } from "@/db";
  */
 
 /** Batas tunggu perolehan kunci; cukup untuk operasi pendek, bukan antrean. */
-export const TIMEOUT_KUNCI_DETIK = 10;
+const TIMEOUT_KUNCI_DETIK = 10;
 
 /**
  * Jalankan `blok` sambil memegang kunci `nama`.

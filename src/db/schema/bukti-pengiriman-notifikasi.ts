@@ -64,5 +64,3 @@ export const buktiPengirimanNotifikasi = mysqlTable(
   ],
 );
 
-export type BuktiPengirimanNotifikasi = typeof buktiPengirimanNotifikasi.$inferSelect;
-export type NewBuktiPengirimanNotifikasi = typeof buktiPengirimanNotifikasi.$inferInsert;

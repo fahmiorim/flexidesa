@@ -49,7 +49,7 @@ describe("buildSuratNumber", () => {
     expect(buildSuratNumber("[tidak_ada]/[nomor]", context)).toBe("[tidak_ada]/007");
   });
 
-  it("menerima alias [nomor_surat] seperti format impor SID", () => {
+  it("menerima alias [nomor_surat] seperti format impor data desa", () => {
     expect(buildSuratNumber("[kode_surat]/[nomor_surat]/[tahun]", context)).toBe("S-41/007/2026");
   });
 
@@ -237,7 +237,7 @@ describe("pengaturan tampilan surat", () => {
     templateBody: "Halo [nama]",
   };
 
-  it("memakai nilai bawaan OpenSID untuk tampilan cetak", () => {
+  it("memakai nilai bawaan untuk tampilan cetak", () => {
     const parsed = jenisSuratFormSchema.parse(dasar);
 
     expect(parsed.orientasi).toBe("potrait");
@@ -252,7 +252,7 @@ describe("pengaturan tampilan surat", () => {
     expect(parsed.qrCode).toBe(false);
   });
 
-  it("membatasi masa berlaku 0–31 sesuai form OpenSID", () => {
+  it("membatasi masa berlaku 0–31", () => {
     expect(jenisSuratFormSchema.parse({ ...dasar, validityMonths: "0" }).validityMonths).toBe(0);
     expect(jenisSuratFormSchema.parse({ ...dasar, validityMonths: "31" }).validityMonths).toBe(31);
     expect(jenisSuratFormSchema.safeParse({ ...dasar, validityMonths: "32" }).success).toBe(false);

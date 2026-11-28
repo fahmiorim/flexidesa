@@ -8,7 +8,7 @@ import { adalahHostPlatform, hostCandidates, normalizeBaseDomain, normalizeHost 
  * desa B, dan host tak dikenal tidak boleh diam-diam memakai desa lain — dapat
  * diuji tanpa basis data.
  */
-export interface PetaDesa {
+interface PetaDesa {
   /** Domain ternormalisasi → id desa. */
   domain: ReadonlyMap<string, number>;
   /** Label subdomain ternormalisasi → id desa (wildcard `*.base`). */
@@ -67,7 +67,7 @@ export function susunPetaDesa(daftar: readonly BarisDesa[], baseDomain?: string 
 }
 
 /** Opsi resolusi host; semua default bersifat fail closed. */
-export interface OpsiResolusiHost {
+interface OpsiResolusiHost {
   /** Host platform yang tidak pernah menjadi tenant (landing page). */
   hostPlatform?: readonly string[];
   /**

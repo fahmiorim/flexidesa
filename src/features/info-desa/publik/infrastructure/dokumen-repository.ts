@@ -19,7 +19,7 @@ import { polaLike } from "@/features/info-desa/publik/domain/pencarian";
 
 import { beritaLayakTayang } from "./berita-repository";
 
-export interface DokumenRingkas {
+interface DokumenRingkas {
   id: number;
   nama: string;
   slug: string;
@@ -33,7 +33,7 @@ export interface DokumenRingkas {
   aktif: boolean;
 }
 
-export interface DokumenPublikInput {
+interface DokumenPublikInput {
   nama: string;
   slug: string;
   kategori: string;
@@ -85,7 +85,7 @@ export interface CariDokumenPublikFilter {
   pageSize?: number;
 }
 
-export interface DokumenPublikPage {
+interface DokumenPublikPage {
   rows: DokumenRingkas[];
   total: number;
   page: number;

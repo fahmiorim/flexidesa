@@ -7,7 +7,7 @@ import { apiKeys } from "@/db/schema/api-keys";
 
 /** Query tabel `api_keys`; seluruh fungsi dibatasi `villageId` pemilik. */
 
-export interface KunciApiRingkas {
+interface KunciApiRingkas {
   id: number;
   name: string;
   prefix: string;

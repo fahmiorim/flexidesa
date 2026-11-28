@@ -38,15 +38,15 @@ export const families = mysqlTable(
     regionId: int("region_id"),
 
     /**
-     * Kode kelas sosial (1–5), sama dengan `tweb_keluarga.kelas_sosial` OpenSID.
+     * Kode kelas sosial (1–5).
      * Nol/kosong berarti belum ditetapkan.
      */
     welfareClass: int("welfare_class"),
 
-    /** Tanggal KK terakhir dicetak; diisi manual seperti pada OpenSID. */
+    /** Tanggal KK terakhir dicetak; diisi manual. */
     cardPrintedAt: date("card_printed_at", { mode: "string" }),
 
-    /** Tanggal keluarga terdaftar; menjadi padanan `tgl_daftar` OpenSID. */
+    /** Tanggal keluarga terdaftar. */
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at")
       .notNull()

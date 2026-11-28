@@ -43,8 +43,8 @@ const token = {
 
 const template = {
   id: 3,
-  slug: "esensi",
-  name: "Esensi",
+  slug: "arunika",
+  name: "Arunika",
   category: "umum",
   description: "Template bawaan platform untuk portal desa.",
   version: "2.0.0",
@@ -99,7 +99,7 @@ describe("template website — guard dan validasi", () => {
     await expect(
       buatTemplateWebsiteBaru({
         name: "Template Baru",
-        slug: "esensi",
+        slug: "arunika",
         category: "umum",
         description: "Deskripsi template yang cukup panjang untuk validasi.",
         version: "1.0.0",
@@ -120,7 +120,7 @@ describe("template website — guard dan validasi", () => {
     await expect(
       ubahTemplateWebsiteData({
         id: 3,
-        name: "Esensi",
+        name: "Arunika",
         category: "umum",
         description: "Deskripsi template yang cukup panjang untuk validasi.",
         version: "1.9.9",
@@ -148,8 +148,8 @@ describe("distribusi versi template", () => {
         villageId: 1,
         namaDesa: "Desa Satu",
         domain: "satu.test",
-        themeSlug: "esensi",
-        themeNama: "Esensi",
+        themeSlug: "arunika",
+        themeNama: "Arunika",
         versi: "1.0.0",
         diperbaruiPada: new Date("2026-01-01T00:00:00Z"),
       },
@@ -164,7 +164,7 @@ describe("distribusi versi template", () => {
     expect(repo.distribusikanVersiTemplate).toHaveBeenCalledWith(template, [1], expect.any(Map));
     expect(audit.recordAuditEvent).toHaveBeenCalledWith(
       expect.objectContaining({
-        details: { slug: "esensi", version: "2.0.0", jumlahTenant: 1 },
+        details: { slug: "arunika", version: "2.0.0", jumlahTenant: 1 },
       }),
     );
   });
@@ -192,5 +192,58 @@ describe("distribusi versi template", () => {
     ).rejects.toMatchObject({ code: "CONFLICT" });
 
     expect(repo.listPenggunaanTemplateWebsite).not.toHaveBeenCalled();
+  });
+});
+
+describe("ganti template desa — opsi lintas tema", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it("tidak membawa warna dasar tema lama saat pindah paket", async () => {
+    const { guard, repo } = await modul();
+    vi.mocked(guard.requireSuperAdmin).mockResolvedValue({ id: "user-1" } as never);
+    vi.mocked(repo.getTemplateWebsite).mockResolvedValue({
+      ...template,
+      slug: "samudra",
+      name: "Samudra",
+      version: "1.0.0",
+    });
+    vi.mocked(repo.opsiTemaTenant).mockResolvedValue([
+      {
+        villageId: 1,
+        slug: "cakrawala",
+        versi: "1.0.0",
+        opsi: JSON.stringify({ templateOptions: { warna_dasar: "#e64946", jam: "0" } }),
+      },
+    ]);
+
+    const { gantiTemplateDesa } = await import("./template-website-use-cases");
+    await gantiTemplateDesa({ villageId: 1, templateId: 3 });
+
+    const opsi = vi.mocked(repo.terapkanTemplateKeDesaRepo).mock.calls[0]?.[2];
+    expect(opsi?.warna_dasar).toBe("#0e7a6d"); // default paket Samudra
+    expect(opsi?.jam).toBe("0"); // opsi netral tetap dipertahankan
+  });
+
+  it("mempertahankan warna dasar pilihan admin pada paket yang sama", async () => {
+    const { guard, repo } = await modul();
+    vi.mocked(guard.requireSuperAdmin).mockResolvedValue({ id: "user-1" } as never);
+    vi.mocked(repo.getTemplateWebsite).mockResolvedValue({ ...template, version: "1.0.0" });
+    vi.mocked(repo.opsiTemaTenant).mockResolvedValue([
+      {
+        villageId: 1,
+        slug: "arunika",
+        versi: "1.0.0",
+        opsi: JSON.stringify({ templateOptions: { warna_dasar: "#123456" } }),
+      },
+    ]);
+
+    const { gantiTemplateDesa } = await import("./template-website-use-cases");
+    await gantiTemplateDesa({ villageId: 1, templateId: 3 });
+
+    expect(vi.mocked(repo.terapkanTemplateKeDesaRepo).mock.calls[0]?.[2]?.warna_dasar).toBe(
+      "#123456",
+    );
   });
 });

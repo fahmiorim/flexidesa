@@ -55,5 +55,4 @@ export const dokumenWarga = mysqlTable(
   ],
 );
 
-export type DokumenWarga = typeof dokumenWarga.$inferSelect;
 export type NewDokumenWarga = typeof dokumenWarga.$inferInsert;

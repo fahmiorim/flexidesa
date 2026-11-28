@@ -27,7 +27,7 @@ export type TingkatWilayah = (typeof TINGKAT_WILAYAH)[number];
  * Pola kode induk yang harus dikirim klien. `null` berarti tingkat teratas
  * (provinsi) tidak punya induk.
  */
-export const POLA_INDUK: Record<TingkatWilayah, RegExp | null> = {
+const POLA_INDUK: Record<TingkatWilayah, RegExp | null> = {
   provinsi: null,
   kabupaten: /^\d{2}$/,
   kecamatan: /^\d{2}\.\d{2}$/,

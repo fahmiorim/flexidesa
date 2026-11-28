@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 /** Masa berlaku kode verifikasi kontak. */
-export const PANJANG_KODE = 6;
 
 /** Normalkan nomor HP Indonesia ke format 62xxxxxxxxxx. */
 export function normalisasiNomorHp(value: string): string {

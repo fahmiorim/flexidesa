@@ -124,7 +124,7 @@ export async function getSurvey(villageId: number, id: number): Promise<SurveyRo
   };
 }
 
-export interface SurveyValues {
+interface SurveyValues {
   judul: string;
   deskripsi: string | null;
   sasaran: string | null;
