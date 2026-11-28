@@ -1,0 +1,137 @@
+/* Cakrawala V2 — seluruh styling berada di dalam paket tema ini. */
+.themeRoot {
+  --ck-green: var(--public-primary, #087f68);
+  --ck-deep: #064b40;
+  --ck-teal: #0e9b83;
+  --ck-ink: var(--public-text, #17342f);
+  --ck-muted: #657b74;
+  --ck-paper: #f5f8f5;
+  --ck-line: #e1ebe5;
+  color: var(--ck-ink);
+  display: block;
+  width: 100%;
+  padding: 0 0 4rem;
+  background: var(--ck-paper);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+.content { width: min(1280px, calc(100% - 56px)); margin: 0 auto; }
+.themeRoot :global(h1), .themeRoot :global(h2), .themeRoot :global(h3) { color: var(--ck-ink); letter-spacing: -.035em; }
+.themeRoot :global(a) { transition: color .18s ease, background-color .18s ease, transform .18s ease; }
+.themeRoot :global(a:focus-visible), :global(body:has(main[data-tema="cakrawala"]) a:focus-visible) { outline: 3px solid #e5b94d; outline-offset: 3px; }
+
+/* Shared government strip and navigation */
+:global(body:has(main[data-tema="cakrawala"]) .header) {
+  position: relative; z-index: 30; background: #fff; border: 0; box-shadow: 0 5px 24px #123d2b0d;
+}
+:global(body:has(main[data-tema="cakrawala"]) [class*="headerInner"]) { min-height: 76px; width: min(1280px,calc(100% - 56px)); }
+:global(body:has(main[data-tema="cakrawala"]) [class*="brand"]) { color: #123b31; gap: 12px; }
+:global(body:has(main[data-tema="cakrawala"]) [class*="brandText"] strong),
+:global(body:has(main[data-tema="cakrawala"]) [class*="brand"] strong) { color: #45645a; font-size: 10px; letter-spacing: .07em; }
+:global(body:has(main[data-tema="cakrawala"]) [class*="brandText"] b),
+:global(body:has(main[data-tema="cakrawala"]) [class*="brand"] b) { color: #103c31; font-size: 16px; }
+:global(body:has(main[data-tema="cakrawala"]) [class*="nav"]) { color: #31564b; font-size: 12px; gap: 8px; }
+:global(body:has(main[data-tema="cakrawala"]) [class*="nav"] .active),
+:global(body:has(main[data-tema="cakrawala"]) [class*="nav"] a:hover) { color: var(--ck-green); }
+:global(body:has(main[data-tema="cakrawala"]) [class*="nav"] .active:after) { height: 3px; bottom: 14px; background: var(--ck-green); }
+:global(body:has(main[data-tema="cakrawala"]) [class*="login"]) { background: var(--ck-green); color: white; border-radius: 999px; padding: 0 22px; min-height: 42px; }
+:global(body:has(main[data-tema="cakrawala"]) [class*="footer"]) { background: #063f36; color: #f4fbf7; border: 0; }
+:global(body:has(main[data-tema="cakrawala"]) [class*="footerInner"]) { width: min(1280px,calc(100% - 56px)); min-height: 76px; }
+
+/* Hero is rendered before the layout wrapper, so scope it to the active tenant marker. */
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"]) {
+  position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: end;
+  width: 100%; min-height: clamp(430px, 48vw, 590px); margin: 0; padding: clamp(44px,7vw,96px) max(28px,calc((100% - 1280px)/2));
+  border-radius: 0; color: white; background: #155b46 url("./assets/cakrawala-landscape.svg") center 53%/cover no-repeat;
+}
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroTirai"]) {
+  position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(90deg,rgba(3,39,31,.78) 0%,rgba(3,55,41,.42) 54%,rgba(3,55,41,.08) 100%),linear-gradient(0deg,rgba(3,39,31,.5),transparent 60%);
+}
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroIsi"]) { width: min(1280px,100%); margin: 0 auto; align-items: end; }
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroTeks"]) { max-width: 720px; gap: 18px; }
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroChip"]) { background: #fff3d8; color: #315444; border: 0; backdrop-filter: none; padding: 9px 16px; font-size: 12px; }
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroChip"]:before) { background: #0c9b70; box-shadow: 0 0 0 4px #0c9b7030; }
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroJudul"]) { max-width: 760px; font-size: clamp(42px,6vw,76px); line-height: .98; font-weight: 850; text-shadow: 0 3px 24px #002c2266; }
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroJudul"] em) { color: #d6edaa; background: none; }
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroSub"]) { max-width: 590px; color: #f0f8f2; font-size: clamp(15px,1.5vw,18px); }
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="tombolUtama"]) { color: #fff; background: #0c9b70; border-radius: 999px; min-height: 48px; padding: 0 24px; }
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="tombolGaris"]) { border-radius: 999px; min-height: 48px; padding: 0 24px; }
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroKartu"]) { background: #ffffffdf; color: #173d32; border: 1px solid #ffffff; backdrop-filter: blur(16px); border-radius: 18px; }
+:global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroKartu"] small) { color: #5b756b; }
+
+/* Native home composition */
+.themeRoot :global([data-native="cakrawala"]) { color: var(--ck-ink); }
+.themeRoot :global([class*="edisi"]) { border-radius: 18px; box-shadow: 0 10px 32px #174b3510; border: 1px solid var(--ck-line); background: #fff; }
+.themeRoot :global([class*="edisiAngka"] > div) { background: #f0f7f2; border: 1px solid #e3eee6; border-radius: 14px; }
+.themeRoot :global([class*="edisiAngka"] dd) { color: var(--ck-deep); }
+.themeRoot :global([class*="rubrik"]) { color: var(--ck-green); letter-spacing: .13em; }
+.themeRoot :global([class*="utama"]), .themeRoot :global([class*="pengumuman"]), .themeRoot :global([class*="sambutan"]), .themeRoot :global([class*="layanan"]), .themeRoot :global([class*="profil"]) {
+  border-radius: 20px; border: 1px solid var(--ck-line); background: #fff; box-shadow: 0 10px 30px #174b350c;
+}
+.themeRoot :global([class*="judulUtama"] a) { color: #153f33; }
+.themeRoot :global([class*="judulUtama"] a:hover), .themeRoot :global([class*="semuaTautan"]) { color: var(--ck-green); }
+.themeRoot :global([class*="utamaFoto"]), .themeRoot :global([class*="profilFoto"]), .themeRoot :global([class*="pitaFoto"] a) { border-radius: 14px; }
+.themeRoot :global([class*="layananDaftar"] a), .themeRoot :global([class*="indeksBerita"] a) { border-color: #e5eee8; }
+.themeRoot :global([class*="layananDaftar"] a:hover), .themeRoot :global([class*="indeksBerita"] a:hover) { background: #f2f8f4; }
+.themeRoot :global([class*="layananDaftar"] b), .themeRoot :global([class*="indeksBerita"] b) { color: var(--ck-green); }
+.themeRoot :global([class*="sambutan"]) { background: linear-gradient(120deg,#eaf5ee,#fff 72%); }
+.themeRoot :global([class*="kutipan"]) { color: #315c4c; }
+.themeRoot :global([class*="kolofon"]) { background: #063f36; color: #eef8f1; border-radius: 22px 22px 0 0; padding: 36px; }
+.themeRoot :global([class*="kolofon"] strong), .themeRoot :global([class*="kolofon"] a) { color: #f5fbf7; }
+.themeRoot :global([class*="kolofon"] small), .themeRoot :global([class*="kolofon"] p), .themeRoot :global([class*="kolofon"] span) { color: #c2ded0; }
+
+/* Other public page surfaces: editorial white panels, green controls, consistent rhythm. */
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"]) { background: #f5f8f5 !important; color: #17342f !important; }
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] h1),
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] h2),
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] h3) { color: #173d32; letter-spacing: -.03em; }
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] a) { color: var(--public-primary,#087f68); }
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] button) { border-radius: 999px; }
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] input),
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] select),
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] textarea) { border-color: #d9e7de; border-radius: 12px; }
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] [class*="Card"]),
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] [class*="card"]),
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] [class*="Panel"]),
+:global(body:has(main[data-tema="cakrawala"]) main[data-tema="cakrawala"] [class*="panel"]) {
+  border-color: #e2ece5; border-radius: 18px; box-shadow: 0 8px 28px #174b350c;
+}
+@media(max-width:900px) {
+  .content { width: min(100% - 32px, 680px); }
+  :global(body:has(main[data-tema="cakrawala"]) [class*="headerInner"]) { width: calc(100% - 32px); }
+  :global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"]) { min-height: 500px; padding: 52px 22px 64px; background-position: 58% center; }
+  :global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroIsi"]) { align-items: start; }
+  :global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroKartu"]) { display: none; }
+  :global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroJudul"]) { font-size: clamp(38px,9vw,58px); }
+  .themeRoot :global([class*="edisiAngka"]) { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .themeRoot :global([class*="muka"]) { grid-template-columns: 1fr; }
+  .themeRoot :global([class*="profilIsi"]) { grid-template-columns: 1fr; }
+  .themeRoot :global([class*="kolofonIsi"]) { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:560px) {
+  .content { width: calc(100% - 24px); }
+  :global(body:has(main[data-tema="cakrawala"]) [class*="headerInner"]) { min-height: 64px; }
+  :global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"]) { min-height: 460px; padding: 38px 18px 52px; }
+  :global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroTeks"]) { gap: 14px; }
+  :global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroAksi"]) { width: 100%; }
+  :global(body:has(main[data-tema="cakrawala"]) [data-hero="cakrawala"] [class*="heroAksi"] a) { flex: 1 1 100%; justify-content: center; }
+  .themeRoot :global([class*="edisi"]) { padding: 16px; }
+  .themeRoot :global([class*="edisiAngka"] dd) { font-size: 1.35rem; }
+  .themeRoot :global([class*="utama"]) { padding: 16px; }
+  .themeRoot :global([class*="bagianKepala"]) { align-items: start; flex-direction: column; }
+  .themeRoot :global([class*="kolofon"]) { padding: 24px 18px; }
+  .themeRoot :global([class*="kolofonIsi"]) { grid-template-columns: 1fr; }
+}
+
+/* Order beranda mengikuti alur pengunjung: layanan, angka, kabar, sambutan, profil. */
+.themeRoot :global([data-native="cakrawala"]) { display: flex; flex-direction: column; }
+.themeRoot :global([data-native="cakrawala"] > [class*="layanan"]) { order: 1; }
+.themeRoot :global([data-native="cakrawala"] > [class*="edisi"]) { order: 2; }
+.themeRoot :global([data-native="cakrawala"] > [class*="muka"]) { order: 3; }
+.themeRoot :global([data-native="cakrawala"] > [class*="sambutan"]) { order: 4; }
+.themeRoot :global([data-native="cakrawala"] > [class*="profil"]) { order: 5; }
+:global(body:has(main[data-tema="cakrawala"]) [class*="header"]) { background: #fff; }
+@media(max-width:760px) {
+  :global(body:has(main[data-tema="cakrawala"]) [class*="headerInner"]) { flex-wrap: wrap; gap: 10px; padding-block: 10px; }
+  :global(body:has(main[data-tema="cakrawala"]) [class*="nav"]) { max-width: 100%; overflow-x: auto; justify-content: flex-start; }
+}

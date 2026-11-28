@@ -2,16 +2,16 @@
   {
     "key": "warna_dasar",
     "label": "Warna Dasar Tema",
-    "description": "Warna Dasar Tema yang akan digunakan pada website",
+    "description": "Warna utama Cakrawala; hijau emerald direkomendasikan",
     "type": "color-picker",
-    "default": "#a93526",
+    "default": "#087f68",
     "group": "Umum",
     "readonly": false
   },
   {
     "key": "statistik_desa",
-    "label": "Statistik [desa]",
-    "description": "Tampilkan statistik [desa] pada footer website",
+    "label": "Statistik Desa",
+    "description": "Tampilkan ringkasan statistik desa pada website",
     "type": "select",
     "default": "1",
     "group": "Umum",
@@ -33,7 +33,7 @@
   {
     "key": "pintasan_masuk",
     "label": "Pintasan Masuk",
-    "description": "Tampilkan pintasan masuk admin dan layanan mandiri pada website",
+    "description": "Tampilkan pintasan masuk admin dan layanan mandiri",
     "type": "select",
     "default": "1",
     "group": "Umum",
@@ -44,7 +44,7 @@
   {
     "key": "foto_tidak_tersedia",
     "label": "Foto Tidak Tersedia",
-    "description": "Tampilkan foto ketika foto tidak tersedia",
+    "description": "Foto fallback saat tenant belum mengunggah gambar",
     "type": "unggah",
     "default": null,
     "group": "Umum",
@@ -53,7 +53,7 @@
   {
     "key": "jumlah_pembangunan_perhalaman",
     "label": "Jumlah Pembangunan Perhalaman",
-    "description": "Jumlah pembangunan yang ditampilkan dalam satu halaman",
+    "description": "Jumlah pembangunan dalam satu halaman",
     "type": "input-number",
     "default": 10,
     "group": "Pembangunan",
@@ -64,7 +64,7 @@
   {
     "key": "jumlah_pengaduan_perhalaman",
     "label": "Jumlah Pengaduan Perhalaman",
-    "description": "Jumlah pengaduan yang ditampilkan dalam satu halaman",
+    "description": "Jumlah pengaduan dalam satu halaman",
     "type": "input-number",
     "default": 10,
     "group": "Pengaduan",
